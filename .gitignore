@@ -3,3 +3,6 @@ node_modules/
 
 # Build and coverage output
 dist/
+
+# Astro build output
+/apps/docs/.astro/

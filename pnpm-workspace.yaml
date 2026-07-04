@@ -2,6 +2,10 @@ packages:
     - "packages/*"
     - "apps/*"
 
+allowBuilds:
+    esbuild: true
+    sharp: true
+
 overrides:
     "vue": "beta"
     "@vue/compiler-core": "beta"
