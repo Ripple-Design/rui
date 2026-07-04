@@ -1,0 +1,17 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["typescript", "unicorn", "oxc", "vue"],
+    "env": {
+        "browser": true
+    },
+    "categories": {
+        "correctness": "error"
+    },
+    "ignorePatterns": [
+        "node_modules/**",
+        "dist/**",
+        "packages/*/dist/**",
+        "apps/*/dist/**",
+        "coverage/**"
+    ]
+}

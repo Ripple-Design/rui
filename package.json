@@ -1,12 +1,24 @@
 {
-  "name": "rui",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    "name": "rui-workspace",
+    "version": "1.0.0",
+    "private": true,
+    "description": "",
+    "keywords": [],
+    "license": "MIT",
+    "author": "",
+    "main": "index.js",
+    "scripts": {
+        "docs": "pnpm --filter docs dev",
+        "lint:rui": "pnpm --filter rui lint",
+        "lint:rui:fix": "pnpm --filter rui lint:fix"
+    },
+    "devDependencies": {
+        "@tsconfig/node24": "^24.0.4",
+        "@types/node": "^24.13.2",
+        "@vue/tsconfig": "^0.9.1",
+        "oxfmt": "^0.54.0",
+        "oxlint": "~1.69.0",
+        "typescript": "~6.0.0",
+        "vue-tsc": "^3.3.5"
+    }
 }
