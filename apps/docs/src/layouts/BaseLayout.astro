@@ -1,5 +1,6 @@
 ---
-import { getLocaleUrl, locales } from "../lib/docs"
+import "rui/styles"
+import { getDirectionMode, getDirectionUrl, getLocaleUrl, locales } from "../lib/docs"
 
 export interface Props {
     title: string
@@ -9,10 +10,11 @@ export interface Props {
 }
 
 const { title, locale, currentUrl = Astro.url, sectionLabel = "Components" } = Astro.props
+const direction = getDirectionMode(currentUrl)
 ---
 
 <!doctype html>
-<html lang={locale}>
+<html lang={locale} dir={direction}>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
@@ -49,14 +51,16 @@ const { title, locale, currentUrl = Astro.url, sectionLabel = "Components" } = A
             }
 
             .header-nav,
-            .header-tools {
+            .header-tools,
+            .header-direction {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 1rem;
             }
 
             .header-nav ul,
-            .header-tools ul {
+            .header-tools ul,
+            .header-direction ul {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 0.75rem;
@@ -73,7 +77,7 @@ const { title, locale, currentUrl = Astro.url, sectionLabel = "Components" } = A
 
             @media (min-width: 900px) {
                 .site-header__inner {
-                    grid-template-columns: 1fr auto auto;
+                    grid-template-columns: 1fr auto auto auto;
                 }
             }
         </style>
@@ -97,6 +101,16 @@ const { title, locale, currentUrl = Astro.url, sectionLabel = "Components" } = A
                                 </a>
                             </li>
                         ))}
+                    </ul>
+                </nav>
+                <nav class="header-direction" aria-label="Direction switcher">
+                    <ul>
+                        <li>
+                            <a href={getDirectionUrl(currentUrl, "ltr")} aria-current={direction === "ltr" ? "true" : undefined}>LTR</a>
+                        </li>
+                        <li>
+                            <a href={getDirectionUrl(currentUrl, "rtl")} aria-current={direction === "rtl" ? "true" : undefined}>RTL</a>
+                        </li>
                     </ul>
                 </nav>
             </div>

@@ -9,6 +9,7 @@ export type OutlineItem = {
     text: string
     depth: number
 }
+export type DirectionMode = "ltr" | "rtl"
 
 type OrderedEntry = {
     data: {
@@ -35,6 +36,11 @@ export function getReadingMode(url: URL): ReadingMode {
     return mode === "develop" ? "develop" : "design"
 }
 
+export function getDirectionMode(url: URL): DirectionMode {
+    const dir = url.searchParams.get("dir")
+    return dir === "rtl" ? "rtl" : "ltr"
+}
+
 export function sortByMode<T extends OrderedEntry>(items: T[], mode: ReadingMode) {
     const key = mode === "develop" ? "developOrder" : "designOrder"
     return [...items].sort((a, b) => a.data[key] - b.data[key])
@@ -43,6 +49,12 @@ export function sortByMode<T extends OrderedEntry>(items: T[], mode: ReadingMode
 export function getModeUrl(url: URL, mode: ReadingMode) {
     const next = new URL(url)
     next.searchParams.set("mode", mode)
+    return `${next.pathname}${next.search}`
+}
+
+export function getDirectionUrl(url: URL, dir: DirectionMode) {
+    const next = new URL(url)
+    next.searchParams.set("dir", dir)
     return `${next.pathname}${next.search}`
 }
 

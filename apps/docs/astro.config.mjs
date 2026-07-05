@@ -16,6 +16,10 @@ const ruiDevAlias = [
         find: /^rui\/components\/(.*)$/,
         replacement: `${resolve(ruiSourceRoot, "components")}/$1`,
     },
+    {
+        find: /^rui\/styles$/,
+        replacement: resolve(ruiSourceRoot, "styles.ts"),
+    },
 ]
 
 export default defineConfig({

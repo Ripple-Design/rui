@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import RTextFieldBase from "./RTextFieldBase.vue"
+import RTextInput from "./RTextInput.vue"
+import RTextFieldShell from "./components/RTextFieldShell.vue"
 </script>
 
 <template>
-    <RTextFieldBase />
+    <RTextFieldShell>
+        <RTextInput />
+    </RTextFieldShell>
 </template>
 
 <style scoped lang="scss"></style>

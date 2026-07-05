@@ -17,6 +17,10 @@
         "./components": {
             "types": "./dist/components/index.d.ts",
             "import": "./dist/components/index.js"
+        },
+        "./styles": {
+            "types": "./dist/styles.d.ts",
+            "import": "./dist/styles.js"
         }
     },
     "scripts": {
@@ -26,6 +30,7 @@
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^6.0.7",
+        "sass": "^1.93.2",
         "vite": "^8.0.16",
         "vite-plugin-dts": "^5.0.3"
     },

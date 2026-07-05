@@ -1,0 +1,23 @@
+:root {
+    --rui-sys-typo-font-family: system-ui;
+
+    --rui-sys-typo-subtitle1-size: 1rem;
+    --rui-sys-typo-subtitle1-weight: 400;
+    --rui-sys-typo-subtitle1-font-family: var(--rui-sys-typo-font-family);
+    --rui-sys-typo-subtitle1-line-height: 1.5rem; // 24 / 16
+    --rui-sys-typo-subtitle1-letter-spacing: 0.009375rem; // 0.15 / 16
+    --rui-sys-typo-subtitle1-text-transform: none;
+}
+
+@mixin subtitle1 {
+    font-family: var(--rui-sys-typo-subtitle1-font-family), system-ui;
+    font-size: var(--rui-sys-typo-subtitle1-size);
+    font-weight: var(--rui-sys-typo-subtitle1-weight);
+    line-height: var(--rui-sys-typo-subtitle1-line-height);
+    letter-spacing: var(--rui-sys-typo-subtitle1-letter-spacing);
+    text-transform: var(--rui-sys-typo-subtitle1-text-transform);
+}
+
+.rui-text--subtitle1 {
+    @include subtitle1;
+}

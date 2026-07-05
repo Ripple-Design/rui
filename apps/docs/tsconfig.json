@@ -5,7 +5,8 @@
     "compilerOptions": {
         "paths": {
             "rui/components": ["../../packages/rui/src/components/index.ts"],
-            "rui/components/*": ["../../packages/rui/src/components/*"]
+            "rui/components/*": ["../../packages/rui/src/components/*"],
+            "rui/styles": ["../../packages/rui/src/styles.ts"]
         },
         "plugins": [
             {
