@@ -1,4 +1,5 @@
 import { defineConfig } from "astro/config"
+import mdx from "@astrojs/mdx"
 import vue from "@astrojs/vue"
 import { fileURLToPath } from "node:url"
 import { dirname, resolve } from "node:path"
@@ -18,7 +19,7 @@ const ruiDevAlias = [
 ]
 
 export default defineConfig({
-    integrations: [vue()],
+    integrations: [vue(), mdx()],
     i18n: {
         locales: ["en", "zh-cn"],
         defaultLocale: "en",

@@ -1,9 +1,14 @@
-import type { CollectionEntry } from "astro:content"
+import type { CollectionEntry, RenderedContent } from "astro:content"
 
 export const locales = ["en", "zh-cn"] as const
 export type Locale = (typeof locales)[number]
 export type ReadingMode = "design" | "develop"
 export type DocTab = "spec" | "guidelines" | "implementation"
+export type OutlineItem = {
+    slug: string
+    text: string
+    depth: number
+}
 
 type OrderedEntry = {
     data: {
@@ -85,4 +90,14 @@ export function getTabsForDoc(entries: CollectionEntry<"docs">[], locale: string
     return tabOrder
         .map((tab) => localized.find((item) => item.data.tab === tab))
         .filter(Boolean) as CollectionEntry<"docs">[]
+}
+
+export function extractOutline(rendered: RenderedContent): OutlineItem[] {
+    return rendered.headings
+        .filter((heading) => heading.depth === 2 || heading.depth === 3)
+        .map((heading) => ({
+            slug: heading.slug,
+            text: heading.text,
+            depth: heading.depth,
+        }))
 }

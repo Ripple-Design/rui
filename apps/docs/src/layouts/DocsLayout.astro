@@ -1,19 +1,20 @@
 ---
 import BaseLayout from "./BaseLayout.astro"
 import type { CollectionEntry } from "astro:content"
+import type { OutlineItem } from "../lib/docs"
 import { getModeUrl, getReadingMode, getTabsForDoc, groupDocs } from "../lib/docs"
 
 export interface Props {
     entry: CollectionEntry<"docs">
     locale: string
     allDocs: CollectionEntry<"docs">[]
+    outline: OutlineItem[]
 }
 
-const { entry, locale, allDocs } = Astro.props
+const { entry, locale, allDocs, outline } = Astro.props
 const mode = getReadingMode(Astro.url)
 const groupedDocs = groupDocs(allDocs, locale, mode)
 const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug)
-const outline = entry.data.outline ?? []
 ---
 
 <BaseLayout title={entry.data.title} locale={locale} currentUrl={Astro.url} sectionLabel="Components">
@@ -72,6 +73,14 @@ const outline = entry.data.outline ?? []
 
         .docs-outline li + li {
             margin-top: 0.5rem;
+        }
+
+        .docs-outline li[data-depth="3"] {
+            padding-left: 1rem;
+        }
+
+        .docs-outline li[data-depth="4"] {
+            padding-left: 2rem;
         }
 
         @media (min-width: 900px) {
@@ -148,8 +157,8 @@ const outline = entry.data.outline ?? []
                 <ul>
                     {outline.length > 0 ? (
                         outline.map((item) => (
-                            <li>
-                                <a href={`#${item.id}`}>{item.label}</a>
+                            <li data-depth={item.depth}>
+                                <a href={`#${item.slug}`}>{item.text}</a>
                             </li>
                         ))
                     ) : (

@@ -3,14 +3,10 @@ import { glob } from "astro/loaders"
 
 const localeSchema = z.enum(["en", "zh-cn"])
 const tabSchema = z.enum(["spec", "guidelines", "implementation"])
-const outlineItemSchema = z.object({
-    id: z.string(),
-    label: z.string(),
-})
 
 const docs = defineCollection({
     loader: glob({
-        pattern: "**/*.md",
+        pattern: "**/*.{md,mdx}",
         base: "./src/content/docs",
     }),
     schema: z.object({
@@ -20,7 +16,6 @@ const docs = defineCollection({
         locale: localeSchema,
         designOrder: z.number(),
         developOrder: z.number(),
-        outline: z.array(outlineItemSchema).optional(),
         api: z.string(),
     }),
 })

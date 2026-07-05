@@ -1,0 +1,19 @@
+---
+title: Text Field
+docSlug: components/text-field
+tab: implementation
+locale: en
+designOrder: 20
+developOrder: 20
+api: /en/api/text-field
+---
+
+import DemoBlock from "../../../../../components/docs/DemoBlock.astro"
+import TextFieldBasicDemo from "../../../../../components/demos/text-field/TextFieldBasicDemo.vue"
+import textFieldBasicDemoSource from "../../../../../components/demos/text-field/TextFieldBasicDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock title="Basic text field" code={textFieldBasicDemoSource} language="vue">
+    <TextFieldBasicDemo client:load />
+</DemoBlock>

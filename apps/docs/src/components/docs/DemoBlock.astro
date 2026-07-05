@@ -1,0 +1,17 @@
+---
+export interface Props {
+    title: string
+    code: string
+    language?: string
+}
+
+const { title, code, language = "vue" } = Astro.props
+---
+
+<section>
+    <h2>{title}</h2>
+    <div>
+        <slot />
+    </div>
+    <pre><code class={`language-${language}`}>{code}</code></pre>
+</section>
