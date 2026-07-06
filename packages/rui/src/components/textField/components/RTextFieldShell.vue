@@ -17,7 +17,7 @@ defineProps<RTextFieldShellProps>()
         @focusout="isFocused = false"
     >
         <slot />
-        <RNotchedOutline :focused="isFocused" :label="label" />
+        <RNotchedOutline :focused="isFocused" :has-value="hasValue" :label="label" />
     </label>
 </template>
 

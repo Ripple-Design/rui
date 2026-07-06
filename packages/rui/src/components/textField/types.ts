@@ -1,13 +1,6 @@
-export type RTextFieldProps = {
-    label?: string
-}
-
-export type RTextFieldShellProps = {
-    label?: string
-}
-
 export type RTextInputProps = {
     textArea?: boolean
+    placeholder?: string
 }
 
 export type RFloatingLabelProps = {
@@ -17,5 +10,13 @@ export type RFloatingLabelProps = {
 
 export type RNotchedOutlineProps = {
     focused: boolean
+    hasValue: boolean
     label?: string
 }
+
+export type RTextFieldShellProps = {
+    hasValue: boolean
+    label?: string
+}
+
+export type RTextFieldProps = {} & Omit<RTextFieldShellProps, "hasValue"> & RTextInputProps

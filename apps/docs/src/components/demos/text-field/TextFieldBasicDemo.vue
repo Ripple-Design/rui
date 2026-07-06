@@ -9,7 +9,7 @@ const model = ref("")
     <form>
         <label>
             Text field demo
-            <RTextField v-model="model" label="Text field" />
+            <RTextField v-model="model" label="asa" placeholder="sasd" />
         </label>
         <p>Value: {{ model }}</p>
     </form>

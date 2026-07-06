@@ -13,8 +13,8 @@ const textAreaRef = ref<HTMLTextAreaElement | null>(null)
 </script>
 
 <template>
-    <input v-if="!textArea" class="rui-text-input" v-model="model" />
-    <textarea v-else class="rui-text-input" v-model="model" ref="textAreaRef" />
+    <input v-if="!textArea" class="rui-text-input" v-model="model" :placeholder="placeholder" />
+    <textarea v-else class="rui-text-input" v-model="model" ref="textAreaRef" :placeholder="placeholder" />
 </template>
 
 <style scoped lang="scss">
@@ -30,6 +30,7 @@ const textAreaRef = ref<HTMLTextAreaElement | null>(null)
     @include normalize.input;
     @include typography.subtitle1("--rui-comp-text-field-input-text");
 
+    color: color.$on-surface-high;
     // Baseline: widely available since January 2020.
     caret-color: color.$primary;
 
@@ -38,6 +39,11 @@ const textAreaRef = ref<HTMLTextAreaElement | null>(null)
         // Color definition from:
         // https://cs.android.com/android/platform/superproject/+/android-latest-release:frameworks/base/core/res/res/color/highlighted_text_material.xml
         background-color: var(--rui-comp-text-highlight-color);
+    }
+
+    &::placeholder {
+        /* TODO: fade */
+        color: color.$on-surface-medium;
     }
 }
 </style>
