@@ -9,13 +9,22 @@
     --rui-sys-typo-subtitle1-text-transform: none;
 }
 
-@mixin subtitle1 {
-    font-family: var(--rui-sys-typo-subtitle1-font-family), system-ui;
-    font-size: var(--rui-sys-typo-subtitle1-size);
-    font-weight: var(--rui-sys-typo-subtitle1-weight);
-    line-height: var(--rui-sys-typo-subtitle1-line-height);
-    letter-spacing: var(--rui-sys-typo-subtitle1-letter-spacing);
-    text-transform: var(--rui-sys-typo-subtitle1-text-transform);
+@mixin subtitle1($name: null) {
+    @if $name {
+        font-size: var(#{$name}-size, var(--rui-sys-typo-subtitle1-size));
+        font-weight: var(#{$name}-weight, var(--rui-sys-typo-subtitle1-weight));
+        font-family: var(#{$name}-font-family, var(--rui-sys-typo-subtitle1-font-family)), system-ui;
+        line-height: var(#{$name}-line-height, var(--rui-sys-typo-subtitle1-line-height));
+        letter-spacing: var(#{$name}-letter-spacing, var(--rui-sys-typo-subtitle1-letter-spacing));
+        text-transform: var(#{$name}-text-transform, var(--rui-sys-typo-subtitle1-text-transform));
+    } @else {
+        font-size: var(--rui-sys-typo-subtitle1-size);
+        font-weight: var(--rui-sys-typo-subtitle1-weight);
+        font-family: var(--rui-sys-typo-subtitle1-font-family), system-ui;
+        line-height: var(--rui-sys-typo-subtitle1-line-height);
+        letter-spacing: var(--rui-sys-typo-subtitle1-letter-spacing);
+        text-transform: var(--rui-sys-typo-subtitle1-text-transform);
+    }
 }
 
 .rui-text--subtitle1 {

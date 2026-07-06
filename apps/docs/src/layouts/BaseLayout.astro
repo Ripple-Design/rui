@@ -1,6 +1,6 @@
 ---
 import "rui/styles"
-import { getDirectionMode, getDirectionUrl, getLocaleUrl, locales } from "../lib/docs"
+import { getDirectionMode, getLocaleUrl, locales } from "../lib/docs"
 
 export interface Props {
     title: string
@@ -30,8 +30,10 @@ const direction = getDirectionMode(currentUrl)
                 margin: 0;
             }
 
-            a {
+            a,
+            button {
                 color: inherit;
+                font: inherit;
             }
 
             .site-header {
@@ -81,6 +83,16 @@ const direction = getDirectionMode(currentUrl)
                 }
             }
         </style>
+        <script is:inline>
+            const current = new URL(window.location.href)
+            const dir = current.searchParams.get("dir") === "rtl"
+                ? "rtl"
+                : localStorage.getItem("rui-docs-dir") === "rtl"
+                  ? "rtl"
+                  : "ltr"
+            document.documentElement.setAttribute("dir", dir)
+            localStorage.setItem("rui-docs-dir", dir)
+        </script>
     </head>
     <body>
         <header class="site-header">
@@ -96,7 +108,7 @@ const direction = getDirectionMode(currentUrl)
                     <ul>
                         {locales.map((item) => (
                             <li>
-                                <a href={getLocaleUrl(currentUrl, item)} aria-current={item === locale ? "true" : undefined}>
+                                <a href={getLocaleUrl(currentUrl, item)} data-locale-link={item} aria-current={item === locale ? "true" : undefined}>
                                     {item}
                                 </a>
                             </li>
@@ -106,10 +118,10 @@ const direction = getDirectionMode(currentUrl)
                 <nav class="header-direction" aria-label="Direction switcher">
                     <ul>
                         <li>
-                            <a href={getDirectionUrl(currentUrl, "ltr")} aria-current={direction === "ltr" ? "true" : undefined}>LTR</a>
+                            <button type="button" data-dir-toggle="ltr" aria-pressed={direction === "ltr" ? "true" : "false"}>LTR</button>
                         </li>
                         <li>
-                            <a href={getDirectionUrl(currentUrl, "rtl")} aria-current={direction === "rtl" ? "true" : undefined}>RTL</a>
+                            <button type="button" data-dir-toggle="rtl" aria-pressed={direction === "rtl" ? "true" : "false"}>RTL</button>
                         </li>
                     </ul>
                 </nav>
@@ -118,5 +130,39 @@ const direction = getDirectionMode(currentUrl)
         <main class="page-shell">
             <slot />
         </main>
+        <script is:inline>
+            const url = new URL(window.location.href)
+            const activeDir = document.documentElement.getAttribute("dir") === "rtl" ? "rtl" : "ltr"
+
+            document.querySelectorAll("[data-dir-toggle]").forEach((node) => {
+                node.setAttribute("aria-pressed", node.getAttribute("data-dir-toggle") === activeDir ? "true" : "false")
+                node.addEventListener("click", () => {
+                    const dir = node.getAttribute("data-dir-toggle")
+                    if (!dir) return
+                    url.searchParams.set("dir", dir)
+                    localStorage.setItem("rui-docs-dir", dir)
+                    document.documentElement.setAttribute("dir", dir)
+                    document.querySelectorAll("[data-dir-toggle]").forEach((button) => {
+                        button.setAttribute("aria-pressed", button.getAttribute("data-dir-toggle") === dir ? "true" : "false")
+                    })
+                    history.replaceState({}, "", `${url.pathname}${url.search}`)
+                })
+            })
+
+            document.querySelectorAll("[data-locale-link]").forEach((node) => {
+                const href = node.getAttribute("href")
+                if (!href) return
+                const next = new URL(href, window.location.origin)
+                if (url.searchParams.has("mode")) {
+                    next.searchParams.set("mode", url.searchParams.get("mode") ?? "")
+                }
+                if (url.searchParams.has("dir")) {
+                    next.searchParams.set("dir", url.searchParams.get("dir") ?? "")
+                } else if (localStorage.getItem("rui-docs-dir") === "rtl") {
+                    next.searchParams.set("dir", "rtl")
+                }
+                node.setAttribute("href", `${next.pathname}${next.search}`)
+            })
+        </script>
     </body>
 </html>
