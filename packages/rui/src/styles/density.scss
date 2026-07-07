@@ -1,0 +1,7 @@
+:root {
+    --rui-sys-density-scale: 0;
+}
+
+@function withDecrement($original, $density) {
+    @return calc($original + 4px * var($density, var(--rui-sys-density-scale)));
+}

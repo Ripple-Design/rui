@@ -24,14 +24,11 @@ defineProps<RFloatingLabelProps>()
     /* TODO: fix me */
     // Duration from: fast out slow in
     // https://github.com/material-components/material-components-android/blob/master/lib/java/com/google/android/material/textfield/TextInputLayout.java#L210
-    transition:
-        all 167ms cubic-bezier(0.4, 0, 0.2, 1),
-        color 167ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 167ms cubic-bezier(0.4, 0, 0.2, 1);
 
     &--float-above {
         @include typography.caption("--rui-comp-text-field-floating-label");
         top: 0;
-        color: color.$primary;
     }
 }
 </style>

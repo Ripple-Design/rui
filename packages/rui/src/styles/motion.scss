@@ -1,0 +1,60 @@
+:root {
+    --rui-sys-motion-duration-small-in: 100ms;
+    --rui-sys-motion-duration-small-out: 100ms;
+    --rui-sys-motion-duration-medium-in: 250ms;
+    --rui-sys-motion-duration-medium-out: 200ms;
+    --rui-sys-motion-duration-large-in: 300ms;
+    --rui-sys-motion-duration-large-out: 300ms;
+
+    // FastOutSlowIn
+    --rui-sys-motion-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    // FastOutExtraSlowIn
+    // From https://github.com/material-components/material-components-web/blob/master/packages/mdc-tokens/v0_161/_md-sys-motion.scss#L27
+    --rui-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    // LinearOutSlowIn
+    --rui-sys-motion-easing-decelerated: cubic-bezier(0, 0, 0.2, 1);
+    // FastOutLinearIn
+    --rui-sys-motion-easing-accelerated: cubic-bezier(0.4, 0, 1, 1);
+    --rui-sys-motion-easing-linear: cubic-bezier(0, 0, 1, 1);
+
+    @keyframes ruiSysMotionFade {
+        0% {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes ruiSysMotionFadeOpacity {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+}
+
+$duration-small-in: var(--rui-sys-motion-duration-small-in);
+$duration-small-out: var(--rui-sys-motion-duration-small-out);
+$duration-medium-in: var(--rui-sys-motion-duration-medium-in);
+$duration-medium-out: var(--rui-sys-motion-duration-medium-out);
+$duration-large-in: var(--rui-sys-motion-duration-large-in);
+$duration-large-out: var(--rui-sys-motion-duration-large-out);
+
+$easing-standard: var(--rui-sys-motion-easing-standard);
+$easing-emphasized: var(--rui-sys-motion-easing-emphasized);
+$easing-decelerated: var(--rui-sys-motion-easing-decelerated);
+$easing-accelerated: var(--rui-sys-motion-easing-accelerated);
+$easing-linear: var(--rui-sys-motion-easing-linear);
+
+@mixin fadeIn($duration, $easing, $delay: 0ms) {
+    transition: opacity $duration $easing $delay;
+}
+
+@mixin fadeOut($duration, $easing, $delay: 0ms) {
+    transition: opacity $duration $easing $delay;
+}

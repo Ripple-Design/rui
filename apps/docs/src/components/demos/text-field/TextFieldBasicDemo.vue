@@ -6,11 +6,5 @@ const model = ref("")
 </script>
 
 <template>
-    <form>
-        <label>
-            Text field demo
-            <RTextField v-model="model" label="asa" placeholder="sasd" />
-        </label>
-        <p>Value: {{ model }}</p>
-    </form>
+    <RTextField v-model="model" label="Label" placeholder="Placeholder" />
 </template>

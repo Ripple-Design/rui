@@ -1,20 +1,29 @@
 <script setup lang="ts">
-import { ref } from "vue"
-
 import type { RTextInputProps } from "./types.ts"
 
 withDefaults(defineProps<RTextInputProps>(), {
     textArea: false,
+    showPlaceholder: true,
 })
 
 const model = defineModel<string>()
-
-const textAreaRef = ref<HTMLTextAreaElement | null>(null)
 </script>
 
 <template>
-    <input v-if="!textArea" class="rui-text-input" v-model="model" :placeholder="placeholder" />
-    <textarea v-else class="rui-text-input" v-model="model" ref="textAreaRef" :placeholder="placeholder" />
+    <input
+        v-if="!textArea"
+        class="rui-text-input"
+        :class="{ 'rui-text-input--show-placeholder': showPlaceholder }"
+        v-model="model"
+        :placeholder="placeholder"
+    />
+    <textarea
+        v-else
+        class="rui-text-input"
+        :class="{ 'rui-text-input--show-placeholder': showPlaceholder }"
+        v-model="model"
+        :placeholder="placeholder"
+    />
 </template>
 
 <style scoped lang="scss">
@@ -22,6 +31,7 @@ const textAreaRef = ref<HTMLTextAreaElement | null>(null)
 @use "@/styles/normalize";
 @use "@/styles/color";
 @use "@/styles/mixin";
+@use "@/styles/motion";
 
 .rui-text-input {
     /* TODO: declare a global var */
@@ -42,8 +52,14 @@ const textAreaRef = ref<HTMLTextAreaElement | null>(null)
     }
 
     &::placeholder {
-        /* TODO: fade */
+        @include motion.fadeOut(87ms, motion.$easing-linear);
+        opacity: 0;
         color: color.$on-surface-medium;
+    }
+
+    &--show-placeholder::placeholder {
+        @include motion.fadeIn(87ms, motion.$easing-linear, 67ms);
+        opacity: 1;
     }
 }
 </style>

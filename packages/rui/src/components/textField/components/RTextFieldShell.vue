@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue"
-
 import type { RTextFieldShellProps } from "../types.ts"
 
 import RNotchedOutline from "./RNotchedOutline.vue"
 
-const isFocused = ref(false)
+const emit = defineEmits<{
+    focusStateChange: [focused: boolean]
+}>()
 
 defineProps<RTextFieldShellProps>()
 </script>
@@ -13,30 +13,30 @@ defineProps<RTextFieldShellProps>()
 <template>
     <label
         class="rui-text-field-shell rui-text-field-shell--outlined"
-        @focusin="isFocused = true"
-        @focusout="isFocused = false"
+        @focusin="emit('focusStateChange', true)"
+        @focusout="emit('focusStateChange', false)"
     >
         <slot />
-        <RNotchedOutline :focused="isFocused" :has-value="hasValue" :label="label" />
+        <RNotchedOutline :should-float-label="shouldFloatLabel" :label="label" />
     </label>
 </template>
 
 <style scoped lang="scss">
 @use "@/styles/color";
+@use "@/styles/density";
 
 .rui-text-field-shell {
     --rui-text-field-outlined-top-left-radius: 4px;
     --rui-text-field-outlined-top-right-radius: 4px;
     --rui-text-field-outlined-bottom-left-radius: 4px;
     --rui-text-field-outlined-bottom-right-radius: 4px;
+    --rui-text-field-density: -2;
 
     position: relative;
     display: inline-flex;
-    padding: 0 16px;
-    //overflow: hidden;
+    min-height: density.withDecrement(56px, --rui-text-field-density);
     border-radius: var(--rui-text-field-outlined-top-left-radius) var(--rui-text-field-outlined-top-right-radius)
         var(--rui-text-field-outlined-bottom-right-radius) var(--rui-text-field-outlined-bottom-left-radius);
-    min-height: 56px;
 
     &:hover {
         :deep(.rui-notched-outline) {
@@ -68,6 +68,12 @@ defineProps<RTextFieldShellProps>()
 
             .rui-notched-outline__label {
                 inset-inline-start: 16px;
+            }
+        }
+
+        :deep(.rui-floating-label) {
+            &.rui-floating-label--float-above {
+                color: color.$primary;
             }
         }
     }

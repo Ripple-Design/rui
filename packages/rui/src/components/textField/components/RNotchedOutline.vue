@@ -9,8 +9,7 @@ const props = defineProps<RNotchedOutlineProps>()
 
 const shadowLabelRef = ref<HTMLSpanElement | null>(null)
 const shadowLabelWidth = ref(0)
-const shouldFloat = computed(() => props.focused || props.hasValue)
-const notchWidthPx = computed(() => (shouldFloat.value ? shadowLabelWidth.value + "px" : "0px"))
+const notchWidthPx = computed(() => (props.shouldFloatLabel ? shadowLabelWidth.value + "px" : "0px"))
 
 onMounted(() => {
     if (shadowLabelRef.value) {
@@ -29,7 +28,7 @@ onMounted(() => {
             <span class="rui-notched-outline__label-space__shadow-label" ref="shadowLabelRef">{{ label }}</span>
         </span>
         <span class="rui-notched-outline__trailing" />
-        <RFloatingLabel class="rui-notched-outline__label" :float-above="shouldFloat" :label="label" />
+        <RFloatingLabel class="rui-notched-outline__label" :float-above="shouldFloatLabel" :label="label" />
     </span>
 </template>
 
