@@ -9,7 +9,7 @@ const props = defineProps<RNotchedOutlineProps>()
 
 const shadowLabelRef = ref<HTMLSpanElement | null>(null)
 const shadowLabelWidth = ref(0)
-const notchWidthPx = computed(() => (props.shouldFloatLabel ? shadowLabelWidth.value + "px" : "0px"))
+const notchWidthPx = computed(() => (props.floating ? shadowLabelWidth.value + "px" : "0px"))
 
 onMounted(() => {
     if (shadowLabelRef.value) {
@@ -19,7 +19,14 @@ onMounted(() => {
 </script>
 
 <template>
-    <span class="rui-notched-outline">
+    <span
+        class="rui-notched-outline"
+        :class="{
+            'rui-notched-outline--hovered': hovered,
+            'rui-notched-outline--floating': floating,
+            'rui-notched-outline--focused': focused,
+        }"
+    >
         <span class="rui-notched-outline__leading" />
         <span class="rui-notched-outline__label-space" :style="{ width: shadowLabelWidth + 'px' }">
             <span class="rui-notched-outline__label-space__leading" />
@@ -28,7 +35,7 @@ onMounted(() => {
             <span class="rui-notched-outline__label-space__shadow-label" ref="shadowLabelRef">{{ label }}</span>
         </span>
         <span class="rui-notched-outline__trailing" />
-        <RFloatingLabel class="rui-notched-outline__label" :float-above="shouldFloatLabel" :label="label" />
+        <RFloatingLabel class="rui-notched-outline__label" :focused="focused" :floating="floating" :label="label" />
     </span>
 </template>
 
@@ -102,7 +109,38 @@ onMounted(() => {
 
     &__label {
         position: absolute;
-        inset-inline-start: 16px;
+        inset-inline-start: var(--rui-text-field-content-padding-inline);
+    }
+
+    &--hovered {
+        #{$block}__leading,
+        #{$block}__label-space > #{$block}__label-space__leading,
+        #{$block}__label-space > #{$block}__label-space__notch,
+        #{$block}__label-space > #{$block}__label-space__trailing,
+        #{$block}__trailing {
+            border-color: color.$on-surface-high;
+        }
+    }
+
+    &--floating {
+        #{$block}__label-space > #{$block}__label-space__notch {
+            border-top-style: none;
+        }
+    }
+
+    &--focused {
+        #{$block}__leading,
+        #{$block}__label-space > #{$block}__label-space__leading,
+        #{$block}__label-space > #{$block}__label-space__notch,
+        #{$block}__label-space > #{$block}__label-space__trailing,
+        #{$block}__trailing {
+            border-width: 2px;
+            border-color: color.$primary;
+        }
+
+        #{$block}__label-space > #{$block}__label-space__notch {
+            transition: width 75ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
     }
 }
 </style>

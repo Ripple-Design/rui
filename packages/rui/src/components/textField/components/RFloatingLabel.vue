@@ -5,7 +5,12 @@ defineProps<RFloatingLabelProps>()
 </script>
 
 <template>
-    <span class="rui-floating-label" :class="{ 'rui-floating-label--float-above': floatAbove }">{{ label }}</span>
+    <span
+        class="rui-floating-label"
+        :class="{ 'rui-floating-label--floating': floating, 'rui-floating-label--focused': focused }"
+    >
+        {{ label }}
+    </span>
 </template>
 
 <style scoped lang="scss">
@@ -26,9 +31,13 @@ defineProps<RFloatingLabelProps>()
     // https://github.com/material-components/material-components-android/blob/master/lib/java/com/google/android/material/textfield/TextInputLayout.java#L210
     transition: all 167ms cubic-bezier(0.4, 0, 0.2, 1);
 
-    &--float-above {
+    &--floating {
         @include typography.caption("--rui-comp-text-field-floating-label");
         top: 0;
+    }
+
+    &--focused {
+        color: color.$primary;
     }
 }
 </style>
