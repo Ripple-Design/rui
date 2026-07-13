@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RTextField } from "@ripple-design/rui/components"
+import { RTextField } from "@ripple-design/rui"
 import { ref } from "vue"
 
 const model = ref("")
