@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
-import type { RTextFieldShellProps } from "../types.ts"
+import type { RTextFieldShellProps } from "../types"
 
 import RNotchedOutline from "./RNotchedOutline.vue"
 

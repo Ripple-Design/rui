@@ -5,10 +5,10 @@
 
 import { computed, ref } from "vue"
 
-import type { RTextFieldProps } from "./types.ts"
+import type { RTextFieldProps } from "./types"
 
-import RTextFieldShell from "./components/RTextFieldShell.vue"
 import RTextFieldInput from "./components/RTextFieldInput.vue"
+import RTextFieldShell from "./components/RTextFieldShell.vue"
 
 const props = defineProps<RTextFieldProps>()
 

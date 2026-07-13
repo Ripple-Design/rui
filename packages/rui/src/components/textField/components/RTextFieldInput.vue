@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RTextFieldInputProps } from "../types.ts"
+import type { RTextFieldInputProps } from "../types"
 
 import RTextInput from "../RTextInput.vue"
 

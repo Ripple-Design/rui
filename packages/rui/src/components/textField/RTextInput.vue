@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RTextInputProps } from "./types.ts"
+import type { RTextInputProps } from "./types"
 
 withDefaults(defineProps<RTextInputProps>(), {
     textArea: false,

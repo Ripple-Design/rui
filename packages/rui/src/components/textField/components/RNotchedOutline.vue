@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue"
 
-import type { RNotchedOutlineProps } from "../types.ts"
+import type { RNotchedOutlineProps } from "../types"
 
 import RFloatingLabel from "../components/RFloatingLabel.vue"
 
