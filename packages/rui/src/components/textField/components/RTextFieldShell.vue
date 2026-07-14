@@ -27,6 +27,7 @@ defineProps<RTextFieldShellProps>()
             :focused="focused"
             :floating="floating"
             :has-value="hasValue"
+            :text-area="textArea"
             :hovered="isHovered && !focused"
             :label="label"
         />
@@ -43,10 +44,10 @@ defineProps<RTextFieldShellProps>()
     --rui-text-field-outlined-bottom-right-radius: 4px;
     --rui-text-field-content-padding-inline: 16px;
     --rui-text-field-density: -2;
+    --rui-text-field-content-padding-vertical: 12px;
 
     position: relative;
     display: inline-flex;
-    min-height: density.withDecrement(56px, --rui-text-field-density);
     border-radius: var(--rui-text-field-outlined-top-left-radius) var(--rui-text-field-outlined-top-right-radius)
         var(--rui-text-field-outlined-bottom-right-radius) var(--rui-text-field-outlined-bottom-left-radius);
 }

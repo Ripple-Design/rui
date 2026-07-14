@@ -7,4 +7,5 @@ const model = ref("")
 
 <template>
     <RTextField v-model="model" label="Label" placeholder="Placeholder" />
+    <RTextField v-model="model" label="Label" placeholder="Placeholder" text-area />
 </template>

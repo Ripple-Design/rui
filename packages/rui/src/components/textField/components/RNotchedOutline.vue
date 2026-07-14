@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue"
+import { computed, ref } from "vue"
+
+import { useResizeObserver } from "@/utils/useResizeObserver"
 
 import type { RNotchedOutlineProps } from "../types"
 
@@ -11,10 +13,8 @@ const shadowLabelRef = ref<HTMLSpanElement | null>(null)
 const shadowLabelWidth = ref(0)
 const notchWidthPx = computed(() => (props.floating ? shadowLabelWidth.value + "px" : "0px"))
 
-onMounted(() => {
-    if (shadowLabelRef.value) {
-        shadowLabelWidth.value = shadowLabelRef.value.offsetWidth
-    }
+useResizeObserver(shadowLabelRef, (entry) => {
+    shadowLabelWidth.value = entry.borderBoxSize[0]?.inlineSize ?? 0
 })
 </script>
 
@@ -39,6 +39,7 @@ onMounted(() => {
             class="rui-notched-outline__label"
             :focused="focused"
             :floating="floating"
+            :text-area="textArea"
             :has-value="hasValue"
             :label="label"
         />

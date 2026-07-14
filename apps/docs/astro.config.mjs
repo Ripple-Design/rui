@@ -1,26 +1,10 @@
-import { defineConfig } from "astro/config"
 import mdx from "@astrojs/mdx"
 import vue from "@astrojs/vue"
+import { defineConfig } from "astro/config"
+import path from "node:path"
 import { fileURLToPath } from "node:url"
-import { dirname, resolve } from "node:path"
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const workspaceRoot = resolve(__dirname, "../..")
-const ruiSourceRoot = resolve(workspaceRoot, "packages/rui/src")
-const ruiDevAlias = [
-    {
-        find: /^rui\/components$/,
-        replacement: resolve(ruiSourceRoot, "components/index.ts"),
-    },
-    {
-        find: /^rui\/components\/(.*)$/,
-        replacement: `${resolve(ruiSourceRoot, "components")}/$1`,
-    },
-    {
-        find: /^rui\/styles$/,
-        replacement: resolve(ruiSourceRoot, "styles.ts"),
-    },
-]
+const ruiSrc = fileURLToPath(new URL("../../packages/rui/src", import.meta.url))
 
 export default defineConfig({
     integrations: [vue(), mdx()],
@@ -30,11 +14,10 @@ export default defineConfig({
     },
     vite: {
         resolve: {
-            alias: ruiDevAlias,
-        },
-        server: {
-            fs: {
-                allow: [workspaceRoot],
+            alias: {
+                "@ripple-design/rui/styles.css": path.join(ruiSrc, "styles/index.scss"),
+                "@ripple-design/rui/components": path.join(ruiSrc, "components/index.ts"),
+                "@ripple-design/rui": path.join(ruiSrc, "index.ts"),
             },
         },
     },

@@ -11,6 +11,7 @@ defineProps<RFloatingLabelProps>()
             'rui-floating-label--floating': floating,
             'rui-floating-label--focused': focused,
             'rui-floating-label--has-value': hasValue,
+            'rui-floating-label--text-area': textArea,
         }"
     >
         {{ label }}
@@ -28,7 +29,7 @@ defineProps<RFloatingLabelProps>()
 
     @include typography.subtitle1("--rui-comp-text-field-input-text");
     display: inline-block;
-    position: relative;
+    position: absolute;
     top: 50%;
     inset-inline-start: 0;
     transform: translateY(-50%);
@@ -41,6 +42,11 @@ defineProps<RFloatingLabelProps>()
         font-weight var(--rui-text-field-label-position-duration) var(--rui-text-field-label-easing),
         letter-spacing var(--rui-text-field-label-position-duration) var(--rui-text-field-label-easing),
         color var(--rui-text-field-label-color-duration) var(--rui-text-field-label-easing);
+
+    &--text-area {
+        top: calc(var(--rui-text-field-content-padding-vertical) + 12px);
+        //top: var(--rui-text-field-content-padding-vertical);
+    }
 
     &--floating {
         @include typography.caption("--rui-comp-text-field-floating-label");
