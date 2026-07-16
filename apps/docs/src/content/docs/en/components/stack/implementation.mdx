@@ -1,0 +1,27 @@
+---
+title: Stack
+docSlug: components/stack
+tab: implementation
+locale: en
+designOrder: 40
+developOrder: 40
+api: /en/api/stack
+---
+
+import DemoBlock from "../../../../../components/docs/DemoBlock.astro"
+import StackBasicDemo from "../../../../../components/demos/stack/StackBasicDemo.vue"
+import stackBasicDemoSource from "../../../../../components/demos/stack/StackBasicDemo.vue?raw"
+import StackWrapDemo from "../../../../../components/demos/stack/StackWrapDemo.vue"
+import stackWrapDemoSource from "../../../../../components/demos/stack/StackWrapDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock title="Basic stack" code={stackBasicDemoSource} language="vue">
+    <StackBasicDemo client:load />
+</DemoBlock>
+
+## Horizontal wrap
+
+<DemoBlock title="Wrapping stack" code={stackWrapDemoSource} language="vue">
+    <StackWrapDemo client:load />
+</DemoBlock>
