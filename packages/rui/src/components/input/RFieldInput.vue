@@ -33,7 +33,7 @@ const model = defineModel<string>()
     //width: 100%;
     //min-width: fit-content;
     //max-width: 100%;
-    min-width: 280px;
+    //min-width: 280px;
     width: 100%;
     height: density.withDecrement(56px, --rui-text-field-density);
     padding-inline: var(--rui-text-field-content-padding-inline);

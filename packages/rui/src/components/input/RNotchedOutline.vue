@@ -51,6 +51,8 @@ useResizeObserver(shadowLabelRef, (entry) => {
 @use "@/styles/typography";
 
 .rui-notched-outline {
+    --rui-comp-notched-outline-color: rgba(0 0 0 / 38%);
+
     $block: &;
 
     display: flex;
@@ -62,7 +64,7 @@ useResizeObserver(shadowLabelRef, (entry) => {
     &__leading,
     &__trailing {
         border-width: 1px;
-        border-color: rgba(0 0 0 / 12%);
+        border-color: var(--rui-comp-notched-outline-color);
         box-sizing: border-box;
     }
 
@@ -85,14 +87,14 @@ useResizeObserver(shadowLabelRef, (entry) => {
             border-width: 1px;
             border-top-style: solid;
             border-bottom-style: solid;
-            border-color: rgba(0 0 0 / 12%);
+            border-color: var(--rui-comp-notched-outline-color);
         }
 
         &__notch {
             transition: width 200ms cubic-bezier(0.4, 0, 0.2, 1);
             border-width: 1px;
             border-bottom-style: solid;
-            border-color: rgba(0 0 0 / 12%);
+            border-color: var(--rui-comp-notched-outline-color);
         }
 
         &__shadow-label {
