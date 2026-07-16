@@ -11,23 +11,34 @@ outline:
 api: /en/api/text-field
 ---
 
+import PrincipleSection from "@docs/components/docs/PrincipleSection.vue"
+import FullWidthImage from "@docs/components/docs/FullWidthImage.astro"
+
 ## Usage
 
 Text fields allow users to enter text into a UI. They typically appear in forms and dialogs.
 
 ### Principles
 
-#### Discoverable
-
-Text fields should stand out and indicate that users can input information.
-
-#### Clear
-
-Text field states should be clearly differentiated from one another.
-
-#### Efficient
-
-Text fields should make it easy to understand the requested information and to address any errors.
+<PrincipleSection
+    items={[
+        {
+            title: "Discoverable",
+            image: "/images/docs/components/text-field/principle-discoverable.png",
+            body: "Text fields should stand out and indicate that users can input information.",
+        },
+        {
+            title: "Clear",
+            image: "/images/docs/components/text-field/principle-clear.png",
+            body: "Text field states should be clearly differentiated from one another.",
+        },
+        {
+            title: "Efficient",
+            image: "/images/docs/components/text-field/principle-efficient.png",
+            body: "Text fields should make it easy to understand the requested information and to address any errors.",
+        },
+    ]}
+/>
 
 ### Types
 
@@ -39,6 +50,12 @@ Text fields come in two types:
 Both types of text fields use a container to provide a clear affordance for interaction, making the fields discoverable
 in layouts.
 
+<FullWidthImage
+    src="/images/docs/components/text-field/types.png"
+    caption={`1. Filled text fields
+        2. Outlined text fields`}
+/>
+
 ### Choosing the right text field
 
 Both types of text fields provide the same functionality, so the type of text field you use can depend on style alone.
@@ -49,7 +66,7 @@ Choose the type that:
 - Best accommodates the goals of your UI
 - Is most distinct from other components (like buttons) and surrounding content
 
-#### Both types of text fields in one UI
+#### Both types of text field in one UI
 
 If both types of text fields are used in a single UI, they should be used consistently within different sections,
 and not intermixed within the same region.

@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<RGridProps>(), {
 })
 
 const style = computed(() => {
-    const templateColumns = typeof props.cols === "number" ? `repeat(${props.cols}, minmax(0, 1fr))` : props.cols
+    const templateColumns = typeof props.cols === "number" ? `repeat(${props.cols}, 1fr)` : props.cols
     const autoFlow = props.dense ? (props.autoFlow ? `${props.autoFlow} dense` : "row dense") : props.autoFlow
 
     return {

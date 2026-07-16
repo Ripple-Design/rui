@@ -3,7 +3,9 @@
     "include": [".astro/types.d.ts", "**/*"],
     "exclude": ["dist"],
     "compilerOptions": {
+        "baseUrl": ".",
         "paths": {
+            "@docs/*": ["./src/*"],
             "@ripple-design/rui": ["../../packages/rui/src/index.ts"],
             "@ripple-design/rui/*": ["../../packages/rui/src/*"]
         },

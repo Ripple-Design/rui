@@ -4,7 +4,7 @@ import type { CSSProperties } from "vue"
 export type RGridProps = {
     /**
      * Defines the grid columns.
-     * Numbers become `repeat(n, minmax(0, 1fr))`, while strings pass through as native CSS Grid templates.
+     * Numbers become `repeat(n, 1fr)`, while strings pass through as native CSS Grid templates.
      */
     cols?: number | string
     /** Sets both row and column gaps between grid items. */

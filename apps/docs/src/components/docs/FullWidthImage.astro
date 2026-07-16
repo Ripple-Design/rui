@@ -1,0 +1,36 @@
+---
+export interface Props {
+    src: string
+    caption?: string
+}
+
+const { src, caption } = Astro.props
+---
+
+<figure class="full-width-image">
+    <img src={src} alt={caption} class="full-width-image__image" />
+    {caption && <figcaption class="full-width-image__caption">{caption}</figcaption>}
+</figure>
+
+<style>
+    .full-width-image {
+        display: grid;
+        gap: 0.75rem;
+        margin: 0;
+    }
+
+    .full-width-image__image {
+        display: block;
+        width: 100%;
+        border: 1px solid #d0d0d0;
+        border-radius: 0;
+    }
+
+    .full-width-image__caption {
+        margin: 0;
+        color: #555;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        white-space: pre-line;
+    }
+</style>

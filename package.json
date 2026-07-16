@@ -9,6 +9,7 @@
     "main": "index.js",
     "scripts": {
         "docs": "pnpm --filter docs dev",
+        "generate:api-docs": "node scripts/generate-api-docs.mjs",
         "lint:rui": "pnpm --filter rui lint",
         "lint:rui:fix": "pnpm --filter rui lint:fix"
     },
