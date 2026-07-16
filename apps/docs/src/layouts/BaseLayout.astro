@@ -1,5 +1,6 @@
 ---
 import "@ripple-design/rui/styles.css"
+import ThemeControl from "@docs/components/docs/ThemeControl.vue"
 import { getDirectionMode, getLocaleUrl, locales } from "../lib/docs"
 
 export interface Props {
@@ -31,7 +32,8 @@ const direction = getDirectionMode(currentUrl)
             }
 
             a,
-            button {
+            button,
+            input {
                 color: inherit;
                 font: inherit;
             }
@@ -54,7 +56,8 @@ const direction = getDirectionMode(currentUrl)
 
             .header-nav,
             .header-tools,
-            .header-direction {
+            .header-direction,
+            .header-theme {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 1rem;
@@ -62,13 +65,35 @@ const direction = getDirectionMode(currentUrl)
 
             .header-nav ul,
             .header-tools ul,
-            .header-direction ul {
+            .header-direction ul,
+            .header-theme ul {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 0.75rem;
                 list-style: none;
                 padding: 0;
                 margin: 0;
+            }
+
+            .header-theme details {
+                position: relative;
+            }
+
+            .header-theme summary {
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .header-theme__panel {
+                position: absolute;
+                top: calc(100% + 0.5rem);
+                inset-inline-end: 0;
+                z-index: 10;
+                min-width: 18rem;
+                padding: 1rem;
+                background: #fff;
+                border: 1px solid #d0d0d0;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
             }
 
             .page-shell {
@@ -79,7 +104,7 @@ const direction = getDirectionMode(currentUrl)
 
             @media (min-width: 900px) {
                 .site-header__inner {
-                    grid-template-columns: 1fr auto auto auto;
+                    grid-template-columns: 1fr auto auto auto auto;
                 }
             }
         </style>
@@ -90,14 +115,18 @@ const direction = getDirectionMode(currentUrl)
                 : localStorage.getItem("rui-docs-dir") === "rtl"
                   ? "rtl"
                   : "ltr"
+            const primary = localStorage.getItem("rui-docs-primary")
             document.documentElement.setAttribute("dir", dir)
             localStorage.setItem("rui-docs-dir", dir)
+            if (primary) {
+                document.documentElement.style.setProperty("--rui-sys-color-primary", primary)
+            }
         </script>
     </head>
     <body>
         <header class="site-header">
             <div class="site-header__inner">
-                <p class="site-title">RUI Docs</p>
+                <p class="site-title">Ripple Design</p>
                 <nav class="header-nav" aria-label="Primary">
                     <ul>
                         <li><a href={`/${locale}/getting-started/spec`}>{sectionLabel}</a></li>
@@ -122,6 +151,18 @@ const direction = getDirectionMode(currentUrl)
                         </li>
                         <li>
                             <button type="button" data-dir-toggle="rtl" aria-pressed={direction === "rtl" ? "true" : "false"}>RTL</button>
+                        </li>
+                    </ul>
+                </nav>
+                <nav class="header-theme" aria-label="Theme controls">
+                    <ul>
+                        <li>
+                            <details>
+                                <summary>Primary</summary>
+                                <div class="header-theme__panel">
+                                    <ThemeControl client:load />
+                                </div>
+                            </details>
                         </li>
                     </ul>
                 </nav>
