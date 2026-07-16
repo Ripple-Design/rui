@@ -3,9 +3,9 @@ import { computed, ref } from "vue"
 
 import { useResizeObserver } from "@/utils/useResizeObserver"
 
-import type { RNotchedOutlineProps } from "../types"
+import type { RNotchedOutlineProps } from "./types"
 
-import RFloatingLabel from "../components/RFloatingLabel.vue"
+import RFloatingLabel from "./RFloatingLabel.vue"
 
 const props = defineProps<RNotchedOutlineProps>()
 

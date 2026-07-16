@@ -8,5 +8,8 @@ export { default as RColumn } from "./stack/RColumn.vue"
 export type * from "./stack/types"
 
 export { default as RTextField } from "./textField/RTextField.vue"
-export { default as RTextInput } from "./textField/RTextInput.vue"
+export { default as RInput } from "./input/RInput.vue"
 export type * from "./textField/types"
+
+export { default as RNumberField } from "./numberField/RNumberField.vue"
+export type * from "./numberField/types"

@@ -5,10 +5,10 @@
 
 import { computed, ref } from "vue"
 
-import type { RTextFieldProps } from "./types"
+import RFieldInput from "@/components/input/RFieldInput.vue"
+import RFieldShell from "@/components/input/RFieldShell.vue"
 
-import RTextFieldInput from "./components/RTextFieldInput.vue"
-import RTextFieldShell from "./components/RTextFieldShell.vue"
+import type { RTextFieldProps } from "./types"
 
 const props = defineProps<RTextFieldProps>()
 
@@ -21,7 +21,7 @@ const showPlaceholder = computed(() => !props.label || isFloating.value)
 </script>
 
 <template>
-    <RTextFieldShell
+    <RFieldShell
         :label="label"
         :focused="isFocused"
         :floating="isFloating"
@@ -29,12 +29,12 @@ const showPlaceholder = computed(() => !props.label || isFloating.value)
         :text-area="textArea"
         @focus-state-change="isFocused = $event"
     >
-        <RTextFieldInput
+        <RFieldInput
             v-model="model"
             :focused="isFocused"
             :placeholder="placeholder"
             :show-placeholder="showPlaceholder"
             :text-area="textArea"
         />
-    </RTextFieldShell>
+    </RFieldShell>
 </template>

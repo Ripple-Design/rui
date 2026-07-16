@@ -11,9 +11,17 @@ api: /en/api/text-field
 import DemoBlock from "@docs/components/docs/DemoBlock.astro"
 import TextFieldBasicDemo from "@docs/components/demos/text-field/TextFieldBasicDemo.vue"
 import textFieldBasicDemoSource from "@docs/components/demos/text-field/TextFieldBasicDemo.vue?raw"
+import TextFieldNumberDemo from "@docs/components/demos/text-field/TextFieldNumberDemo.vue"
+import textFieldNumberDemoSource from "@docs/components/demos/text-field/TextFieldNumberDemo.vue?raw"
 
 ## Basic usage
 
 <DemoBlock title="Basic text field" code={textFieldBasicDemoSource} language="vue">
     <TextFieldBasicDemo client:load />
+</DemoBlock>
+
+## Number field
+
+<DemoBlock title="Basic number field" code={textFieldNumberDemoSource} language="vue">
+    <TextFieldNumberDemo client:load />
 </DemoBlock>

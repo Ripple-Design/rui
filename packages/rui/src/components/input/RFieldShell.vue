@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
-import type { RTextFieldShellProps } from "../types"
+import type { RFieldShellProps } from "./types"
 
 import RNotchedOutline from "./RNotchedOutline.vue"
 
@@ -11,12 +11,12 @@ const emit = defineEmits<{
 
 const isHovered = ref(false)
 
-defineProps<RTextFieldShellProps>()
+defineProps<RFieldShellProps>()
 </script>
 
 <template>
     <label
-        class="rui-text-field-shell rui-text-field-shell--outlined"
+        class="rui-field-shell rui-field-shell--outlined"
         @focusin="emit('focusStateChange', true)"
         @focusout="emit('focusStateChange', false)"
         @mouseenter="isHovered = true"
@@ -37,7 +37,7 @@ defineProps<RTextFieldShellProps>()
 <style scoped lang="scss">
 @use "@/styles/density";
 
-.rui-text-field-shell {
+.rui-field-shell {
     --rui-text-field-outlined-top-left-radius: 4px;
     --rui-text-field-outlined-top-right-radius: 4px;
     --rui-text-field-outlined-bottom-left-radius: 4px;
