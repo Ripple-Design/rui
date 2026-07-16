@@ -1,0 +1,27 @@
+---
+title: Grid
+docSlug: components/grid
+tab: implementation
+locale: en
+designOrder: 30
+developOrder: 30
+api: /en/api/grid
+---
+
+import DemoBlock from "../../../../../components/docs/DemoBlock.astro"
+import GridBasicDemo from "../../../../../components/demos/grid/GridBasicDemo.vue"
+import gridBasicDemoSource from "../../../../../components/demos/grid/GridBasicDemo.vue?raw"
+import GridAutoFitDemo from "../../../../../components/demos/grid/GridAutoFitDemo.vue"
+import gridAutoFitDemoSource from "../../../../../components/demos/grid/GridAutoFitDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock title="Basic grid" code={gridBasicDemoSource} language="vue">
+    <GridBasicDemo client:load />
+</DemoBlock>
+
+## Auto-fit layout
+
+<DemoBlock title="Auto-fit grid" code={gridAutoFitDemoSource} language="vue">
+    <GridAutoFitDemo client:load />
+</DemoBlock>

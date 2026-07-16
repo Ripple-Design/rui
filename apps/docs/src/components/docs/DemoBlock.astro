@@ -1,4 +1,6 @@
 ---
+import { codeToHtml } from "shiki"
+
 export interface Props {
     title: string
     code: string
@@ -6,12 +8,74 @@ export interface Props {
 }
 
 const { title, code, language = "vue" } = Astro.props
+const highlightedCode = codeToHtml(code.trimEnd(), {
+    lang: language,
+    theme: "github-light",
+})
 ---
 
-<section>
+<section class="demo-block">
     <h2>{title}</h2>
-    <div>
+    <div class="demo-preview">
         <slot />
     </div>
-    <pre><code class={`language-${language}`}>{code}</code></pre>
+    <details class="demo-source">
+        <summary>Show code</summary>
+        <div class="demo-source__content" set:html={highlightedCode} />
+    </details>
 </section>
+
+<style>
+    .demo-block {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .demo-block h2 {
+        margin: 0;
+    }
+
+    .demo-preview,
+    .demo-source {
+        border-radius: 4px;
+        border: 1px solid #d0d0d0;
+    }
+
+    .demo-preview {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+    }
+
+    .demo-source {
+        background: #f7f7f7;
+    }
+
+    .demo-source summary {
+        cursor: pointer;
+        font-weight: 600;
+        padding: 0.875rem 1rem;
+    }
+
+    .demo-source summary:focus-visible {
+        outline: 2px solid #111;
+        outline-offset: 2px;
+    }
+
+    .demo-source__content {
+        border-top: 1px solid #d0d0d0;
+        overflow-x: auto;
+    }
+
+    .demo-source__content :global(pre) {
+        background: transparent !important;
+        margin: 0;
+        overflow-x: auto;
+        padding: 1rem;
+    }
+
+    .demo-source__content :global(code) {
+        font-size: 0.875rem;
+    }
+</style>

@@ -1,0 +1,27 @@
+---
+title: 网格
+docSlug: components/grid
+tab: implementation
+locale: zh-cn
+designOrder: 30
+developOrder: 30
+api: /zh-cn/api/grid
+---
+
+import DemoBlock from "../../../../../components/docs/DemoBlock.astro"
+import GridBasicDemo from "../../../../../components/demos/grid/GridBasicDemo.vue"
+import gridBasicDemoSource from "../../../../../components/demos/grid/GridBasicDemo.vue?raw"
+import GridAutoFitDemo from "../../../../../components/demos/grid/GridAutoFitDemo.vue"
+import gridAutoFitDemoSource from "../../../../../components/demos/grid/GridAutoFitDemo.vue?raw"
+
+## 基础用法
+
+<DemoBlock title="基础网格" code={gridBasicDemoSource} language="vue">
+    <GridBasicDemo client:load />
+</DemoBlock>
+
+## Auto-fit 布局
+
+<DemoBlock title="Auto-fit 网格" code={gridAutoFitDemoSource} language="vue">
+    <GridAutoFitDemo client:load />
+</DemoBlock>

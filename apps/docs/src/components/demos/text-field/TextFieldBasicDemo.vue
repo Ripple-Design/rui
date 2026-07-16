@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { RTextField } from "@ripple-design/rui"
-import { ref } from "vue"
-
-const model = ref("")
 </script>
 
 <template>
-    <RTextField v-model="model" label="Label" placeholder="Placeholder" />
-    <RTextField v-model="model" label="Label" placeholder="Placeholder" text-area />
+    <RTextField label="Label" />
+    <RTextField label="Label" text-area />
 </template>
