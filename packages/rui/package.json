@@ -1,10 +1,11 @@
 {
     "name": "@ripple-design/rui",
-    "version": "1.0.20",
+    "version": "1.0.21",
     "description": "Modular and customizable Ripple Design UI components for Vue 3",
     "files": [
         "dist",
-        "src/styles"
+        "src/styles",
+        "rui.scss"
     ],
     "type": "module",
     "sideEffects": [
@@ -45,5 +46,5 @@
     "peerDependencies": {
         "vue": "^3.5.0"
     },
-    "sass": "./src/styles/index.scss"
+    "sass": "./rui.scss"
 }
