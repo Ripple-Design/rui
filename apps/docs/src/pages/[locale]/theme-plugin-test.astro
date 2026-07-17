@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro"
+import { isLocale, locales } from "../../lib/docs"
+
+export function getStaticPaths() {
+    return locales.map((locale) => ({
+        params: { locale },
+    }))
+}
+
+const { locale } = Astro.params
+
+if (!locale || !isLocale(locale)) {
+    throw new Error("Invalid locale")
+}
+---
+
+<BaseLayout title="Theme Plugin Test" locale={locale} sectionLabel="Theme Plugin Test">
+    <section>
+        <h1>Theme Plugin Test</h1>
+        <p>
+            This page mounts a standalone Vue app, installs <code>themePlugin</code>,
+            and exposes the injected theme state together with the computed primary CSS variable.
+        </p>
+        <div id="theme-plugin-test"></div>
+    </section>
+
+    <script>
+        import "../../scripts/theme-plugin-test.ts"
+    </script>
+</BaseLayout>

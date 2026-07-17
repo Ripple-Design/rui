@@ -1,29 +1,30 @@
 import type { App, InjectionKey, Plugin, Ref } from "vue"
+
 import { inject, ref } from "vue"
 
-export type ThemeColors = {
+export type RThemeColors = {
     primary?: string
     onSurfaceHigh?: string
     onSurfaceMedium?: string
 }
 
-export type Theme = {
-    color?: ThemeColors
+export type RTheme = {
+    color?: RThemeColors
 }
 
-export type ThemeController = {
-    theme: Ref<Theme>
-    setTheme: (nextTheme: Partial<Theme>) => void
+export type RThemeController = {
+    theme: Ref<RTheme>
+    setTheme: (nextTheme: Partial<RTheme>) => void
     resetTheme: () => void
 }
 
-export type ThemePluginOptions = {
-    theme?: Theme
+export type RThemePluginOptions = {
+    theme?: RTheme
     target?: HTMLElement
 }
 
 /** Converts a runtime theme object into CSS variable key-value pairs. */
-export function themeToCSSVars(theme: Theme) {
+export function themeToCSSVars(theme: RTheme) {
     const vars: Record<string, string> = {}
 
     if (theme.color?.primary) {
@@ -42,17 +43,18 @@ export function themeToCSSVars(theme: Theme) {
 }
 
 /** Applies a runtime theme by writing CSS variables onto the target element. */
-export function applyTheme(theme: Theme, target: HTMLElement = document.documentElement) {
+export function applyTheme(theme: RTheme, target: HTMLElement = document.documentElement) {
     const vars = themeToCSSVars(theme)
 
+    console.log("[RUI] Applying theme:", theme, target)
     for (const [name, value] of Object.entries(vars)) {
         target.style.setProperty(name, value)
     }
 }
 
-const themeKey: InjectionKey<ThemeController> = Symbol("theme")
+const themeKey: InjectionKey<RThemeController> = Symbol("ruiTheme")
 
-function mergeTheme(base: Theme, nextTheme: Partial<Theme>): Theme {
+function mergeTheme(base: RTheme, nextTheme: Partial<RTheme>): RTheme {
     return {
         color: {
             ...base.color,
@@ -61,8 +63,11 @@ function mergeTheme(base: Theme, nextTheme: Partial<Theme>): Theme {
     }
 }
 
-function createThemeController(initialTheme: Theme = {}, target: HTMLElement = document.documentElement): ThemeController {
-    const theme = ref<Theme>(initialTheme)
+function createThemeController(
+    initialTheme: RTheme = {},
+    target: HTMLElement = document.documentElement,
+): RThemeController {
+    const theme = ref<RTheme>(initialTheme)
     const defaultTheme = initialTheme
 
     applyTheme(initialTheme, target)
@@ -81,19 +86,16 @@ function createThemeController(initialTheme: Theme = {}, target: HTMLElement = d
 }
 
 export const themePlugin: Plugin = {
-    install(app: App, options: ThemePluginOptions = {}) {
+    install(app: App, options: RThemePluginOptions = {}) {
         const controller = createThemeController(options.theme ?? {}, options.target ?? document.documentElement)
+        console.log("[RUI] Installing theme plugin:", controller)
         app.provide(themeKey, controller)
-        app.config.globalProperties.$theme = controller
+        app.config.globalProperties.$ruiTheme = controller
     },
 }
 
 export function useTheme() {
     const controller = inject(themeKey)
-
-    if (!controller) {
-        throw new Error("useTheme must be used after installing themePlugin")
-    }
-
+    if (!controller) throw new Error("[RUI] useTheme must be used after installing themePlugin")
     return controller
 }
