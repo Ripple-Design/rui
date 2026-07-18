@@ -12,6 +12,8 @@ export type IconRecord = {
     sizes_px: number[]
 }
 
+export type IconVariant = "filled" | "outlined" | "rounded" | "sharp" | "twotone"
+
 const icons = (iconsData as { icons: IconRecord[] }).icons
 
 export function getIconCount() {
@@ -36,8 +38,8 @@ export function groupIconsByCategory() {
         .sort((a, b) => a.category.localeCompare(b.category))
 }
 
-export function getIconPath(name: string) {
-    const exportName = `RI${toPascalCase(name)}Filled` as keyof typeof iconPaths
+export function getIconPath(name: string, variant: IconVariant = "filled") {
+    const exportName = `RI${toPascalCase(name)}${toVariantSuffix(variant)}` as keyof typeof iconPaths
     return iconPaths[exportName] as string | undefined
 }
 
@@ -47,4 +49,19 @@ export function toPascalCase(value: string) {
         .filter(Boolean)
         .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
         .join("")
+}
+
+function toVariantSuffix(variant: IconVariant) {
+    switch (variant) {
+        case "filled":
+            return "Filled"
+        case "outlined":
+            return "Outlined"
+        case "rounded":
+            return "Rounded"
+        case "sharp":
+            return "Sharp"
+        case "twotone":
+            return "TwoTone"
+    }
 }

@@ -1,22 +1,27 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro"
-import { locales, type Locale } from "../../lib/docs"
-import { getIconCount, getIconPath, groupIconsByCategory, type IconVariant } from "../../lib/icons"
+import BaseLayout from "../../../layouts/BaseLayout.astro"
+import { locales, type Locale } from "../../../lib/docs"
+import { getIconCount, getIconPath, groupIconsByCategory, type IconVariant } from "../../../lib/icons"
 import { RIcon } from "@ripple-design/rui"
 
+const styles: IconVariant[] = ["filled", "outlined", "rounded", "sharp", "twotone"]
+
 export function getStaticPaths() {
-    return locales.map((locale) => ({ params: { locale } }))
+    return locales.flatMap((locale) =>
+        ["outlined", "rounded", "sharp", "twotone"].map((style) => ({
+            params: { locale, style },
+        })),
+    )
 }
 
-const { locale } = Astro.params as { locale: Locale }
-const currentStyle: IconVariant = "filled"
+const { locale, style } = Astro.params as { locale: Locale; style: IconVariant }
+const currentStyle = styles.includes(style) ? style : "filled"
 const currentDir = Astro.url.searchParams.get("dir")
 const groups = groupIconsByCategory()
 const count = getIconCount()
-const styles: IconVariant[] = ["filled", "outlined", "rounded", "sharp", "twotone"]
 
-function getStyleHref(style: IconVariant) {
-    const pathname = style === "filled" ? `/${locale}/icons` : `/${locale}/icons/${style}`
+function getStyleHref(nextStyle: IconVariant) {
+    const pathname = nextStyle === "filled" ? `/${locale}/icons` : `/${locale}/icons/${nextStyle}`
     return currentDir ? `${pathname}?dir=${currentDir}` : pathname
 }
 ---
@@ -129,10 +134,10 @@ function getStyleHref(style: IconVariant) {
             <nav class="icons-toolbar" aria-label="Icon styles">
                 <span>Style:</span>
                 <ul>
-                    {styles.map((style) => (
+                    {styles.map((nextStyle) => (
                         <li>
-                            <a href={getStyleHref(style)} aria-current={style === currentStyle ? "page" : undefined}>
-                                {style}
+                            <a href={getStyleHref(nextStyle)} aria-current={nextStyle === currentStyle ? "page" : undefined}>
+                                {nextStyle}
                             </a>
                         </li>
                     ))}
