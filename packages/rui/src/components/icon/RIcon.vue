@@ -24,7 +24,7 @@ const ariaLabel = computed(() => (isDecorative.value ? undefined : props.label))
         :aria-hidden="isDecorative ? 'true' : undefined"
         :role="role"
         :aria-label="ariaLabel"
-        v-html="props.svg"
+        v-html="props.icon"
     />
 </template>
 
