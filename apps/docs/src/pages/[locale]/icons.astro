@@ -1,0 +1,117 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro"
+import { locales, type Locale } from "../../lib/docs"
+import { getIconCount, getIconPath, groupIconsByCategory } from "../../lib/icons"
+import { RIcon } from "@ripple-design/rui"
+
+export function getStaticPaths() {
+    return locales.map((locale) => ({ params: { locale } }))
+}
+
+const { locale } = Astro.params as { locale: Locale }
+const groups = groupIconsByCategory()
+const count = getIconCount()
+---
+
+<BaseLayout title="Icons" locale={locale} currentUrl={Astro.url} sectionLabel="Components">
+    <style>
+        .icons-page {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .icons-page header {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .icons-page h1 {
+            margin: 0;
+        }
+
+        .icons-group {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .icons-group h2 {
+            margin: 0;
+            text-transform: capitalize;
+        }
+
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+            gap: 0.75rem;
+        }
+
+        .icon-card {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.75rem;
+            align-items: center;
+            padding: 0.75rem;
+            border: 1px solid #d0d0d0;
+            border-radius: 0.75rem;
+            background: #fff;
+        }
+
+        .icon-card__meta {
+            display: grid;
+            gap: 0.25rem;
+            min-width: 0;
+        }
+
+        .icon-card__meta strong {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .icon-card__meta small {
+            color: #666;
+        }
+
+        .icon-card__glyph {
+            inline-size: 2rem;
+            block-size: 2rem;
+            color: currentColor;
+            flex-shrink: 0;
+        }
+
+        .icons-count {
+            color: #666;
+        }
+    </style>
+
+    <section class="icons-page">
+        <header>
+            <h1>Icons</h1>
+            <p class="icons-count">{count} icons from `data.json`.</p>
+        </header>
+
+        {groups.map(({ category, items }) => (
+            <section class="icons-group">
+                <h2>{category}</h2>
+                <div class="icons-grid">
+                    {items.map((item) => {
+                        const icon = getIconPath(item.name)
+                        if (!icon) return null
+
+                        return (
+                            <article class="icon-card">
+                                <div class="icon-card__glyph" aria-hidden="true">
+                                    <RIcon icon={icon} decorative size="2rem" />
+                                </div>
+                                <div class="icon-card__meta">
+                                    <strong>{item.name}</strong>
+                                    <small>U+{item.codepoint.toString(16).toUpperCase()}</small>
+                                </div>
+                            </article>
+                        )
+                    })}
+                </div>
+            </section>
+        ))}
+    </section>
+</BaseLayout>

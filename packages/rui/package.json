@@ -50,6 +50,6 @@
     },
     "sass": "./rui.scss",
     "dependencies": {
-        "@ripple-design/icons": "^1.0.3"
+        "@ripple-design/icons": "^1.0.5"
     }
 }
