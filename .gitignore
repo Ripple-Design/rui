@@ -9,3 +9,4 @@ dist/
 
 # Claude AI
 /.claude/
+/CLAUDE.md

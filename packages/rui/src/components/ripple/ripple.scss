@@ -5,9 +5,14 @@
     --rui-ripple-expand-duration: 225ms;
     --rui-ripple-enter-opacity-duration: 75ms;
     --rui-ripple-exit-opacity-duration: 150ms;
+
     --rui-ripple-hover-opacity: 0.04;
     --rui-ripple-focus-opacity: 0.08;
     --rui-ripple-wave-opacity: 0.08;
+
+    --rui-ripple-high-hover-opacity: 0.08;
+    --rui-ripple-high-focus-opacity: 0.24;
+    --rui-ripple-high-wave-opacity: 0.16;
 }
 
 .rui-ripple-surface {
@@ -19,6 +24,12 @@
     border-radius: inherit;
     pointer-events: none;
     color: inherit;
+}
+
+.rui-ripple-surface--contrast-high {
+    --rui-ripple-hover-opacity: var(--rui-ripple-high-hover-opacity);
+    --rui-ripple-focus-opacity: var(--rui-ripple-high-focus-opacity);
+    --rui-ripple-wave-opacity: var(--rui-ripple-high-wave-opacity);
 }
 
 .rui-ripple-surface::before {

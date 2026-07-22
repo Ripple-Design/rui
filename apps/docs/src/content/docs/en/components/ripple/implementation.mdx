@@ -11,11 +11,17 @@ api: /en/api/ripple
 import DemoBlock from "@docs/components/docs/DemoBlock.astro"
 import RippleBasicDemo from "@docs/components/demos/ripple/RippleBasicDemo.vue"
 import rippleBasicDemoSource from "@docs/components/demos/ripple/RippleBasicDemo.vue?raw"
+import RippleUnboundedDemo from "@docs/components/demos/ripple/RippleUnboundedDemo.vue"
+import rippleUnboundedDemoSource from "@docs/components/demos/ripple/RippleUnboundedDemo.vue?raw"
 
-## Basic usage
+## Contrast levels
 
-The demo below includes an explicit bounded vs. unbounded icon comparison so the overflow behavior is easy to inspect.
-
-<DemoBlock title="Ripple directive" code={rippleBasicDemoSource} language="vue">
+<DemoBlock title="Ripple contrast" code={rippleBasicDemoSource} language="vue">
     <RippleBasicDemo client:load />
+</DemoBlock>
+
+## Bounded vs. unbounded
+
+<DemoBlock title="Unbounded behavior" code={rippleUnboundedDemoSource} language="vue">
+    <RippleUnboundedDemo client:load />
 </DemoBlock>

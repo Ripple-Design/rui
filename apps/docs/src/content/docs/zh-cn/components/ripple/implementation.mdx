@@ -11,11 +11,17 @@ api: /zh-cn/api/ripple
 import DemoBlock from "@docs/components/docs/DemoBlock.astro"
 import RippleBasicDemo from "@docs/components/demos/ripple/RippleBasicDemo.vue"
 import rippleBasicDemoSource from "@docs/components/demos/ripple/RippleBasicDemo.vue?raw"
+import RippleUnboundedDemo from "@docs/components/demos/ripple/RippleUnboundedDemo.vue"
+import rippleUnboundedDemoSource from "@docs/components/demos/ripple/RippleUnboundedDemo.vue?raw"
 
-## 基础用法
+## 对比层级
 
-下面的示例专门加入了 bounded / unbounded 图标对比，方便直接观察越界扩散行为。
-
-<DemoBlock title="Ripple 指令" code={rippleBasicDemoSource} language="vue">
+<DemoBlock title="Ripple 对比度" code={rippleBasicDemoSource} language="vue">
     <RippleBasicDemo client:load />
+</DemoBlock>
+
+## Bounded 与 unbounded
+
+<DemoBlock title="Unbounded 行为" code={rippleUnboundedDemoSource} language="vue">
+    <RippleUnboundedDemo client:load />
 </DemoBlock>

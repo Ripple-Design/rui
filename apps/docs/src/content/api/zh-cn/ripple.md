@@ -20,11 +20,13 @@ type RippleOptions = {
   disabled?: boolean
   unbounded?: boolean
   color?: string | null
+  contrast?: "low" | "high"
 }
 ```
 
 - `v-ripple` 启用默认的 bounded ripple
-- `v-ripple="false"` 关闭效果
+- 使用 `v-ripple="{ disabled: true }"` 关闭效果
 - 键盘触发的 ripple 会自动从中心扩散
 - `v-ripple.unbounded` 允许波纹超出宿主边界
+- `contrast` 默认为 `"low"`；当 ripple 叠加在 filled / 高强调背景上时，使用 `"high"`
 - `:focus-visible` 会使用 `--rui-ripple-focus-opacity` 显示焦点状态层
