@@ -13,6 +13,9 @@ export type * from "./icon/types"
 export { default as RButton } from "./button/RButton.vue"
 export type * from "./button/types"
 
+export { default as RText } from "./text/RText.vue"
+export type * from "./text/types"
+
 export { default as RTextField } from "./textField/RTextField.vue"
 export { default as RInput } from "./input/RInput.vue"
 export type * from "./textField/types"

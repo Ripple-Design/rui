@@ -142,7 +142,7 @@ function handleClick(event: MouseEvent) {
     --rui-button-outline-color: #{color.$on-surface-low};
 
     @include normalize.button;
-    @include typography.subtitle1("--rui-comp-button-label");
+    @include typography.button("--rui-comp-button-label");
     @include density.touchTargetEnabled();
     @include density.touchTargetMarginY(36px);
 

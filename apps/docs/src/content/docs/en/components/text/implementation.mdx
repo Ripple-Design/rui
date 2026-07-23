@@ -1,0 +1,19 @@
+---
+title: Text
+docSlug: components/text
+tab: implementation
+locale: en
+designOrder: 80
+developOrder: 80
+api: /en/api/text
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import TextBasicDemo from "@docs/components/demos/text/TextBasicDemo.vue"
+import textBasicDemoSource from "@docs/components/demos/text/TextBasicDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock title="Typography variants" code={textBasicDemoSource} language="vue">
+    <TextBasicDemo client:load />
+</DemoBlock>

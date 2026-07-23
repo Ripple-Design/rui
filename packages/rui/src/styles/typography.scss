@@ -1,61 +1,246 @@
 :root {
     --rui-sys-typo-font-family: system-ui;
 
+    --rui-sys-typo-headline1-size: 6rem;
+    --rui-sys-typo-headline1-weight: 300;
+    --rui-sys-typo-headline1-font-family: var(--rui-sys-typo-font-family);
+    --rui-sys-typo-headline1-line-height: 6rem;
+    --rui-sys-typo-headline1-letter-spacing: -0.015625rem;
+    --rui-sys-typo-headline1-text-decoration: inherit;
+    --rui-sys-typo-headline1-text-transform: inherit;
+
+    --rui-sys-typo-headline2-size: 3.75rem;
+    --rui-sys-typo-headline2-weight: 300;
+    --rui-sys-typo-headline2-font-family: var(--rui-sys-typo-font-family);
+    --rui-sys-typo-headline2-line-height: 3.75rem;
+    --rui-sys-typo-headline2-letter-spacing: -0.0083333333rem;
+    --rui-sys-typo-headline2-text-decoration: inherit;
+    --rui-sys-typo-headline2-text-transform: inherit;
+
+    --rui-sys-typo-headline3-size: 3rem;
+    --rui-sys-typo-headline3-weight: 400;
+    --rui-sys-typo-headline3-font-family: var(--rui-sys-typo-font-family);
+    --rui-sys-typo-headline3-line-height: 3.125rem;
+    --rui-sys-typo-headline3-letter-spacing: normal;
+    --rui-sys-typo-headline3-text-decoration: inherit;
+    --rui-sys-typo-headline3-text-transform: inherit;
+
+    --rui-sys-typo-headline4-size: 2.125rem;
+    --rui-sys-typo-headline4-weight: 400;
+    --rui-sys-typo-headline4-font-family: var(--rui-sys-typo-font-family);
+    --rui-sys-typo-headline4-line-height: 2.5rem;
+    --rui-sys-typo-headline4-letter-spacing: 0.0073529412rem;
+    --rui-sys-typo-headline4-text-decoration: inherit;
+    --rui-sys-typo-headline4-text-transform: inherit;
+
+    --rui-sys-typo-headline5-size: 1.5rem;
+    --rui-sys-typo-headline5-weight: 400;
+    --rui-sys-typo-headline5-font-family: var(--rui-sys-typo-font-family);
+    --rui-sys-typo-headline5-line-height: 2rem;
+    --rui-sys-typo-headline5-letter-spacing: normal;
+    --rui-sys-typo-headline5-text-decoration: inherit;
+    --rui-sys-typo-headline5-text-transform: inherit;
+
+    --rui-sys-typo-headline6-size: 1.25rem;
+    --rui-sys-typo-headline6-weight: 500;
+    --rui-sys-typo-headline6-font-family: var(--rui-sys-typo-font-family);
+    --rui-sys-typo-headline6-line-height: 2rem;
+    --rui-sys-typo-headline6-letter-spacing: 0.0125rem;
+    --rui-sys-typo-headline6-text-decoration: inherit;
+    --rui-sys-typo-headline6-text-transform: inherit;
+
     --rui-sys-typo-subtitle1-size: 1rem;
     --rui-sys-typo-subtitle1-weight: 400;
     --rui-sys-typo-subtitle1-font-family: var(--rui-sys-typo-font-family);
-    --rui-sys-typo-subtitle1-line-height: 1.5rem; // 24 / 16
-    --rui-sys-typo-subtitle1-letter-spacing: 0.009375px; // 0.15 / 16
-    --rui-sys-typo-subtitle1-text-transform: none;
+    --rui-sys-typo-subtitle1-line-height: 1.75rem;
+    --rui-sys-typo-subtitle1-letter-spacing: 0.009375rem;
+    --rui-sys-typo-subtitle1-text-decoration: inherit;
+    --rui-sys-typo-subtitle1-text-transform: inherit;
+
+    --rui-sys-typo-subtitle2-size: 0.875rem;
+    --rui-sys-typo-subtitle2-weight: 500;
+    --rui-sys-typo-subtitle2-font-family: var(--rui-sys-typo-font-family);
+    --rui-sys-typo-subtitle2-line-height: 1.375rem;
+    --rui-sys-typo-subtitle2-letter-spacing: 0.0071428571rem;
+    --rui-sys-typo-subtitle2-text-decoration: inherit;
+    --rui-sys-typo-subtitle2-text-transform: inherit;
+
+    --rui-sys-typo-body1-size: 1rem;
+    --rui-sys-typo-body1-weight: 400;
+    --rui-sys-typo-body1-font-family: var(--rui-sys-typo-font-family);
+    --rui-sys-typo-body1-line-height: 1.5rem;
+    --rui-sys-typo-body1-letter-spacing: 0.03125rem;
+    --rui-sys-typo-body1-text-decoration: inherit;
+    --rui-sys-typo-body1-text-transform: inherit;
+
+    --rui-sys-typo-body2-size: 0.875rem;
+    --rui-sys-typo-body2-weight: 400;
+    --rui-sys-typo-body2-font-family: var(--rui-sys-typo-font-family);
+    --rui-sys-typo-body2-line-height: 1.25rem;
+    --rui-sys-typo-body2-letter-spacing: 0.0178571429rem;
+    --rui-sys-typo-body2-text-decoration: inherit;
+    --rui-sys-typo-body2-text-transform: inherit;
 
     --rui-sys-typo-caption-size: 0.75rem;
     --rui-sys-typo-caption-weight: 400;
     --rui-sys-typo-caption-font-family: var(--rui-sys-typo-font-family);
-    --rui-sys-typo-caption-line-height: 1.5rem;
-    --rui-sys-typo-caption-letter-spacing: 0.03333333333px; // 0.4 / 12
-    --rui-sys-typo-caption-text-transform: none;
+    --rui-sys-typo-caption-line-height: normal;
+    --rui-sys-typo-caption-letter-spacing: 0.0333333333rem;
+    --rui-sys-typo-caption-text-decoration: inherit;
+    --rui-sys-typo-caption-text-transform: inherit;
+
+    --rui-sys-typo-button-size: 0.875rem;
+    --rui-sys-typo-button-weight: 500;
+    --rui-sys-typo-button-font-family: var(--rui-sys-typo-font-family);
+    --rui-sys-typo-button-line-height: normal;
+    --rui-sys-typo-button-letter-spacing: 0.0892857143rem;
+    --rui-sys-typo-button-text-decoration: none;
+    --rui-sys-typo-button-text-transform: uppercase;
+
+    --rui-sys-typo-overline-size: 0.625rem;
+    --rui-sys-typo-overline-weight: 500;
+    --rui-sys-typo-overline-font-family: var(--rui-sys-typo-font-family);
+    --rui-sys-typo-overline-line-height: normal;
+    --rui-sys-typo-overline-letter-spacing: 0.15rem;
+    --rui-sys-typo-overline-text-decoration: none;
+    --rui-sys-typo-overline-text-transform: uppercase;
+}
+
+@mixin smoothFont {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+}
+
+@mixin overflowEllipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@mixin _applyTypography($style, $name: null) {
+    $prefix: "--rui-sys-typo-#{$style}";
+
+    @include smoothFont;
+
+    @if $name {
+        font-size: var(#{$name}-size, var(#{$prefix}-size));
+        font-weight: var(#{$name}-weight, var(#{$prefix}-weight));
+        font-family: var(#{$name}-font-family, var(#{$prefix}-font-family)), system-ui;
+        line-height: var(#{$name}-line-height, var(#{$prefix}-line-height));
+        letter-spacing: var(#{$name}-letter-spacing, var(#{$prefix}-letter-spacing));
+        text-decoration: var(#{$name}-text-decoration, var(#{$prefix}-text-decoration));
+        text-transform: var(#{$name}-text-transform, var(#{$prefix}-text-transform));
+    } @else {
+        font-size: var(#{$prefix}-size);
+        font-weight: var(#{$prefix}-weight);
+        font-family: var(#{$prefix}-font-family), system-ui;
+        line-height: var(#{$prefix}-line-height);
+        letter-spacing: var(#{$prefix}-letter-spacing);
+        text-decoration: var(#{$prefix}-text-decoration);
+        text-transform: var(#{$prefix}-text-transform);
+    }
+}
+
+@mixin headline1($name: null) {
+    @include _applyTypography("headline1", $name);
+}
+
+@mixin headline2($name: null) {
+    @include _applyTypography("headline2", $name);
+}
+
+@mixin headline3($name: null) {
+    @include _applyTypography("headline3", $name);
+}
+
+@mixin headline4($name: null) {
+    @include _applyTypography("headline4", $name);
+}
+
+@mixin headline5($name: null) {
+    @include _applyTypography("headline5", $name);
+}
+
+@mixin headline6($name: null) {
+    @include _applyTypography("headline6", $name);
 }
 
 @mixin subtitle1($name: null) {
-    @if $name {
-        font-size: var(#{$name}-size, var(--rui-sys-typo-subtitle1-size));
-        font-weight: var(#{$name}-weight, var(--rui-sys-typo-subtitle1-weight));
-        font-family: var(#{$name}-font-family, var(--rui-sys-typo-subtitle1-font-family)), system-ui;
-        line-height: var(#{$name}-line-height, var(--rui-sys-typo-subtitle1-line-height));
-        letter-spacing: var(#{$name}-letter-spacing, var(--rui-sys-typo-subtitle1-letter-spacing));
-        text-transform: var(#{$name}-text-transform, var(--rui-sys-typo-subtitle1-text-transform));
-    } @else {
-        font-size: var(--rui-sys-typo-subtitle1-size);
-        font-weight: var(--rui-sys-typo-subtitle1-weight);
-        font-family: var(--rui-sys-typo-subtitle1-font-family), system-ui;
-        line-height: var(--rui-sys-typo-subtitle1-line-height);
-        letter-spacing: var(--rui-sys-typo-subtitle1-letter-spacing);
-        text-transform: var(--rui-sys-typo-subtitle1-text-transform);
-    }
+    @include _applyTypography("subtitle1", $name);
+}
+
+@mixin subtitle2($name: null) {
+    @include _applyTypography("subtitle2", $name);
+}
+
+@mixin body1($name: null) {
+    @include _applyTypography("body1", $name);
+}
+
+@mixin body2($name: null) {
+    @include _applyTypography("body2", $name);
 }
 
 @mixin caption($name: null) {
-    @if $name {
-        font-size: var(#{$name}-size, var(--rui-sys-typo-caption-size));
-        font-weight: var(#{$name}-weight, var(--rui-sys-typo-caption-weight));
-        font-family: var(#{$name}-font-family, var(--rui-sys-typo-caption-font-family)), system-ui;
-        line-height: var(#{$name}-line-height, var(--rui-sys-typo-caption-line-height));
-        letter-spacing: var(#{$name}-letter-spacing, var(--rui-sys-typo-caption-letter-spacing));
-        text-transform: var(#{$name}-text-transform, var(--rui-sys-typo-caption-text-transform));
-    } @else {
-        font-size: var(--rui-sys-typo-caption-size);
-        font-weight: var(--rui-sys-typo-caption-weight);
-        font-family: var(--rui-sys-typo-caption-font-family), system-ui;
-        line-height: var(--rui-sys-typo-caption-line-height);
-        letter-spacing: var(--rui-sys-typo-caption-letter-spacing);
-        text-transform: var(--rui-sys-typo-caption-text-transform);
-    }
+    @include _applyTypography("caption", $name);
+}
+
+@mixin button($name: null) {
+    @include _applyTypography("button", $name);
+}
+
+@mixin overline($name: null) {
+    @include _applyTypography("overline", $name);
+}
+
+.rui-text--headline1 {
+    @include headline1;
+}
+
+.rui-text--headline2 {
+    @include headline2;
+}
+
+.rui-text--headline3 {
+    @include headline3;
+}
+
+.rui-text--headline4 {
+    @include headline4;
+}
+
+.rui-text--headline5 {
+    @include headline5;
+}
+
+.rui-text--headline6 {
+    @include headline6;
 }
 
 .rui-text--subtitle1 {
     @include subtitle1;
 }
 
+.rui-text--subtitle2 {
+    @include subtitle2;
+}
+
+.rui-text--body1 {
+    @include body1;
+}
+
+.rui-text--body2 {
+    @include body2;
+}
+
 .rui-text--caption {
     @include caption;
+}
+
+.rui-text--button {
+    @include button;
+}
+
+.rui-text--overline {
+    @include overline;
 }
