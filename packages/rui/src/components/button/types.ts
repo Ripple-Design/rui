@@ -1,5 +1,7 @@
 import type { RippleOptions } from "@/foundations/ripple"
 
+import type { RIconSource } from "@/components/icon/types"
+
 export type RButtonVariant = "text" | "outlined" | "contained" | "unelevated"
 export type RButtonType = "button" | "submit" | "reset"
 
@@ -11,6 +13,8 @@ export type RButtonProps = {
     disabled?: boolean
     /** Expands the button to fill the available inline size. */
     fullWidth?: boolean
+    /** Allows the label to remain in sentence case instead of uppercase. */
+    sentenceCase?: boolean
     /** Sets the native button type when rendering a `<button>`. */
     type?: RButtonType
     /** Renders the button as a link when provided. */
@@ -20,9 +24,11 @@ export type RButtonProps = {
     /** Sets the link relationship when rendering an anchor. */
     rel?: string
     /** Renders a leading icon using the shared icon renderer. */
-    icon?: string
+    icon?: RIconSource
     /** Renders a trailing icon using the shared icon renderer. */
-    endIcon?: string
+    endIcon?: RIconSource
+    /** Renders a top icon using the shared icon renderer. */
+    topIcon?: RIconSource
     /** Controls ripple behavior or disables it entirely. */
     ripple?: boolean | RippleOptions
 }

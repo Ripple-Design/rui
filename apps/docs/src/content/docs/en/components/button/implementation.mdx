@@ -17,3 +17,5 @@ import buttonBasicDemoSource from "@docs/components/demos/button/ButtonBasicDemo
 <DemoBlock title="Button variants" code={buttonBasicDemoSource} language="vue">
     <ButtonBasicDemo client:load />
 </DemoBlock>
+
+`RButton` supports direct `icon` and `endIcon` props for common cases, but the `leading` and `trailing` slots remain available for arbitrary custom content. When both a slot and a prop are supplied on the same side, the slot content wins.

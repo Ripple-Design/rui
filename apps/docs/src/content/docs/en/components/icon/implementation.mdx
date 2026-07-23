@@ -17,3 +17,11 @@ import iconBasicDemoSource from "@docs/components/demos/icon/IconBasicDemo.vue?r
 <DemoBlock title="Basic icon" code={iconBasicDemoSource} language="vue">
     <IconBasicDemo client:load />
 </DemoBlock>
+
+`RIcon` now accepts three input modes:
+
+- string icon sources
+- component icon sources
+- slot-based custom content
+
+When both a slot and an `icon` prop are provided, the slot content takes precedence.

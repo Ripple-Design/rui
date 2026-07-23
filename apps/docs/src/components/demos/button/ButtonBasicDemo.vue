@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RI1kPlusOutlined, RIAccountBalanceFilled } from "@ripple-design/icons"
+import { RIAccountBalanceFilled, RIAddFilled, RIArrowDropDownFilled, RIOpenInNewFilled } from "@ripple-design/icons"
 import { RButton, RColumn, RRow } from "@ripple-design/rui"
 </script>
 
@@ -13,13 +13,22 @@ import { RButton, RColumn, RRow } from "@ripple-design/rui"
         </RRow>
 
         <RRow gap="16px" wrap align="center">
-            <RButton variant="contained" :icon="RIAccountBalanceFilled">Leading icon</RButton>
-            <RButton variant="text" :end-icon="RI1kPlusOutlined">Trailing icon</RButton>
+            <RButton variant="outlined" :icon="RIAddFilled">Add</RButton>
+            <RButton variant="outlined" :end-icon="RIArrowDropDownFilled">More</RButton>
+            <RButton variant="outlined" :top-icon="RIOpenInNewFilled">OPEN</RButton>
         </RRow>
 
         <RRow gap="16px" wrap align="center">
             <RButton disabled>Disabled</RButton>
-            <RButton href="https://example.com" target="_blank" rel="noreferrer" variant="outlined">Link</RButton>
+            <RButton
+                href="https://example.com"
+                target="_blank"
+                rel="noreferrer"
+                variant="outlined"
+                :end-icon="RIOpenInNewFilled"
+                >Link</RButton
+            >
+            <RButton sentence-case variant="outlined">Sentence case</RButton>
         </RRow>
 
         <RButton full-width variant="contained" :icon="RIAccountBalanceFilled">Full-width</RButton>

@@ -25,6 +25,10 @@
     transform: translateY(-50%);
 }
 
+.rui-touch-target--interactive {
+    pointer-events: auto;
+}
+
 @function _touch-target-margin($component-size, $target-size) {
     @return math.div($target-size - $component-size, 2);
 }

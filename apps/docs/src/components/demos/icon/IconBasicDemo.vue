@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RIAccountBalanceFilled } from "@ripple-design/icons"
-import { RIcon, RRow } from "@ripple-design/rui"
+import { RIcon, RRow, RText } from "@ripple-design/rui"
 </script>
 
 <template>
@@ -17,5 +17,9 @@ import { RIcon, RRow } from "@ripple-design/rui"
         </span>
 
         <RIcon :icon="RIAccountBalanceFilled" label="Favorite" />
+
+        <RIcon :size="20" decorative>
+            <RText variant="button" as="span">★</RText>
+        </RIcon>
     </RRow>
 </template>
