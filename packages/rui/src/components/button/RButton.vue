@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, useAttrs, useSlots } from "vue"
 
+import { RIcon } from "@/components"
 import { vRipple, type RippleOptions } from "@/foundations/ripple"
 
 import type { RButtonProps, RButtonType, RButtonVariant } from "./types"
@@ -10,7 +11,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<RButtonProps>(), {
-    variant: "text",
+    variant: "contained",
     disabled: false,
     fullWidth: false,
     type: "button",
@@ -23,11 +24,11 @@ const slots = useSlots()
 const isLink = computed(() => !!props.href)
 const nativeType = computed<RButtonType>(() => props.type ?? "button")
 const resolvedHref = computed(() => (props.disabled ? undefined : props.href))
-const hasLeading = computed(() => !!slots.leading)
-const hasTrailing = computed(() => !!slots.trailing)
+const hasLeading = computed(() => !!props.icon || !!slots.leading)
+const hasTrailing = computed(() => !!props.endIcon || !!slots.trailing)
 
 const rippleOptions = computed<RippleOptions>(() => {
-    const defaultContrast = props.variant === "contained" ? "high" : "low"
+    const defaultContrast = ["contained", "unelevated"].includes(props.variant) ? "high" : "low"
 
     if (props.ripple === false) {
         return { disabled: true }
@@ -86,16 +87,18 @@ function handleClick(event: MouseEvent) {
         <span class="rui-touch-target" aria-hidden="true" />
 
         <span class="rui-button__content">
-            <span v-if="$slots.leading" class="rui-button__leading">
-                <slot name="leading" />
+            <span v-if="hasLeading" class="rui-button__leading">
+                <RIcon v-if="icon" :icon="icon" :size="18" decorative />
+                <slot v-else name="leading" />
             </span>
 
             <span class="rui-button__label">
                 <slot />
             </span>
 
-            <span v-if="$slots.trailing" class="rui-button__trailing">
-                <slot name="trailing" />
+            <span v-if="hasTrailing" class="rui-button__trailing">
+                <RIcon v-if="endIcon" :icon="endIcon" :size="18" decorative />
+                <slot v-else name="trailing" />
             </span>
         </span>
     </a>
@@ -112,16 +115,18 @@ function handleClick(event: MouseEvent) {
         <span class="rui-touch-target" aria-hidden="true" />
 
         <span class="rui-button__content">
-            <span v-if="$slots.leading" class="rui-button__leading">
-                <slot name="leading" />
+            <span v-if="hasLeading" class="rui-button__leading">
+                <RIcon v-if="icon" :icon="icon" :size="18" decorative />
+                <slot v-else name="leading" />
             </span>
 
             <span class="rui-button__label">
                 <slot />
             </span>
 
-            <span v-if="$slots.trailing" class="rui-button__trailing">
-                <slot name="trailing" />
+            <span v-if="hasTrailing" class="rui-button__trailing">
+                <RIcon v-if="endIcon" :icon="endIcon" :size="18" decorative />
+                <slot v-else name="trailing" />
             </span>
         </span>
     </button>
@@ -130,16 +135,22 @@ function handleClick(event: MouseEvent) {
 <style scoped lang="scss">
 @use "@/styles/color";
 @use "@/styles/density";
-@use "@/styles/motion";
+@use "@/styles/elevations";
 @use "@/styles/normalize";
 @use "@/styles/typography";
 
 .rui-button {
     --rui-button-height: 36px;
-    --rui-button-padding-inline: 16px;
+    --rui-button-padding-inline-start: 16px;
+    --rui-button-padding-inline-end: 16px;
     --rui-button-gap: 8px;
     --rui-button-radius: 4px;
-    --rui-button-outline-color: #{color.$on-surface-low};
+    --rui-button-outline-color: rgb(from #{color.$on-surface} r g b / 0.12);
+    --rui-button-disabled-container-color: rgb(from #{color.$on-surface} r g b / 0.12);
+    --rui-button-contained-elevation: #{elevations.shadow(2)};
+    --rui-button-contained-hover-elevation: #{elevations.shadow(4)};
+    --rui-button-contained-focus-elevation: #{elevations.shadow(4)};
+    --rui-button-contained-pressed-elevation: #{elevations.shadow(8)};
 
     @include normalize.button;
     @include typography.button("--rui-comp-button-label");
@@ -151,15 +162,37 @@ function handleClick(event: MouseEvent) {
     align-items: center;
     justify-content: center;
     min-height: var(--rui-button-height);
+    min-width: 64px;
+    box-sizing: border-box;
     overflow: hidden;
-    padding-inline: var(--rui-button-padding-inline);
-    border: 1px solid transparent;
+    padding-inline-start: var(--rui-button-padding-inline-start);
+    padding-inline-end: var(--rui-button-padding-inline-end);
     border-radius: var(--rui-button-radius);
-    vertical-align: middle;
+    transition: #{elevations.transitionValue()};
 
-    &--full-width {
-        display: flex;
-        width: 100%;
+    &--text {
+        --rui-button-padding-inline-start: 8px;
+        --rui-button-padding-inline-end: 8px;
+    }
+
+    &--text#{&}--with-leading {
+        --rui-button-padding-inline-start: 4px;
+    }
+
+    &--text#{&}--with-trailing {
+        --rui-button-padding-inline-end: 4px;
+    }
+
+    &--outlined#{&}--with-leading,
+    &--contained#{&}--with-leading,
+    &--unelevated#{&}--with-leading {
+        --rui-button-padding-inline-start: 12px;
+    }
+
+    &--outlined#{&}--with-trailing,
+    &--contained#{&}--with-trailing,
+    &--unelevated#{&}--with-trailing {
+        --rui-button-padding-inline-end: 12px;
     }
 
     &--text,
@@ -169,12 +202,33 @@ function handleClick(event: MouseEvent) {
     }
 
     &--outlined {
-        border-color: var(--rui-button-outline-color);
+        border: 1px solid var(--rui-button-outline-color);
+    }
+
+    &--contained,
+    &--unelevated {
+        background-color: color.$primary;
+        color: color.$on-primary;
     }
 
     &--contained {
-        background-color: color.$primary;
-        color: color.$on-primary;
+        box-shadow: var(--rui-button-contained-elevation);
+
+        &:hover {
+            box-shadow: var(--rui-button-contained-hover-elevation);
+        }
+
+        &:focus-visible {
+            box-shadow: var(--rui-button-contained-focus-elevation);
+        }
+
+        &:active {
+            box-shadow: var(--rui-button-contained-pressed-elevation);
+        }
+    }
+
+    &--unelevated {
+        box-shadow: none;
     }
 
     &--disabled {
@@ -189,13 +243,14 @@ function handleClick(event: MouseEvent) {
     }
 
     &--disabled.rui-button--outlined {
-        border-color: color.$on-surface-low;
+        border-color: var(--rui-button-disabled-container-color);
     }
 
-    &--disabled.rui-button--contained {
-        border-color: transparent;
-        background-color: color.$on-surface-low;
-        color: color.$surface;
+    &--disabled.rui-button--contained,
+    &--disabled.rui-button--unelevated {
+        box-shadow: none;
+        background-color: var(--rui-button-disabled-container-color);
+        color: color.$on-surface-low;
     }
 }
 

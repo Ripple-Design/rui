@@ -1,46 +1,28 @@
 <script setup lang="ts">
 import { RI1kPlusOutlined, RIAccountBalanceFilled } from "@ripple-design/icons"
-import { RButton, RColumn, RIcon, RRow } from "@ripple-design/rui"
+import { RButton, RColumn, RRow } from "@ripple-design/rui"
 </script>
 
 <template>
     <RColumn gap="20px" class="button-demo">
         <RRow gap="16px" wrap align="center">
-            <RButton>Text button</RButton>
-            <RButton variant="outlined">Outlined button</RButton>
-            <RButton variant="contained">Contained button</RButton>
+            <RButton variant="text">Text</RButton>
+            <RButton variant="outlined">Outlined</RButton>
+            <RButton variant="unelevated">Unelevated</RButton>
+            <RButton variant="contained">Contained</RButton>
         </RRow>
 
         <RRow gap="16px" wrap align="center">
-            <RButton variant="contained">
-                <template #leading>
-                    <RIcon :icon="RIAccountBalanceFilled" decorative />
-                </template>
-                Leading icon
-            </RButton>
-
-            <RButton variant="text">
-                Trailing icon
-                <template #trailing>
-                    <RIcon :icon="RI1kPlusOutlined" decorative />
-                </template>
-            </RButton>
+            <RButton variant="contained" :icon="RIAccountBalanceFilled">Leading icon</RButton>
+            <RButton variant="text" :end-icon="RI1kPlusOutlined">Trailing icon</RButton>
         </RRow>
 
         <RRow gap="16px" wrap align="center">
-            <RButton disabled>Disabled button</RButton>
-            <RButton href="https://example.com" target="_blank" rel="noreferrer" variant="outlined"
-                >Link button</RButton
-            >
-            <RButton :ripple="{ contrast: 'high' }" variant="contained">High contrast ripple</RButton>
+            <RButton disabled>Disabled</RButton>
+            <RButton href="https://example.com" target="_blank" rel="noreferrer" variant="outlined">Link</RButton>
         </RRow>
 
-        <RButton full-width variant="contained">
-            <template #leading>
-                <RIcon :icon="RIAccountBalanceFilled" decorative />
-            </template>
-            Full width button
-        </RButton>
+        <RButton full-width variant="contained" :icon="RIAccountBalanceFilled">Full-width</RButton>
     </RColumn>
 </template>
 

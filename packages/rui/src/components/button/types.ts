@@ -1,6 +1,6 @@
 import type { RippleOptions } from "@/foundations/ripple"
 
-export type RButtonVariant = "text" | "outlined" | "contained"
+export type RButtonVariant = "text" | "outlined" | "contained" | "unelevated"
 export type RButtonType = "button" | "submit" | "reset"
 
 /** Props for the {@link RButton} component. */
@@ -19,6 +19,10 @@ export type RButtonProps = {
     target?: string
     /** Sets the link relationship when rendering an anchor. */
     rel?: string
+    /** Renders a leading icon using the shared icon renderer. */
+    icon?: string
+    /** Renders a trailing icon using the shared icon renderer. */
+    endIcon?: string
     /** Controls ripple behavior or disables it entirely. */
     ripple?: boolean | RippleOptions
 }
