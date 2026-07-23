@@ -1,0 +1,19 @@
+---
+title: Button
+docSlug: components/button
+tab: implementation
+locale: en
+designOrder: 70
+developOrder: 70
+api: /en/api/button
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import ButtonBasicDemo from "@docs/components/demos/button/ButtonBasicDemo.vue"
+import buttonBasicDemoSource from "@docs/components/demos/button/ButtonBasicDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock title="Button variants" code={buttonBasicDemoSource} language="vue">
+    <ButtonBasicDemo client:load />
+</DemoBlock>

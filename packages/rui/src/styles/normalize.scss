@@ -4,3 +4,20 @@
     background: transparent;
     outline: none;
 }
+
+@mixin button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    outline: none;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+    user-select: none;
+}
