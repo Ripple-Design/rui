@@ -2,8 +2,8 @@
 import { computed, useAttrs, useSlots } from "vue"
 
 import { RIcon } from "@/components"
-import { RTouchTargetWrapper } from "@/components/touchTarget"
 import { vRipple, type RippleOptions } from "@/foundations/ripple"
+import { RTouchTargetWrapper } from "@/foundations/touchTarget"
 
 import type { RButtonProps, RButtonType, RButtonVariant } from "./types"
 
@@ -98,7 +98,10 @@ function handleClick(event: MouseEvent) {
             :tabindex="disabled ? -1 : undefined"
             @click="handleClick"
         >
-            <span class="rui-touch-target rui-touch-target--vertical rui-touch-target--interactive" aria-hidden="true" />
+            <span
+                class="rui-touch-target rui-touch-target--vertical rui-touch-target--interactive"
+                aria-hidden="true"
+            />
 
             <span class="rui-button__content">
                 <span v-if="hasTop" class="rui-button__top">
@@ -133,7 +136,10 @@ function handleClick(event: MouseEvent) {
             :disabled="disabled"
             @click="handleClick"
         >
-            <span class="rui-touch-target rui-touch-target--vertical rui-touch-target--interactive" aria-hidden="true" />
+            <span
+                class="rui-touch-target rui-touch-target--vertical rui-touch-target--interactive"
+                aria-hidden="true"
+            />
 
             <span class="rui-button__content">
                 <span v-if="hasTop" class="rui-button__top">
@@ -191,7 +197,8 @@ function handleClick(event: MouseEvent) {
 }
 
 .rui-button {
-    --rui-button-height: 36px;
+    --rui-button-density: #{density.$scale};
+    --rui-button-height: #{density.withDecrement(36px, --rui-button-density)};
     --rui-button-vertical-gap: 4px;
     --rui-button-padding-inline-start: 16px;
     --rui-button-padding-inline-end: 16px;
@@ -225,7 +232,7 @@ function handleClick(event: MouseEvent) {
     }
 
     &--with-top {
-        min-height: 56px;
+        --rui-button-height: #{density.withDecrement(56px, --rui-button-density)};
     }
 
     &--sentence-case {

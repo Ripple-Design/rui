@@ -3,8 +3,11 @@ import { RRow, RTextField, themeToCSSVars, useTheme } from "@ripple-design/rui"
 import { computed, onMounted, ref } from "vue"
 
 const defaultPrimary = "#6200ee"
+const defaultDensity = 0
+const compactDensity = -1
 const { theme, setTheme, resetTheme } = useTheme()
 const primary = ref(theme.value.color?.primary ?? defaultPrimary)
+const density = ref(theme.value.density ?? defaultDensity)
 const cssPrimary = ref("")
 
 function syncCssPrimary() {
@@ -22,6 +25,10 @@ function applyPrimary() {
     syncCssPrimary()
 }
 
+function applyDensity() {
+    setTheme({ density: density.value })
+}
+
 function applyPreset(value: string) {
     primary.value = value
     applyPrimary()
@@ -30,6 +37,7 @@ function applyPreset(value: string) {
 function handleReset() {
     resetTheme()
     primary.value = theme.value.color?.primary ?? defaultPrimary
+    density.value = theme.value.density ?? defaultDensity
     syncCssPrimary()
 }
 
@@ -43,9 +51,17 @@ const cssVars = computed(() => themeToCSSVars(theme.value))
 <template>
     <div class="theme-plugin-test">
         <RTextField v-model="primary" label="Primary" placeholder="#6200ee" />
+        <label class="theme-plugin-test__density">
+            <span>Density</span>
+            <select v-model.number="density">
+                <option :value="defaultDensity">Default (0)</option>
+                <option :value="compactDensity">Compact (-1)</option>
+            </select>
+        </label>
 
         <RRow gap="8px" wrap class="theme-plugin-test__actions">
-            <button type="button" @click="applyPrimary">Apply</button>
+            <button type="button" @click="applyPrimary">Apply primary</button>
+            <button type="button" @click="applyDensity">Apply density</button>
             <button type="button" @click="applyPreset('#ff0000')">Red</button>
             <button type="button" @click="applyPreset('#00c853')">Green</button>
             <button type="button" @click="handleReset">Reset</button>
@@ -74,6 +90,17 @@ const cssVars = computed(() => themeToCSSVars(theme.value))
 .theme-plugin-test {
     display: grid;
     gap: 1rem;
+}
+
+.theme-plugin-test__density {
+    display: grid;
+    gap: 0.375rem;
+}
+
+.theme-plugin-test__density select {
+    padding: 0.375rem 0.5rem;
+    border: 1px solid #d0d0d0;
+    background: #fff;
 }
 
 .theme-plugin-test__actions button {

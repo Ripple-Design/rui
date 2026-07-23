@@ -14,6 +14,7 @@ if (element) {
                 onSurfaceHigh: "rgba(0, 0, 0, 0.87)",
                 onSurfaceMedium: "rgba(0, 0, 0, 0.54)",
             },
+            density: 0,
         },
     })
 

@@ -10,6 +10,7 @@ export type RThemeColors = {
 
 export type RTheme = {
     color?: RThemeColors
+    density?: number
 }
 
 export type RThemeController = {
@@ -39,6 +40,10 @@ export function themeToCSSVars(theme: RTheme) {
         vars["--rui-sys-color-on-surface-medium"] = theme.color.onSurfaceMedium
     }
 
+    if (theme.density != null) {
+        vars["--rui-sys-density-scale"] = String(theme.density)
+    }
+
     return vars
 }
 
@@ -60,6 +65,7 @@ function mergeTheme(base: RTheme, nextTheme: Partial<RTheme>): RTheme {
             ...base.color,
             ...nextTheme.color,
         },
+        density: nextTheme.density ?? base.density,
     }
 }
 

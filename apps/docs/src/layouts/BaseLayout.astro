@@ -116,10 +116,14 @@ const direction = getDirectionMode(currentUrl)
                   ? "rtl"
                   : "ltr"
             const primary = localStorage.getItem("rui-docs-primary")
+            const density = localStorage.getItem("rui-docs-density")
             document.documentElement.setAttribute("dir", dir)
             localStorage.setItem("rui-docs-dir", dir)
             if (primary) {
                 document.documentElement.style.setProperty("--rui-sys-color-primary", primary)
+            }
+            if (density != null) {
+                document.documentElement.style.setProperty("--rui-sys-density-scale", density)
             }
         </script>
     </head>
