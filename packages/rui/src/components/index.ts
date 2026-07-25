@@ -7,6 +7,17 @@ export { default as RRow } from "./stack/RRow.vue"
 export { default as RColumn } from "./stack/RColumn.vue"
 export type * from "./stack/types"
 
+export { default as RModal } from "./modal/RModal.vue"
+export type * from "./modal/types"
+
+export { default as RDialog } from "./dialog/RDialog.vue"
+export { default as RAlertDialog } from "./dialog/RAlertDialog.vue"
+export { default as RFullscreenDialog } from "./dialog/RFullscreenDialog.vue"
+export type * from "./dialog/types"
+
+export { default as RSurface } from "./surface/RSurface.vue"
+export type * from "./surface/types"
+
 export { default as RIcon } from "./icon/RIcon.vue"
 export type * from "./icon/types"
 
