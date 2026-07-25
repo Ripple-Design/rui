@@ -7,7 +7,7 @@ export interface Props {
     language?: string
 }
 
-const { title, code, language = "vue" } = Astro.props
+const {title, code, language = "vue"} = Astro.props
 const highlightedCode = codeToHtml(code.trimEnd(), {
     lang: language,
     theme: "github-light",
@@ -17,15 +17,17 @@ const highlightedCode = codeToHtml(code.trimEnd(), {
 <section class="demo-block">
     <h2>{title}</h2>
     <div class="demo-preview">
-        <slot />
+        <slot/>
     </div>
     <details class="demo-source">
         <summary>Show code</summary>
-        <div class="demo-source__content" set:html={highlightedCode} />
+        <div class="demo-source__content" set:html={highlightedCode}/>
     </details>
 </section>
 
-<style>
+<style lang="scss">
+    @use "@ripple-design/rui/rui";
+
     .demo-block {
         display: grid;
         gap: 1rem;
@@ -38,7 +40,7 @@ const highlightedCode = codeToHtml(code.trimEnd(), {
     .demo-preview,
     .demo-source {
         border-radius: 4px;
-        border: 1px solid #d0d0d0;
+        border: 1px solid #D0D0D0;
     }
 
     .demo-preview {
@@ -47,10 +49,11 @@ const highlightedCode = codeToHtml(code.trimEnd(), {
         justify-content: center;
         padding: 24px;
         gap: 16px;
+        background: rui.$color-background;
     }
 
     .demo-source {
-        background: #f7f7f7;
+        background: #F7F7F7;
     }
 
     .demo-source summary {
@@ -60,12 +63,12 @@ const highlightedCode = codeToHtml(code.trimEnd(), {
     }
 
     .demo-source summary:focus-visible {
-        outline: 2px solid #111;
+        outline: 2px solid #111111;
         outline-offset: 2px;
     }
 
     .demo-source__content {
-        border-top: 1px solid #d0d0d0;
+        border-top: 1px solid #D0D0D0;
         overflow-x: auto;
     }
 

@@ -9,12 +9,12 @@ const open = ref(false)
     <div class="dialog-demo">
         <RButton variant="contained" @click="open = true">Open dialog</RButton>
 
-        <RDialog v-model="open" title="Delete item" subtitle="This action cannot be undone.">
+        <RDialog v-model="open" title="Delete item">
             <p>Dialogs combine native modal behavior with the shared surface foundation.</p>
 
             <template #actions="{ close }">
                 <RButton variant="text" @click="close('cancel')">Cancel</RButton>
-                <RButton variant="contained" @click="close('confirm')">Delete</RButton>
+                <RButton variant="text" @click="close('confirm')">Delete</RButton>
             </template>
         </RDialog>
     </div>

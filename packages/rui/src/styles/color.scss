@@ -9,10 +9,11 @@
     --rui-sys-color-secondary-dark: #00b3a6;
     --rui-sys-color-on-secondary: #000000;
 
-    --rui-sys-color-background: #ffffff;
+    --rui-sys-color-background: #eeeeee;
     --rui-sys-color-on-background: #000000;
 
-    --rui-sys-color-surface: #ffffff;
+    --rui-sys-color-surface: #fafafa;
+    --rui-sys-color-surface-dark: #f5f5f5;
     --rui-sys-color-on-surface: #000000;
     --rui-sys-color-on-surface-high: rgba(from var(--rui-sys-color-on-surface) r g b / 0.87);
     --rui-sys-color-on-surface-medium: rgba(from var(--rui-sys-color-on-surface) r g b / 0.54);
@@ -35,6 +36,7 @@ $background: var(--rui-sys-color-background);
 $on-background: var(--rui-sys-color-on-background);
 
 $surface: var(--rui-sys-color-surface);
+$surface-dark: var(--rui-sys-color-surface-dark);
 $on-surface: var(--rui-sys-color-on-surface);
 $on-surface-high: var(--rui-sys-color-on-surface-high);
 $on-surface-medium: var(--rui-sys-color-on-surface-medium);

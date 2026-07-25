@@ -11,7 +11,12 @@ const levels = [1, 2, 4, 8, 16, 24] as const
         </RText>
 
         <RGrid class="elevation-demo__grid" cols="repeat(auto-fit, minmax(120px, 1fr))" gap="20px">
-            <div v-for="level in levels" :key="level" class="elevation-demo__tile" :class="`elevation-demo__tile--${level}`">
+            <div
+                v-for="level in levels"
+                :key="level"
+                class="elevation-demo__tile"
+                :class="`elevation-demo__tile--${level}`"
+            >
                 <RText variant="overline">Level</RText>
                 <RText variant="headline6">{{ level }}</RText>
             </div>
@@ -40,7 +45,7 @@ const levels = [1, 2, 4, 8, 16, 24] as const
         justify-content: center;
         gap: 4px;
         min-height: 120px;
-        border-radius: 12px;
+        border-radius: 4px;
         background: var(--rui-sys-color-surface);
         color: var(--rui-sys-color-on-surface-high);
 

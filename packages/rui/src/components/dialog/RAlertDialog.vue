@@ -30,7 +30,6 @@ const emit = defineEmits<{
         :aria-labelledby="ariaLabelledBy"
         :aria-describedby="ariaDescribedBy"
         :title="title"
-        :subtitle="subtitle"
         @update:model-value="emit('update:modelValue', $event)"
         @before-open="emit('before-open')"
         @open="emit('open')"
@@ -39,9 +38,6 @@ const emit = defineEmits<{
     >
         <template v-if="$slots.title" #title>
             <slot name="title" />
-        </template>
-        <template v-if="$slots.subtitle" #subtitle>
-            <slot name="subtitle" />
         </template>
         <template v-if="$slots.header" #header>
             <slot name="header" />

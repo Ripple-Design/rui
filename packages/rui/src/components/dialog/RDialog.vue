@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, useId, useSlots } from "vue"
+import { computed, onMounted, ref, useId, useSlots } from "vue"
 
 import RModal from "@/components/modal/RModal.vue"
 import RSurface from "@/components/surface/RSurface.vue"
+import { useResizeObserver } from "@/utils/useResizeObserver"
 
 import type { RDialogProps } from "./types"
 
@@ -24,25 +25,80 @@ const emit = defineEmits<{
 
 const slots = useSlots()
 const modalRef = ref<InstanceType<typeof RModal> | null>(null)
+const contentRef = ref<HTMLElement | null>(null)
+const contentBodyRef = ref<HTMLElement | null>(null)
 const titleId = useId()
 const descriptionId = useId()
-const hasHeader = computed(() => !!slots.header || !!slots.title || !!props.title || !!slots.subtitle || !!props.subtitle)
+const hasOverflow = ref(false)
+const atTop = ref(true)
+const atBottom = ref(true)
+const hasHeader = computed(() => !!slots.header || !!slots.title || !!props.title)
 const hasFooter = computed(() => !!slots.footer || !!slots.actions)
-const hasSubtitle = computed(() => !!slots.subtitle || !!props.subtitle)
 const hasContent = computed(() => !!slots.default)
 const labelledby = computed(() => (hasHeader.value ? titleId : props.ariaLabelledBy))
 const describedby = computed(() => (hasContent.value ? descriptionId : props.ariaDescribedBy))
+const showHeaderDivider = computed(() => hasHeader.value && hasOverflow.value && !atTop.value)
+const showFooterDivider = computed(() => hasFooter.value && hasOverflow.value && !atBottom.value)
 const classes = computed(() => [
     "rui-dialog",
     {
         "rui-dialog--with-header": hasHeader.value,
         "rui-dialog--with-footer": hasFooter.value,
+        "rui-dialog--show-header-divider": showHeaderDivider.value,
+        "rui-dialog--show-footer-divider": showFooterDivider.value,
     },
 ])
 
 function closeWithAction(action: string) {
     modalRef.value?.close({ reason: "action", action })
 }
+
+function updateScrollState() {
+    const content = contentRef.value
+    if (!content || !hasContent.value) {
+        hasOverflow.value = false
+        atTop.value = true
+        atBottom.value = true
+        return
+    }
+
+    const epsilon = 1
+    const overflow = content.scrollHeight - content.clientHeight > epsilon
+
+    hasOverflow.value = overflow
+
+    if (!overflow) {
+        atTop.value = true
+        atBottom.value = true
+        return
+    }
+
+    atTop.value = content.scrollTop <= epsilon
+    atBottom.value = content.scrollTop + content.clientHeight >= content.scrollHeight - epsilon
+}
+
+function scheduleScrollStateUpdate() {
+    requestAnimationFrame(() => {
+        updateScrollState()
+    })
+}
+
+function handleOpen() {
+    scheduleScrollStateUpdate()
+    emit("open")
+}
+
+useResizeObserver(contentRef, () => {
+    scheduleScrollStateUpdate()
+})
+
+useResizeObserver(contentBodyRef, () => {
+    scheduleScrollStateUpdate()
+})
+
+onMounted(() => {
+    scheduleScrollStateUpdate()
+})
 
 defineExpose({
     open() {
@@ -69,24 +125,29 @@ defineExpose({
         class="rui-dialog-modal"
         @update:model-value="emit('update:modelValue', $event)"
         @before-open="emit('before-open')"
-        @open="emit('open')"
+        @open="handleOpen"
         @before-close="emit('before-close', $event)"
         @close="emit('close', $event)"
     >
-        <RSurface :class="classes">
+        <RSurface :class="classes" :elevation="24">
             <header v-if="hasHeader" class="rui-dialog__header">
                 <slot name="header">
                     <h2 :id="titleId" class="rui-dialog__title">
                         <slot name="title">{{ title }}</slot>
                     </h2>
-                    <p v-if="hasSubtitle" class="rui-dialog__subtitle">
-                        <slot name="subtitle">{{ subtitle }}</slot>
-                    </p>
                 </slot>
             </header>
 
-            <div v-if="hasContent" :id="descriptionId" class="rui-dialog__content">
-                <slot />
+            <div
+                v-if="hasContent"
+                :id="descriptionId"
+                ref="contentRef"
+                class="rui-dialog__content"
+                @scroll="updateScrollState"
+            >
+                <div ref="contentBodyRef" class="rui-dialog__content-body">
+                    <slot />
+                </div>
             </div>
 
             <footer v-if="hasFooter" class="rui-dialog__footer">
@@ -104,40 +165,49 @@ defineExpose({
 @use "@/styles/color";
 @use "@/styles/typography";
 
+.rui-dialog-modal {
+    padding: 48px;
+}
+
 .rui-dialog {
     width: min(560px, calc(100vw - 32px));
-    max-height: calc(100vh - 32px);
+    max-height: min(560px, calc(100vh - 96px));
     overflow: hidden;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
-.rui-dialog__header,
-.rui-dialog__footer {
-    padding: 24px 24px 0;
+.rui-dialog__header {
+    padding-inline: 24px;
 }
 
 .rui-dialog__content {
-    @include typography.subtitle1("--rui-comp-dialog-content");
-    padding: 20px 24px;
     overflow: auto;
     overscroll-behavior: contain;
 }
 
+.rui-dialog__content-body {
+    @include typography.body1("--rui-comp-dialog-content");
+    margin: 0;
+    padding-inline: 24px;
+    padding-block-start: calc(36px - 1cap);
+    padding-block-end: 28px;
+    color: color.$on-surface-medium;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+}
+
 .rui-dialog__footer {
-    padding: 0 24px 24px;
+    padding: 0 8px 2px;
 }
 
 .rui-dialog__title {
-    @include typography.subtitle1("--rui-comp-dialog-title");
+    @include typography.headline6("--rui-comp-dialog-title");
     margin: 0;
+    padding-block-start: calc(40px - 1cap);
     color: color.$on-surface;
-}
-
-.rui-dialog__subtitle {
-    @include typography.caption("--rui-comp-dialog-subtitle");
-    margin: 8px 0 0;
-    color: color.$on-surface-medium;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
 }
 
 .rui-dialog__actions {
@@ -146,13 +216,15 @@ defineExpose({
     gap: 8px;
 }
 
-.rui-dialog--with-header .rui-dialog__header {
+.rui-dialog--show-header-divider .rui-dialog__header {
     border-bottom: 1px solid color.$on-surface-outline;
-    padding-bottom: 16px;
 }
 
 .rui-dialog--with-footer .rui-dialog__footer {
+    padding-top: 2px;
+}
+
+.rui-dialog--show-footer-divider .rui-dialog__footer {
     border-top: 1px solid color.$on-surface-outline;
-    padding-top: 16px;
 }
 </style>

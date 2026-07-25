@@ -110,20 +110,35 @@ const direction = getDirectionMode(currentUrl)
         </style>
         <script is:inline>
             const current = new URL(window.location.href)
+            const readStorage = (key) => {
+                try {
+                    return localStorage.getItem(key)
+                } catch {
+                    return null
+                }
+            }
+            const allowedDensity = new Set(["0", "-1", "-2", "-3"])
             const dir = current.searchParams.get("dir") === "rtl"
                 ? "rtl"
-                : localStorage.getItem("rui-docs-dir") === "rtl"
+                : readStorage("rui-docs-dir") === "rtl"
                   ? "rtl"
                   : "ltr"
-            const primary = localStorage.getItem("rui-docs-primary")
-            const density = localStorage.getItem("rui-docs-density")
+            const primary = readStorage("rui-docs-primary")
+            const density = readStorage("rui-docs-density")
+            const shapeFamily = readStorage("rui-docs-shape-family")
             document.documentElement.setAttribute("dir", dir)
             localStorage.setItem("rui-docs-dir", dir)
             if (primary) {
                 document.documentElement.style.setProperty("--rui-sys-color-primary", primary)
             }
-            if (density != null) {
+            if (density != null && allowedDensity.has(density)) {
                 document.documentElement.style.setProperty("--rui-sys-density-scale", density)
+            }
+            if (shapeFamily === "cut" || shapeFamily === "rounded") {
+                const cssFamily = shapeFamily === "cut" ? "bevel" : "round"
+                for (const category of ["small", "medium", "large", "full"]) {
+                    document.documentElement.style.setProperty(`--rui-sys-shape-${category}-family`, cssFamily)
+                }
             }
         </script>
     </head>
@@ -163,7 +178,7 @@ const direction = getDirectionMode(currentUrl)
                     <ul>
                         <li>
                             <details>
-                                <summary>Primary</summary>
+                                <summary>Theme</summary>
                                 <div class="header-theme__panel">
                                     <ThemeControl client:load />
                                 </div>

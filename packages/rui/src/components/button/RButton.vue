@@ -172,6 +172,7 @@ function handleClick(event: MouseEvent) {
 @use "@/styles/density";
 @use "@/styles/elevations";
 @use "@/styles/normalize";
+@use "@/styles/shape";
 @use "@/styles/typography";
 
 .rui-button__touch-target-wrapper {
@@ -203,7 +204,11 @@ function handleClick(event: MouseEvent) {
     --rui-button-padding-inline-start: 16px;
     --rui-button-padding-inline-end: 16px;
     --rui-button-gap: 8px;
-    --rui-button-radius: 4px;
+    --rui-button-shape-family: var(--rui-sys-shape-small-family);
+    --rui-button-shape-start-start: var(--rui-sys-shape-small-start-start);
+    --rui-button-shape-start-end: var(--rui-sys-shape-small-start-end);
+    --rui-button-shape-end-end: var(--rui-sys-shape-small-end-end);
+    --rui-button-shape-end-start: var(--rui-sys-shape-small-end-start);
     --rui-button-outline-color: rgba(from #{color.$on-surface} r g b / 0.12);
     --rui-button-disabled-container-color: rgba(from #{color.$on-surface} r g b / 0.12);
     --rui-button-contained-elevation: #{elevations.shadow(2)};
@@ -213,6 +218,13 @@ function handleClick(event: MouseEvent) {
 
     @include normalize.button;
     @include typography.button("--rui-comp-button-label");
+    @include shape.apply(
+        var(--rui-button-shape-family),
+        var(--rui-button-shape-start-start),
+        var(--rui-button-shape-start-end),
+        var(--rui-button-shape-end-end),
+        var(--rui-button-shape-end-start)
+    );
 
     position: relative;
     display: inline-flex;
@@ -223,7 +235,6 @@ function handleClick(event: MouseEvent) {
     box-sizing: border-box;
     padding-inline-start: var(--rui-button-padding-inline-start);
     padding-inline-end: var(--rui-button-padding-inline-end);
-    border-radius: var(--rui-button-radius);
     transition: #{elevations.transitionValue()};
 
     &--full-width {

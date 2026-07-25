@@ -14,7 +14,7 @@ const open = ref(false)
 
             <template #actions="{ close }">
                 <RButton variant="text" @click="close('keep')">Keep editing</RButton>
-                <RButton variant="contained" @click="close('discard')">Discard</RButton>
+                <RButton variant="text" @click="close('discard')">Discard</RButton>
             </template>
         </RAlertDialog>
     </div>

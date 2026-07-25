@@ -9,7 +9,7 @@ const open = ref(false)
     <div class="dialog-demo">
         <RButton variant="outlined" @click="open = true">Open fullscreen dialog</RButton>
 
-        <RFullscreenDialog v-model="open" title="Edit event" subtitle="Review details before saving.">
+        <RFullscreenDialog v-model="open" title="Edit event">
             <div class="dialog-demo__long-content">
                 <p v-for="item in 12" :key="item">Fullscreen dialog content row {{ item }}.</p>
             </div>

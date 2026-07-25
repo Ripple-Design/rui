@@ -121,12 +121,25 @@ $ambient-map: (
     );
 }
 
+@function z-index($level) {
+    @if meta.type-of($level) != number or not math.is-unitless($level) {
+        @error "$level must be a unitless number, but received '#{$level}'";
+    }
+
+    @if $level < 0 or $level > 24 {
+        @error "$level must be between 0 and 24, but received '#{$level}'";
+    }
+
+    @return $level;
+}
+
 @function transitionValue($duration: var(--rui-sys-elevation-duration), $easing: motion.$easing-standard) {
     @return box-shadow #{$duration} #{$easing};
 }
 
 @mixin level($level, $color-rgb: var(--rui-sys-elevation-color), $opacity-boost: 0) {
     box-shadow: shadow($level, $color-rgb, $opacity-boost);
+    z-index: z-index($level);
 }
 
 @mixin transition($duration: var(--rui-sys-elevation-duration), $easing: motion.$easing-standard) {
