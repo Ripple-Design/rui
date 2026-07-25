@@ -1,6 +1,6 @@
 import type { Ref } from "vue"
 
-import { nextTick, watch } from "vue"
+import { watch } from "vue"
 
 export function useDialogModel(
     dialogRef: Ref<HTMLDialogElement | null>,
@@ -19,7 +19,6 @@ export function useDialogModel(
             if (isOpen && !dialog.open) {
                 options.onBeforeOpen?.()
                 dialog.showModal()
-                await nextTick()
                 await options.onAfterOpen?.()
                 return
             }

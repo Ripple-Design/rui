@@ -53,6 +53,15 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
 
     applyOptions(surface, options)
 
+    const reset = () => {
+        clearPointerStarts(pendingPointerStarts)
+        clearWaves(surface, activePointerWaves, activeKeyboardWave)
+        activePointerWaves.clear()
+        activeKeyboardWave = null
+        activeKeyboardKey = null
+        activeMousePointerId = null
+    }
+
     const onMouseEnter = () => {
         if (destroyed || isDisabled(host, options)) {
             return
@@ -88,6 +97,9 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
         if (["touch", "pen"].includes(event.pointerType)) {
             const timeoutId = window.setTimeout(() => {
                 pendingPointerStarts.delete(event.pointerId)
+                if (destroyed || !host.isConnected || isDisabled(host, options)) {
+                    return
+                }
                 const wave = createWave(surface, options, { clientX: event.clientX, clientY: event.clientY })
                 activePointerWaves.set(event.pointerId, wave)
             }, 70)
@@ -110,6 +122,13 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
         if (pending) {
             clearTimeout(pending.timeoutId)
             pendingPointerStarts.delete(event.pointerId)
+
+            if (destroyed || !host.isConnected || isDisabled(host, options)) {
+                if (activeMousePointerId === event.pointerId) {
+                    activeMousePointerId = null
+                }
+                return
+            }
 
             const wave = createWave(surface, options, { clientX: pending.clientX, clientY: pending.clientY })
             wave.release()
@@ -156,6 +175,12 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
         }
     }
 
+    const onVisibilityChange = () => {
+        if (document.hidden) {
+            reset()
+        }
+    }
+
     bind(host, "mouseenter", onMouseEnter, cleanup)
     bind(host, "mouseleave", onMouseLeave, cleanup)
     bind(host, "pointerdown", onPointerDown, cleanup)
@@ -164,6 +189,7 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
     bind(host, "blur", onBlur, cleanup)
     bind(window, "pointerup", onPointerDone, cleanup)
     bind(window, "pointercancel", onPointerDone, cleanup)
+    bind(document, "visibilitychange", onVisibilityChange, cleanup)
 
     return {
         update(nextOptions) {
@@ -171,12 +197,7 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
             applyOptions(surface, options)
 
             if (isDisabled(host, options)) {
-                clearPointerStarts(pendingPointerStarts)
-                clearWaves(surface, activePointerWaves, activeKeyboardWave)
-                activePointerWaves.clear()
-                activeKeyboardWave = null
-                activeKeyboardKey = null
-                activeMousePointerId = null
+                reset()
             }
         },
         destroy() {
@@ -186,12 +207,7 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
 
             destroyed = true
             cleanup.forEach((fn) => fn())
-            clearPointerStarts(pendingPointerStarts)
-            clearWaves(surface, activePointerWaves, activeKeyboardWave)
-            activePointerWaves.clear()
-            activeKeyboardWave = null
-            activeKeyboardKey = null
-            activeMousePointerId = null
+            reset()
             surface.remove()
 
             if (dataset.ruiRipplePositionManaged === "true") {
@@ -316,7 +332,12 @@ function createWave(
         }
     }
 
+    const handleAnimationCancel = () => {
+        remove()
+    }
+
     wave.addEventListener("animationend", handleAnimationEnd)
+    wave.addEventListener("animationcancel", handleAnimationCancel)
     surface.prepend(wave)
 
     const release = () => {
@@ -367,13 +388,19 @@ function bind<K extends keyof WindowEventMap>(
     listener: (event: WindowEventMap[K]) => void,
     cleanup: Cleanup[],
 ): void
+function bind<K extends keyof DocumentEventMap>(
+    target: Document,
+    type: K,
+    listener: (event: DocumentEventMap[K]) => void,
+    cleanup: Cleanup[],
+): void
 function bind<K extends keyof HTMLElementEventMap>(
     target: HTMLElement,
     type: K,
     listener: (event: HTMLElementEventMap[K]) => void,
     cleanup: Cleanup[],
 ): void
-function bind(target: Window | HTMLElement, type: string, listener: EventListener, cleanup: Cleanup[]) {
+function bind(target: Window | Document | HTMLElement, type: string, listener: EventListener, cleanup: Cleanup[]) {
     target.addEventListener(type, listener)
     cleanup.push(() => target.removeEventListener(type, listener))
 }

@@ -60,8 +60,8 @@ function focusInitialTarget() {
 }
 
 async function afterOpen() {
-    await nextTick()
     focusInitialTarget()
+    await nextTick()
     emit("open")
 }
 
