@@ -22,6 +22,7 @@ export { default as RIcon } from "./icon/RIcon.vue"
 export type * from "./icon/types"
 
 export { default as RButton } from "./button/RButton.vue"
+export { default as RButtonGroup } from "./button/RButtonGroup.vue"
 export type * from "./button/types"
 
 export { default as RText } from "./text/RText.vue"

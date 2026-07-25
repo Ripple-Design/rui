@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from "vue"
+import { computed, inject, onBeforeUnmount, ref, useAttrs, useSlots, watch, watchEffect } from "vue"
 
 import { RIcon } from "@/components"
 import { vRipple, type RippleOptions } from "@/foundations/ripple"
@@ -7,12 +7,13 @@ import { RTouchTargetWrapper } from "@/foundations/touchTarget"
 
 import type { RButtonProps, RButtonType, RButtonVariant } from "./types"
 
+import { buttonGroupKey } from "./groupContext"
+
 defineOptions({
     inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<RButtonProps>(), {
-    variant: "contained",
     disabled: false,
     fullWidth: false,
     sentenceCase: false,
@@ -22,16 +23,28 @@ const props = withDefaults(defineProps<RButtonProps>(), {
 
 const attrs = useAttrs()
 const slots = useSlots()
+const interactiveRef = ref<HTMLElement | null>(null)
+const group = inject(buttonGroupKey, null)
+const buttonId = Symbol("rButton")
+let warnedMissingValue = false
+let warnedHref = false
 
 const isLink = computed(() => !!props.href)
 const nativeType = computed<RButtonType>(() => props.type ?? "button")
 const resolvedHref = computed(() => (props.disabled ? undefined : props.href))
-const hasTop = computed(() => !!props.topIcon || !!slots.top)
+const hasTop = computed(() => !isIconGroup.value && (!!props.topIcon || !!slots.top))
 const hasLeading = computed(() => !!props.icon || !!slots.leading)
-const hasTrailing = computed(() => !!props.endIcon || !!slots.trailing)
+const hasTrailing = computed(() => !isIconGroup.value && (!!props.endIcon || !!slots.trailing))
+const selectionMode = computed(() => group?.selection.value)
+const isIconGroup = computed(() => group?.icon.value ?? false)
+const hasSelectionValue = computed(() => props.value !== undefined)
+const isSelectableInGroup = computed(() => selectionMode.value != null && !isLink.value && hasSelectionValue.value)
+const selected = computed(() => (isSelectableInGroup.value ? (group?.isSelected(props.value) ?? false) : false))
+const resolvedVariant = computed<RButtonVariant>(() => props.variant ?? group?.variant.value ?? "contained")
+const iconSize = computed(() => (isIconGroup.value ? 24 : 18))
 
 const rippleOptions = computed<RippleOptions>(() => {
-    const defaultContrast = ["contained", "unelevated"].includes(props.variant) ? "high" : "low"
+    const defaultContrast = ["contained", "unelevated"].includes(resolvedVariant.value) ? "high" : "low"
 
     if (props.ripple === false) {
         return { disabled: true }
@@ -60,7 +73,7 @@ const wrapperClasses = computed(() => [
 ])
 
 const classes = computed(() => {
-    const variant = props.variant as RButtonVariant
+    const variant = resolvedVariant.value
 
     return [
         "rui-button",
@@ -68,7 +81,10 @@ const classes = computed(() => {
         {
             "rui-button--full-width": props.fullWidth,
             "rui-button--disabled": props.disabled,
+            "rui-button--selectable": isSelectableInGroup.value,
+            "rui-button--icon-group": isIconGroup.value,
             "rui-button--sentence-case": props.sentenceCase,
+            "rui-button--selected": selected.value,
             "rui-button--with-top": hasTop.value,
             "rui-button--with-leading": hasLeading.value,
             "rui-button--with-trailing": hasTrailing.value,
@@ -76,10 +92,94 @@ const classes = computed(() => {
     ]
 })
 
+const resolvedRole = computed(() => {
+    if (selectionMode.value === "single" && isSelectableInGroup.value) {
+        return "radio"
+    }
+
+    return undefined
+})
+
+const resolvedAriaChecked = computed(() => {
+    if (selectionMode.value === "single" && isSelectableInGroup.value) {
+        return selected.value ? "true" : "false"
+    }
+
+    return undefined
+})
+
+const resolvedAriaPressed = computed(() => {
+    if (selectionMode.value === "multiple" && isSelectableInGroup.value) {
+        return selected.value ? "true" : "false"
+    }
+
+    return undefined
+})
+
+const resolvedTabIndex = computed(() => {
+    if (isLink.value && props.disabled) {
+        return -1
+    }
+
+    if (selectionMode.value === "single" && isSelectableInGroup.value) {
+        return group?.getTabIndex(buttonId)
+    }
+
+    return undefined
+})
+
+watchEffect(() => {
+    if (selectionMode.value != null && props.href != null && !warnedHref) {
+        warnedHref = true
+        if (import.meta.env.DEV) {
+            console.warn("[RButtonGroup] Link buttons are not supported in selectable groups.")
+        }
+    }
+
+    if (selectionMode.value != null && props.value === undefined && !warnedMissingValue) {
+        warnedMissingValue = true
+        if (import.meta.env.DEV) {
+            console.warn("[RButtonGroup] Selectable groups require every RButton child to provide a unique `value`.")
+        }
+    }
+})
+
+watch(
+    [() => props.disabled, () => props.href, () => props.value, hasSelectionValue, interactiveRef, () => group],
+    ([disabled, href, value, hasValue, element, nextGroup]) => {
+        if (!nextGroup) {
+            return
+        }
+
+        nextGroup.registerItem(buttonId, {
+            disabled,
+            element,
+            hasValue,
+            href,
+            value,
+        })
+    },
+    { immediate: true },
+)
+
+onBeforeUnmount(() => {
+    group?.unregisterItem(buttonId)
+})
+
 function handleClick(event: MouseEvent) {
     if (isLink.value && props.disabled) {
         event.preventDefault()
         event.stopImmediatePropagation()
+        return
+    }
+
+    if (selectionMode.value === "single" && selected.value && group?.required.value) {
+        event.preventDefault()
+        return
+    }
+
+    if (isSelectableInGroup.value) {
+        group?.activate(buttonId)
     }
 }
 </script>
@@ -88,14 +188,18 @@ function handleClick(event: MouseEvent) {
     <RTouchTargetWrapper :class="wrapperClasses">
         <a
             v-if="isLink"
+            ref="interactiveRef"
             v-bind="attrs"
             v-ripple="rippleOptions"
             :class="classes"
             :href="resolvedHref"
             :target="target"
             :rel="rel"
+            :role="resolvedRole"
+            :aria-checked="resolvedAriaChecked"
             :aria-disabled="disabled ? 'true' : undefined"
-            :tabindex="disabled ? -1 : undefined"
+            :aria-pressed="resolvedAriaPressed"
+            :tabindex="resolvedTabIndex"
             @click="handleClick"
         >
             <span
@@ -106,22 +210,22 @@ function handleClick(event: MouseEvent) {
             <span class="rui-button__content">
                 <span v-if="hasTop" class="rui-button__top">
                     <slot v-if="$slots.top" name="top" />
-                    <RIcon v-else-if="topIcon" :icon="topIcon" :size="18" decorative />
+                    <RIcon v-else-if="topIcon" :icon="topIcon" :size="iconSize" decorative />
                 </span>
 
                 <span class="rui-button__main">
                     <span v-if="hasLeading" class="rui-button__leading">
                         <slot v-if="$slots.leading" name="leading" />
-                        <RIcon v-else-if="icon" :icon="icon" :size="18" decorative />
+                        <RIcon v-else-if="icon" :icon="icon" :size="iconSize" decorative />
                     </span>
 
-                    <span class="rui-button__label">
+                    <span class="rui-button__label" v-if="!isIconGroup && $slots.default">
                         <slot />
                     </span>
 
                     <span v-if="hasTrailing" class="rui-button__trailing">
                         <slot v-if="$slots.trailing" name="trailing" />
-                        <RIcon v-else-if="endIcon" :icon="endIcon" :size="18" decorative />
+                        <RIcon v-else-if="endIcon" :icon="endIcon" :size="iconSize" decorative />
                     </span>
                 </span>
             </span>
@@ -129,11 +233,16 @@ function handleClick(event: MouseEvent) {
 
         <button
             v-else
+            ref="interactiveRef"
             v-bind="attrs"
             v-ripple="rippleOptions"
             :class="classes"
             :type="nativeType"
             :disabled="disabled"
+            :role="resolvedRole"
+            :aria-checked="resolvedAriaChecked"
+            :aria-pressed="resolvedAriaPressed"
+            :tabindex="resolvedTabIndex"
             @click="handleClick"
         >
             <span
@@ -144,22 +253,22 @@ function handleClick(event: MouseEvent) {
             <span class="rui-button__content">
                 <span v-if="hasTop" class="rui-button__top">
                     <slot v-if="$slots.top" name="top" />
-                    <RIcon v-else-if="topIcon" :icon="topIcon" :size="18" decorative />
+                    <RIcon v-else-if="topIcon" :icon="topIcon" :size="iconSize" decorative />
                 </span>
 
                 <span class="rui-button__main">
                     <span v-if="hasLeading" class="rui-button__leading">
                         <slot v-if="$slots.leading" name="leading" />
-                        <RIcon v-else-if="icon" :icon="icon" :size="18" decorative />
+                        <RIcon v-else-if="icon" :icon="icon" :size="iconSize" decorative />
                     </span>
 
-                    <span class="rui-button__label">
+                    <span class="rui-button__label" v-if="!isIconGroup && $slots.default">
                         <slot />
                     </span>
 
                     <span v-if="hasTrailing" class="rui-button__trailing">
                         <slot v-if="$slots.trailing" name="trailing" />
-                        <RIcon v-else-if="endIcon" :icon="endIcon" :size="18" decorative />
+                        <RIcon v-else-if="endIcon" :icon="endIcon" :size="iconSize" decorative />
                     </span>
                 </span>
             </span>
@@ -288,10 +397,38 @@ function handleClick(event: MouseEvent) {
         --rui-button-padding-inline-end: 16px;
     }
 
-    &--text,
-    &--outlined {
-        background-color: transparent;
-        color: color.$primary;
+    &--icon-group {
+        --rui-button-padding-inline-start: 0;
+        --rui-button-padding-inline-end: 0;
+        --rui-button-gap: 0;
+        --rui-button-vertical-gap: 0;
+
+        min-width: 48px;
+        width: 48px;
+    }
+
+    &--icon-group#{&}--with-leading,
+    &--icon-group#{&}--with-trailing,
+    &--icon-group#{&}--with-top {
+        --rui-button-padding-inline-start: 0;
+        --rui-button-padding-inline-end: 0;
+    }
+
+    &--icon-group#{&}--text,
+    &--icon-group#{&}--outlined,
+    &--icon-group#{&}--contained,
+    &--icon-group#{&}--unelevated {
+        gap: 0;
+    }
+
+    &--icon-group .rui-button__content,
+    &--icon-group .rui-button__main {
+        gap: 0;
+    }
+
+    &--selectable#{&}--text:not(#{&}--selected),
+    &--selectable#{&}--outlined:not(#{&}--selected) {
+        color: color.$on-surface-medium;
     }
 
     &--outlined {
@@ -323,6 +460,24 @@ function handleClick(event: MouseEvent) {
 
     &--unelevated {
         box-shadow: none;
+    }
+
+    &--selected#{&}--text,
+    &--selected#{&}--outlined {
+        background-color: rgba(from #{color.$primary} r g b / 0.12);
+        color: color.$primary;
+    }
+
+    &--selected#{&}--outlined {
+        --rui-button-outline-color: #{color.$primary};
+    }
+
+    &--selected#{&}--contained {
+        box-shadow: #{elevations.shadow(8)};
+    }
+
+    &--selected#{&}--unelevated {
+        box-shadow: inset 0 0 0 9999px rgb(from #{color.$on-primary} r g b / 0.08);
     }
 
     &--disabled {

@@ -1,0 +1,21 @@
+---
+title: Button group
+docSlug: components/button-group
+tab: implementation
+locale: en
+designOrder: 71
+developOrder: 71
+api: /en/api/button-group
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import ButtonGroupBasicDemo from "@docs/components/demos/buttonGroup/ButtonGroupBasicDemo.vue"
+import buttonGroupBasicDemoSource from "@docs/components/demos/buttonGroup/ButtonGroupBasicDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock title="Attached and selectable button groups" code={buttonGroupBasicDemoSource} language="vue">
+    <ButtonGroupBasicDemo client:load />
+</DemoBlock>
+
+`RButtonGroup` groups existing `RButton` children without replacing their own props or semantics. Use the group `variant` prop to apply a shared visual treatment, and enable `selection="single"` or `selection="multiple"` when the group should manage selected values via `v-model`.
