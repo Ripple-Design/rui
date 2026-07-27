@@ -33,7 +33,7 @@ const dialogRef = ref<HTMLDialogElement | null>(null)
 const pendingClose = ref<RModalCloseDetail | null>(null)
 const { capture, restore } = useReturnFocus()
 
-const model = computed(() => !!props.modelValue)
+const model = computed(() => props.modelValue)
 const resolvedInitialFocus = computed(() => props.initialFocus)
 const ariaLabel = computed(() => props.ariaLabel)
 const ariaLabelledby = computed(() => props.ariaLabelledBy)
@@ -175,41 +175,11 @@ onMounted(() => {
 dialog {
     border: 0;
     padding: 0;
+    margin: 0;
     background: transparent;
-    transition:
-        overlay 150ms #{motion.$easing-decelerated},
-        display 150ms #{motion.$easing-decelerated};
-    transition-behavior: allow-discrete;
-}
-
-dialog[open] {
-    transition:
-        overlay 150ms #{motion.$easing-decelerated},
-        display 150ms #{motion.$easing-decelerated};
-    transition-behavior: allow-discrete;
 }
 
 dialog::backdrop {
-    background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0);
-    transition:
-        background-color 75ms #{motion.$easing-accelerated},
-        overlay 75ms #{motion.$easing-accelerated},
-        display 75ms #{motion.$easing-accelerated};
-    transition-behavior: allow-discrete;
-}
-
-dialog[open]::backdrop {
     background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0.32);
-    transition:
-        background-color 150ms #{motion.$easing-decelerated},
-        overlay 150ms #{motion.$easing-decelerated},
-        display 150ms #{motion.$easing-decelerated};
-    transition-behavior: allow-discrete;
-}
-
-@starting-style {
-    dialog[open]::backdrop {
-        background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0);
-    }
 }
 </style>

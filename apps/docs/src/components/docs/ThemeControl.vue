@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { RRow, RTextField, applyTheme } from "@ripple-design/rui"
 import type { RShapeFamily, RTheme } from "@ripple-design/rui"
+
 import {
     DEFAULT_DOCS_THEME,
     createShapeTheme,
@@ -9,6 +9,7 @@ import {
     removeDocsThemeStorage,
     writeDocsThemeStorage,
 } from "@docs/lib/theme"
+import { RButton, RButtonGroup, RRow, RTextField, applyTheme } from "@ripple-design/rui"
 import { computed, onMounted, ref, watch } from "vue"
 
 const densityOptions = [0, -1, -2, -3] as const
@@ -30,29 +31,41 @@ function currentDocsTheme(): RTheme {
     }
 }
 
-watch(inputValue, (value) => {
-    if (syncSuspended) return
+watch(
+    inputValue,
+    (value) => {
+        if (syncSuspended) return
 
-    const trimmed = value.trim()
-    if (!isValidDocsThemeColor(trimmed)) return
+        const trimmed = value.trim()
+        if (!isValidDocsThemeColor(trimmed)) return
 
-    applyTheme({ color: { primary: trimmed } })
-    writeDocsThemeStorage(currentDocsTheme())
-}, { flush: "sync" })
+        applyTheme({ color: { primary: trimmed } })
+        writeDocsThemeStorage(currentDocsTheme())
+    },
+    { flush: "sync" },
+)
 
-watch(densityValue, (value) => {
-    if (syncSuspended) return
+watch(
+    densityValue,
+    (value) => {
+        if (syncSuspended) return
 
-    applyTheme({ density: value })
-    writeDocsThemeStorage(currentDocsTheme())
-}, { flush: "sync" })
+        applyTheme({ density: value })
+        writeDocsThemeStorage(currentDocsTheme())
+    },
+    { flush: "sync" },
+)
 
-watch(shapeFamilyValue, (value) => {
-    if (syncSuspended) return
+watch(
+    shapeFamilyValue,
+    (value) => {
+        if (syncSuspended) return
 
-    applyTheme({ shape: createShapeTheme(value) })
-    writeDocsThemeStorage(currentDocsTheme())
-}, { flush: "sync" })
+        applyTheme({ shape: createShapeTheme(value) })
+        writeDocsThemeStorage(currentDocsTheme())
+    },
+    { flush: "sync" },
+)
 
 onMounted(() => {
     const theme = readDocsTheme()
@@ -109,7 +122,6 @@ const densityLabel = computed(() => {
     }
 })
 
-const shapeLabel = computed(() => (shapeFamilyValue.value === "cut" ? "Cut" : "Rounded"))
 const previewShapeFamily = computed(() => (shapeFamilyValue.value === "cut" ? "bevel" : "round"))
 </script>
 
@@ -128,26 +140,25 @@ const previewShapeFamily = computed(() => (shapeFamilyValue.value === "cut" ? "b
 
         <label class="theme-control__field">
             <span>Density</span>
-            <select v-model.number="densityValue">
+            <select v-model.number="densityValue" style="width: 10px">
                 <option v-for="option in densityOptions" :key="option" :value="option">{{ option }}</option>
             </select>
         </label>
         <p class="theme-control__hint">Current density: {{ densityLabel }} ({{ densityValue }})</p>
 
-        <label class="theme-control__field">
+        <div class="theme-control__field">
             <span>Shape</span>
-            <select v-model="shapeFamilyValue">
-                <option value="rounded">Rounded</option>
-                <option value="cut">Cut</option>
-            </select>
-        </label>
-        <p class="theme-control__hint">Current shape: {{ shapeLabel }}</p>
+            <RButtonGroup v-model="shapeFamilyValue" selection="single" aria-label="Shape family">
+                <RButton value="rounded">Rounded</RButton>
+                <RButton value="cut">Cut</RButton>
+            </RButtonGroup>
+        </div>
 
         <RRow gap="8px" wrap class="theme-control__actions">
-            <button type="button" @click="resetPrimaryColor">Reset primary</button>
-            <button type="button" @click="resetDensity">Reset density</button>
-            <button type="button" @click="resetShape">Reset shape</button>
-            <button type="button" @click="resetAll">Reset all</button>
+            <RButton sentence-case variant="text" @click="resetPrimaryColor">Reset primary</RButton>
+            <RButton sentence-case variant="text" @click="resetDensity">Reset density</RButton>
+            <RButton sentence-case variant="text" @click="resetShape">Reset shape</RButton>
+            <RButton sentence-case variant="contained" @click="resetAll">Reset all</RButton>
         </RRow>
     </div>
 </template>
@@ -193,12 +204,5 @@ const previewShapeFamily = computed(() => (shapeFamilyValue.value === "cut" ? "b
 
 .theme-control__actions {
     justify-content: flex-end;
-}
-
-.theme-control__actions button {
-    padding: 0.375rem 0.75rem;
-    border: 1px solid #d0d0d0;
-    background: #fff;
-    cursor: pointer;
 }
 </style>

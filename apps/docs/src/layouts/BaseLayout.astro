@@ -1,6 +1,6 @@
 ---
 import "@ripple-design/rui/styles.css"
-import ThemeControl from "@docs/components/docs/ThemeControl.vue"
+import ThemeControlSheet from "@docs/components/docs/ThemeControlSheet.vue"
 import { getDirectionMode, getLocaleUrl, locales } from "../lib/docs"
 
 export interface Props {
@@ -73,27 +73,6 @@ const direction = getDirectionMode(currentUrl)
                 list-style: none;
                 padding: 0;
                 margin: 0;
-            }
-
-            .header-theme details {
-                position: relative;
-            }
-
-            .header-theme summary {
-                cursor: pointer;
-                user-select: none;
-            }
-
-            .header-theme__panel {
-                position: absolute;
-                top: calc(100% + 0.5rem);
-                inset-inline-end: 0;
-                z-index: 10;
-                min-width: 18rem;
-                padding: 1rem;
-                background: #fff;
-                border: 1px solid #d0d0d0;
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
             }
 
             .page-shell {
@@ -219,16 +198,7 @@ const direction = getDirectionMode(currentUrl)
                     </ul>
                 </nav>
                 <nav class="header-theme" aria-label="Theme controls">
-                    <ul>
-                        <li>
-                            <details>
-                                <summary>Theme</summary>
-                                <div class="header-theme__panel">
-                                    <ThemeControl client:load />
-                                </div>
-                            </details>
-                        </li>
-                    </ul>
+                    <ThemeControlSheet client:load />
                 </nav>
             </div>
         </header>

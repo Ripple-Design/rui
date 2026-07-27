@@ -63,20 +63,23 @@ defineExpose({
         @before-close="emit('before-close', $event)"
         @close="emit('close', $event)"
     >
-        <div class="rui-modal-side-sheet" :class="`rui-modal-side-sheet--${side}`">
-            <RSideSheet :title="title" :side="side" :width="width" class="rui-modal-side-sheet__panel">
-                <template v-if="$slots.title" #title>
-                    <slot name="title" />
-                </template>
-                <template v-if="$slots.header" #header>
-                    <slot name="header" />
-                </template>
-                <template v-if="$slots.footer" #footer>
-                    <slot name="footer" />
-                </template>
-                <slot />
-            </RSideSheet>
-        </div>
+        <RSideSheet
+            :title="title"
+            :side="side"
+            :width="width"
+            :class="['rui-modal-side-sheet__panel', `rui-modal-side-sheet__panel--${side}`]"
+        >
+            <template v-if="$slots.title" #title>
+                <slot name="title" />
+            </template>
+            <template v-if="$slots.header" #header>
+                <slot name="header" />
+            </template>
+            <template v-if="$slots.footer" #footer>
+                <slot name="footer" />
+            </template>
+            <slot />
+        </RSideSheet>
     </RModal>
 </template>
 
@@ -84,75 +87,73 @@ defineExpose({
 @use "@/styles/motion";
 
 .rui-modal-side-sheet-modal {
-    inline-size: 100vw;
-    max-inline-size: 100vw;
-    block-size: 100dvh;
-    max-block-size: 100dvh;
-    margin: 0;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     padding: 0;
-    border: 0;
-    opacity: 1;
-    transform: none;
+    margin: 0;
+    border: none;
+    background: transparent;
+    overflow: hidden;
+
+    transition:
+        display #{motion.$duration-medium-out} #{motion.$easing-accelerated} allow-discrete,
+        overlay #{motion.$duration-medium-out} #{motion.$easing-accelerated} allow-discrete;
 }
 
 .rui-modal-side-sheet-modal[open] {
-    opacity: 1;
-    transform: none;
-}
-
-.rui-modal-side-sheet {
-    inline-size: 100vw;
-    block-size: 100dvh;
-    display: flex;
-    overflow: hidden;
-    pointer-events: none;
-}
-
-.rui-modal-side-sheet--start {
-    justify-content: flex-start;
-}
-
-.rui-modal-side-sheet--end {
-    justify-content: flex-end;
+    transition:
+        display #{motion.$duration-medium-in} #{motion.$easing-decelerated} allow-discrete,
+        overlay #{motion.$duration-medium-in} #{motion.$easing-decelerated} allow-discrete;
 }
 
 .rui-modal-side-sheet__panel {
-    block-size: 100dvh;
-    max-block-size: 100dvh;
-    inline-size: min(var(--rui-side-sheet-width, 100vw), 100vw);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    height: 100%;
     pointer-events: auto;
-    transition-property: transform;
-    transition-duration: #{motion.$duration-medium-out};
-    transition-timing-function: #{motion.$easing-accelerated};
+    will-change: transform;
+    transition: transform #{motion.$duration-medium-out} #{motion.$easing-accelerated};
 }
 
-.rui-modal-side-sheet-modal[open] .rui-modal-side-sheet__panel {
-    transition-duration: #{motion.$duration-medium-in};
-    transition-timing-function: #{motion.$easing-decelerated};
+.rui-modal-side-sheet__panel--start {
+    left: 0;
+    transform: translateX(-100%);
 }
-.rui-modal-side-sheet--end .rui-modal-side-sheet__panel {
-    transform: translateX(0);
-}
-
-.rui-modal-side-sheet--start .rui-modal-side-sheet__panel {
-    transform: translateX(0);
-}
-
-@starting-style {
-    .rui-modal-side-sheet-modal[open] .rui-modal-side-sheet--end .rui-modal-side-sheet__panel {
-        transform: translateX(100%);
-    }
-
-    .rui-modal-side-sheet-modal[open] .rui-modal-side-sheet--start .rui-modal-side-sheet__panel {
-        transform: translateX(-100%);
-    }
-}
-
-.rui-modal-side-sheet-modal:not([open]) .rui-modal-side-sheet--end .rui-modal-side-sheet__panel {
+.rui-modal-side-sheet__panel--end {
+    right: 0;
     transform: translateX(100%);
 }
 
-.rui-modal-side-sheet-modal:not([open]) .rui-modal-side-sheet--start .rui-modal-side-sheet__panel {
-    transform: translateX(-100%);
+.rui-modal-side-sheet-modal[open] .rui-modal-side-sheet__panel--start,
+.rui-modal-side-sheet-modal[open] .rui-modal-side-sheet__panel--end {
+    transform: translateX(0);
+    transition: transform #{motion.$duration-medium-in} #{motion.$easing-decelerated};
+}
+
+@starting-style {
+    .rui-modal-side-sheet-modal[open] .rui-modal-side-sheet__panel--start {
+        transform: translateX(-100%);
+    }
+    .rui-modal-side-sheet-modal[open] .rui-modal-side-sheet__panel--end {
+        transform: translateX(100%);
+    }
+}
+
+.rui-modal-side-sheet-modal::backdrop {
+    background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0);
+    transition: background-color #{motion.$duration-medium-out} #{motion.$easing-accelerated};
+}
+
+.rui-modal-side-sheet-modal[open]::backdrop {
+    background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0.32);
+    transition: background-color #{motion.$duration-medium-in} #{motion.$easing-decelerated};
+}
+@starting-style {
+    .rui-modal-side-sheet-modal[open]::backdrop {
+        background-color: rgba(0, 0, 0, 0);
+    }
 }
 </style>
