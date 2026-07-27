@@ -164,7 +164,7 @@ const previewShapeFamily = computed(() => (shapeFamilyValue.value === "cut" ? "b
 
         <label class="theme-control__field">
             <span>Density</span>
-            <select v-model.number="densityValue" style="width: 10px">
+            <select v-model.number="densityValue">
                 <option v-for="option in densityOptions" :key="option" :value="option">{{ option }}</option>
             </select>
         </label>
@@ -172,7 +172,7 @@ const previewShapeFamily = computed(() => (shapeFamilyValue.value === "cut" ? "b
 
         <div class="theme-control__field">
             <span>Icon style</span>
-            <RButtonGroup v-model="iconStyleValue" selection="single" aria-label="Icon style" full-width>
+            <RButtonGroup v-model="iconStyleValue" selection="single" aria-label="Icon style">
                 <RButton v-for="style in R_ICON_STYLES" :key="style" :value="style">{{ style }}</RButton>
             </RButtonGroup>
         </div>
@@ -197,7 +197,8 @@ const previewShapeFamily = computed(() => (shapeFamilyValue.value === "cut" ? "b
 
 <style scoped>
 .theme-control {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: 0.75rem;
 }
 

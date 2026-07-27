@@ -1,6 +1,7 @@
 import type { RTheme } from "./types"
 
-import { themeToCSSVars } from "./core"
+import { mergeTheme, themeToCSSVars } from "./core"
+import { globalTheme, setGlobalTheme } from "./store"
 
 export function resolveThemeTarget(target?: HTMLElement | null) {
     if (target) {
@@ -39,4 +40,6 @@ export function applyTheme(theme: RTheme, target?: HTMLElement | null) {
     for (const [name, value] of Object.entries(vars)) {
         resolvedTarget.style.setProperty(name, value)
     }
+
+    setGlobalTheme(mergeTheme(globalTheme.value, theme))
 }

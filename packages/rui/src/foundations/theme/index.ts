@@ -2,3 +2,4 @@ export type { RShapeFamily, RTheme, RThemeColors, RThemeController, RThemePlugin
 export { mergeTheme, themeToCSSVars } from "./core"
 export { applyTheme, clearTheme, resolveThemeTarget } from "./dom"
 export { createThemeController, themePlugin, useTheme } from "./controller"
+export { globalTheme, setGlobalTheme } from "./store"

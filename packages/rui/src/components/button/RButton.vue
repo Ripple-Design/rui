@@ -52,7 +52,8 @@ const hasOwnLeading = computed<boolean>(() => !!props.icon || !!slots.leading)
 const supportsSelectedCheck = computed<boolean>(() => isSelectableInGroup.value && !hasTop.value && hasLabel.value)
 const showSelectedCheck = computed<boolean>(() => selected.value && supportsSelectedCheck.value)
 const animateSelectedCheckSpacing = computed<boolean>(() => supportsSelectedCheck.value && !hasOwnLeading.value)
-const hasLeading = computed<boolean>(() => hasOwnLeading.value || supportsSelectedCheck.value)
+const shouldRenderLeading = computed<boolean>(() => hasOwnLeading.value || supportsSelectedCheck.value)
+const hasLeading = computed<boolean>(() => hasOwnLeading.value || showSelectedCheck.value)
 const hasTrailing = computed<boolean>(() => !isIconGroup.value && (!!props.endIcon || !!slots.trailing))
 
 const wrapperClasses = computed(() => [
@@ -220,7 +221,7 @@ function handleClick(event: MouseEvent) {
                 </span>
 
                 <span class="rui-button__main">
-                    <span v-if="hasLeading" :class="leadingClasses">
+                    <span v-if="shouldRenderLeading" :class="leadingClasses">
                         <RIcon
                             v-if="showSelectedCheck || animateSelectedCheckSpacing"
                             :icon="selectedCheckIcon"
@@ -270,7 +271,7 @@ function handleClick(event: MouseEvent) {
                 </span>
 
                 <span class="rui-button__main">
-                    <span v-if="hasLeading" :class="leadingClasses">
+                    <span v-if="shouldRenderLeading" :class="leadingClasses">
                         <RIcon
                             v-if="showSelectedCheck || animateSelectedCheckSpacing"
                             :icon="selectedCheckIcon"
@@ -558,9 +559,9 @@ function handleClick(event: MouseEvent) {
     inline-size: 0;
     margin-inline-end: calc(var(--rui-button-gap) * -1);
     overflow: hidden;
-    transition:
-        inline-size #{motion.$duration-small-in} #{motion.$easing-standard},
-        margin-inline-end #{motion.$duration-small-in} #{motion.$easing-standard};
+    //transition:
+    //    inline-size #{motion.$duration-small-in} #{motion.$easing-standard},
+    //    margin-inline-end #{motion.$duration-small-in} #{motion.$easing-standard};
 
     &.rui-button__leading--animated-selected-check-visible {
         inline-size: 18px;
@@ -571,9 +572,9 @@ function handleClick(event: MouseEvent) {
 .rui-button__selected-check {
     opacity: 0;
     transform: scale(0.8);
-    transition:
-        opacity #{motion.$duration-small-in} #{motion.$easing-standard},
-        transform #{motion.$duration-small-in} #{motion.$easing-standard}; // TODO: even shorter
+    //transition:
+    //    opacity #{motion.$duration-small-in} #{motion.$easing-standard},
+    //    transform #{motion.$duration-small-in} #{motion.$easing-standard}; // TODO: even shorter
 
     &--visible {
         opacity: 1;

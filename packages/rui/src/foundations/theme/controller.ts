@@ -6,6 +6,7 @@ import type { RTheme, RThemeController, RThemePluginOptions } from "./types"
 
 import { mergeTheme } from "./core"
 import { applyTheme, clearTheme } from "./dom"
+import { setGlobalTheme } from "./store"
 
 export const themeKey: InjectionKey<RThemeController> = Symbol("ruiTheme")
 
@@ -13,6 +14,7 @@ export function createThemeController(initialTheme: RTheme = {}, target?: HTMLEl
     const theme = ref<RTheme>(initialTheme)
     const defaultTheme = initialTheme
 
+    setGlobalTheme(initialTheme)
     applyTheme(initialTheme, target)
 
     return {
@@ -21,11 +23,13 @@ export function createThemeController(initialTheme: RTheme = {}, target?: HTMLEl
             const merged = mergeTheme(theme.value, nextTheme)
             clearTheme(theme.value, target)
             theme.value = merged
+            setGlobalTheme(theme.value)
             applyTheme(theme.value, target)
         },
         resetTheme() {
             clearTheme(theme.value, target)
             theme.value = defaultTheme
+            setGlobalTheme(defaultTheme)
             applyTheme(defaultTheme, target)
         },
     }
