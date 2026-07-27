@@ -167,6 +167,7 @@ defineExpose({
 @use "@/styles/motion";
 
 .rui-dialog-modal {
+    margin: auto;
     padding: 48px;
     transition:
         overlay 150ms #{motion.$easing-decelerated},
