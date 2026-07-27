@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RShapeFamily, RTheme } from "@ripple-design/rui"
+import type { RIconStyle, RShapeFamily, RTheme } from "@ripple-design/rui"
 
 import {
     DEFAULT_DOCS_THEME,
@@ -9,15 +9,17 @@ import {
     removeDocsThemeStorage,
     writeDocsThemeStorage,
 } from "@docs/lib/theme"
-import { RButton, RButtonGroup, RRow, RTextField, applyTheme } from "@ripple-design/rui"
+import { R_ICON_STYLES, RButton, RButtonGroup, RRow, RTextField, applyTheme } from "@ripple-design/rui"
 import { computed, onMounted, ref, watch } from "vue"
 
 const densityOptions = [0, -1, -2, -3] as const
 const defaultPrimary = DEFAULT_DOCS_THEME.color?.primary ?? "#6200ee"
 const defaultDensity = DEFAULT_DOCS_THEME.density ?? densityOptions[0]
+const defaultIconStyle = DEFAULT_DOCS_THEME.iconStyle ?? R_ICON_STYLES[0]
 const defaultShapeFamily = DEFAULT_DOCS_THEME.shape?.small?.family ?? "rounded"
 const inputValue = ref(defaultPrimary)
 const densityValue = ref<number>(defaultDensity)
+const iconStyleValue = ref<RIconStyle>(defaultIconStyle)
 const shapeFamilyValue = ref<RShapeFamily>(defaultShapeFamily)
 let syncSuspended = true
 
@@ -27,6 +29,7 @@ function currentDocsTheme(): RTheme {
             primary: inputValue.value.trim() || defaultPrimary,
         },
         density: densityValue.value,
+        iconStyle: iconStyleValue.value,
         shape: createShapeTheme(shapeFamilyValue.value),
     }
 }
@@ -57,6 +60,17 @@ watch(
 )
 
 watch(
+    iconStyleValue,
+    (value) => {
+        if (syncSuspended) return
+
+        applyTheme({ iconStyle: value })
+        writeDocsThemeStorage(currentDocsTheme())
+    },
+    { flush: "sync" },
+)
+
+watch(
     shapeFamilyValue,
     (value) => {
         if (syncSuspended) return
@@ -71,6 +85,7 @@ onMounted(() => {
     const theme = readDocsTheme()
     inputValue.value = theme.color?.primary ?? defaultPrimary
     densityValue.value = theme.density ?? defaultDensity
+    iconStyleValue.value = theme.iconStyle ?? defaultIconStyle
     shapeFamilyValue.value = theme.shape?.small?.family ?? defaultShapeFamily
     syncSuspended = false
 })
@@ -91,6 +106,14 @@ function resetDensity() {
     syncSuspended = false
 }
 
+function resetIconStyle() {
+    syncSuspended = true
+    iconStyleValue.value = defaultIconStyle
+    writeDocsThemeStorage(currentDocsTheme())
+    applyTheme({ iconStyle: defaultIconStyle })
+    syncSuspended = false
+}
+
 function resetShape() {
     syncSuspended = true
     shapeFamilyValue.value = defaultShapeFamily
@@ -103,6 +126,7 @@ function resetAll() {
     syncSuspended = true
     inputValue.value = defaultPrimary
     densityValue.value = defaultDensity
+    iconStyleValue.value = defaultIconStyle
     shapeFamilyValue.value = defaultShapeFamily
     removeDocsThemeStorage()
     applyTheme(DEFAULT_DOCS_THEME)
@@ -147,6 +171,13 @@ const previewShapeFamily = computed(() => (shapeFamilyValue.value === "cut" ? "b
         <p class="theme-control__hint">Current density: {{ densityLabel }} ({{ densityValue }})</p>
 
         <div class="theme-control__field">
+            <span>Icon style</span>
+            <RButtonGroup v-model="iconStyleValue" selection="single" aria-label="Icon style" full-width>
+                <RButton v-for="style in R_ICON_STYLES" :key="style" :value="style">{{ style }}</RButton>
+            </RButtonGroup>
+        </div>
+
+        <div class="theme-control__field">
             <span>Shape</span>
             <RButtonGroup v-model="shapeFamilyValue" selection="single" aria-label="Shape family">
                 <RButton value="rounded">Rounded</RButton>
@@ -157,6 +188,7 @@ const previewShapeFamily = computed(() => (shapeFamilyValue.value === "cut" ? "b
         <RRow gap="8px" wrap class="theme-control__actions">
             <RButton sentence-case variant="text" @click="resetPrimaryColor">Reset primary</RButton>
             <RButton sentence-case variant="text" @click="resetDensity">Reset density</RButton>
+            <RButton sentence-case variant="text" @click="resetIconStyle">Reset icons</RButton>
             <RButton sentence-case variant="text" @click="resetShape">Reset shape</RButton>
             <RButton sentence-case variant="contained" @click="resetAll">Reset all</RButton>
         </RRow>

@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { RRow, RTextField, themeToCSSVars, useTheme } from "@ripple-design/rui"
-import type { RShapeFamily, RTheme } from "@ripple-design/rui"
+import { RButton, RButtonGroup, RRow, RTextField, themeToCSSVars, useTheme } from "@ripple-design/rui"
+import type { RIconStyle, RShapeFamily, RTheme } from "@ripple-design/rui"
+import { R_ICON_STYLES } from "@ripple-design/rui"
 import { computed, onMounted, ref, watch } from "vue"
 
 const densityOptions = [0, -1, -2, -3] as const
 const defaultPrimary = "#6200ee"
 const defaultDensity = densityOptions[0]
+const defaultIconStyle: RIconStyle = R_ICON_STYLES[0]
 const defaultShapeFamily: RShapeFamily = "rounded"
 const { theme, setTheme, resetTheme } = useTheme()
 const primary = ref(theme.value.color?.primary ?? defaultPrimary)
 const density = ref(theme.value.density ?? defaultDensity)
+const iconStyle = ref<RIconStyle>(theme.value.iconStyle ?? defaultIconStyle)
 const shapeFamily = ref<RShapeFamily>(theme.value.shape?.small?.family ?? defaultShapeFamily)
 const cssPrimary = ref("")
 let syncSuspended = false
@@ -53,6 +56,12 @@ watch(density, (value) => {
     setTheme({ density: value })
 }, { flush: "sync" })
 
+watch(iconStyle, (value) => {
+    if (syncSuspended) return
+
+    setTheme({ iconStyle: value })
+}, { flush: "sync" })
+
 watch(shapeFamily, (value) => {
     if (syncSuspended) return
 
@@ -68,6 +77,7 @@ function handleReset() {
     resetTheme()
     primary.value = theme.value.color?.primary ?? defaultPrimary
     density.value = theme.value.density ?? defaultDensity
+    iconStyle.value = theme.value.iconStyle ?? defaultIconStyle
     shapeFamily.value = theme.value.shape?.small?.family ?? defaultShapeFamily
     syncCssPrimary()
     syncSuspended = false
@@ -90,6 +100,12 @@ const previewShapeFamily = computed(() => (shapeFamily.value === "cut" ? "bevel"
                 <option v-for="option in densityOptions" :key="option" :value="option">{{ option }}</option>
             </select>
         </label>
+        <div class="theme-plugin-test__field">
+            <span>Icon style</span>
+            <RButtonGroup v-model="iconStyle" selection="single" aria-label="Theme icon style" full-width>
+                <RButton v-for="style in R_ICON_STYLES" :key="style" :value="style">{{ style }}</RButton>
+            </RButtonGroup>
+        </div>
         <label class="theme-plugin-test__field">
             <span>Shape</span>
             <select v-model="shapeFamily">

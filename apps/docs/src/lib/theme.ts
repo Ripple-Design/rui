@@ -1,6 +1,6 @@
-import type { RShapeFamily, RTheme } from "@ripple-design/rui"
+import type { RIconStyle, RShapeFamily, RTheme } from "@ripple-design/rui"
 
-import { applyTheme } from "@ripple-design/rui"
+import { R_ICON_STYLES, applyTheme } from "@ripple-design/rui"
 
 export const DOCS_THEME_KEY = "rui-docs-theme"
 export const DEFAULT_DOCS_THEME: RTheme = {
@@ -8,6 +8,7 @@ export const DEFAULT_DOCS_THEME: RTheme = {
         primary: "#6200ee",
     },
     density: 0,
+    iconStyle: R_ICON_STYLES[0],
     shape: {
         small: { family: "rounded" },
         medium: { family: "rounded" },
@@ -53,6 +54,10 @@ export function removeDocsThemeStorage() {
     }
 }
 
+function normalizeIconStyle(value: unknown): RIconStyle {
+    return typeof value === "string" && R_ICON_STYLES.includes(value as RIconStyle) ? (value as RIconStyle) : DEFAULT_DOCS_THEME.iconStyle!
+}
+
 export function normalizeDocsTheme(theme: unknown): RTheme {
     const next = typeof theme === "object" && theme != null ? (theme as RTheme) : {}
     const densityOptions = new Set([0, -1, -2, -3])
@@ -67,6 +72,7 @@ export function normalizeDocsTheme(theme: unknown): RTheme {
                     : DEFAULT_DOCS_THEME.color?.primary,
         },
         density,
+        iconStyle: normalizeIconStyle(next.iconStyle),
         shape: createShapeTheme(shapeFamily),
     }
 }

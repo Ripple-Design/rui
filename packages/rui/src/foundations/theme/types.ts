@@ -1,3 +1,4 @@
+import type { RIconStyle } from "@/foundations/icon"
 import type { Ref } from "vue"
 
 export type RThemeColors = {
@@ -34,6 +35,7 @@ export type RThemeShapes = {
 export type RTheme = {
     color?: RThemeColors
     density?: number
+    iconStyle?: RIconStyle
     shape?: RThemeShapes
 }
 

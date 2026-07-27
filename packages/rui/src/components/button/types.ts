@@ -1,6 +1,6 @@
 import type { RippleOptions } from "@/foundations/ripple"
 
-import type { RIconSource } from "@/components/icon/types"
+import type { RIconResolvableSource } from "@/components/icon/types"
 
 export type RButtonVariant = "text" | "outlined" | "contained" | "unelevated"
 export type RButtonGroupVariant = RButtonVariant | "icon"
@@ -29,11 +29,11 @@ export type RButtonProps = {
     /** Identifies the button inside a selectable `RButtonGroup`. */
     value?: unknown
     /** Renders a leading icon using the shared icon renderer. */
-    icon?: RIconSource
+    icon?: RIconResolvableSource
     /** Renders a trailing icon using the shared icon renderer. */
-    endIcon?: RIconSource
+    endIcon?: RIconResolvableSource
     /** Renders a top icon using the shared icon renderer. */
-    topIcon?: RIconSource
+    topIcon?: RIconResolvableSource
     /** Controls ripple behavior or disables it entirely. */
     ripple?: boolean | RippleOptions
 }
@@ -41,7 +41,7 @@ export type RButtonProps = {
 /** Props for the {@link RIconButton} component. */
 export type RIconButtonProps = {
     /** Renders the icon-only button glyph using the shared icon renderer. */
-    icon: RIconSource
+    icon: RIconResolvableSource
     /** Sets the accessible name announced for the icon-only button. */
     label: string
     /** Disables the icon button and all interactive feedback. */
@@ -64,6 +64,8 @@ export type RIconButtonProps = {
 export type RButtonGroupProps = {
     /** Applies a shared button variant to grouped `RButton` children that do not set their own variant. */
     variant?: RButtonGroupVariant
+    /** Expands the group to fill the available inline size and evenly distribute child buttons. */
+    fullWidth?: boolean
     /** Enables single or multiple selection behavior for grouped buttons. */
     selection?: RButtonGroupSelection
     /** Prevents the selection from becoming empty while selection mode is enabled. */

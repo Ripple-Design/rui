@@ -23,6 +23,7 @@ export { default as RSurface } from "./surface/RSurface.vue"
 export type * from "./surface/types"
 
 export { default as RIcon } from "./icon/RIcon.vue"
+export { createIconFamily, isIconFamily, resolveIconSource } from "./icon/family"
 export type * from "./icon/types"
 
 export { default as RButton } from "./button/RButton.vue"

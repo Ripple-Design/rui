@@ -84,6 +84,10 @@ export function themeToCSSVars(theme: RTheme) {
         vars["--rui-sys-density-scale"] = String(theme.density)
     }
 
+    if (theme.iconStyle) {
+        vars["--rui-sys-icon-style"] = theme.iconStyle
+    }
+
     const categories = ["small", "medium", "large", "full"] as const
 
     for (const category of categories) {
@@ -133,6 +137,7 @@ export function mergeTheme(base: RTheme, nextTheme: Partial<RTheme>): RTheme {
             ...nextTheme.color,
         },
         density: nextTheme.density ?? base.density,
+        iconStyle: nextTheme.iconStyle ?? base.iconStyle,
         shape: {
             small: mergeShapeCategory(base.shape?.small, nextTheme.shape?.small),
             medium: mergeShapeCategory(base.shape?.medium, nextTheme.shape?.medium),

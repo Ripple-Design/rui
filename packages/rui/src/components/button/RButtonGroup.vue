@@ -7,6 +7,7 @@ import { buttonGroupKey, type RButtonGroupItemState } from "./groupContext"
 
 const props = withDefaults(defineProps<RButtonGroupProps>(), {
     variant: "outlined",
+    fullWidth: false,
 })
 
 const isIconGroup = computed(() => props.variant === "icon")
@@ -66,12 +67,19 @@ const activeSingleItemId = computed(() => {
     return selectedSingleItem.value?.id ?? enabledSelectableItems.value[0]?.id ?? null
 })
 
+const hasInitializedSingleSelection = ref(false)
+
 watchEffect(() => {
     if (props.selection !== "single") {
         return
     }
 
     if (model.value != null) {
+        hasInitializedSingleSelection.value = true
+        return
+    }
+
+    if (hasInitializedSingleSelection.value) {
         return
     }
 
@@ -81,6 +89,7 @@ watchEffect(() => {
     }
 
     model.value = firstEnabled.state.value
+    hasInitializedSingleSelection.value = true
 })
 
 function sameItemState(left: RButtonGroupItemState, right: RButtonGroupItemState) {
@@ -157,11 +166,6 @@ function activate(id: symbol) {
 
     if (props.selection === "single") {
         if (Object.is(model.value ?? null, value)) {
-            if (requiredSelection.value) {
-                return
-            }
-
-            model.value = null
             return
         }
 
@@ -188,6 +192,7 @@ function activate(id: symbol) {
 provide(buttonGroupKey, {
     variant: computed(() => inheritedVariant.value),
     icon: computed(() => isIconGroup.value),
+    fullWidth: computed(() => props.fullWidth),
     selection: computed(() => props.selection),
     required: computed(() => requiredSelection.value),
     registerItem,
@@ -202,7 +207,7 @@ provide(buttonGroupKey, {
     <div
         v-bind="attrs"
         :aria-required="selection === 'single' && requiredSelection ? 'true' : undefined"
-        class="rui-button-group"
+        :class="['rui-button-group', { 'rui-button-group--full-width': fullWidth }]"
         :role="role"
     >
         <slot />
@@ -214,6 +219,16 @@ provide(buttonGroupKey, {
     display: inline-flex;
     align-items: stretch;
     isolation: isolate;
+
+    &--full-width {
+        display: flex;
+        width: 100%;
+
+        > :deep(.rui-button__touch-target-wrapper) {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+    }
 
     > :deep(.rui-button__touch-target-wrapper) {
         position: relative;

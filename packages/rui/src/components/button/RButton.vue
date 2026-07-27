@@ -1,14 +1,21 @@
 <script setup lang="ts">
+import { RICheckFilled, RICheckOutlined, RICheckRounded, RICheckSharp, RICheckTwoTone } from "@ripple-design/icons"
 import { computed, inject, onBeforeUnmount, ref, useAttrs, useSlots, watch, watchEffect, type Slots } from "vue"
 
 import { RIcon } from "@/components"
+import { createIconFamily } from "@/components/icon/family"
 import { vRipple } from "@/foundations/ripple"
 import { RTouchTargetWrapper } from "@/foundations/touchTarget"
 
 import type { RButtonProps, RButtonType, RButtonVariant } from "./types"
 
 import { buttonGroupKey } from "./groupContext"
-import { consumeDisabledLinkClick, resolveButtonHref, resolveButtonRippleOptions, resolveDisabledLinkTabIndex } from "./shared"
+import {
+    consumeDisabledLinkClick,
+    resolveButtonHref,
+    resolveButtonRippleOptions,
+    resolveDisabledLinkTabIndex,
+} from "./shared"
 
 const props = withDefaults(defineProps<RButtonProps>(), {
     disabled: false,
@@ -20,6 +27,7 @@ const props = withDefaults(defineProps<RButtonProps>(), {
 
 const attrs = useAttrs()
 const slots: Slots = useSlots()
+const selectedCheckIcon = createIconFamily(RICheckFilled, RICheckOutlined, RICheckRounded, RICheckSharp, RICheckTwoTone)
 const interactiveRef = ref<HTMLElement | null>(null)
 const group = inject(buttonGroupKey, null)
 const buttonId = Symbol("rButton")
@@ -29,9 +37,6 @@ let warnedHref = false
 const isLink = computed(() => !!props.href)
 const nativeType = computed<RButtonType>(() => props.type ?? "button")
 const resolvedHref = computed(() => resolveButtonHref(props.href, props.disabled))
-const hasTop = computed<boolean>(() => !isIconGroup.value && (!!props.topIcon || !!slots.top))
-const hasLeading = computed<boolean>(() => !!props.icon || !!slots.leading)
-const hasTrailing = computed<boolean>(() => !isIconGroup.value && (!!props.endIcon || !!slots.trailing))
 const selectionMode = computed(() => group?.selection.value)
 const isIconGroup = computed(() => group?.icon.value ?? false)
 const hasSelectionValue = computed(() => props.value !== undefined)
@@ -39,13 +44,21 @@ const isSelectableInGroup = computed(() => selectionMode.value != null && !isLin
 const selected = computed(() => (isSelectableInGroup.value ? (group?.isSelected(props.value) ?? false) : false))
 const resolvedVariant = computed<RButtonVariant>(() => props.variant ?? group?.variant.value ?? "contained")
 const iconSize = computed(() => (isIconGroup.value ? 24 : 18))
-
 const rippleOptions = computed(() => resolveButtonRippleOptions(resolvedVariant.value, props.ripple, props.disabled))
+const resolvedFullWidth = computed(() => props.fullWidth || group?.fullWidth.value || false)
+const hasLabel = computed<boolean>(() => !isIconGroup.value && !!slots.default)
+const hasTop = computed<boolean>(() => !isIconGroup.value && (!!props.topIcon || !!slots.top))
+const hasOwnLeading = computed<boolean>(() => !!props.icon || !!slots.leading)
+const supportsSelectedCheck = computed<boolean>(() => isSelectableInGroup.value && !hasTop.value && hasLabel.value)
+const showSelectedCheck = computed<boolean>(() => selected.value && supportsSelectedCheck.value)
+const animateSelectedCheckSpacing = computed<boolean>(() => supportsSelectedCheck.value && !hasOwnLeading.value)
+const hasLeading = computed<boolean>(() => hasOwnLeading.value || supportsSelectedCheck.value)
+const hasTrailing = computed<boolean>(() => !isIconGroup.value && (!!props.endIcon || !!slots.trailing))
 
 const wrapperClasses = computed(() => [
     "rui-button__touch-target-wrapper",
     {
-        "rui-button__touch-target-wrapper--full-width": props.fullWidth,
+        "rui-button__touch-target-wrapper--full-width": resolvedFullWidth.value,
         "rui-button__touch-target-wrapper--with-top": hasTop.value,
     },
 ])
@@ -57,7 +70,7 @@ const classes = computed(() => {
         "rui-button",
         `rui-button--${variant}`,
         {
-            "rui-button--full-width": props.fullWidth,
+            "rui-button--full-width": resolvedFullWidth.value,
             "rui-button--disabled": props.disabled,
             "rui-button--selectable": isSelectableInGroup.value,
             "rui-button--icon-group": isIconGroup.value,
@@ -69,6 +82,22 @@ const classes = computed(() => {
         },
     ]
 })
+
+const leadingClasses = computed(() => [
+    "rui-button__leading",
+    {
+        "rui-button__leading--animated-selected-check": animateSelectedCheckSpacing.value,
+        "rui-button__leading--animated-selected-check-visible":
+            showSelectedCheck.value && animateSelectedCheckSpacing.value,
+    },
+])
+
+const selectedCheckClasses = computed(() => [
+    "rui-button__selected-check",
+    {
+        "rui-button__selected-check--visible": showSelectedCheck.value,
+    },
+])
 
 const resolvedRole = computed(() => {
     if (selectionMode.value === "single" && isSelectableInGroup.value) {
@@ -191,12 +220,19 @@ function handleClick(event: MouseEvent) {
                 </span>
 
                 <span class="rui-button__main">
-                    <span v-if="hasLeading" class="rui-button__leading">
-                        <slot v-if="$slots.leading" name="leading" />
+                    <span v-if="hasLeading" :class="leadingClasses">
+                        <RIcon
+                            v-if="showSelectedCheck || animateSelectedCheckSpacing"
+                            :icon="selectedCheckIcon"
+                            :size="iconSize"
+                            decorative
+                            :class="selectedCheckClasses"
+                        />
+                        <slot v-else-if="$slots.leading" name="leading" />
                         <RIcon v-else-if="icon" :icon="icon" :size="iconSize" decorative />
                     </span>
 
-                    <span class="rui-button__label" v-if="!isIconGroup && $slots.default">
+                    <span class="rui-button__label" v-if="hasLabel">
                         <slot />
                     </span>
 
@@ -234,12 +270,19 @@ function handleClick(event: MouseEvent) {
                 </span>
 
                 <span class="rui-button__main">
-                    <span v-if="hasLeading" class="rui-button__leading">
-                        <slot v-if="$slots.leading" name="leading" />
+                    <span v-if="hasLeading" :class="leadingClasses">
+                        <RIcon
+                            v-if="showSelectedCheck || animateSelectedCheckSpacing"
+                            :icon="selectedCheckIcon"
+                            :size="iconSize"
+                            decorative
+                            :class="selectedCheckClasses"
+                        />
+                        <slot v-else-if="$slots.leading" name="leading" />
                         <RIcon v-else-if="icon" :icon="icon" :size="iconSize" decorative />
                     </span>
 
-                    <span class="rui-button__label" v-if="!isIconGroup && $slots.default">
+                    <span class="rui-button__label" v-if="hasLabel">
                         <slot />
                     </span>
 
@@ -257,6 +300,7 @@ function handleClick(event: MouseEvent) {
 @use "@/styles/color";
 @use "@/styles/density";
 @use "@/styles/elevations";
+@use "@/styles/motion";
 @use "@/styles/normalize";
 @use "@/styles/shape";
 @use "@/styles/typography";
@@ -508,6 +552,33 @@ function handleClick(event: MouseEvent) {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+}
+
+.rui-button__leading--animated-selected-check {
+    inline-size: 0;
+    margin-inline-end: calc(var(--rui-button-gap) * -1);
+    overflow: hidden;
+    transition:
+        inline-size #{motion.$duration-small-in} #{motion.$easing-standard},
+        margin-inline-end #{motion.$duration-small-in} #{motion.$easing-standard};
+
+    &.rui-button__leading--animated-selected-check-visible {
+        inline-size: 18px;
+        margin-inline-end: 0;
+    }
+}
+
+.rui-button__selected-check {
+    opacity: 0;
+    transform: scale(0.8);
+    transition:
+        opacity #{motion.$duration-small-in} #{motion.$easing-standard},
+        transform #{motion.$duration-small-in} #{motion.$easing-standard}; // TODO: even shorter
+
+    &--visible {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .rui-button__label {

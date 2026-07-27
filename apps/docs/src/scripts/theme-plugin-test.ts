@@ -1,5 +1,5 @@
 import ThemePluginTestApp from "@docs/components/demos/theme/ThemePluginTestApp.vue"
-import { themePlugin } from "@ripple-design/rui"
+import { R_ICON_STYLES, themePlugin } from "@ripple-design/rui"
 import { createApp } from "vue"
 
 const element = document.getElementById("theme-plugin-test")
@@ -15,6 +15,7 @@ if (element) {
                 onSurfaceMedium: "rgba(0, 0, 0, 0.54)",
             },
             density: 0,
+            iconStyle: R_ICON_STYLES[0],
         },
     })
 

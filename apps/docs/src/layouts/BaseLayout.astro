@@ -109,6 +109,7 @@ const direction = getDirectionMode(currentUrl)
                     primary: "#6200ee",
                 },
                 density: 0,
+                iconStyle: "filled",
                 shape: {
                     small: { family: "rounded" },
                     medium: { family: "rounded" },
@@ -117,14 +118,17 @@ const direction = getDirectionMode(currentUrl)
                 },
             }
             const allowedDensity = new Set([0, -1, -2, -3])
+            const allowedIconStyles = new Set(["filled", "outlined", "rounded", "sharp", "twotone"])
             const normalizeTheme = (theme) => {
                 const next = typeof theme === "object" && theme != null ? theme : {}
                 const density = allowedDensity.has(next.density) ? next.density : defaultTheme.density
+                const iconStyle = allowedIconStyles.has(next.iconStyle) ? next.iconStyle : defaultTheme.iconStyle
                 const shapeFamily = next.shape?.small?.family === "cut" ? "cut" : defaultTheme.shape.small.family
                 const primary = typeof next.color?.primary === "string" && next.color.primary ? next.color.primary : defaultTheme.color.primary
                 return {
                     color: { primary },
                     density,
+                    iconStyle,
                     shape: {
                         small: { family: shapeFamily },
                         medium: { family: shapeFamily },
@@ -139,6 +143,9 @@ const direction = getDirectionMode(currentUrl)
                 }
                 if (theme.density != null) {
                     document.documentElement.style.setProperty("--rui-sys-density-scale", String(theme.density))
+                }
+                if (theme.iconStyle) {
+                    document.documentElement.style.setProperty("--rui-sys-icon-style", theme.iconStyle)
                 }
                 const cssFamily = theme.shape?.small?.family === "cut" ? "bevel" : "round"
                 for (const category of ["small", "medium", "large", "full"]) {
