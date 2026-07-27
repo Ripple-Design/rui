@@ -19,6 +19,9 @@
         "*": {
             "": [
                 "./dist/types/src/index.d.ts"
+            ],
+            "playground": [
+                "./dist/types/src/playground/index.d.ts"
             ]
         }
     },
@@ -26,6 +29,10 @@
         ".": {
             "types": "./dist/types/src/index.d.ts",
             "import": "./dist/es/index.js"
+        },
+        "./playground": {
+            "types": "./dist/types/src/playground/index.d.ts",
+            "import": "./dist/es/playground/index.js"
         },
         "./styles.css": "./dist/rui.css",
         "./rui": "./rui.scss",

@@ -1,27 +1,12 @@
 <script setup lang="ts">
-import ThemeControl from "@docs/components/docs/ThemeControl.vue"
-import { RButton, RModalSideSheet } from "@ripple-design/rui"
-import { ref } from "vue"
+import { ThemePlayground } from "@ripple-design/rui/playground"
 
-const open = ref(false)
+import { DEFAULT_DOCS_THEME, DOCS_THEME_KEY } from "@docs/lib/theme"
 </script>
 
 <template>
     <div class="theme-control-sheet">
-        <RButton
-            aria-controls="docs-theme-sheet"
-            :aria-expanded="open ? 'true' : 'false'"
-            aria-haspopup="dialog"
-            sentence-case
-            variant="text"
-            @click="open = true"
-        >
-            Theme
-        </RButton>
-
-        <RModalSideSheet id="docs-theme-sheet" v-model="open" title="Theme" side="end">
-            <ThemeControl />
-        </RModalSideSheet>
+        <ThemePlayground :default-theme="DEFAULT_DOCS_THEME" persist :storage-key="DOCS_THEME_KEY" />
     </div>
 </template>
 

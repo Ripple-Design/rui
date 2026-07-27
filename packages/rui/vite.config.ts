@@ -58,6 +58,7 @@ export default defineConfig({
                 index: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
                 styles: fileURLToPath(new URL("./src/styles.ts", import.meta.url)),
                 "components/index": fileURLToPath(new URL("./src/components/index.ts", import.meta.url)),
+                "playground/index": fileURLToPath(new URL("./src/playground/index.ts", import.meta.url)),
                 ...publicVueEntries,
             },
             formats: ["es"],

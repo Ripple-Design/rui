@@ -16,6 +16,12 @@ if (element) {
             },
             density: 0,
             iconStyle: R_ICON_STYLES[0],
+            shape: {
+                small: { family: "rounded" },
+                medium: { family: "rounded" },
+                large: { family: "rounded" },
+                full: { family: "rounded" },
+            },
         },
     })
 
