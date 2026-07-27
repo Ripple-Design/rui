@@ -2,7 +2,7 @@ import type { Ref } from "vue"
 
 import { watch } from "vue"
 
-export function useDialogModel(
+export function useModal(
     dialogRef: Ref<HTMLDialogElement | null>,
     modelValue: Ref<boolean>,
     options: {

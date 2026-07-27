@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, useAttrs } from "vue"
 
-import { RUI_DIALOG_ACTION_ATTRIBUTE } from "@/foundations/dialog/constants"
-import {
-    getDialogActionTarget,
-    getDialogActionValue,
-    isDialogBackdropClick,
-} from "@/foundations/dialog/useDialogDismiss"
-import { useDialogModel } from "@/foundations/dialog/useDialogModel"
-import { useReturnFocus } from "@/foundations/dialog/useReturnFocus"
+import { RUI_MODAL_ACTION_ATTRIBUTE } from "@/components/modal/constants.ts"
+import { useModal } from "@/components/modal/useModal.ts"
+import { getActionTarget, getActionValue, isBackdropClick } from "@/components/modal/useModalDismiss.ts"
+import { useReturnFocus } from "@/components/modal/useReturnFocus.ts"
 
 import type { RModalCloseDetail, RModalCloseReason, RModalProps } from "./types"
 
@@ -74,7 +70,7 @@ function requestClose(detail: RModalCloseDetail) {
     dialog.close(detail.action ?? detail.reason)
 }
 
-useDialogModel(dialogRef, model, {
+useModal(dialogRef, model, {
     onBeforeOpen() {
         capture()
         emit("before-open")
@@ -104,11 +100,11 @@ function handleWheel(event: WheelEvent) {
 }
 
 function handleClick(event: MouseEvent) {
-    const actionTarget = getDialogActionTarget(event.target)
+    const actionTarget = getActionTarget(event.target)
     if (actionTarget) {
         requestClose({
             reason: "action",
-            action: getDialogActionValue(actionTarget),
+            action: getActionValue(actionTarget),
         })
         return
     }
@@ -116,7 +112,7 @@ function handleClick(event: MouseEvent) {
     const dialog = dialogRef.value
     if (!dialog || !props.closeOnBackdrop) return
 
-    if (isDialogBackdropClick(event, dialog)) {
+    if (isBackdropClick(event, dialog)) {
         requestClose({ reason: "backdrop" })
     }
 }

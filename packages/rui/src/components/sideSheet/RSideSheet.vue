@@ -22,12 +22,7 @@ const style = computed(() => ({
 </script>
 
 <template>
-    <RSurface
-        :class="classes"
-        :style="style"
-        :aria-labelledby="labelledby"
-        :elevation="24"
-    >
+    <RSurface :class="classes" :style="style" :aria-labelledby="labelledby" variant="elevated" :elevation="16">
         <header v-if="hasHeader" class="rui-side-sheet__header">
             <slot name="header">
                 <h2 :id="titleId" class="rui-side-sheet__title">

@@ -53,7 +53,6 @@ const classes = computed(() => [
     padding: 0;
     background-color: color.$surface;
     color: color.$on-surface;
-    border: 1px solid transparent;
 
     @include shape.apply(
         var(--rui-surface-shape-family),
@@ -64,7 +63,7 @@ const classes = computed(() => [
     );
 
     &--outlined {
-        border-color: color.$on-surface-outline;
+        border: 1px solid color.$on-surface-outline;
         z-index: elevations.z-index(1);
     }
 

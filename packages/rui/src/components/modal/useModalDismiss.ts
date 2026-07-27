@@ -1,14 +1,14 @@
-import { RUI_DIALOG_ACTION_ATTRIBUTE } from "./constants"
+import { RUI_MODAL_ACTION_ATTRIBUTE } from "./constants.ts"
 
-export function getDialogActionTarget(target: EventTarget | null) {
+export function getActionTarget(target: EventTarget | null) {
     if (!(target instanceof Element)) return null
-    return target.closest<HTMLElement>(`[${RUI_DIALOG_ACTION_ATTRIBUTE}]`)
+    return target.closest<HTMLElement>(`[${RUI_MODAL_ACTION_ATTRIBUTE}]`)
 }
 
-export function getDialogActionValue(target: HTMLElement) {
-    return target.getAttribute(RUI_DIALOG_ACTION_ATTRIBUTE) ?? ""
+export function getActionValue(target: HTMLElement) {
+    return target.getAttribute(RUI_MODAL_ACTION_ATTRIBUTE) ?? ""
 }
 
-export function isDialogBackdropClick(event: MouseEvent, dialog: HTMLDialogElement) {
+export function isBackdropClick(event: MouseEvent, dialog: HTMLDialogElement) {
     return event.target === dialog && event.currentTarget === dialog
 }
