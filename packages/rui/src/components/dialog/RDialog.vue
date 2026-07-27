@@ -164,6 +164,7 @@ defineExpose({
 <style scoped lang="scss">
 @use "@/styles/color";
 @use "@/styles/typography";
+@use "@/styles/motion";
 
 .rui-dialog-modal {
     padding: 48px;
@@ -175,6 +176,23 @@ defineExpose({
     overflow: hidden;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
+    transform: scale(1);
+    opacity: 1;
+    transition:
+        opacity 45ms #{motion.$easing-linear},
+        transform 150ms #{motion.$easing-decelerated};
+}
+
+.rui-dialog-modal[open] .rui-dialog {
+    transform: scale(1);
+    opacity: 1;
+}
+
+@starting-style {
+    .rui-dialog-modal[open] .rui-dialog {
+        opacity: 0;
+        transform: scale(0.8);
+    }
 }
 
 .rui-dialog__header {

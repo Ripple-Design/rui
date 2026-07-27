@@ -176,22 +176,14 @@ dialog {
     border: 0;
     padding: 0;
     background: transparent;
-    opacity: 0;
-    transform: scale(1);
-    transform-origin: center;
     transition:
-        opacity 75ms #{motion.$easing-accelerated},
-        overlay 75ms #{motion.$easing-accelerated},
-        display 75ms #{motion.$easing-accelerated};
+        overlay 150ms #{motion.$easing-decelerated},
+        display 150ms #{motion.$easing-decelerated};
     transition-behavior: allow-discrete;
 }
 
 dialog[open] {
-    opacity: 1;
-    transform: scale(1);
     transition:
-        opacity 45ms #{motion.$easing-linear},
-        transform 150ms #{motion.$easing-decelerated},
         overlay 150ms #{motion.$easing-decelerated},
         display 150ms #{motion.$easing-decelerated};
     transition-behavior: allow-discrete;
@@ -216,11 +208,6 @@ dialog[open]::backdrop {
 }
 
 @starting-style {
-    dialog[open] {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-
     dialog[open]::backdrop {
         background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0);
     }
