@@ -157,7 +157,6 @@ const previewShapeFamily = computed(() => (shapeFamilyValue.value === "cut" ? "b
                 class="theme-control__swatch"
                 :style="{
                     background: inputValue || defaultPrimary,
-                    '--theme-control-preview-shape-family': previewShapeFamily,
                 }"
             />
         </div>
@@ -170,12 +169,12 @@ const previewShapeFamily = computed(() => (shapeFamilyValue.value === "cut" ? "b
         </label>
         <p class="theme-control__hint">Current density: {{ densityLabel }} ({{ densityValue }})</p>
 
-        <div class="theme-control__field">
+        <label class="theme-control__field">
             <span>Icon style</span>
-            <RButtonGroup v-model="iconStyleValue" selection="single" aria-label="Icon style">
-                <RButton v-for="style in R_ICON_STYLES" :key="style" :value="style">{{ style }}</RButton>
-            </RButtonGroup>
-        </div>
+            <select v-model="iconStyleValue">
+                <option v-for="style in R_ICON_STYLES" :key="style" :value="style">{{ style }}</option>
+            </select>
+        </label>
 
         <div class="theme-control__field">
             <span>Shape</span>
@@ -211,11 +210,6 @@ const previewShapeFamily = computed(() => (shapeFamilyValue.value === "cut" ? "b
     width: 100%;
     height: 2rem;
     border: 1px solid #d0d0d0;
-    border-start-start-radius: 0.75rem;
-    border-start-end-radius: 0.75rem;
-    border-end-end-radius: 0.75rem;
-    border-end-start-radius: 0.75rem;
-    corner-shape: var(--theme-control-preview-shape-family, round);
 }
 
 .theme-control__field {
