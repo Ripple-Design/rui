@@ -9,10 +9,6 @@ import type { RButtonProps, RButtonType, RButtonVariant } from "./types"
 
 import { buttonGroupKey } from "./groupContext"
 
-defineOptions({
-    inheritAttrs: false,
-})
-
 const props = withDefaults(defineProps<RButtonProps>(), {
     disabled: false,
     fullWidth: false,
@@ -318,8 +314,9 @@ function handleClick(event: MouseEvent) {
     --rui-button-shape-start-end: var(--rui-sys-shape-small-start-end);
     --rui-button-shape-end-end: var(--rui-sys-shape-small-end-end);
     --rui-button-shape-end-start: var(--rui-sys-shape-small-end-start);
-    --rui-button-outline-color: rgba(from #{color.$on-surface} r g b / 0.12);
-    --rui-button-disabled-container-color: rgba(from #{color.$on-surface} r g b / 0.12);
+    --rui-button-color: #{color.$primary};
+    --rui-button-outline-color: #{color.$on-surface-outline};
+    --rui-button-disabled-container-color: #{color.$on-surface-outline};
     --rui-button-contained-elevation: #{elevations.shadow(2)};
     --rui-button-contained-hover-elevation: #{elevations.shadow(4)};
     --rui-button-contained-focus-elevation: #{elevations.shadow(4)};
@@ -361,6 +358,7 @@ function handleClick(event: MouseEvent) {
     }
 
     &--text {
+        color: var(--rui-button-color);
         --rui-button-padding-inline-start: 8px;
         --rui-button-padding-inline-end: 8px;
     }
@@ -432,6 +430,7 @@ function handleClick(event: MouseEvent) {
     }
 
     &--outlined {
+        color: var(--rui-button-color);
         outline: 1px solid var(--rui-button-outline-color);
         outline-offset: -1px;
     }
