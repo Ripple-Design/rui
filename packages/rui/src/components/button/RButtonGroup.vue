@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, provide, ref, useAttrs, watchEffect } from "vue"
 
-import type { RButtonGroupModelValue, RButtonGroupProps } from "./types"
+import type { RButtonGroupModelValue, RButtonGroupProps, RButtonVariant } from "./types"
 
 import { buttonGroupKey, type RButtonGroupItemState } from "./groupContext"
 

@@ -1,0 +1,21 @@
+---
+title: Icon button
+docSlug: components/icon-button
+tab: implementation
+locale: en
+designOrder: 72
+developOrder: 72
+api: /en/api/icon-button
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import IconButtonBasicDemo from "@docs/components/demos/iconButton/IconButtonBasicDemo.vue"
+import iconButtonBasicDemoSource from "@docs/components/demos/iconButton/IconButtonBasicDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock title="Icon button states" code={iconButtonBasicDemoSource} language="vue">
+    <IconButtonBasicDemo client:load />
+</DemoBlock>
+
+`RIconButton` is the icon-only companion to `RButton`. Use it for single actions, keep the icon decorative, and pass a descriptive `label` so assistive technology can announce the control correctly.

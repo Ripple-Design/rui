@@ -38,6 +38,28 @@ export type RButtonProps = {
     ripple?: boolean | RippleOptions
 }
 
+/** Props for the {@link RIconButton} component. */
+export type RIconButtonProps = {
+    /** Renders the icon-only button glyph using the shared icon renderer. */
+    icon: RIconSource
+    /** Sets the accessible name announced for the icon-only button. */
+    label: string
+    /** Disables the icon button and all interactive feedback. */
+    disabled?: boolean
+    /** Sets the native button type when rendering a `<button>`. */
+    type?: RButtonType
+    /** Renders the icon button as a link when provided. */
+    href?: string
+    /** Sets the link target when rendering an anchor. */
+    target?: string
+    /** Sets the link relationship when rendering an anchor. */
+    rel?: string
+    /** Controls ripple behavior or disables it entirely. */
+    ripple?: boolean | RippleOptions
+    /** Exposes a toggle state for icon-only buttons that stay pressed. */
+    pressed?: boolean
+}
+
 /** Props for the {@link RButtonGroup} component. */
 export type RButtonGroupProps = {
     /** Applies a shared button variant to grouped `RButton` children that do not set their own variant. */

@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { computed, inject, onBeforeUnmount, ref, useAttrs, useSlots, watch, watchEffect } from "vue"
+import { computed, inject, onBeforeUnmount, ref, useAttrs, useSlots, watch, watchEffect, type Slots } from "vue"
 
 import { RIcon } from "@/components"
-import { vRipple, type RippleOptions } from "@/foundations/ripple"
+import { vRipple } from "@/foundations/ripple"
 import { RTouchTargetWrapper } from "@/foundations/touchTarget"
 
 import type { RButtonProps, RButtonType, RButtonVariant } from "./types"
 
 import { buttonGroupKey } from "./groupContext"
+import { consumeDisabledLinkClick, resolveButtonHref, resolveButtonRippleOptions, resolveDisabledLinkTabIndex } from "./shared"
 
 const props = withDefaults(defineProps<RButtonProps>(), {
     disabled: false,
@@ -18,7 +19,7 @@ const props = withDefaults(defineProps<RButtonProps>(), {
 })
 
 const attrs = useAttrs()
-const slots = useSlots()
+const slots: Slots = useSlots()
 const interactiveRef = ref<HTMLElement | null>(null)
 const group = inject(buttonGroupKey, null)
 const buttonId = Symbol("rButton")
@@ -27,10 +28,10 @@ let warnedHref = false
 
 const isLink = computed(() => !!props.href)
 const nativeType = computed<RButtonType>(() => props.type ?? "button")
-const resolvedHref = computed(() => (props.disabled ? undefined : props.href))
-const hasTop = computed(() => !isIconGroup.value && (!!props.topIcon || !!slots.top))
-const hasLeading = computed(() => !!props.icon || !!slots.leading)
-const hasTrailing = computed(() => !isIconGroup.value && (!!props.endIcon || !!slots.trailing))
+const resolvedHref = computed(() => resolveButtonHref(props.href, props.disabled))
+const hasTop = computed<boolean>(() => !isIconGroup.value && (!!props.topIcon || !!slots.top))
+const hasLeading = computed<boolean>(() => !!props.icon || !!slots.leading)
+const hasTrailing = computed<boolean>(() => !isIconGroup.value && (!!props.endIcon || !!slots.trailing))
 const selectionMode = computed(() => group?.selection.value)
 const isIconGroup = computed(() => group?.icon.value ?? false)
 const hasSelectionValue = computed(() => props.value !== undefined)
@@ -39,26 +40,7 @@ const selected = computed(() => (isSelectableInGroup.value ? (group?.isSelected(
 const resolvedVariant = computed<RButtonVariant>(() => props.variant ?? group?.variant.value ?? "contained")
 const iconSize = computed(() => (isIconGroup.value ? 24 : 18))
 
-const rippleOptions = computed<RippleOptions>(() => {
-    const defaultContrast = ["contained", "unelevated"].includes(resolvedVariant.value) ? "high" : "low"
-
-    if (props.ripple === false) {
-        return { disabled: true }
-    }
-
-    if (props.ripple === true || props.ripple == null) {
-        return {
-            disabled: props.disabled,
-            contrast: defaultContrast,
-        }
-    }
-
-    return {
-        ...props.ripple,
-        contrast: props.ripple.contrast ?? defaultContrast,
-        disabled: props.disabled || !!props.ripple.disabled,
-    }
-})
+const rippleOptions = computed(() => resolveButtonRippleOptions(resolvedVariant.value, props.ripple, props.disabled))
 
 const wrapperClasses = computed(() => [
     "rui-button__touch-target-wrapper",
@@ -113,8 +95,9 @@ const resolvedAriaPressed = computed(() => {
 })
 
 const resolvedTabIndex = computed(() => {
-    if (isLink.value && props.disabled) {
-        return -1
+    const disabledLinkTabIndex = resolveDisabledLinkTabIndex(isLink.value, props.disabled)
+    if (disabledLinkTabIndex !== undefined) {
+        return disabledLinkTabIndex
     }
 
     if (selectionMode.value === "single" && isSelectableInGroup.value) {
@@ -163,9 +146,7 @@ onBeforeUnmount(() => {
 })
 
 function handleClick(event: MouseEvent) {
-    if (isLink.value && props.disabled) {
-        event.preventDefault()
-        event.stopImmediatePropagation()
+    if (consumeDisabledLinkClick(event, isLink.value, props.disabled)) {
         return
     }
 

@@ -46,23 +46,23 @@
     }
 }
 
-@mixin touchTargetMarginXY(
+@mixin touchTargetPaddingXY(
     $component-height,
     $component-width,
     $target-height: 48px,
     $target-width: 48px,
     $density-var: --rui-sys-density-scale
 ) {
-    $margin-y: _touch-target-margin($component-height, $target-height);
-    $margin-x: _touch-target-margin($component-width, $target-width);
+    $padding-y: _touch-target-margin($component-height, $target-height);
+    $padding-x: _touch-target-margin($component-width, $target-width);
 
-    @if $margin-y > 0 {
-        margin-top: calc(#{$margin-y} * #{_touch-target-enabled($density-var)});
-        margin-bottom: calc(#{$margin-y} * #{_touch-target-enabled($density-var)});
+    @if $padding-y > 0 {
+        padding-top: calc(#{$padding-y} * #{_touch-target-enabled($density-var)});
+        padding-bottom: calc(#{$padding-y} * #{_touch-target-enabled($density-var)});
     }
 
-    @if $margin-x > 0 {
-        margin-left: calc(#{$margin-x} * #{_touch-target-enabled($density-var)});
-        margin-right: calc(#{$margin-x} * #{_touch-target-enabled($density-var)});
+    @if $padding-x > 0 {
+        padding-left: calc(#{$padding-x} * #{_touch-target-enabled($density-var)});
+        padding-right: calc(#{$padding-x} * #{_touch-target-enabled($density-var)});
     }
 }
