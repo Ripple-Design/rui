@@ -1,71 +1,32 @@
 <script setup lang="ts">
 import { RRow, RTextField, applyTheme } from "@ripple-design/rui"
 import type { RShapeFamily, RTheme } from "@ripple-design/rui"
+import {
+    DEFAULT_DOCS_THEME,
+    createShapeTheme,
+    isValidDocsThemeColor,
+    readDocsTheme,
+    removeDocsThemeStorage,
+    writeDocsThemeStorage,
+} from "@docs/lib/theme"
 import { computed, onMounted, ref, watch } from "vue"
 
 const densityOptions = [0, -1, -2, -3] as const
-const shapeCategories = ["small", "medium", "large", "full"] as const
-const defaultPrimary = "#6200ee"
-const defaultDensity = densityOptions[0]
-const defaultShapeFamily: RShapeFamily = "rounded"
+const defaultPrimary = DEFAULT_DOCS_THEME.color?.primary ?? "#6200ee"
+const defaultDensity = DEFAULT_DOCS_THEME.density ?? densityOptions[0]
+const defaultShapeFamily = DEFAULT_DOCS_THEME.shape?.small?.family ?? "rounded"
 const inputValue = ref(defaultPrimary)
 const densityValue = ref<number>(defaultDensity)
 const shapeFamilyValue = ref<RShapeFamily>(defaultShapeFamily)
 let syncSuspended = true
 
-function readStorage(key: string) {
-    try {
-        return localStorage.getItem(key)
-    } catch {
-        return null
-    }
-}
-
-function writeStorage(key: string, value: string) {
-    try {
-        localStorage.setItem(key, value)
-    } catch {
-        // Ignore storage failures in restrictive environments.
-    }
-}
-
-function removeStorage(key: string) {
-    try {
-        localStorage.removeItem(key)
-    } catch {
-        // Ignore storage failures in restrictive environments.
-    }
-}
-
-function readDensity(raw: string | null) {
-    const value = raw == null ? defaultDensity : Number(raw)
-    return densityOptions.includes(value as (typeof densityOptions)[number]) ? value : defaultDensity
-}
-
-function readShapeFamily(raw: string | null): RShapeFamily {
-    return raw === "cut" ? "cut" : defaultShapeFamily
-}
-
-function isValidColor(value: string) {
-    return value.length > 0 && (typeof CSS === "undefined" || CSS.supports("color", value))
-}
-
-function createShapeTheme(family: RShapeFamily): NonNullable<RTheme["shape"]> {
+function currentDocsTheme(): RTheme {
     return {
-        small: { family },
-        medium: { family },
-        large: { family },
-        full: { family },
-    }
-}
-
-function clearShapeTheme() {
-    for (const category of shapeCategories) {
-        document.documentElement.style.removeProperty(`--rui-sys-shape-${category}-family`)
-        document.documentElement.style.removeProperty(`--rui-sys-shape-${category}-start-start`)
-        document.documentElement.style.removeProperty(`--rui-sys-shape-${category}-start-end`)
-        document.documentElement.style.removeProperty(`--rui-sys-shape-${category}-end-end`)
-        document.documentElement.style.removeProperty(`--rui-sys-shape-${category}-end-start`)
+        color: {
+            primary: inputValue.value.trim() || defaultPrimary,
+        },
+        density: densityValue.value,
+        shape: createShapeTheme(shapeFamilyValue.value),
     }
 }
 
@@ -73,54 +34,65 @@ watch(inputValue, (value) => {
     if (syncSuspended) return
 
     const trimmed = value.trim()
-    if (!isValidColor(trimmed)) return
+    if (!isValidDocsThemeColor(trimmed)) return
 
     applyTheme({ color: { primary: trimmed } })
-    writeStorage("rui-docs-primary", trimmed)
+    writeDocsThemeStorage(currentDocsTheme())
 }, { flush: "sync" })
 
 watch(densityValue, (value) => {
     if (syncSuspended) return
 
     applyTheme({ density: value })
-    writeStorage("rui-docs-density", String(value))
+    writeDocsThemeStorage(currentDocsTheme())
 }, { flush: "sync" })
 
 watch(shapeFamilyValue, (value) => {
     if (syncSuspended) return
 
     applyTheme({ shape: createShapeTheme(value) })
-    writeStorage("rui-docs-shape-family", value)
+    writeDocsThemeStorage(currentDocsTheme())
 }, { flush: "sync" })
 
 onMounted(() => {
-    inputValue.value = readStorage("rui-docs-primary") ?? defaultPrimary
-    densityValue.value = readDensity(readStorage("rui-docs-density"))
-    shapeFamilyValue.value = readShapeFamily(readStorage("rui-docs-shape-family"))
+    const theme = readDocsTheme()
+    inputValue.value = theme.color?.primary ?? defaultPrimary
+    densityValue.value = theme.density ?? defaultDensity
+    shapeFamilyValue.value = theme.shape?.small?.family ?? defaultShapeFamily
     syncSuspended = false
 })
 
 function resetPrimaryColor() {
     syncSuspended = true
     inputValue.value = defaultPrimary
-    removeStorage("rui-docs-primary")
-    document.documentElement.style.removeProperty("--rui-sys-color-primary")
+    writeDocsThemeStorage(currentDocsTheme())
+    applyTheme({ color: { primary: defaultPrimary } })
     syncSuspended = false
 }
 
 function resetDensity() {
     syncSuspended = true
     densityValue.value = defaultDensity
-    removeStorage("rui-docs-density")
-    document.documentElement.style.removeProperty("--rui-sys-density-scale")
+    writeDocsThemeStorage(currentDocsTheme())
+    applyTheme({ density: defaultDensity })
     syncSuspended = false
 }
 
 function resetShape() {
     syncSuspended = true
     shapeFamilyValue.value = defaultShapeFamily
-    removeStorage("rui-docs-shape-family")
-    clearShapeTheme()
+    writeDocsThemeStorage(currentDocsTheme())
+    applyTheme({ shape: createShapeTheme(defaultShapeFamily) })
+    syncSuspended = false
+}
+
+function resetAll() {
+    syncSuspended = true
+    inputValue.value = defaultPrimary
+    densityValue.value = defaultDensity
+    shapeFamilyValue.value = defaultShapeFamily
+    removeDocsThemeStorage()
+    applyTheme(DEFAULT_DOCS_THEME)
     syncSuspended = false
 }
 
@@ -175,6 +147,7 @@ const previewShapeFamily = computed(() => (shapeFamilyValue.value === "cut" ? "b
             <button type="button" @click="resetPrimaryColor">Reset primary</button>
             <button type="button" @click="resetDensity">Reset density</button>
             <button type="button" @click="resetShape">Reset shape</button>
+            <button type="button" @click="resetAll">Reset all</button>
         </RRow>
     </div>
 </template>

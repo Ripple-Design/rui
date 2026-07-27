@@ -109,6 +109,7 @@ const direction = getDirectionMode(currentUrl)
             }
         </style>
         <script is:inline>
+            const DOCS_THEME_KEY = "rui-docs-theme"
             const current = new URL(window.location.href)
             const readStorage = (key) => {
                 try {
@@ -117,29 +118,72 @@ const direction = getDirectionMode(currentUrl)
                     return null
                 }
             }
-            const allowedDensity = new Set(["0", "-1", "-2", "-3"])
+            const writeStorage = (key, value) => {
+                try {
+                    localStorage.setItem(key, value)
+                } catch {
+                    // Ignore storage failures in restrictive environments.
+                }
+            }
+            const defaultTheme = {
+                color: {
+                    primary: "#6200ee",
+                },
+                density: 0,
+                shape: {
+                    small: { family: "rounded" },
+                    medium: { family: "rounded" },
+                    large: { family: "rounded" },
+                    full: { family: "rounded" },
+                },
+            }
+            const allowedDensity = new Set([0, -1, -2, -3])
+            const normalizeTheme = (theme) => {
+                const next = typeof theme === "object" && theme != null ? theme : {}
+                const density = allowedDensity.has(next.density) ? next.density : defaultTheme.density
+                const shapeFamily = next.shape?.small?.family === "cut" ? "cut" : defaultTheme.shape.small.family
+                const primary = typeof next.color?.primary === "string" && next.color.primary ? next.color.primary : defaultTheme.color.primary
+                return {
+                    color: { primary },
+                    density,
+                    shape: {
+                        small: { family: shapeFamily },
+                        medium: { family: shapeFamily },
+                        large: { family: shapeFamily },
+                        full: { family: shapeFamily },
+                    },
+                }
+            }
+            const applyTheme = (theme) => {
+                if (theme.color?.primary) {
+                    document.documentElement.style.setProperty("--rui-sys-color-primary", theme.color.primary)
+                }
+                if (theme.density != null) {
+                    document.documentElement.style.setProperty("--rui-sys-density-scale", String(theme.density))
+                }
+                const cssFamily = theme.shape?.small?.family === "cut" ? "bevel" : "round"
+                for (const category of ["small", "medium", "large", "full"]) {
+                    document.documentElement.style.setProperty(`--rui-sys-shape-${category}-family`, cssFamily)
+                }
+            }
             const dir = current.searchParams.get("dir") === "rtl"
                 ? "rtl"
                 : readStorage("rui-docs-dir") === "rtl"
                   ? "rtl"
                   : "ltr"
-            const primary = readStorage("rui-docs-primary")
-            const density = readStorage("rui-docs-density")
-            const shapeFamily = readStorage("rui-docs-shape-family")
-            document.documentElement.setAttribute("dir", dir)
-            localStorage.setItem("rui-docs-dir", dir)
-            if (primary) {
-                document.documentElement.style.setProperty("--rui-sys-color-primary", primary)
-            }
-            if (density != null && allowedDensity.has(density)) {
-                document.documentElement.style.setProperty("--rui-sys-density-scale", density)
-            }
-            if (shapeFamily === "cut" || shapeFamily === "rounded") {
-                const cssFamily = shapeFamily === "cut" ? "bevel" : "round"
-                for (const category of ["small", "medium", "large", "full"]) {
-                    document.documentElement.style.setProperty(`--rui-sys-shape-${category}-family`, cssFamily)
+            const rawTheme = readStorage(DOCS_THEME_KEY)
+            const parsedTheme = rawTheme ? (() => {
+                try {
+                    return JSON.parse(rawTheme)
+                } catch {
+                    return defaultTheme
                 }
-            }
+            })() : defaultTheme
+            const theme = normalizeTheme(parsedTheme)
+            document.documentElement.setAttribute("dir", dir)
+            writeStorage("rui-docs-dir", dir)
+            writeStorage(DOCS_THEME_KEY, JSON.stringify(theme))
+            applyTheme(theme)
         </script>
     </head>
     <body>
