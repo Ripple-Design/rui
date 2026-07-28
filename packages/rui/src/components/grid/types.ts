@@ -1,12 +1,26 @@
 import type { CSSProperties } from "vue"
 
+export type RGridColsValue = number | string
+
+export type RGridContainerCols = {
+    /** Defines columns for the smallest container breakpoint. */
+    csm: RGridColsValue
+    /** Defines columns once the container reaches the medium breakpoint. */
+    cmd?: RGridColsValue
+    /** Defines columns once the container reaches the large breakpoint. */
+    clg?: RGridColsValue
+    /** Defines columns once the container reaches the extra-large breakpoint. */
+    cxl?: RGridColsValue
+}
+
 /** Props for the {@link RGrid} component. */
 export type RGridProps = {
     /**
      * Defines the grid columns.
-     * Numbers become `repeat(n, 1fr)`, while strings pass through as native CSS Grid templates.
+     * Numbers become `repeat(n, minmax(0, 1fr))`, strings pass through as native CSS Grid templates,
+     * and object values map container breakpoints (`csm`, `cmd`, `clg`, `cxl`) to templates.
      */
-    cols?: number | string
+    cols?: RGridColsValue | RGridContainerCols
     /** Sets both row and column gaps between grid items. */
     gap?: CSSProperties["gap"]
     /** Sets the horizontal gap between grid items. */

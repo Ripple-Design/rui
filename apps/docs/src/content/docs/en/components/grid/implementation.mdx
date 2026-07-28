@@ -13,6 +13,8 @@ import GridBasicDemo from "@docs/components/demos/grid/GridBasicDemo.vue"
 import gridBasicDemoSource from "@docs/components/demos/grid/GridBasicDemo.vue?raw"
 import GridAutoFitDemo from "@docs/components/demos/grid/GridAutoFitDemo.vue"
 import gridAutoFitDemoSource from "@docs/components/demos/grid/GridAutoFitDemo.vue?raw"
+import GridResponsiveColsDemo from "@docs/components/demos/grid/GridResponsiveColsDemo.vue"
+import gridResponsiveColsDemoSource from "@docs/components/demos/grid/GridResponsiveColsDemo.vue?raw"
 
 ## Basic usage
 
@@ -24,4 +26,12 @@ import gridAutoFitDemoSource from "@docs/components/demos/grid/GridAutoFitDemo.v
 
 <DemoBlock title="Auto-fit grid" code={gridAutoFitDemoSource} language="vue">
     <GridAutoFitDemo client:load />
+</DemoBlock>
+
+## Container breakpoints
+
+Use `csm`, `cmd`, `clg`, and `cxl` to map column templates to container breakpoints.
+
+<DemoBlock title="Container-responsive columns" code={gridResponsiveColsDemoSource} language="vue">
+    <GridResponsiveColsDemo client:load />
 </DemoBlock>
