@@ -15,6 +15,8 @@ import GridAutoFitDemo from "@docs/components/demos/grid/GridAutoFitDemo.vue"
 import gridAutoFitDemoSource from "@docs/components/demos/grid/GridAutoFitDemo.vue?raw"
 import GridResponsiveColsDemo from "@docs/components/demos/grid/GridResponsiveColsDemo.vue"
 import gridResponsiveColsDemoSource from "@docs/components/demos/grid/GridResponsiveColsDemo.vue?raw"
+import GridResponsiveSpanDemo from "@docs/components/demos/grid/GridResponsiveSpanDemo.vue"
+import gridResponsiveSpanDemoSource from "@docs/components/demos/grid/GridResponsiveSpanDemo.vue?raw"
 
 ## Basic usage
 
@@ -28,10 +30,18 @@ import gridResponsiveColsDemoSource from "@docs/components/demos/grid/GridRespon
     <GridAutoFitDemo client:load />
 </DemoBlock>
 
-## Container breakpoints
+## Responsive columns
 
-Use `csm`, `cmd`, `clg`, and `cxl` to map column templates to container breakpoints.
+Grid accepts either viewport breakpoints (`sm`, `md`, `lg`, `xl`) or container breakpoints (`csm`, `cmd`, `clg`, `cxl`) for `cols`.
 
-<DemoBlock title="Container-responsive columns" code={gridResponsiveColsDemoSource} language="vue">
+<DemoBlock title="Responsive columns" code={gridResponsiveColsDemoSource} language="vue">
     <GridResponsiveColsDemo client:load />
+</DemoBlock>
+
+## Responsive item spans
+
+Grid item span directives accept the same responsive object forms, so layouts can change item width across viewport or container breakpoints without JavaScript measurement.
+
+<DemoBlock title="Responsive spans" code={gridResponsiveSpanDemoSource} language="vue">
+    <GridResponsiveSpanDemo client:load />
 </DemoBlock>

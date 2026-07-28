@@ -19,7 +19,7 @@ import { RGrid } from "@ripple-design/rui"
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `cols` | `RGridColsValue \| RGridContainerCols` | no | Defines the grid columns. Numbers become `repeat(n, minmax(0, 1fr))`, strings pass through as native CSS Grid templates, and object values map container breakpoints (`csm`, `cmd`, `clg`, `cxl`) to templates. |
+| `cols` | `RResponsiveValue<RGridColsValue>` | no | Defines the grid columns. Numbers become `repeat(n, minmax(0, 1fr))`, strings pass through as native CSS Grid templates, and object values map either viewport breakpoints (`sm`, `md`, `lg`, `xl`) or container breakpoints (`csm`, `cmd`, `clg`, `cxl`) to templates. |
 | `gap` | `CSSProperties["gap"]` | no | Sets both row and column gaps between grid items. |
 | `columnGap` | `CSSProperties["columnGap"]` | no | Sets the horizontal gap between grid items. |
 | `rowGap` | `CSSProperties["rowGap"]` | no | Sets the vertical gap between grid items. |

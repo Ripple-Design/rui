@@ -4,7 +4,9 @@ import { RGrid } from "@ripple-design/rui"
 
 <template>
     <div class="grid-responsive-demo">
-        <p class="grid-responsive-demo__hint">Resize the container to trigger csm / cmd / clg / cxl breakpoints.</p>
+        <p class="grid-responsive-demo__hint">
+            Resize the container to trigger csm / cmd / clg / cxl breakpoints. Widen the viewport to trigger sm / md / lg / xl.
+        </p>
         <div class="grid-responsive-demo__shell">
             <RGrid :cols="{ csm: 1, cmd: 2, clg: 3, cxl: 4 }" gap="12px">
                 <div class="grid-card">csm: 1 col</div>
@@ -17,6 +19,13 @@ import { RGrid } from "@ripple-design/rui"
                 <div class="grid-card">String templates still work</div>
             </RGrid>
         </div>
+
+        <RGrid :cols="{ sm: 1, md: 2, lg: 4 }" gap="12px">
+            <div class="grid-card grid-card--viewport">sm: 1 col</div>
+            <div class="grid-card grid-card--viewport">md: 2 cols</div>
+            <div class="grid-card grid-card--viewport">lg: 4 cols</div>
+            <div class="grid-card grid-card--viewport">Viewport width drives layout</div>
+        </RGrid>
     </div>
 </template>
 
@@ -53,5 +62,10 @@ import { RGrid } from "@ripple-design/rui"
     padding: 16px;
     background: #f7f7f7;
     text-align: center;
+}
+
+.grid-card--viewport {
+    background: #fff6e8;
+    border-color: #d6a14d;
 }
 </style>
