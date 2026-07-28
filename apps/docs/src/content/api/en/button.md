@@ -28,9 +28,9 @@ import { RButton } from "@ripple-design/rui"
 | `target` | `string` | no | Sets the link target when rendering an anchor. |
 | `rel` | `string` | no | Sets the link relationship when rendering an anchor. |
 | `value` | `unknown` | no | Identifies the button inside a selectable `RButtonGroup`. |
-| `icon` | `RIconSource` | no | Renders a leading icon using the shared icon renderer. |
-| `endIcon` | `RIconSource` | no | Renders a trailing icon using the shared icon renderer. |
-| `topIcon` | `RIconSource` | no | Renders a top icon using the shared icon renderer. |
+| `icon` | `RIconResolvableSource` | no | Renders a leading icon using the shared icon renderer. |
+| `endIcon` | `RIconResolvableSource` | no | Renders a trailing icon using the shared icon renderer. |
+| `topIcon` | `RIconResolvableSource` | no | Renders a top icon using the shared icon renderer. |
 | `ripple` | `boolean \| RippleOptions` | no | Controls ripple behavior or disables it entirely. |
 
 Generated from `packages/rui/src/components/button/types.ts`.

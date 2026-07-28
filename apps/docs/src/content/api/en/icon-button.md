@@ -19,7 +19,7 @@ import { RIconButton } from "@ripple-design/rui"
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `icon` | `RIconSource` | yes | Renders the icon-only button glyph using the shared icon renderer. |
+| `icon` | `RIconResolvableSource` | yes | Renders the icon-only button glyph using the shared icon renderer. |
 | `label` | `string` | yes | Sets the accessible name announced for the icon-only button. |
 | `disabled` | `boolean` | no | Disables the icon button and all interactive feedback. |
 | `type` | `RButtonType` | no | Sets the native button type when rendering a `<button>`. |
