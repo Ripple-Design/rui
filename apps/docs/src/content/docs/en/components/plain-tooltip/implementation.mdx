@@ -1,0 +1,21 @@
+---
+title: Plain tooltip
+docSlug: components/plain-tooltip
+tab: implementation
+locale: en
+designOrder: 145
+developOrder: 145
+api: /en/api/plain-tooltip
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import PlainTooltipBasicDemo from "@docs/components/demos/tooltip/PlainTooltipBasicDemo.vue"
+import plainTooltipBasicDemoSource from "@docs/components/demos/tooltip/PlainTooltipBasicDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock title="Plain tooltip states" code={plainTooltipBasicDemoSource} language="vue">
+    <PlainTooltipBasicDemo client:load />
+</DemoBlock>
+
+`RPlainTooltip` wraps a single trigger subtree and shows a compact plain-text tooltip on hover or keyboard focus. Use it for short, descriptive guidance rather than rich popup content.

@@ -48,6 +48,7 @@
         "lint:fix": "oxlint . --fix"
     },
     "dependencies": {
+        "@floating-ui/dom": "^1.8.0",
         "@ripple-design/icons": "^1.0.7"
     },
     "devDependencies": {
