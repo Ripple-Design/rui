@@ -42,7 +42,7 @@ export const defaultDarkTheme: RTheme = {
         onSecondary: "#000000",
         background: "#121212",
         onBackground: "#ffffff",
-        surface: "#1e1e1e",
+        surface: "#121212",
         surfaceDark: "#171717",
         onSurface: "#ffffff",
         error: "#cf6679",
