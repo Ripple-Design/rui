@@ -143,12 +143,12 @@ defineExpose({
 }
 
 .rui-modal-side-sheet-modal::backdrop {
-    background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0);
+    background-color: transparent;
     transition: background-color #{motion.$duration-medium-out} #{motion.$easing-accelerated};
 }
 
 .rui-modal-side-sheet-modal[open]::backdrop {
-    background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0.32);
+    background-color: rgba(0 0 0 / 0.32);
     transition: background-color #{motion.$duration-medium-in} #{motion.$easing-decelerated};
 }
 @starting-style {

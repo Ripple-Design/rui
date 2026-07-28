@@ -50,9 +50,10 @@ useResizeObserver(shadowLabelRef, (entry) => {
 @use "@/styles/color";
 @use "@/styles/shape";
 @use "@/styles/typography";
+@use "@/styles/mixin";
 
 .rui-notched-outline {
-    --rui-comp-notched-outline-color: rgba(0 0 0 / 38%);
+    --rui-comp-notched-outline-color: #{mixin.alpha(color.$on-surface, 38%)};
 
     $block: &;
 

@@ -1,21 +1,11 @@
-import type { RIconStyle, RShapeFamily, RTheme } from "@ripple-design/rui"
+import type { RIconStyle, RShapeFamily, RTheme, RThemePatch } from "@ripple-design/rui"
 
-import { R_ICON_STYLES, applyTheme } from "@ripple-design/rui"
+import { R_ICON_STYLES, applyTheme, defaultDayNightTheme } from "@ripple-design/rui"
 
 export const DOCS_THEME_KEY = "rui-docs-theme"
-export const DEFAULT_DOCS_THEME: RTheme = {
-    color: {
-        primary: "#6200ee",
-    },
-    density: 0,
-    iconStyle: R_ICON_STYLES[0],
-    shape: {
-        small: { family: "rounded" },
-        medium: { family: "rounded" },
-        large: { family: "rounded" },
-        full: { family: "rounded" },
-    },
-}
+export const DOCS_THEME_MODE_KEY = "rui-docs-theme-mode"
+export const DEFAULT_DOCS_THEME: RTheme = defaultDayNightTheme.day
+export const DEFAULT_DOCS_DAY_NIGHT_THEME = defaultDayNightTheme
 
 export function createShapeTheme(family: RShapeFamily): NonNullable<RTheme["shape"]> {
     return {
@@ -38,7 +28,7 @@ export function readDocsThemeStorage() {
     }
 }
 
-export function writeDocsThemeStorage(theme: RTheme) {
+export function writeDocsThemeStorage(theme: RThemePatch) {
     try {
         localStorage.setItem(DOCS_THEME_KEY, JSON.stringify(theme))
     } catch {
@@ -55,38 +45,46 @@ export function removeDocsThemeStorage() {
 }
 
 function normalizeIconStyle(value: unknown): RIconStyle {
-    return typeof value === "string" && R_ICON_STYLES.includes(value as RIconStyle) ? (value as RIconStyle) : DEFAULT_DOCS_THEME.iconStyle!
+    return typeof value === "string" && R_ICON_STYLES.includes(value as RIconStyle)
+        ? (value as RIconStyle)
+        : DEFAULT_DOCS_THEME.iconStyle!
 }
 
-export function normalizeDocsTheme(theme: unknown): RTheme {
-    const next = typeof theme === "object" && theme != null ? (theme as RTheme) : {}
+export function normalizeDocsThemePatch(theme: unknown): RThemePatch {
+    const next = typeof theme === "object" && theme != null ? (theme as RThemePatch) : {}
     const densityOptions = new Set([0, -1, -2, -3])
     const density = densityOptions.has(next.density ?? NaN) ? next.density : DEFAULT_DOCS_THEME.density
     const shapeFamily = next.shape?.small?.family === "cut" ? "cut" : "rounded"
+    const legacyPrimary =
+        typeof next.color?.primary === "string" && isValidDocsThemeColor(next.color.primary) ? next.color.primary : undefined
+    const dayPrimary =
+        typeof next.day?.color?.primary === "string" && isValidDocsThemeColor(next.day.color.primary)
+            ? next.day.color.primary
+            : legacyPrimary
+    const nightPrimary =
+        typeof next.night?.color?.primary === "string" && isValidDocsThemeColor(next.night.color.primary)
+            ? next.night.color.primary
+            : undefined
 
     return {
-        color: {
-            primary:
-                typeof next.color?.primary === "string" && isValidDocsThemeColor(next.color.primary)
-                    ? next.color.primary
-                    : DEFAULT_DOCS_THEME.color?.primary,
-        },
         density,
         iconStyle: normalizeIconStyle(next.iconStyle),
         shape: createShapeTheme(shapeFamily),
+        day: dayPrimary ? { color: { primary: dayPrimary } } : {},
+        night: nightPrimary ? { color: { primary: nightPrimary } } : {},
     }
 }
 
-export function readDocsTheme(): RTheme {
+export function readDocsTheme(): RThemePatch {
     const raw = readDocsThemeStorage()
     if (!raw) {
-        return DEFAULT_DOCS_THEME
+        return {}
     }
 
     try {
-        return normalizeDocsTheme(JSON.parse(raw))
+        return normalizeDocsThemePatch(JSON.parse(raw))
     } catch {
-        return DEFAULT_DOCS_THEME
+        return {}
     }
 }
 

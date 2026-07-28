@@ -11,8 +11,7 @@ if (element) {
         theme: {
             color: {
                 primary: "#6200ee",
-                onSurfaceHigh: "rgba(0, 0, 0, 0.87)",
-                onSurfaceMedium: "rgba(0, 0, 0, 0.54)",
+                onSurface: "#000000",
             },
             density: 0,
             iconStyle: R_ICON_STYLES[0],

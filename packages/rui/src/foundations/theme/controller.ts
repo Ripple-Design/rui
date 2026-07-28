@@ -1,43 +1,83 @@
 import type { App, InjectionKey, Plugin } from "vue"
 
-import { inject, ref } from "vue"
+import { computed, inject, ref } from "vue"
 
-import type { RTheme, RThemeController, RThemePluginOptions } from "./types"
-
-import { mergeTheme } from "./core"
 import { applyTheme, clearTheme } from "./dom"
-import { setGlobalTheme } from "./store"
+import { defaultDayNightTheme } from "./defaults"
+import { mergeThemePatch, resolveActiveTheme, resolveDayNightTheme, resolveThemeMode } from "./resolve"
+import { globalTheme, setGlobalTheme } from "./store"
+
+import type { RTheme, RThemeController, RThemeModePreference, RThemePatch, RThemePluginOptions } from "./types"
 
 export const themeKey: InjectionKey<RThemeController> = Symbol("ruiTheme")
 
-export function createThemeController(initialTheme: RTheme = {}, target?: HTMLElement | null): RThemeController {
-    const theme = ref<RTheme>(initialTheme)
-    const defaultTheme = initialTheme
+export function createThemeController(
+    initialThemePatch: RThemePatch = {},
+    target?: HTMLElement | null,
+    initialMode: RThemeModePreference = "system",
+): RThemeController {
+    const themePatch = ref<RThemePatch>(initialThemePatch)
+    const defaultThemePatch = initialThemePatch
+    const mode = ref<RThemeModePreference>(initialMode)
+    const systemPrefersDark = ref(resolveThemeMode("system") === "night")
+    const resolvedMode = computed(() => resolveThemeMode(mode.value, systemPrefersDark.value))
+    const resolvedThemes = ref(resolveDayNightTheme(defaultDayNightTheme, themePatch.value))
+    const theme = ref<RTheme>(resolveActiveTheme(resolvedThemes.value, mode.value, systemPrefersDark.value))
 
-    setGlobalTheme(initialTheme)
-    applyTheme(initialTheme, target)
+    const mediaQuery = typeof window !== "undefined" && typeof window.matchMedia === "function"
+        ? window.matchMedia("(prefers-color-scheme: dark)")
+        : null
+
+    function applyResolvedTheme() {
+        clearTheme(globalTheme.value, target)
+        resolvedThemes.value = resolveDayNightTheme(defaultDayNightTheme, themePatch.value)
+        theme.value = resolveActiveTheme(resolvedThemes.value, mode.value, systemPrefersDark.value)
+        setGlobalTheme(theme.value)
+        applyTheme(theme.value, target)
+    }
+
+    if (mediaQuery) {
+        const handleSystemChange = (event: MediaQueryListEvent) => {
+            systemPrefersDark.value = event.matches
+            if (mode.value === "system") {
+                applyResolvedTheme()
+            }
+        }
+
+        if (typeof mediaQuery.addEventListener === "function") {
+            mediaQuery.addEventListener("change", handleSystemChange)
+        } else {
+            mediaQuery.addListener(handleSystemChange)
+        }
+    }
+
+    systemPrefersDark.value = mediaQuery?.matches ?? systemPrefersDark.value
+    setGlobalTheme(theme.value)
+    applyTheme(theme.value, target)
 
     return {
         theme,
-        setTheme(nextTheme) {
-            const merged = mergeTheme(theme.value, nextTheme)
-            clearTheme(theme.value, target)
-            theme.value = merged
-            setGlobalTheme(theme.value)
-            applyTheme(theme.value, target)
+        mode,
+        resolvedMode,
+        setTheme(nextTheme: RThemePatch) {
+            themePatch.value = mergeThemePatch(themePatch.value, nextTheme)
+            applyResolvedTheme()
+        },
+        setMode(nextMode) {
+            mode.value = nextMode
+            applyResolvedTheme()
         },
         resetTheme() {
-            clearTheme(theme.value, target)
-            theme.value = defaultTheme
-            setGlobalTheme(defaultTheme)
-            applyTheme(defaultTheme, target)
+            themePatch.value = defaultThemePatch
+            mode.value = initialMode
+            applyResolvedTheme()
         },
     }
 }
 
 export const themePlugin: Plugin = {
     install(app: App, options: RThemePluginOptions = {}) {
-        const controller = createThemeController(options.theme ?? {}, options.target)
+        const controller = createThemeController(options.theme ?? {}, options.target, options.mode ?? "system")
         app.provide(themeKey, controller)
         app.config.globalProperties.$ruiTheme = controller
     },

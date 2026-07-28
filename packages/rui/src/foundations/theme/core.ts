@@ -1,4 +1,4 @@
-import type { RShapeFamily, RTheme, RThemeShapeCategory, RThemeShapeCorner, RThemeShapeCorners } from "./types"
+import type { RShapeFamily, RTheme, RThemeColors, RThemeShapeCategory, RThemeShapeCorner, RThemeShapeCorners } from "./types"
 
 function shapeFamilyToCSS(family: RShapeFamily) {
     return family === "cut" ? "bevel" : "round"
@@ -64,20 +64,104 @@ function resolveShapeCategory(shape: RThemeShapeCategory) {
     }
 }
 
+function deriveSurfaceContrastColors(colors?: RThemeColors): RThemeColors | undefined {
+    if (!colors) {
+        return colors
+    }
+
+    const onSurface = colors.onSurface
+    if (!onSurface) {
+        return colors
+    }
+
+    return {
+        ...colors,
+        onSurfaceHigh: colors.onSurfaceHigh ?? `rgb(from ${onSurface} r g b / 0.87)`,
+        onSurfaceMedium: colors.onSurfaceMedium ?? `rgb(from ${onSurface} r g b / 0.54)`,
+        onSurfaceLow: colors.onSurfaceLow ?? `rgb(from ${onSurface} r g b / 0.38)`,
+        onSurfaceOutline: colors.onSurfaceOutline ?? `rgb(from ${onSurface} r g b / 0.12)`,
+    }
+}
+
 /** Converts a runtime theme object into CSS variable key-value pairs. */
 export function themeToCSSVars(theme: RTheme) {
     const vars: Record<string, string> = {}
+    const colors = deriveSurfaceContrastColors(theme.color)
 
-    if (theme.color?.primary) {
-        vars["--rui-sys-color-primary"] = theme.color.primary
+    if (colors?.primary) {
+        vars["--rui-sys-color-primary"] = colors.primary
     }
 
-    if (theme.color?.onSurfaceHigh) {
-        vars["--rui-sys-color-on-surface-high"] = theme.color.onSurfaceHigh
+    if (colors?.primaryLight) {
+        vars["--rui-sys-color-primary-light"] = colors.primaryLight
     }
 
-    if (theme.color?.onSurfaceMedium) {
-        vars["--rui-sys-color-on-surface-medium"] = theme.color.onSurfaceMedium
+    if (colors?.primaryDark) {
+        vars["--rui-sys-color-primary-dark"] = colors.primaryDark
+    }
+
+    if (colors?.onPrimary) {
+        vars["--rui-sys-color-on-primary"] = colors.onPrimary
+    }
+
+    if (colors?.secondary) {
+        vars["--rui-sys-color-secondary"] = colors.secondary
+    }
+
+    if (colors?.secondaryLight) {
+        vars["--rui-sys-color-secondary-light"] = colors.secondaryLight
+    }
+
+    if (colors?.secondaryDark) {
+        vars["--rui-sys-color-secondary-dark"] = colors.secondaryDark
+    }
+
+    if (colors?.onSecondary) {
+        vars["--rui-sys-color-on-secondary"] = colors.onSecondary
+    }
+
+    if (colors?.background) {
+        vars["--rui-sys-color-background"] = colors.background
+    }
+
+    if (colors?.onBackground) {
+        vars["--rui-sys-color-on-background"] = colors.onBackground
+    }
+
+    if (colors?.surface) {
+        vars["--rui-sys-color-surface"] = colors.surface
+    }
+
+    if (colors?.surfaceDark) {
+        vars["--rui-sys-color-surface-dark"] = colors.surfaceDark
+    }
+
+    if (colors?.onSurface) {
+        vars["--rui-sys-color-on-surface"] = colors.onSurface
+    }
+
+    if (colors?.onSurfaceHigh) {
+        vars["--rui-sys-color-on-surface-high"] = colors.onSurfaceHigh
+    }
+
+    if (colors?.onSurfaceMedium) {
+        vars["--rui-sys-color-on-surface-medium"] = colors.onSurfaceMedium
+    }
+
+    if (colors?.onSurfaceLow) {
+        vars["--rui-sys-color-on-surface-low"] = colors.onSurfaceLow
+    }
+
+    if (colors?.onSurfaceOutline) {
+        vars["--rui-sys-color-on-surface-outline"] = colors.onSurfaceOutline
+    }
+
+    if (colors?.error) {
+        vars["--rui-sys-color-error"] = colors.error
+    }
+
+    if (colors?.onError) {
+        vars["--rui-sys-color-on-error"] = colors.onError
     }
 
     if (theme.density != null) {

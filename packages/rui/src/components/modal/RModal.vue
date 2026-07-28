@@ -176,6 +176,6 @@ dialog {
 }
 
 dialog::backdrop {
-    background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0.32);
+    background-color: rgba(0 0 0 / 0.32);
 }
 </style>

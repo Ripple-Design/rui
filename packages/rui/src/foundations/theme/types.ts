@@ -1,10 +1,26 @@
 import type { RIconStyle } from "@/foundations/icon"
-import type { Ref } from "vue"
+import type { ComputedRef, Ref } from "vue"
 
 export type RThemeColors = {
     primary?: string
+    primaryLight?: string
+    primaryDark?: string
+    onPrimary?: string
+    secondary?: string
+    secondaryLight?: string
+    secondaryDark?: string
+    onSecondary?: string
+    background?: string
+    onBackground?: string
+    surface?: string
+    surfaceDark?: string
+    onSurface?: string
     onSurfaceHigh?: string
     onSurfaceMedium?: string
+    onSurfaceLow?: string
+    onSurfaceOutline?: string
+    error?: string
+    onError?: string
 }
 
 export type RShapeFamily = "rounded" | "cut"
@@ -39,13 +55,32 @@ export type RTheme = {
     shape?: RThemeShapes
 }
 
+export type RThemePatch = Partial<RTheme> & {
+    day?: Partial<RTheme>
+    night?: Partial<RTheme>
+}
+
+export type RThemeMode = "day" | "night"
+export type RThemeModePreference = RThemeMode | "system"
+
+export type RDayNightTheme = {
+    day: RTheme
+    night: RTheme
+}
+
+export type RThemeSource = RTheme | RThemePatch | RDayNightTheme
+
 export type RThemeController = {
     theme: Ref<RTheme>
-    setTheme: (nextTheme: Partial<RTheme>) => void
+    mode: Ref<RThemeModePreference>
+    resolvedMode: ComputedRef<RThemeMode>
+    setTheme: (nextTheme: RThemePatch) => void
+    setMode: (nextMode: RThemeModePreference) => void
     resetTheme: () => void
 }
 
 export type RThemePluginOptions = {
-    theme?: RTheme
+    mode?: RThemeModePreference
     target?: HTMLElement | null
+    theme?: RThemeSource
 }
