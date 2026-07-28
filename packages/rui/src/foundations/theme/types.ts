@@ -1,6 +1,8 @@
 import type { RIconStyle } from "@/foundations/icon"
 import type { ComputedRef, Ref } from "vue"
 
+import type { RThemeTarget } from "./dom"
+
 export type RThemeColors = {
     primary?: string
     primaryLight?: string
@@ -70,17 +72,27 @@ export type RDayNightTheme = {
 
 export type RThemeSource = RTheme | RThemePatch | RDayNightTheme
 
+export type RThemeSetOptions = {
+    replace?: boolean
+    resetDefault?: boolean
+}
+
+export type RThemeModeSetOptions = {
+    resetDefault?: boolean
+}
+
 export type RThemeController = {
     theme: Ref<RTheme>
     mode: Ref<RThemeModePreference>
     resolvedMode: ComputedRef<RThemeMode>
-    setTheme: (nextTheme: RThemePatch) => void
-    setMode: (nextMode: RThemeModePreference) => void
+    setTheme: (nextTheme: RThemePatch, options?: RThemeSetOptions) => void
+    setMode: (nextMode: RThemeModePreference, options?: RThemeModeSetOptions) => void
     resetTheme: () => void
+    destroy: () => void
 }
 
 export type RThemePluginOptions = {
     mode?: RThemeModePreference
-    target?: HTMLElement | null
+    target?: RThemeTarget
     theme?: RThemeSource
 }

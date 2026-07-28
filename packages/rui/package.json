@@ -5,6 +5,7 @@
     "files": [
         "dist",
         "src/styles",
+        "src/foundations",
         "rui.scss"
     ],
     "type": "module",

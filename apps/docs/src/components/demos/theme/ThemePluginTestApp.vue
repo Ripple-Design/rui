@@ -1,29 +1,54 @@
 <script setup lang="ts">
+import { RThemeProvider } from "@ripple-design/rui"
 import { ThemePlayground } from "@ripple-design/rui/playground"
 import { themeToCSSVars, useTheme } from "@ripple-design/rui"
 import type { RTheme } from "@ripple-design/rui"
 import { computed, onMounted, ref } from "vue"
 
 const { theme } = useTheme()
-const cssPrimary = ref("")
+const globalCssPrimary = ref("")
+const localCssPrimary = ref("")
 
 function syncCssPrimary() {
-    cssPrimary.value = getComputedStyle(document.documentElement)
+    globalCssPrimary.value = getComputedStyle(document.documentElement)
         .getPropertyValue("--rui-sys-color-primary")
         .trim()
 }
 
+function syncLocalPrimary() {
+    const provider = document.getElementById("theme-plugin-test-local-scope")
+    localCssPrimary.value = provider
+        ? getComputedStyle(provider).getPropertyValue("--rui-sys-color-primary").trim()
+        : ""
+}
+
 onMounted(() => {
     syncCssPrimary()
+    syncLocalPrimary()
 })
 
 const cssVars = computed(() => themeToCSSVars(theme.value))
 const injectedTheme = computed<RTheme>(() => theme.value)
+const localTheme = {
+    night: {
+        color: {
+            primary: "#ff6b6b",
+            onSurface: "#ffffff",
+        },
+    },
+}
 </script>
 
 <template>
     <div class="theme-plugin-test">
         <ThemePlayground :default-theme="injectedTheme" />
+
+        <RThemeProvider id="theme-plugin-test-local-scope" :theme="localTheme" mode="night" tag="section">
+            <div class="theme-plugin-test__scoped">
+                <p>Scoped provider area</p>
+                <ThemePlayground :default-theme="injectedTheme" title="Scoped theme" trigger-label="Scoped theme" />
+            </div>
+        </RThemeProvider>
 
         <dl class="theme-plugin-test__meta">
             <div>
@@ -35,8 +60,12 @@ const injectedTheme = computed<RTheme>(() => theme.value)
                 <dd><code>{{ JSON.stringify(cssVars, null, 2) }}</code></dd>
             </div>
             <div>
-                <dt>Computed primary</dt>
-                <dd><code>{{ cssPrimary }}</code></dd>
+                <dt>Global primary</dt>
+                <dd><code>{{ globalCssPrimary }}</code></dd>
+            </div>
+            <div>
+                <dt>Scoped primary</dt>
+                <dd><code>{{ localCssPrimary }}</code></dd>
             </div>
         </dl>
     </div>
@@ -46,6 +75,15 @@ const injectedTheme = computed<RTheme>(() => theme.value)
 .theme-plugin-test {
     display: grid;
     gap: 1rem;
+}
+
+.theme-plugin-test__scoped {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid var(--rui-sys-color-on-surface-outline);
+    background: var(--rui-sys-color-surface);
+    color: var(--rui-sys-color-on-surface);
 }
 
 .theme-plugin-test__meta {

@@ -17,6 +17,7 @@ export type {
 export { mergeTheme, themeToCSSVars } from "./core"
 export { defaultDarkTheme, defaultDayNightTheme, defaultLightTheme } from "./defaults"
 export { applyTheme, clearTheme, resolveThemeTarget } from "./dom"
-export { createThemeController, themePlugin, useTheme } from "./controller"
+export { createThemeController, provideTheme, themePlugin, useTheme } from "./controller"
+export { default as RThemeProvider } from "./RThemeProvider.vue"
 export { globalTheme, setGlobalTheme } from "./store"
 export { mergeThemePatch, resolveActiveTheme, resolveDayNightTheme, resolveSystemThemeMode, resolveThemeMode, splitThemePatch } from "./resolve"

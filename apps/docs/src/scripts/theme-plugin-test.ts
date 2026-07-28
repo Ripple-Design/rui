@@ -8,6 +8,7 @@ if (element) {
     const app = createApp(ThemePluginTestApp)
 
     app.use(themePlugin, {
+        mode: "day",
         theme: {
             color: {
                 primary: "#6200ee",

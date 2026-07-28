@@ -3,7 +3,21 @@ import type { RTheme } from "./types"
 import { mergeTheme, themeToCSSVars } from "./core"
 import { globalTheme, setGlobalTheme } from "./store"
 
-export function resolveThemeTarget(target?: HTMLElement | null) {
+export type RThemeTarget = HTMLElement | null | (() => HTMLElement | null)
+
+export type RThemeDomOptions = {
+    syncGlobal?: boolean
+}
+
+export function resolveThemeTarget(target?: RThemeTarget) {
+    if (typeof target === "function") {
+        return target()
+    }
+
+    if (target === null) {
+        return null
+    }
+
     if (target) {
         return target
     }
@@ -15,7 +29,7 @@ export function resolveThemeTarget(target?: HTMLElement | null) {
     return null
 }
 
-export function clearTheme(theme: RTheme, target?: HTMLElement | null) {
+export function clearTheme(theme: RTheme, target?: RThemeTarget) {
     const resolvedTarget = resolveThemeTarget(target)
     if (!resolvedTarget) {
         return
@@ -29,7 +43,7 @@ export function clearTheme(theme: RTheme, target?: HTMLElement | null) {
 }
 
 /** Applies a runtime theme by writing CSS variables onto the target element. */
-export function applyTheme(theme: RTheme, target?: HTMLElement | null) {
+export function applyTheme(theme: RTheme, target?: RThemeTarget, options: RThemeDomOptions = {}) {
     const resolvedTarget = resolveThemeTarget(target)
     if (!resolvedTarget) {
         return
@@ -41,5 +55,7 @@ export function applyTheme(theme: RTheme, target?: HTMLElement | null) {
         resolvedTarget.style.setProperty(name, value)
     }
 
-    setGlobalTheme(mergeTheme(globalTheme.value, theme))
+    if (options.syncGlobal ?? true) {
+        setGlobalTheme(mergeTheme(globalTheme.value, theme))
+    }
 }
