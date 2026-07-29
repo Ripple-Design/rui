@@ -1,0 +1,25 @@
+---
+title: Tab bar
+docSlug: components/tab-bar
+tab: implementation
+locale: en
+designOrder: 72
+developOrder: 72
+api: /en/api/tab-bar
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import TabBarBasicDemo from "@docs/components/demos/tabBar/TabBarBasicDemo.vue"
+import tabBarBasicDemoSource from "@docs/components/demos/tabBar/TabBarBasicDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock
+    title="Text, stacked, and full-width tab bars"
+    code={tabBarBasicDemoSource}
+    language="vue"
+>
+    <TabBarBasicDemo client:load />
+</DemoBlock>
+
+`RTabBar` manages a value-based selection model across `RTab` children. Use `v-model` to control the active tab, `fullWidth` to evenly distribute items, and `stacked` tabs when the icon should sit above the label.
