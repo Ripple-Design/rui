@@ -1,5 +1,5 @@
 import { type Placement, type Strategy } from "@floating-ui/dom"
-import { computed, isRef, type ComputedRef, type Ref } from "vue"
+import { computed, isRef, type ComputedRef } from "vue"
 
 import type { RFloatingReactive } from "./types"
 
