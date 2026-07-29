@@ -31,6 +31,10 @@ export { default as RIconButton } from "./button/RIconButton.vue"
 export { default as RButtonGroup } from "./button/RButtonGroup.vue"
 export type * from "./button/types"
 
+export { default as RTabBar } from "./tabBar/RTabBar.vue"
+export { default as RTab } from "./tabBar/RTab.vue"
+export type * from "./tabBar/types"
+
 export { default as RText } from "./text/RText.vue"
 export type * from "./text/types"
 
