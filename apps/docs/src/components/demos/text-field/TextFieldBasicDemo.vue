@@ -3,6 +3,18 @@ import { RTextField } from "@ripple-design/rui"
 </script>
 
 <template>
-    <RTextField label="Label" />
-    <RTextField label="Label" text-area />
+    <div class="text-field-demo">
+        <RTextField label="Label" />
+        <RTextField placeholder="No label" />
+        <RTextField label="Label" text-area />
+        <RTextField placeholder="No label textarea" text-area />
+    </div>
 </template>
+
+<style scoped lang="scss">
+.text-field-demo {
+    display: grid;
+    gap: 16px;
+    width: 100%;
+}
+</style>

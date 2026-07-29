@@ -1,10 +1,6 @@
 import type { Directive, DirectiveBinding } from "vue"
 
-import type {
-    RContainerResponsiveValue,
-    RResponsiveObjectValue,
-    RViewportResponsiveValue,
-} from "@/components/shared/responsive"
+import type { RContainerResponsiveValue, RResponsiveObjectValue } from "@/components/shared/responsive"
 
 export type GridSpanScalar = number | "full"
 

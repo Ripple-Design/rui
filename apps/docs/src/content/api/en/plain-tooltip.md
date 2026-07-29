@@ -12,16 +12,20 @@ developOrder: 145
 ## Import
 
 ```ts
-import { RPlainTooltip } from "@ripple-design/rui"
+import { vTooltip } from "@ripple-design/rui"
 ```
 
-## Props
+## Usage
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `text` | `string` | yes | Plain text content shown inside the tooltip bubble. |
-| `disabled` | `boolean` | no | Disables tooltip behavior entirely. |
+```vue
+<RButton v-tooltip="'Create a new item'">Add item</RButton>
+```
 
-Generated from `packages/rui/src/components/tooltip/types.ts`.
+## Binding shapes
+
+- `v-tooltip="'Save changes'"`
+- `v-tooltip="{ text: 'Save changes', disabled: isDisabled }"`
+
+`RPlainTooltip` is the internal render primitive used by the directive.
 
 <!-- AUTO-GENERATED:END -->

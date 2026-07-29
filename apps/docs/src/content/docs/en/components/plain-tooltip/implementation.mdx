@@ -18,4 +18,4 @@ import plainTooltipBasicDemoSource from "@docs/components/demos/tooltip/PlainToo
     <PlainTooltipBasicDemo client:load />
 </DemoBlock>
 
-`RPlainTooltip` wraps a single trigger subtree and shows a compact plain-text tooltip on hover or keyboard focus. Use it for short, descriptive guidance rather than rich popup content.
+`v-tooltip` is the primary API for lightweight anchored hints. Apply it directly to the real control so the tooltip binds to the correct element without introducing extra layout wrappers. `RPlainTooltip` remains the internal render primitive used by the directive.

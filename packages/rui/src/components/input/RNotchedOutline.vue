@@ -9,6 +9,7 @@ import RFloatingLabel from "./RFloatingLabel.vue"
 
 const props = defineProps<RNotchedOutlineProps>()
 
+const hasLabel = computed(() => !!props.label?.trim())
 const shadowLabelRef = ref<HTMLSpanElement | null>(null)
 const shadowLabelWidth = ref(0)
 const notchWidthPx = computed(() => (props.floating ? shadowLabelWidth.value + "px" : "0px"))
@@ -25,10 +26,11 @@ useResizeObserver(shadowLabelRef, (entry) => {
             'rui-notched-outline--hovered': hovered,
             'rui-notched-outline--floating': floating,
             'rui-notched-outline--focused': focused,
+            'has-label': hasLabel,
         }"
     >
         <span class="rui-notched-outline__leading" />
-        <span class="rui-notched-outline__label-space" :style="{ width: shadowLabelWidth + 'px' }">
+        <span v-if="hasLabel" class="rui-notched-outline__label-space" :style="{ width: shadowLabelWidth + 'px' }">
             <span class="rui-notched-outline__label-space__leading" />
             <span class="rui-notched-outline__label-space__notch" :style="{ width: notchWidthPx }" />
             <span class="rui-notched-outline__label-space__trailing" />
@@ -112,20 +114,6 @@ useResizeObserver(shadowLabelRef, (entry) => {
         }
     }
 
-    &__trailing {
-        flex-grow: 1;
-        @include shape.apply(
-            var(--rui-text-field-shape-family),
-            0,
-            var(--rui-text-field-shape-start-end),
-            var(--rui-text-field-shape-end-end),
-            0
-        );
-        border-inline-end-style: solid;
-        border-top-style: solid;
-        border-bottom-style: solid;
-    }
-
     &__label {
         position: absolute;
         inset-inline-start: var(--rui-text-field-content-padding-inline);
@@ -159,6 +147,50 @@ useResizeObserver(shadowLabelRef, (entry) => {
 
         #{$block}__label-space > #{$block}__label-space__notch {
             transition: width 75ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    }
+
+    &.has-label {
+        #{$block}__trailing {
+            flex-grow: 1;
+            @include shape.apply(
+                var(--rui-text-field-shape-family),
+                0,
+                var(--rui-text-field-shape-start-end),
+                var(--rui-text-field-shape-end-end),
+                0
+            );
+            border-inline-end-style: solid;
+            border-top-style: solid;
+            border-bottom-style: solid;
+        }
+    }
+
+    &:not(.has-label) {
+        #{$block}__leading {
+            flex: 0 0 0;
+            width: 0;
+            border: none;
+        }
+
+        #{$block}__label-space {
+            display: none;
+        }
+
+        #{$block}__trailing {
+            flex-grow: 1;
+            @include shape.apply(
+                var(--rui-text-field-shape-family),
+                0,
+                var(--rui-text-field-shape-start-end),
+                var(--rui-text-field-shape-end-end),
+                0
+            );
+            border-inline-start-style: solid;
+            border-inline-end-style: solid;
+            border-top-style: solid;
+            border-bottom-style: solid;
+            border-radius: 4px;
         }
     }
 }

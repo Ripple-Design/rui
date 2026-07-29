@@ -1,28 +1,18 @@
 <script setup lang="ts">
 import { RIInfoFilled, RIMoreVertFilled } from "@ripple-design/icons"
-import { RButton, RColumn, RIconButton, RPlainTooltip, RRow } from "@ripple-design/rui"
+import { RButton, RColumn, RIconButton, RRow, vTooltip } from "@ripple-design/rui"
 </script>
 
 <template>
     <RColumn gap="20px" class="plain-tooltip-demo">
         <RRow gap="16px" wrap align="center">
-            <RPlainTooltip text="Show additional information">
-                <RIconButton :icon="RIInfoFilled" label="More info" />
-            </RPlainTooltip>
-
-            <RPlainTooltip text="Open more actions">
-                <RIconButton :icon="RIMoreVertFilled" label="More actions" />
-            </RPlainTooltip>
+            <RIconButton v-tooltip="'Show additional information'" :icon="RIInfoFilled" label="More info" />
+            <RIconButton v-tooltip="'Open more actions'" :icon="RIMoreVertFilled" label="More actions" />
         </RRow>
 
         <RRow gap="16px" wrap align="center">
-            <RPlainTooltip text="Create a new item">
-                <RButton variant="outlined">Add item</RButton>
-            </RPlainTooltip>
-
-            <RPlainTooltip text="Disabled tooltips stay inactive" disabled>
-                <RButton variant="outlined">Disabled tooltip</RButton>
-            </RPlainTooltip>
+            <RButton v-tooltip="'Create a new item'" variant="outlined">Add item</RButton>
+            <RButton v-tooltip="{ text: 'Disabled tooltips stay inactive', disabled: true }" variant="outlined">Disabled tooltip</RButton>
         </RRow>
     </RColumn>
 </template>
