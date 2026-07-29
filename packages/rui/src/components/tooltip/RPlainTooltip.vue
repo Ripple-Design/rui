@@ -28,12 +28,16 @@ const overlayStack = useOverlayStack()
 const layer = overlayStack.register()
 const portalSelector = `#${RUI_FLOATING_PORTAL_ID}`
 
-const position = useFloatingPosition(computed(() => props.target ?? null), floatingRef, {
-    middleware: [offset(8), flip(), shift({ padding: 8 })],
-    open,
-    placement: "top",
-    strategy: "fixed",
-})
+const position = useFloatingPosition(
+    computed(() => props.target ?? null),
+    floatingRef,
+    {
+        middleware: [offset(4), flip(), shift({ padding: 4 })],
+        open,
+        placement: "top",
+        strategy: "fixed",
+    },
+)
 
 const floatingStyles = computed(() => position.floatingStyles.value)
 const shouldMount = computed(() => portalReady.value && !!props.text.trim())
@@ -47,15 +51,19 @@ watch(
     { immediate: true },
 )
 
-useDismissableLayer(computed(() => props.target ?? null), floatingRef, {
-    enabled: computed(() => shouldMount.value && open.value),
-    isTopLayer: computed(() => overlayStack.isTopLayer(layer.id)),
-    onDismiss() {
-        hasHover.value = false
-        hasFocus.value = false
-        open.value = false
+useDismissableLayer(
+    computed(() => props.target ?? null),
+    floatingRef,
+    {
+        enabled: computed(() => shouldMount.value && open.value),
+        isTopLayer: computed(() => overlayStack.isTopLayer(layer.id)),
+        onDismiss() {
+            hasHover.value = false
+            hasFocus.value = false
+            open.value = false
+        },
     },
-})
+)
 
 function handleMouseEnter() {
     hasHover.value = true
