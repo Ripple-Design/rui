@@ -1,4 +1,8 @@
 <script setup lang="ts">
+defineOptions({
+    inheritAttrs: false,
+})
+
 import { computed, useAttrs, watchEffect } from "vue"
 
 import { RIcon } from "@/components"

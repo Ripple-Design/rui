@@ -1,4 +1,8 @@
 <script setup lang="ts">
+defineOptions({
+    inheritAttrs: false,
+})
+
 import { RICheckFilled, RICheckOutlined, RICheckRounded, RICheckSharp, RICheckTwoTone } from "@ripple-design/icons"
 import { computed, inject, onBeforeUnmount, ref, useAttrs, useSlots, watch, watchEffect, type Slots } from "vue"
 

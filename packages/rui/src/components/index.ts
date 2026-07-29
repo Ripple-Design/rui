@@ -42,3 +42,4 @@ export type * from "./textField/types"
 
 export { default as RNumberField } from "./numberField/RNumberField.vue"
 export type * from "./numberField/types"
+export * from "./menu"

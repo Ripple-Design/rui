@@ -3,6 +3,13 @@ import type { ComputedRef, CSSProperties, Ref } from "vue"
 
 export type RFloatingDismissReason = "escape-key" | "pointer-outside" | "reference-press"
 
+export type RFloatingLayerProps = {
+    floatingStyles: CSSProperties
+    id?: string
+    open: boolean
+    role?: string
+}
+
 export type RFloatingInitialFocus = string | HTMLElement | null | (() => HTMLElement | null)
 
 export type RFloatingPortalTarget = HTMLElement | string | null | (() => HTMLElement | null)
