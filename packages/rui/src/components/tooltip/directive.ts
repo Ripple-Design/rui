@@ -7,6 +7,7 @@ import type { TooltipDirectiveValue } from "./types"
 type TooltipDirectiveState = {
     disabled: boolean
     hostElement: HTMLDivElement
+    targetElement: HTMLElement
     text: string
     vnode: VNode | null
 }
@@ -29,10 +30,18 @@ function normalizeTooltipValue(value: TooltipDirectiveValue): { disabled: boolea
     }
 }
 
-function renderTooltip(state: TooltipDirectiveState, element: HTMLElement) {
+function resolveTooltipTarget(element: HTMLElement) {
+    const interactive = element.querySelector<HTMLElement>(
+        "button, a[href], input, textarea, select, [tabindex]:not([tabindex='-1']), [role='button']",
+    )
+
+    return interactive ?? element
+}
+
+function renderTooltip(state: TooltipDirectiveState) {
     state.vnode = createVNode(RPlainTooltip, {
         disabled: state.disabled,
-        target: element,
+        target: state.targetElement,
         text: state.text,
     })
 
@@ -47,12 +56,13 @@ function setupDirective(element: TooltipDirectiveElement, value: TooltipDirectiv
     const state: TooltipDirectiveState = {
         disabled: normalized.disabled,
         hostElement,
+        targetElement: resolveTooltipTarget(element),
         text: normalized.text,
         vnode: null,
     }
 
     element.__rTooltipState__ = state
-    renderTooltip(state, element)
+    renderTooltip(state)
 }
 
 function updateDirective(element: TooltipDirectiveElement, value: TooltipDirectiveValue) {
@@ -63,8 +73,9 @@ function updateDirective(element: TooltipDirectiveElement, value: TooltipDirecti
 
     const normalized = normalizeTooltipValue(value)
     state.disabled = normalized.disabled
+    state.targetElement = resolveTooltipTarget(element)
     state.text = normalized.text
-    renderTooltip(state, element)
+    renderTooltip(state)
 }
 
 function cleanupDirective(element: TooltipDirectiveElement) {
