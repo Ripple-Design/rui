@@ -47,6 +47,7 @@ watch(
     () => {
         const allowFocusOpen = hasFocus.value && !suppressFocus.value
         open.value = !props.disabled && !!props.text.trim() && (hasHover.value || allowFocusOpen)
+        overlayStack.setActive(layer.id, open.value)
     },
     { immediate: true },
 )

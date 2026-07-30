@@ -9,6 +9,7 @@ import { useMenuState } from "./useMenuState"
 import { menuKey, type RMenuProps } from "./types"
 
 const props = withDefaults(defineProps<RMenuProps>(), {
+    align: "start",
     disabled: false,
     open: false,
 })
@@ -34,11 +35,13 @@ const { context, focusFirst } = useMenuState(open, computed(() => props.disabled
 provide(menuKey, context)
 
 const floatingRef = computed(() => floatingLayerRef.value?.element ?? null)
+const resolvedPlacement = computed(() => `bottom-${props.align}` as const)
+const menuClasses = computed(() => ["rui-menu", `rui-menu--align-${props.align}`, { "rui-menu--open": open.value }])
 
 const position = useFloatingPosition(triggerRef, floatingRef, {
     middleware: [offset(8), flip(), shift({ padding: 4 })],
     open,
-    placement: "bottom-start",
+    placement: resolvedPlacement,
     strategy: "fixed",
 })
 
@@ -51,6 +54,7 @@ watch(open, async (value, previous) => {
         return
     }
 
+    overlayStack.setActive(layer.id, value)
     emit("update:open", value)
 
     if (value) {
@@ -205,16 +209,35 @@ onBeforeUnmount(() => {
         :open="open"
         role="menu"
     >
-        <RSurface class="rui-menu" :elevation="8" @keydown="handleMenuKeyDown">
+        <RSurface :class="menuClasses" :elevation="8" @keydown="handleMenuKeyDown">
             <slot />
         </RSurface>
     </RFloatingLayer>
 </template>
 
 <style scoped lang="scss">
+@use "@/styles/motion";
+
 .rui-menu {
     min-inline-size: 112px;
     max-inline-size: 320px;
     padding: 8px 0;
+    opacity: 0;
+    transform: scale(0.8);
+    transition:
+        opacity motion.$duration-small-in motion.$easing-standard,
+        transform motion.$duration-small-in motion.$easing-standard;
+    &--open {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    &--align-start {
+        transform-origin: top left;
+    }
+
+    &--align-end {
+        transform-origin: top right;
+    }
 }
 </style>

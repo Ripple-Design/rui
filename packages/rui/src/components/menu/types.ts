@@ -20,7 +20,10 @@ export type RMenuContext = {
     unregisterItem: (id: symbol) => void
 }
 
+export type RMenuAlign = "start" | "end"
+
 export type RMenuProps = {
+    align?: RMenuAlign
     disabled?: boolean
     open?: boolean
 }

@@ -14,8 +14,8 @@ import menuBasicDemoSource from "@docs/components/demos/menu/MenuBasicDemo.vue?r
 
 ## Basic usage
 
-<DemoBlock title="Basic menu" code={menuBasicDemoSource} language="vue">
+<DemoBlock title="Menu alignment" code={menuBasicDemoSource} language="vue">
     <MenuBasicDemo client:load />
 </DemoBlock>
 
-`RMenu` and `RMenuItem` provide an action-only anchored menu. The trigger is supplied through the `trigger` slot, and items emit `click` when activated.
+`RMenu` and `RMenuItem` provide an action-only anchored menu. The trigger is supplied through the `trigger` slot, items emit `click` when activated, and `align="start" | "end"` controls which logical edge of the trigger the menu aligns to.

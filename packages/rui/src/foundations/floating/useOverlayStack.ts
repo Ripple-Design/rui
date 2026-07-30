@@ -4,6 +4,7 @@ import { RUI_FLOATING_Z_INDEX_BASE } from "./constants"
 
 type FloatingLayer = {
     id: symbol
+    active: boolean
     zIndex: number
 }
 
@@ -19,6 +20,7 @@ export function useOverlayStack() {
     function register() {
         const layer: FloatingLayer = {
             id: Symbol("floating-layer"),
+            active: false,
             zIndex: RUI_FLOATING_Z_INDEX_BASE + layers.length,
         }
 
@@ -38,13 +40,36 @@ export function useOverlayStack() {
         syncZIndexes()
     }
 
+    function setActive(id: symbol, active: boolean) {
+        const index = layers.findIndex((layer) => layer.id === id)
+        if (index === -1) {
+            return
+        }
+
+        const layer = layers[index]!
+        if (layer.active === active) {
+            return
+        }
+
+        layer.active = active
+
+        if (!active) {
+            return
+        }
+
+        layers.splice(index, 1)
+        layers.push(layer)
+        syncZIndexes()
+    }
+
     function isTopLayer(id: symbol) {
-        return layers.at(-1)?.id === id
+        return [...layers].reverse().find((layer) => layer.active)?.id === id
     }
 
     return {
         isTopLayer,
         register,
+        setActive,
         unregister,
     }
 }
