@@ -77,12 +77,15 @@ function handleClick() {
         <span class="rui-navigation-rail-item__icon">
             <RIcon v-if="icon" :icon="icon" :size="24" decorative />
         </span>
-        <span v-if="showLabel" class="rui-navigation-rail-item__label"><slot /></span>
+        <span class="rui-navigation-rail-item__label" :class="{ 'rui-navigation-rail-item__label--hidden': !showLabel }">
+            <slot />
+        </span>
     </button>
 </template>
 
 <style scoped lang="scss">
 @use "@/styles/color";
+@use "@/styles/motion";
 @use "@/styles/normalize";
 @use "@/styles/typography";
 
@@ -91,22 +94,22 @@ function handleClick() {
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     box-sizing: border-box;
     width: 72px;
     height: 72px;
     padding-block-start: 14px;
-    padding-block-end: 16px;
     color: color.$on-surface-medium;
+    transition:
+        padding-block-start motion.$duration-small-in motion.$easing-standard,
+        color motion.$duration-small-in motion.$easing-standard;
 
     &--selected {
         color: color.$primary;
     }
 
     &--icon-only {
-        justify-content: flex-start;
         padding-block-start: 24px;
-        padding-block-end: 0;
     }
 }
 
@@ -119,7 +122,16 @@ function handleClick() {
 
 .rui-navigation-rail-item__label {
     @include typography.caption("--rui-comp-navigation-rail-item-label");
+    margin-block-start: 4px;
     color: currentColor;
     text-align: center;
+    transition:
+        opacity motion.$duration-small-in motion.$easing-standard,
+        display motion.$duration-small-in allow-discrete;
+
+    &--hidden {
+        opacity: 0;
+        display: none;
+    }
 }
 </style>
