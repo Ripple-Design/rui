@@ -15,6 +15,9 @@ export default defineConfig({
         defaultLocale: "en",
     },
     vite: {
+        build: {
+            cssCodeSplit: false,
+        },
         resolve: {
             dedupe: ["vue"],
             alias: {

@@ -18,7 +18,7 @@ COPY apps/docs ./apps/docs
 COPY packages/rui ./packages/rui
 COPY scripts ./scripts
 
-RUN pnpm --filter docs build
+RUN pnpm --filter rui build && pnpm --filter docs build
 
 FROM nginx:1.28-alpine AS runtime
 WORKDIR /usr/share/nginx/html
