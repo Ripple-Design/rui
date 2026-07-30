@@ -16,6 +16,7 @@ export default defineConfig({
     },
     vite: {
         resolve: {
+            dedupe: ["vue"],
             alias: {
                 "@docs": docsSrc,
                 "@ripple-design/rui/styles.css": path.join(ruiSrc, "styles/index.scss"),
