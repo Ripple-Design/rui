@@ -31,6 +31,10 @@ export { default as RIconButton } from "./button/RIconButton.vue"
 export { default as RButtonGroup } from "./button/RButtonGroup.vue"
 export type * from "./button/types"
 
+export { default as RNavigationRail } from "./navigationRail/RNavigationRail.vue"
+export { default as RNavigationRailItem } from "./navigationRail/RNavigationRailItem.vue"
+export type * from "./navigationRail/types"
+
 export { default as RTabBar } from "./tab/RTabBar.vue"
 export { default as RTab } from "./tab/RTab.vue"
 export type * from "./tab/types"

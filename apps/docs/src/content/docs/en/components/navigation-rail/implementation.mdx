@@ -1,0 +1,21 @@
+---
+title: Navigation rail
+docSlug: components/navigation-rail
+tab: implementation
+locale: en
+designOrder: 160
+developOrder: 160
+api: /en/api/navigation-rail
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import NavigationRailBasicDemo from "@docs/components/demos/navigationRail/NavigationRailBasicDemo.vue"
+import navigationRailBasicDemoSource from "@docs/components/demos/navigationRail/NavigationRailBasicDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock title="Basic navigation rail" code={navigationRailBasicDemoSource} language="vue">
+    <NavigationRailBasicDemo client:load />
+</DemoBlock>
+
+`RNavigationRail` and `RNavigationRailItem` provide a compact vertical destination list with a shared single-selection model. Use `labelVisibility="selected"` when only the active destination should show its label.
