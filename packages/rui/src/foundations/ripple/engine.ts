@@ -262,6 +262,16 @@ function applyOptions(surface: HTMLElement, options: NormalizedRippleOptions) {
     }
 }
 
+function applyResolvedRippleColor(surface: HTMLElement, element: HTMLElement, options: NormalizedRippleOptions) {
+    // Press waves are created after the host may already have switched to its
+    // selected/active color. Snapshot the host color instead of the surface
+    // color, because the surface may still be intentionally lagging behind via
+    // its delayed inherited-color transition.
+    const colorSource = surface.parentElement instanceof HTMLElement ? surface.parentElement : surface
+    const resolvedColor = options.color ?? getComputedStyle(colorSource).color
+    element.style.setProperty("--rui-ripple-color", resolvedColor)
+}
+
 function updateUnboundedRippleGeometry(surface: HTMLElement, wave: HTMLElement) {
     const rect = surface.getBoundingClientRect()
     const width = rect.width
@@ -298,6 +308,9 @@ function ensureUnboundedRipple(surface: HTMLElement, options: NormalizedRippleOp
 
     const wave = document.createElement("span")
     wave.className = UNBOUNDED_RIPPLE_CLASS
+    // Do not snapshot the color for the persistent unbounded layer. It should
+    // keep inheriting the host color so CSS can transition it after the press
+    // wave finishes.
     updateUnboundedRippleGeometry(surface, wave)
     surface.append(wave)
 }
@@ -342,6 +355,10 @@ function createWave(
 ): RippleWaveHandle {
     const wave = document.createElement("span")
     wave.className = WAVE_CLASS
+    // Only the transient press wave gets a color snapshot. This keeps the
+    // visible click wave stable even if the host color changes before or during
+    // creation, while the persistent layers can still animate later.
+    applyResolvedRippleColor(surface, wave, options)
 
     const centered = !!origin.centered
     const clientX = origin.clientX ?? null

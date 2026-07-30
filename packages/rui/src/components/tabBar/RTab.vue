@@ -5,20 +5,23 @@ import RIcon from "@/components/icon/RIcon.vue"
 import { vRipple, type RippleOptions } from "@/foundations/ripple"
 import { selectionModelKey } from "@/foundations/selectionModel"
 
+import { tabBarKey } from "./context"
 import type { RTabProps } from "./types"
 
 const props = withDefaults(defineProps<RTabProps>(), {
     disabled: false,
-    stacked: false,
     ripple: true,
 })
 
 const attrs = useAttrs()
 const group = inject(selectionModelKey, null)
+const tabBar = inject(tabBarKey, null)
 const tabId = Symbol("rTab")
 const interactiveRef = ref<HTMLElement | null>(null)
 
 const selected = computed(() => (group ? group.isSelected(props.value) : false))
+const hasIcon = computed(() => props.icon != null)
+const resolvedIconLayout = computed(() => props.iconLayout ?? tabBar?.iconLayout.value ?? "vertical")
 const rippleOptions = computed<RippleOptions>(() => {
     if (props.ripple === false) {
         return { disabled: true, unbounded: true }
@@ -39,14 +42,20 @@ const rippleOptions = computed<RippleOptions>(() => {
         unbounded: props.ripple.unbounded ?? true,
     }
 })
-const classes = computed(() => [
-    "rui-tab",
-    {
-        "rui-tab--selected": selected.value,
-        "rui-tab--disabled": props.disabled,
-        "rui-tab--stacked": props.stacked,
-    },
-])
+const classes = computed(() => {
+    const iconLayout = resolvedIconLayout.value
+
+    return [
+        "rui-tab",
+        {
+            "rui-tab--selected": selected.value,
+            "rui-tab--disabled": props.disabled,
+            "rui-tab--with-icon": hasIcon.value,
+            "rui-tab--icon-horizontal": hasIcon.value && iconLayout === "horizontal",
+            "rui-tab--icon-vertical": hasIcon.value && iconLayout !== "horizontal",
+        },
+    ]
+})
 
 watch(
     [() => props.disabled, () => props.value, interactiveRef, () => group],
@@ -97,6 +106,7 @@ function handleClick() {
 
     @include normalize.button;
     display: inline-flex;
+    flex-shrink: 0;
     overflow: visible;
     align-items: center;
     justify-content: center;
@@ -104,7 +114,6 @@ function handleClick() {
     padding-inline: 16px;
     padding-block: 12px;
     color: var(--rui-comp-tab-bar-tab-color);
-    gap: 8px;
 
     &--selected {
         color: var(--rui-comp-tab-bar-tab-selected-color);
@@ -116,7 +125,12 @@ function handleClick() {
         pointer-events: none;
     }
 
-    &--stacked {
+    &--icon-horizontal .rui-tab__content {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    &--icon-vertical .rui-tab__content {
         flex-direction: column;
         gap: 4px;
     }
@@ -125,6 +139,7 @@ function handleClick() {
 .rui-tab__content {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     min-inline-size: 0;
 }

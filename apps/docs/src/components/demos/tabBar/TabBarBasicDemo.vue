@@ -7,7 +7,8 @@ const active = ref("home")
 const primary = ref("overview")
 const primaryOverflow = ref("recommendations")
 const secondaryOverflow = ref("details")
-const stacked = ref("listen")
+const vertical = ref("listen")
+const horizontal = ref("listen")
 </script>
 
 <template>
@@ -56,12 +57,27 @@ const stacked = ref("listen")
         </RColumn>
 
         <RColumn gap="12px">
-            <RTabBar v-model="stacked" variant="secondary" full-width aria-label="Media destinations">
-                <RTab value="listen" :icon="RIPlayCircleOutlined" stacked>Listen</RTab>
-                <RTab value="browse" :icon="RIHomeOutlined" stacked>Browse</RTab>
-                <RTab value="settings" :icon="RISettingsOutlined" stacked>Settings</RTab>
+            <RTabBar v-model="vertical" variant="secondary" full-width aria-label="Media destinations">
+                <RTab value="listen" :icon="RIPlayCircleOutlined">Listen</RTab>
+                <RTab value="browse" :icon="RIHomeOutlined">Browse</RTab>
+                <RTab value="settings" :icon="RISettingsOutlined">Settings</RTab>
             </RTabBar>
-            <RText>Stacked: {{ stacked }}</RText>
+            <RText>Vertical: {{ vertical }}</RText>
+        </RColumn>
+
+        <RColumn gap="12px">
+            <RTabBar
+                v-model="horizontal"
+                variant="secondary"
+                full-width
+                icon-layout="horizontal"
+                aria-label="Media destinations horizontal"
+            >
+                <RTab value="listen" :icon="RIPlayCircleOutlined">Listen</RTab>
+                <RTab value="browse" :icon="RIHomeOutlined">Browse</RTab>
+                <RTab value="settings" :icon="RISettingsOutlined">Settings</RTab>
+            </RTabBar>
+            <RText>Horizontal: {{ horizontal }}</RText>
         </RColumn>
     </RColumn>
 </template>

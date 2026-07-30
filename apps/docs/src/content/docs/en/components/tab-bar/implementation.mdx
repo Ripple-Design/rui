@@ -15,11 +15,11 @@ import tabBarBasicDemoSource from "@docs/components/demos/tabBar/TabBarBasicDemo
 ## Basic usage
 
 <DemoBlock
-    title="Text, stacked, and full-width tab bars"
+    title="Text, vertical, horizontal, and full-width tab bars"
     code={tabBarBasicDemoSource}
     language="vue"
 >
     <TabBarBasicDemo client:load />
 </DemoBlock>
 
-`RTabBar` manages a value-based selection model across `RTab` children. Use `v-model` to control the active tab, `fullWidth` to evenly distribute items, and `stacked` tabs when the icon should sit above the label.
+`RTabBar` manages a value-based selection model across `RTab` children. Use `v-model` to control the active tab, `fullWidth` to evenly distribute items, and `iconLayout` on `RTabBar` to set the default icon/label direction for child tabs. Individual `RTab` items can override that layout when needed, and tabs with icons default to the vertical layout.
