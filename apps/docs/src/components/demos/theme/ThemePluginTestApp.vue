@@ -1,113 +1,54 @@
 <script setup lang="ts">
-import { RRow, RTextField, themeToCSSVars, useTheme } from "@ripple-design/rui"
-import type { RShapeFamily, RTheme } from "@ripple-design/rui"
-import { computed, onMounted, ref, watch } from "vue"
+import { RThemeProvider } from "@ripple-design/rui"
+import { ThemePlayground } from "@ripple-design/rui/playground"
+import { themeToCSSVars, useTheme } from "@ripple-design/rui"
+import type { RTheme } from "@ripple-design/rui"
+import { computed, onMounted, ref } from "vue"
 
-const densityOptions = [0, -1, -2, -3] as const
-const defaultPrimary = "#6200ee"
-const defaultDensity = densityOptions[0]
-const defaultShapeFamily: RShapeFamily = "rounded"
-const { theme, setTheme, resetTheme } = useTheme()
-const primary = ref(theme.value.color?.primary ?? defaultPrimary)
-const density = ref(theme.value.density ?? defaultDensity)
-const shapeFamily = ref<RShapeFamily>(theme.value.shape?.small?.family ?? defaultShapeFamily)
-const cssPrimary = ref("")
-let syncSuspended = false
-
-function createShapeTheme(family: RShapeFamily): NonNullable<RTheme["shape"]> {
-    return {
-        small: { family },
-        medium: { family },
-        large: { family },
-        full: { family },
-    }
-}
-
-function isValidColor(value: string) {
-    return value.length > 0 && (typeof CSS === "undefined" || CSS.supports("color", value))
-}
+const { theme } = useTheme()
+const globalCssPrimary = ref("")
+const localCssPrimary = ref("")
 
 function syncCssPrimary() {
-    cssPrimary.value = getComputedStyle(document.documentElement)
+    globalCssPrimary.value = getComputedStyle(document.documentElement)
         .getPropertyValue("--rui-sys-color-primary")
         .trim()
 }
 
-watch(primary, (value) => {
-    if (syncSuspended) return
-
-    const trimmed = value.trim()
-    if (!isValidColor(trimmed)) return
-
-    setTheme({
-        color: {
-            primary: trimmed,
-        },
-    })
-    syncCssPrimary()
-}, { flush: "sync" })
-
-watch(density, (value) => {
-    if (syncSuspended) return
-
-    setTheme({ density: value })
-}, { flush: "sync" })
-
-watch(shapeFamily, (value) => {
-    if (syncSuspended) return
-
-    setTheme({ shape: createShapeTheme(value) })
-}, { flush: "sync" })
-
-function applyPreset(value: string) {
-    primary.value = value
-}
-
-function handleReset() {
-    syncSuspended = true
-    resetTheme()
-    primary.value = theme.value.color?.primary ?? defaultPrimary
-    density.value = theme.value.density ?? defaultDensity
-    shapeFamily.value = theme.value.shape?.small?.family ?? defaultShapeFamily
-    syncCssPrimary()
-    syncSuspended = false
+function syncLocalPrimary() {
+    const provider = document.getElementById("theme-plugin-test-local-scope")
+    localCssPrimary.value = provider
+        ? getComputedStyle(provider).getPropertyValue("--rui-sys-color-primary").trim()
+        : ""
 }
 
 onMounted(() => {
     syncCssPrimary()
+    syncLocalPrimary()
 })
 
 const cssVars = computed(() => themeToCSSVars(theme.value))
-const previewShapeFamily = computed(() => (shapeFamily.value === "cut" ? "bevel" : "round"))
+const injectedTheme = computed<RTheme>(() => theme.value)
+const localTheme = {
+    night: {
+        color: {
+            primary: "#ff6b6b",
+            onSurface: "#ffffff",
+        },
+    },
+}
 </script>
 
 <template>
     <div class="theme-plugin-test">
-        <RTextField v-model="primary" label="Primary" placeholder="#6200ee" />
-        <label class="theme-plugin-test__field">
-            <span>Density</span>
-            <select v-model.number="density">
-                <option v-for="option in densityOptions" :key="option" :value="option">{{ option }}</option>
-            </select>
-        </label>
-        <label class="theme-plugin-test__field">
-            <span>Shape</span>
-            <select v-model="shapeFamily">
-                <option value="rounded">Rounded</option>
-                <option value="cut">Cut</option>
-            </select>
-        </label>
+        <ThemePlayground :default-theme="injectedTheme" />
 
-        <RRow gap="8px" wrap class="theme-plugin-test__actions">
-            <button type="button" @click="applyPreset('#ff0000')">Red</button>
-            <button type="button" @click="applyPreset('#00c853')">Green</button>
-            <button type="button" @click="handleReset">Reset</button>
-        </RRow>
-
-        <div
-            class="theme-plugin-test__swatch"
-            :style="{ '--theme-plugin-test-shape-family': previewShapeFamily }"
-        />
+        <RThemeProvider id="theme-plugin-test-local-scope" :theme="localTheme" mode="night" tag="section">
+            <div class="theme-plugin-test__scoped">
+                <p>Scoped provider area</p>
+                <ThemePlayground :default-theme="injectedTheme" title="Scoped theme" trigger-label="Scoped theme" />
+            </div>
+        </RThemeProvider>
 
         <dl class="theme-plugin-test__meta">
             <div>
@@ -119,8 +60,12 @@ const previewShapeFamily = computed(() => (shapeFamily.value === "cut" ? "bevel"
                 <dd><code>{{ JSON.stringify(cssVars, null, 2) }}</code></dd>
             </div>
             <div>
-                <dt>Computed primary</dt>
-                <dd><code>{{ cssPrimary }}</code></dd>
+                <dt>Global primary</dt>
+                <dd><code>{{ globalCssPrimary }}</code></dd>
+            </div>
+            <div>
+                <dt>Scoped primary</dt>
+                <dd><code>{{ localCssPrimary }}</code></dd>
             </div>
         </dl>
     </div>
@@ -132,34 +77,13 @@ const previewShapeFamily = computed(() => (shapeFamily.value === "cut" ? "bevel"
     gap: 1rem;
 }
 
-.theme-plugin-test__field {
+.theme-plugin-test__scoped {
     display: grid;
-    gap: 0.375rem;
-}
-
-.theme-plugin-test__field select {
-    padding: 0.375rem 0.5rem;
-    border: 1px solid #d0d0d0;
-    background: #fff;
-}
-
-.theme-plugin-test__actions button {
-    padding: 0.375rem 0.75rem;
-    border: 1px solid #d0d0d0;
-    background: #fff;
-    cursor: pointer;
-}
-
-.theme-plugin-test__swatch {
-    width: 100%;
-    height: 3rem;
-    border: 1px solid #d0d0d0;
-    background: var(--rui-sys-color-primary);
-    border-start-start-radius: 1rem;
-    border-start-end-radius: 1rem;
-    border-end-end-radius: 1rem;
-    border-end-start-radius: 1rem;
-    corner-shape: var(--theme-plugin-test-shape-family, round);
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid var(--rui-sys-color-on-surface-outline);
+    background: var(--rui-sys-color-surface);
+    color: var(--rui-sys-color-on-surface);
 }
 
 .theme-plugin-test__meta {

@@ -13,6 +13,12 @@
     --rui-ripple-high-hover-opacity: 0.08;
     --rui-ripple-high-focus-opacity: 0.24;
     --rui-ripple-high-wave-opacity: 0.16;
+
+    --rui-ripple-color-change-delay: 75ms;
+    --rui-ripple-color-change-duration: 225ms;
+    --rui-ripple-color-change-easing: linear;
+    // These tokens only affect inherited ripple layers. The transient press
+    // wave snapshots its own color in engine.ts and does not rely on them.
 }
 
 .rui-ripple-surface {
@@ -23,7 +29,12 @@
     overflow: hidden;
     border-radius: inherit;
     pointer-events: none;
-    color: inherit;
+    color: var(--rui-ripple-color, inherit);
+    // Persistent ripple layers inherit color from the host. Animate color on
+    // the surface itself so descendants that paint with currentColor can follow
+    // the delayed transition reliably.
+    transition: color var(--rui-ripple-color-change-duration) var(--rui-ripple-color-change-easing)
+        var(--rui-ripple-color-change-delay);
 }
 
 .rui-ripple-surface--contrast-high {
@@ -36,7 +47,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background-color: var(--rui-ripple-color, currentColor);
+    background-color: currentColor;
     opacity: 0;
     transition: opacity var(--rui-ripple-surface-duration) motion.$easing-standard;
 }
@@ -57,7 +68,7 @@
 .rui-ripple-unbounded {
     position: absolute;
     border-radius: 50%;
-    background-color: var(--rui-ripple-color, currentColor);
+    background-color: currentColor;
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--rui-ripple-surface-duration) motion.$easing-standard;
@@ -80,6 +91,10 @@
     transform: translate3d(0, 0, 0) scale(0);
     opacity: 0;
     pointer-events: none;
+    // The press wave snapshots its color in engine.ts, so this transition only
+    // matters when an explicit ripple color is updated while the wave exists.
+    transition: background-color var(--rui-ripple-color-change-duration) var(--rui-ripple-color-change-easing)
+        var(--rui-ripple-color-change-delay);
     animation:
         var(--rui-ripple-expand-duration) ease 0s 1 normal forwards running rui-ripple-radius-in,
         var(--rui-ripple-enter-opacity-duration) ease 0s 1 normal forwards running rui-ripple-opacity-in;

@@ -45,15 +45,15 @@ const classes = computed(() => [
     --rui-surface-shape-start-end: var(--rui-sys-shape-medium-start-end);
     --rui-surface-shape-end-end: var(--rui-sys-shape-medium-end-end);
     --rui-surface-shape-end-start: var(--rui-sys-shape-medium-end-start);
+    --rui-comp-surface-background: var(--rui-sys-color-surface);
 
     display: block;
     box-sizing: border-box;
     position: relative;
     margin: 0;
     padding: 0;
-    background-color: color.$surface;
+    background-color: var(--rui-comp-surface-background);
     color: color.$on-surface;
-    border: 1px solid transparent;
 
     @include shape.apply(
         var(--rui-surface-shape-family),
@@ -63,8 +63,110 @@ const classes = computed(() => [
         var(--rui-surface-shape-end-start)
     );
 
+    [data-rui-theme="night"] & {
+        &--elevation-0 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(0)};
+        }
+
+        &--elevation-1 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(1)};
+        }
+
+        &--elevation-2 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(2)};
+        }
+
+        &--elevation-3 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(3)};
+        }
+
+        &--elevation-4 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(4)};
+        }
+
+        &--elevation-5 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(5)};
+        }
+
+        &--elevation-6 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(6)};
+        }
+
+        &--elevation-7 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(7)};
+        }
+
+        &--elevation-8 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(8)};
+        }
+
+        &--elevation-9 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(9)};
+        }
+
+        &--elevation-10 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(10)};
+        }
+
+        &--elevation-11 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(11)};
+        }
+
+        &--elevation-12 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(12)};
+        }
+
+        &--elevation-13 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(13)};
+        }
+
+        &--elevation-14 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(14)};
+        }
+
+        &--elevation-15 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(15)};
+        }
+
+        &--elevation-16 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(16)};
+        }
+
+        &--elevation-17 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(17)};
+        }
+
+        &--elevation-18 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(18)};
+        }
+
+        &--elevation-19 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(19)};
+        }
+
+        &--elevation-20 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(20)};
+        }
+
+        &--elevation-21 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(21)};
+        }
+
+        &--elevation-22 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(22)};
+        }
+
+        &--elevation-23 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(23)};
+        }
+
+        &--elevation-24 {
+            --rui-comp-surface-background: #{elevations.dark-surface-color(24)};
+        }
+    }
+
     &--outlined {
-        border-color: color.$on-surface-outline;
+        border: 1px solid color.$on-surface-outline;
         z-index: elevations.z-index(1);
     }
 

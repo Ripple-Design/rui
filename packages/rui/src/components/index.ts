@@ -10,6 +10,10 @@ export type * from "./stack/types"
 export { default as RModal } from "./modal/RModal.vue"
 export type * from "./modal/types"
 
+export { default as RSideSheet } from "./sideSheet/RSideSheet.vue"
+export { default as RModalSideSheet } from "./sideSheet/RModalSideSheet.vue"
+export type * from "./sideSheet/types"
+
 export { default as RDialog } from "./dialog/RDialog.vue"
 export { default as RAlertDialog } from "./dialog/RAlertDialog.vue"
 export { default as RFullscreenDialog } from "./dialog/RFullscreenDialog.vue"
@@ -19,14 +23,26 @@ export { default as RSurface } from "./surface/RSurface.vue"
 export type * from "./surface/types"
 
 export { default as RIcon } from "./icon/RIcon.vue"
+export { createIconFamily, isIconFamily, resolveIconSource } from "./icon/family"
 export type * from "./icon/types"
 
 export { default as RButton } from "./button/RButton.vue"
+export { default as RIconButton } from "./button/RIconButton.vue"
 export { default as RButtonGroup } from "./button/RButtonGroup.vue"
 export type * from "./button/types"
 
+export { default as RNavigationRail } from "./navigationRail/RNavigationRail.vue"
+export { default as RNavigationRailItem } from "./navigationRail/RNavigationRailItem.vue"
+export type * from "./navigationRail/types"
+
+export { default as RTabBar } from "./tab/RTabBar.vue"
+export { default as RTab } from "./tab/RTab.vue"
+export type * from "./tab/types"
+
 export { default as RText } from "./text/RText.vue"
 export type * from "./text/types"
+
+export * from "./tooltip"
 
 export { default as RTextField } from "./textField/RTextField.vue"
 export { default as RInput } from "./input/RInput.vue"
@@ -34,3 +50,4 @@ export type * from "./textField/types"
 
 export { default as RNumberField } from "./numberField/RNumberField.vue"
 export type * from "./numberField/types"
+export * from "./menu"

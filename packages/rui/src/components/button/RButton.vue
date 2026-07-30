@@ -1,17 +1,25 @@
 <script setup lang="ts">
-import { computed, inject, onBeforeUnmount, ref, useAttrs, useSlots, watch, watchEffect } from "vue"
+defineOptions({
+    inheritAttrs: false,
+})
+
+import { RICheckFilled, RICheckOutlined, RICheckRounded, RICheckSharp, RICheckTwoTone } from "@ripple-design/icons"
+import { computed, inject, onBeforeUnmount, ref, useAttrs, useSlots, watch, watchEffect, type Slots } from "vue"
 
 import { RIcon } from "@/components"
-import { vRipple, type RippleOptions } from "@/foundations/ripple"
+import { createIconFamily } from "@/components/icon/family"
+import { vRipple } from "@/foundations/ripple"
 import { RTouchTargetWrapper } from "@/foundations/touchTarget"
 
 import type { RButtonProps, RButtonType, RButtonVariant } from "./types"
 
 import { buttonGroupKey } from "./groupContext"
-
-defineOptions({
-    inheritAttrs: false,
-})
+import {
+    consumeDisabledLinkClick,
+    resolveButtonHref,
+    resolveButtonRippleOptions,
+    resolveDisabledLinkTabIndex,
+} from "./shared"
 
 const props = withDefaults(defineProps<RButtonProps>(), {
     disabled: false,
@@ -22,7 +30,8 @@ const props = withDefaults(defineProps<RButtonProps>(), {
 })
 
 const attrs = useAttrs()
-const slots = useSlots()
+const slots: Slots = useSlots()
+const selectedCheckIcon = createIconFamily(RICheckFilled, RICheckOutlined, RICheckRounded, RICheckSharp, RICheckTwoTone)
 const interactiveRef = ref<HTMLElement | null>(null)
 const group = inject(buttonGroupKey, null)
 const buttonId = Symbol("rButton")
@@ -31,10 +40,7 @@ let warnedHref = false
 
 const isLink = computed(() => !!props.href)
 const nativeType = computed<RButtonType>(() => props.type ?? "button")
-const resolvedHref = computed(() => (props.disabled ? undefined : props.href))
-const hasTop = computed(() => !isIconGroup.value && (!!props.topIcon || !!slots.top))
-const hasLeading = computed(() => !!props.icon || !!slots.leading)
-const hasTrailing = computed(() => !isIconGroup.value && (!!props.endIcon || !!slots.trailing))
+const resolvedHref = computed(() => resolveButtonHref(props.href, props.disabled))
 const selectionMode = computed(() => group?.selection.value)
 const isIconGroup = computed(() => group?.icon.value ?? false)
 const hasSelectionValue = computed(() => props.value !== undefined)
@@ -42,32 +48,22 @@ const isSelectableInGroup = computed(() => selectionMode.value != null && !isLin
 const selected = computed(() => (isSelectableInGroup.value ? (group?.isSelected(props.value) ?? false) : false))
 const resolvedVariant = computed<RButtonVariant>(() => props.variant ?? group?.variant.value ?? "contained")
 const iconSize = computed(() => (isIconGroup.value ? 24 : 18))
-
-const rippleOptions = computed<RippleOptions>(() => {
-    const defaultContrast = ["contained", "unelevated"].includes(resolvedVariant.value) ? "high" : "low"
-
-    if (props.ripple === false) {
-        return { disabled: true }
-    }
-
-    if (props.ripple === true || props.ripple == null) {
-        return {
-            disabled: props.disabled,
-            contrast: defaultContrast,
-        }
-    }
-
-    return {
-        ...props.ripple,
-        contrast: props.ripple.contrast ?? defaultContrast,
-        disabled: props.disabled || !!props.ripple.disabled,
-    }
-})
+const rippleOptions = computed(() => resolveButtonRippleOptions(resolvedVariant.value, props.ripple, props.disabled))
+const resolvedFullWidth = computed(() => props.fullWidth || group?.fullWidth.value || false)
+const hasLabel = computed<boolean>(() => !isIconGroup.value && !!slots.default)
+const hasTop = computed<boolean>(() => !isIconGroup.value && (!!props.topIcon || !!slots.top))
+const hasOwnLeading = computed<boolean>(() => !!props.icon || !!slots.leading)
+const supportsSelectedCheck = computed<boolean>(() => isSelectableInGroup.value && !hasTop.value && hasLabel.value)
+const showSelectedCheck = computed<boolean>(() => selected.value && supportsSelectedCheck.value)
+const animateSelectedCheckSpacing = computed<boolean>(() => supportsSelectedCheck.value && !hasOwnLeading.value)
+const shouldRenderLeading = computed<boolean>(() => hasOwnLeading.value || supportsSelectedCheck.value)
+const hasLeading = computed<boolean>(() => hasOwnLeading.value || showSelectedCheck.value)
+const hasTrailing = computed<boolean>(() => !isIconGroup.value && (!!props.endIcon || !!slots.trailing))
 
 const wrapperClasses = computed(() => [
     "rui-button__touch-target-wrapper",
     {
-        "rui-button__touch-target-wrapper--full-width": props.fullWidth,
+        "rui-button__touch-target-wrapper--full-width": resolvedFullWidth.value,
         "rui-button__touch-target-wrapper--with-top": hasTop.value,
     },
 ])
@@ -79,7 +75,7 @@ const classes = computed(() => {
         "rui-button",
         `rui-button--${variant}`,
         {
-            "rui-button--full-width": props.fullWidth,
+            "rui-button--full-width": resolvedFullWidth.value,
             "rui-button--disabled": props.disabled,
             "rui-button--selectable": isSelectableInGroup.value,
             "rui-button--icon-group": isIconGroup.value,
@@ -91,6 +87,22 @@ const classes = computed(() => {
         },
     ]
 })
+
+const leadingClasses = computed(() => [
+    "rui-button__leading",
+    {
+        "rui-button__leading--animated-selected-check": animateSelectedCheckSpacing.value,
+        "rui-button__leading--animated-selected-check-visible":
+            showSelectedCheck.value && animateSelectedCheckSpacing.value,
+    },
+])
+
+const selectedCheckClasses = computed(() => [
+    "rui-button__selected-check",
+    {
+        "rui-button__selected-check--visible": showSelectedCheck.value,
+    },
+])
 
 const resolvedRole = computed(() => {
     if (selectionMode.value === "single" && isSelectableInGroup.value) {
@@ -117,8 +129,9 @@ const resolvedAriaPressed = computed(() => {
 })
 
 const resolvedTabIndex = computed(() => {
-    if (isLink.value && props.disabled) {
-        return -1
+    const disabledLinkTabIndex = resolveDisabledLinkTabIndex(isLink.value, props.disabled)
+    if (disabledLinkTabIndex !== undefined) {
+        return disabledLinkTabIndex
     }
 
     if (selectionMode.value === "single" && isSelectableInGroup.value) {
@@ -167,9 +180,7 @@ onBeforeUnmount(() => {
 })
 
 function handleClick(event: MouseEvent) {
-    if (isLink.value && props.disabled) {
-        event.preventDefault()
-        event.stopImmediatePropagation()
+    if (consumeDisabledLinkClick(event, isLink.value, props.disabled)) {
         return
     }
 
@@ -191,6 +202,7 @@ function handleClick(event: MouseEvent) {
             ref="interactiveRef"
             v-bind="attrs"
             v-ripple="rippleOptions"
+            data-rui-touch-target-anchor
             :class="classes"
             :href="resolvedHref"
             :target="target"
@@ -214,12 +226,19 @@ function handleClick(event: MouseEvent) {
                 </span>
 
                 <span class="rui-button__main">
-                    <span v-if="hasLeading" class="rui-button__leading">
-                        <slot v-if="$slots.leading" name="leading" />
+                    <span v-if="shouldRenderLeading" :class="leadingClasses">
+                        <RIcon
+                            v-if="showSelectedCheck || animateSelectedCheckSpacing"
+                            :icon="selectedCheckIcon"
+                            :size="iconSize"
+                            decorative
+                            :class="selectedCheckClasses"
+                        />
+                        <slot v-else-if="$slots.leading" name="leading" />
                         <RIcon v-else-if="icon" :icon="icon" :size="iconSize" decorative />
                     </span>
 
-                    <span class="rui-button__label" v-if="!isIconGroup && $slots.default">
+                    <span class="rui-button__label" v-if="hasLabel">
                         <slot />
                     </span>
 
@@ -236,6 +255,7 @@ function handleClick(event: MouseEvent) {
             ref="interactiveRef"
             v-bind="attrs"
             v-ripple="rippleOptions"
+            data-rui-touch-target-anchor
             :class="classes"
             :type="nativeType"
             :disabled="disabled"
@@ -257,12 +277,19 @@ function handleClick(event: MouseEvent) {
                 </span>
 
                 <span class="rui-button__main">
-                    <span v-if="hasLeading" class="rui-button__leading">
-                        <slot v-if="$slots.leading" name="leading" />
+                    <span v-if="shouldRenderLeading" :class="leadingClasses">
+                        <RIcon
+                            v-if="showSelectedCheck || animateSelectedCheckSpacing"
+                            :icon="selectedCheckIcon"
+                            :size="iconSize"
+                            decorative
+                            :class="selectedCheckClasses"
+                        />
+                        <slot v-else-if="$slots.leading" name="leading" />
                         <RIcon v-else-if="icon" :icon="icon" :size="iconSize" decorative />
                     </span>
 
-                    <span class="rui-button__label" v-if="!isIconGroup && $slots.default">
+                    <span class="rui-button__label" v-if="hasLabel">
                         <slot />
                     </span>
 
@@ -280,6 +307,7 @@ function handleClick(event: MouseEvent) {
 @use "@/styles/color";
 @use "@/styles/density";
 @use "@/styles/elevations";
+@use "@/styles/motion";
 @use "@/styles/normalize";
 @use "@/styles/shape";
 @use "@/styles/typography";
@@ -318,8 +346,9 @@ function handleClick(event: MouseEvent) {
     --rui-button-shape-start-end: var(--rui-sys-shape-small-start-end);
     --rui-button-shape-end-end: var(--rui-sys-shape-small-end-end);
     --rui-button-shape-end-start: var(--rui-sys-shape-small-end-start);
-    --rui-button-outline-color: rgba(from #{color.$on-surface} r g b / 0.12);
-    --rui-button-disabled-container-color: rgba(from #{color.$on-surface} r g b / 0.12);
+    --rui-button-color: #{color.$primary};
+    --rui-button-outline-color: #{color.$on-surface-outline};
+    --rui-button-disabled-container-color: #{color.$on-surface-outline};
     --rui-button-contained-elevation: #{elevations.shadow(2)};
     --rui-button-contained-hover-elevation: #{elevations.shadow(4)};
     --rui-button-contained-focus-elevation: #{elevations.shadow(4)};
@@ -361,6 +390,7 @@ function handleClick(event: MouseEvent) {
     }
 
     &--text {
+        color: var(--rui-button-color);
         --rui-button-padding-inline-start: 8px;
         --rui-button-padding-inline-end: 8px;
     }
@@ -432,6 +462,7 @@ function handleClick(event: MouseEvent) {
     }
 
     &--outlined {
+        color: var(--rui-button-color);
         outline: 1px solid var(--rui-button-outline-color);
         outline-offset: -1px;
     }
@@ -528,6 +559,33 @@ function handleClick(event: MouseEvent) {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+}
+
+.rui-button__leading--animated-selected-check {
+    inline-size: 0;
+    margin-inline-end: calc(var(--rui-button-gap) * -1);
+    overflow: hidden;
+    //transition:
+    //    inline-size #{motion.$duration-small-in} #{motion.$easing-standard},
+    //    margin-inline-end #{motion.$duration-small-in} #{motion.$easing-standard};
+
+    &.rui-button__leading--animated-selected-check-visible {
+        inline-size: 18px;
+        margin-inline-end: 0;
+    }
+}
+
+.rui-button__selected-check {
+    opacity: 0;
+    transform: scale(0.8);
+    //transition:
+    //    opacity #{motion.$duration-small-in} #{motion.$easing-standard},
+    //    transform #{motion.$duration-small-in} #{motion.$easing-standard}; // TODO: even shorter
+
+    &--visible {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .rui-button__label {

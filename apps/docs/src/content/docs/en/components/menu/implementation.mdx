@@ -1,0 +1,21 @@
+---
+title: Menu
+docSlug: components/menu
+tab: implementation
+locale: en
+designOrder: 146
+developOrder: 146
+api: /en/api/menu
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import MenuBasicDemo from "@docs/components/demos/menu/MenuBasicDemo.vue"
+import menuBasicDemoSource from "@docs/components/demos/menu/MenuBasicDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock title="Menu alignment" code={menuBasicDemoSource} language="vue">
+    <MenuBasicDemo client:load />
+</DemoBlock>
+
+`RMenu` and `RMenuItem` provide an action-only anchored menu. The trigger is supplied through the `trigger` slot, items emit `click` when activated, and `align="start" | "end"` controls which logical edge of the trigger the menu aligns to.

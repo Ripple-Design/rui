@@ -1,10 +1,11 @@
 {
     "name": "@ripple-design/rui",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Modular and customizable Ripple Design UI components for Vue 3",
     "files": [
         "dist",
         "src/styles",
+        "src/foundations",
         "rui.scss"
     ],
     "type": "module",
@@ -19,6 +20,9 @@
         "*": {
             "": [
                 "./dist/types/src/index.d.ts"
+            ],
+            "playground": [
+                "./dist/types/src/playground/index.d.ts"
             ]
         }
     },
@@ -26,6 +30,10 @@
         ".": {
             "types": "./dist/types/src/index.d.ts",
             "import": "./dist/es/index.js"
+        },
+        "./playground": {
+            "types": "./dist/types/src/playground/index.d.ts",
+            "import": "./dist/es/playground/index.js"
         },
         "./styles.css": "./dist/rui.css",
         "./rui": "./rui.scss",
@@ -40,6 +48,7 @@
         "lint:fix": "oxlint . --fix"
     },
     "dependencies": {
+        "@floating-ui/dom": "^1.8.0",
         "@ripple-design/icons": "^1.0.7"
     },
     "devDependencies": {

@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro"
 import { locales, type Locale } from "../../lib/docs"
-import { getIconCount, getIconPath, groupIconsByCategory, type IconVariant } from "../../lib/icons"
+import { getIconCount, getIconPath, groupIconsByCategory, ICON_STYLES, type IconVariant } from "../../lib/icons"
 import { RIcon } from "@ripple-design/rui"
 
 export function getStaticPaths() {
@@ -9,14 +9,14 @@ export function getStaticPaths() {
 }
 
 const { locale } = Astro.params as { locale: Locale }
-const currentStyle: IconVariant = "filled"
+const currentStyle: IconVariant = ICON_STYLES[0]
 const currentDir = Astro.url.searchParams.get("dir")
 const groups = groupIconsByCategory()
 const count = getIconCount()
-const styles: IconVariant[] = ["filled", "outlined", "rounded", "sharp", "twotone"]
+const styles = ICON_STYLES
 
 function getStyleHref(style: IconVariant) {
-    const pathname = style === "filled" ? `/${locale}/icons` : `/${locale}/icons/${style}`
+    const pathname = style === ICON_STYLES[0] ? `/${locale}/icons` : `/${locale}/icons/${style}`
     return currentDir ? `${pathname}?dir=${currentDir}` : pathname
 }
 ---

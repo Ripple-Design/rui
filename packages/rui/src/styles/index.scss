@@ -4,6 +4,7 @@
 @forward "density" as density-*;
 @forward "shape" as shape-*;
 @forward "elevations" as elevation-*;
+@forward "breakpoints" as breakpoint-*;
 @use "../foundations/ripple/ripple";
 @use "../foundations/touchTarget/touchTarget";
 

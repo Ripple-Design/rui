@@ -1,0 +1,35 @@
+---
+title: Side sheet
+docSlug: components/side-sheet
+tab: implementation
+locale: en
+designOrder: 91
+developOrder: 91
+api: /en/api/side-sheet
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import SideSheetBasicDemo from "@docs/components/demos/sideSheet/SideSheetBasicDemo.vue"
+import sideSheetBasicDemoSource from "@docs/components/demos/sideSheet/SideSheetBasicDemo.vue?raw"
+import SideSheetPlacementDemo from "@docs/components/demos/sideSheet/SideSheetPlacementDemo.vue"
+import sideSheetPlacementDemoSource from "@docs/components/demos/sideSheet/SideSheetPlacementDemo.vue?raw"
+import SideSheetScrollingDemo from "@docs/components/demos/sideSheet/SideSheetScrollingDemo.vue"
+import sideSheetScrollingDemoSource from "@docs/components/demos/sideSheet/SideSheetScrollingDemo.vue?raw"
+
+## Basic structure
+
+<DemoBlock title="Basic side sheet" code={sideSheetBasicDemoSource} language="vue">
+    <SideSheetBasicDemo client:load />
+</DemoBlock>
+
+## Placement
+
+<DemoBlock title="Start and end placement" code={sideSheetPlacementDemoSource} language="vue">
+    <SideSheetPlacementDemo client:load />
+</DemoBlock>
+
+## Scrolling content
+
+<DemoBlock title="Scrolling body" code={sideSheetScrollingDemoSource} language="vue">
+    <SideSheetScrollingDemo client:load />
+</DemoBlock>

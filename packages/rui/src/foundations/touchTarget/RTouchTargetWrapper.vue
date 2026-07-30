@@ -5,7 +5,11 @@ defineProps<{
 </script>
 
 <template>
-    <span class="rui-touch-target-wrapper" :class="{ 'rui-touch-target-wrapper--active': active }">
+    <span
+        class="rui-touch-target-wrapper"
+        :class="{ 'rui-touch-target-wrapper--active': active }"
+        data-rui-touch-target-wrapper
+    >
         <slot />
     </span>
 </template>

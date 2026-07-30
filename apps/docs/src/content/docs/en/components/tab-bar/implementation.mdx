@@ -1,0 +1,61 @@
+---
+title: Tab
+docSlug: components/tab
+tab: implementation
+locale: en
+designOrder: 72
+developOrder: 72
+api: /en/api/tab
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import TabBarBasicDemo from "@docs/components/demos/tab/TabBarBasicDemo.vue"
+import tabBarBasicDemoSource from "@docs/components/demos/tab/TabBarBasicDemo.vue?raw"
+import TabBarOverflowDemo from "@docs/components/demos/tab/TabBarOverflowDemo.vue"
+import tabBarOverflowDemoSource from "@docs/components/demos/tab/TabBarOverflowDemo.vue?raw"
+import TabBarIconLayoutDemo from "@docs/components/demos/tab/TabBarIconLayoutDemo.vue"
+import tabBarIconLayoutDemoSource from "@docs/components/demos/tab/TabBarIconLayoutDemo.vue?raw"
+import TabBarAppearanceDemo from "@docs/components/demos/tab/TabBarAppearanceDemo.vue"
+import tabBarAppearanceDemoSource from "@docs/components/demos/tab/TabBarAppearanceDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock
+    title="Primary and secondary tab bars"
+    code={tabBarBasicDemoSource}
+    language="vue"
+>
+    <TabBarBasicDemo client:load />
+</DemoBlock>
+
+## Overflow
+
+<DemoBlock
+    title="Scrollable tab bars"
+    code={tabBarOverflowDemoSource}
+    language="vue"
+>
+    <TabBarOverflowDemo client:load />
+</DemoBlock>
+
+## Icon layout
+
+<DemoBlock
+    title="Icon layout and full-width tabs"
+    code={tabBarIconLayoutDemoSource}
+    language="vue"
+>
+    <TabBarIconLayoutDemo client:load />
+</DemoBlock>
+
+## Appearance
+
+<DemoBlock
+    title="Divider and semantic colors"
+    code={tabBarAppearanceDemoSource}
+    language="vue"
+>
+    <TabBarAppearanceDemo client:load />
+</DemoBlock>
+
+`RTabBar` manages a value-based selection model across `RTab` children. Use `v-model` to control the active tab, `fullWidth` to evenly distribute items, `iconLayout` on `RTabBar` to set the default icon/label direction for child tabs, `divider` to show or hide the bottom rule, and `color` to choose one of the built-in semantic treatments: `primary`, `secondary`, `on-primary`, or `on-secondary`. Individual `RTab` items can override icon layout when needed. Use the `on-*` colors when the tab bar sits on the matching filled surface. Tabs render at 48px height by default, use a 72px vertical icon layout when icons stack above labels, and clamp each tab between 90px and 360px wide.

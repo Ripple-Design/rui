@@ -2,12 +2,17 @@ import type { NormalizedRippleOptions } from "./types.ts"
 
 export type RippleController = {
     update: (nextOptions: NormalizedRippleOptions) => void
+    refreshGeometry: () => void
     destroy: () => void
 }
 
 type RippleWaveHandle = {
+    centered: boolean
+    clientX: number | null
+    clientY: number | null
     release: () => void
     remove: () => void
+    refreshGeometry: () => void
 }
 
 type PendingPointerStart = {
@@ -41,6 +46,7 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
     let activeMousePointerId: number | null = null
 
     const activePointerWaves = new Map<number, RippleWaveHandle>()
+    const liveWaves = new Set<RippleWaveHandle>()
     const pendingPointerStarts = new Map<number, PendingPointerStart>()
     const cleanup: Cleanup[] = []
     const dataset = host.dataset as HostDataset
@@ -55,8 +61,9 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
 
     const reset = () => {
         clearPointerStarts(pendingPointerStarts)
-        clearWaves(surface, activePointerWaves, activeKeyboardWave)
+        clearWaves(surface, liveWaves)
         activePointerWaves.clear()
+        liveWaves.clear()
         activeKeyboardWave = null
         activeKeyboardKey = null
         activeMousePointerId = null
@@ -100,7 +107,7 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
                 if (destroyed || !host.isConnected || isDisabled(host, options)) {
                     return
                 }
-                const wave = createWave(surface, options, { clientX: event.clientX, clientY: event.clientY })
+                const wave = createWave(surface, options, liveWaves, { clientX: event.clientX, clientY: event.clientY })
                 activePointerWaves.set(event.pointerId, wave)
             }, 70)
 
@@ -113,7 +120,7 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
         }
 
         activeMousePointerId = event.pointerId
-        const wave = createWave(surface, options, { clientX: event.clientX, clientY: event.clientY })
+        const wave = createWave(surface, options, liveWaves, { clientX: event.clientX, clientY: event.clientY })
         activePointerWaves.set(event.pointerId, wave)
     }
 
@@ -130,7 +137,7 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
                 return
             }
 
-            const wave = createWave(surface, options, { clientX: pending.clientX, clientY: pending.clientY })
+            const wave = createWave(surface, options, liveWaves, { clientX: pending.clientX, clientY: pending.clientY })
             wave.release()
 
             if (activeMousePointerId === event.pointerId) {
@@ -154,7 +161,7 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
         if (!isActivationKey(event.key)) return
 
         activeKeyboardKey = event.key
-        activeKeyboardWave = createWave(surface, options, { centered: true })
+        activeKeyboardWave = createWave(surface, options, liveWaves, { centered: true })
     }
 
     const onKeyUp = (event: KeyboardEvent) => {
@@ -198,7 +205,20 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
 
             if (isDisabled(host, options)) {
                 reset()
+                return
             }
+
+            ensureUnboundedRipple(surface, options)
+            this.refreshGeometry()
+        },
+        refreshGeometry() {
+            if (destroyed) {
+                return
+            }
+
+            refreshUnboundedRippleGeometry(surface, options)
+            liveWaves.forEach((wave) => wave.refreshGeometry())
+            activeKeyboardWave?.refreshGeometry()
         },
         destroy() {
             if (destroyed) {
@@ -242,11 +262,17 @@ function applyOptions(surface: HTMLElement, options: NormalizedRippleOptions) {
     }
 }
 
-function ensureUnboundedRipple(surface: HTMLElement, options: NormalizedRippleOptions) {
-    if (!options.unbounded || surface.querySelector(`.${UNBOUNDED_RIPPLE_CLASS}`)) {
-        return
-    }
+function applyResolvedRippleColor(surface: HTMLElement, element: HTMLElement, options: NormalizedRippleOptions) {
+    // Press waves are created after the host may already have switched to its
+    // selected/active color. Snapshot the host color instead of the surface
+    // color, because the surface may still be intentionally lagging behind via
+    // its delayed inherited-color transition.
+    const colorSource = surface.parentElement instanceof HTMLElement ? surface.parentElement : surface
+    const resolvedColor = options.color ?? getComputedStyle(colorSource).color
+    element.style.setProperty("--rui-ripple-color", resolvedColor)
+}
 
+function updateUnboundedRippleGeometry(surface: HTMLElement, wave: HTMLElement) {
     const rect = surface.getBoundingClientRect()
     const width = rect.width
     const height = rect.height
@@ -254,27 +280,50 @@ function ensureUnboundedRipple(surface: HTMLElement, options: NormalizedRippleOp
     const centerY = height / 2
     const diameter = Math.max(Math.hypot(width, height), 48)
 
-    const wave = document.createElement("span")
-    wave.className = UNBOUNDED_RIPPLE_CLASS
     wave.style.width = `${diameter}px`
     wave.style.height = `${diameter}px`
     wave.style.marginTop = `${-diameter / 2}px`
     wave.style.marginLeft = `${-diameter / 2}px`
     wave.style.left = `${centerX}px`
     wave.style.top = `${centerY}px`
+}
 
+function refreshUnboundedRippleGeometry(surface: HTMLElement, options: NormalizedRippleOptions) {
+    if (!options.unbounded) {
+        return
+    }
+
+    const wave = surface.querySelector<HTMLElement>(`.${UNBOUNDED_RIPPLE_CLASS}`)
+    if (!wave) {
+        return
+    }
+
+    updateUnboundedRippleGeometry(surface, wave)
+}
+
+function ensureUnboundedRipple(surface: HTMLElement, options: NormalizedRippleOptions) {
+    if (!options.unbounded || surface.querySelector(`.${UNBOUNDED_RIPPLE_CLASS}`)) {
+        return
+    }
+
+    const wave = document.createElement("span")
+    wave.className = UNBOUNDED_RIPPLE_CLASS
+    // Do not snapshot the color for the persistent unbounded layer. It should
+    // keep inheriting the host color so CSS can transition it after the press
+    // wave finishes.
+    updateUnboundedRippleGeometry(surface, wave)
     surface.append(wave)
 }
 
-function createWave(
+function updateWaveGeometry(
     surface: HTMLElement,
-    options: NormalizedRippleOptions,
+    wave: HTMLElement,
     origin: {
-        centered?: boolean
-        clientX?: number
-        clientY?: number
-    } = {},
-): RippleWaveHandle {
+        centered: boolean
+        clientX: number | null
+        clientY: number | null
+    },
+) {
     const rect = surface.getBoundingClientRect()
     const width = rect.width
     const height = rect.height
@@ -284,8 +333,6 @@ function createWave(
     const translateX = `${-originX + width / 2}px`
     const translateY = `${-originY + height / 2}px`
 
-    const wave = document.createElement("span")
-    wave.className = WAVE_CLASS
     wave.style.width = `${diameter}px`
     wave.style.height = `${diameter}px`
     wave.style.marginTop = `${-diameter / 2}px`
@@ -294,6 +341,30 @@ function createWave(
     wave.style.top = `${originY}px`
     wave.style.setProperty("--rui-ripple-transition-x", translateX)
     wave.style.setProperty("--rui-ripple-transition-y", translateY)
+}
+
+function createWave(
+    surface: HTMLElement,
+    options: NormalizedRippleOptions,
+    liveWaves: Set<RippleWaveHandle>,
+    origin: {
+        centered?: boolean
+        clientX?: number
+        clientY?: number
+    } = {},
+): RippleWaveHandle {
+    const wave = document.createElement("span")
+    wave.className = WAVE_CLASS
+    // Only the transient press wave gets a color snapshot. This keeps the
+    // visible click wave stable even if the host color changes before or during
+    // creation, while the persistent layers can still animate later.
+    applyResolvedRippleColor(surface, wave, options)
+
+    const centered = !!origin.centered
+    const clientX = origin.clientX ?? null
+    const clientY = origin.clientY ?? null
+
+    updateWaveGeometry(surface, wave, { centered, clientX, clientY })
 
     let filled = false
     let released = false
@@ -306,6 +377,7 @@ function createWave(
         }
 
         removed = true
+        liveWaves.delete(handle)
         wave.remove()
     }
 
@@ -340,6 +412,8 @@ function createWave(
     wave.addEventListener("animationcancel", handleAnimationCancel)
     surface.prepend(wave)
 
+    let handle: RippleWaveHandle
+
     const release = () => {
         if (released || removed) {
             return
@@ -351,10 +425,26 @@ function createWave(
         }
     }
 
-    return {
+    const refreshGeometry = () => {
+        if (removed) {
+            return
+        }
+
+        updateWaveGeometry(surface, wave, { centered, clientX, clientY })
+    }
+
+    handle = {
+        centered,
+        clientX,
+        clientY,
         release,
         remove,
+        refreshGeometry,
     }
+
+    liveWaves.add(handle)
+
+    return handle
 }
 
 function clearPointerStarts(pendingPointerStarts: Map<number, PendingPointerStart>) {
@@ -364,14 +454,9 @@ function clearPointerStarts(pendingPointerStarts: Map<number, PendingPointerStar
     pendingPointerStarts.clear()
 }
 
-function clearWaves(
-    surface: HTMLElement,
-    activePointerWaves: Map<number, RippleWaveHandle>,
-    activeKeyboardWave: RippleWaveHandle | null,
-) {
+function clearWaves(surface: HTMLElement, liveWaves: Set<RippleWaveHandle>) {
     surface.classList.remove(SURFACE_HOVERED_CLASS)
-    activePointerWaves.forEach((wave) => wave.remove())
-    activeKeyboardWave?.remove()
+    liveWaves.forEach((wave) => wave.remove())
 }
 
 function isActivationKey(key: string) {

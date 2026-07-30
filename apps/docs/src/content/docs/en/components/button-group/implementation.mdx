@@ -14,8 +14,12 @@ import buttonGroupBasicDemoSource from "@docs/components/demos/buttonGroup/Butto
 
 ## Basic usage
 
-<DemoBlock title="Attached and selectable button groups" code={buttonGroupBasicDemoSource} language="vue">
+<DemoBlock
+    title="Attached, selectable, and full-width button groups"
+    code={buttonGroupBasicDemoSource}
+    language="vue"
+>
     <ButtonGroupBasicDemo client:load />
 </DemoBlock>
 
-`RButtonGroup` groups existing `RButton` children without replacing their own props or semantics. Use the group `variant` prop to apply a shared visual treatment, and enable `selection="single"` or `selection="multiple"` when the group should manage selected values via `v-model`.
+`RButtonGroup` groups existing `RButton` children without replacing their own props or semantics. Use the group `variant` prop to apply a shared visual treatment, enable `selection="single"` or `selection="multiple"` when the group should manage selected values via `v-model`, and use `fullWidth` when every child button should evenly divide the available inline space.

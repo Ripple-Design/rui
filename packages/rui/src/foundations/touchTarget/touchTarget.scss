@@ -66,3 +66,24 @@
         margin-right: calc(#{$margin-x} * #{_touch-target-enabled($density-var)});
     }
 }
+
+@mixin touchTargetPaddingXY(
+    $component-height,
+    $component-width,
+    $target-height: 48px,
+    $target-width: 48px,
+    $density-var: --rui-sys-density-scale
+) {
+    $padding-y: _touch-target-margin($component-height, $target-height);
+    $padding-x: _touch-target-margin($component-width, $target-width);
+
+    @if $padding-y > 0 {
+        padding-top: calc(#{$padding-y} * #{_touch-target-enabled($density-var)});
+        padding-bottom: calc(#{$padding-y} * #{_touch-target-enabled($density-var)});
+    }
+
+    @if $padding-x > 0 {
+        padding-left: calc(#{$padding-x} * #{_touch-target-enabled($density-var)});
+        padding-right: calc(#{$padding-x} * #{_touch-target-enabled($density-var)});
+    }
+}

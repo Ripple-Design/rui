@@ -97,11 +97,77 @@ $ambient-map: (
     24: 0px 8px 42px 7px,
 );
 
+$surface-overlay-anchor-map: (
+    0: 0%,
+    1: 5%,
+    2: 7%,
+    3: 8%,
+    4: 9%,
+    6: 11%,
+    8: 12%,
+    12: 14%,
+    16: 15%,
+    24: 16%,
+);
+
+@function _anchor-before($level) {
+    $candidate: 0;
+
+    @each $anchor, $value in $surface-overlay-anchor-map {
+        @if $anchor <= $level {
+            $candidate: $anchor;
+        }
+    }
+
+    @return $candidate;
+}
+
+@function _anchor-after($level) {
+    @each $anchor, $value in $surface-overlay-anchor-map {
+        @if $anchor >= $level {
+            @return $anchor;
+        }
+    }
+
+    @return 24;
+}
+
+@function surface-overlay-opacity($level) {
+    @if meta.type-of($level) != number or not math.is-unitless($level) {
+        @error "$level must be a unitless number, but received '#{$level}'";
+    }
+
+    @if $level < 0 or $level > 24 {
+        @error "$level must be between 0 and 24, but received '#{$level}'";
+    }
+
+    $lower-anchor: _anchor-before($level);
+    $upper-anchor: _anchor-after($level);
+    $lower-value: map.get($surface-overlay-anchor-map, $lower-anchor);
+    $upper-value: map.get($surface-overlay-anchor-map, $upper-anchor);
+
+    @if $lower-anchor == $upper-anchor {
+        @return $lower-value;
+    }
+
+    $ratio: math.div($level - $lower-anchor, $upper-anchor - $lower-anchor);
+
+    @return $lower-value + ($upper-value - $lower-value) * $ratio;
+}
+
+@function dark-surface-color(
+    $level,
+    $surface: var(--rui-sys-color-surface),
+    $overlay: var(--rui-sys-color-on-surface)
+) {
+    @return color-mix(in srgb, #{$surface}, #{$overlay} #{surface-overlay-opacity($level)});
+}
+
 @function _shadow-layer($geometry, $color-rgb, $opacity) {
     @return #{$geometry} rgb(#{$color-rgb} / #{$opacity});
 }
 
-@function shadow($level, $color-rgb: var(--rui-sys-elevation-color), $opacity-boost: 0) {
+@function shadow($level, $color-rgb: var(--rui-sys-elevation-color)) {
     @if meta.type-of($level) != number or not math.is-unitless($level) {
         @error "$level must be a unitless number, but received '#{$level}'";
     }
@@ -115,9 +181,9 @@ $ambient-map: (
     $ambient: map.get($ambient-map, $level);
 
     @return (
-        _shadow-layer($umbra, $color-rgb, calc(var(--rui-sys-elevation-opacity-umbra) + #{$opacity-boost})),
-        _shadow-layer($penumbra, $color-rgb, calc(var(--rui-sys-elevation-opacity-penumbra) + #{$opacity-boost})),
-        _shadow-layer($ambient, $color-rgb, calc(var(--rui-sys-elevation-opacity-ambient) + #{$opacity-boost}))
+        _shadow-layer($umbra, $color-rgb, var(--rui-sys-elevation-opacity-umbra)),
+        _shadow-layer($penumbra, $color-rgb, var(--rui-sys-elevation-opacity-penumbra)),
+        _shadow-layer($ambient, $color-rgb, var(--rui-sys-elevation-opacity-ambient))
     );
 }
 
@@ -137,8 +203,8 @@ $ambient-map: (
     @return box-shadow #{$duration} #{$easing};
 }
 
-@mixin level($level, $color-rgb: var(--rui-sys-elevation-color), $opacity-boost: 0) {
-    box-shadow: shadow($level, $color-rgb, $opacity-boost);
+@mixin level($level, $color-rgb: var(--rui-sys-elevation-color)) {
+    box-shadow: #{shadow($level, $color-rgb)};
     z-index: z-index($level);
 }
 

@@ -164,9 +164,33 @@ defineExpose({
 <style scoped lang="scss">
 @use "@/styles/color";
 @use "@/styles/typography";
+@use "@/styles/motion";
 
 .rui-dialog-modal {
+    margin: auto;
     padding: 48px;
+    transition:
+        overlay 150ms #{motion.$easing-decelerated},
+        display 150ms #{motion.$easing-decelerated};
+    transition-behavior: allow-discrete;
+}
+
+.rui-dialog-modal::backdrop {
+    background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0);
+    transition:
+        background-color 75ms #{motion.$easing-accelerated},
+        overlay 75ms #{motion.$easing-accelerated},
+        display 75ms #{motion.$easing-accelerated};
+    transition-behavior: allow-discrete;
+}
+
+.rui-dialog-modal[open]::backdrop {
+    background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0.32);
+    transition:
+        background-color 150ms #{motion.$easing-decelerated},
+        overlay 150ms #{motion.$easing-decelerated},
+        display 150ms #{motion.$easing-decelerated};
+    transition-behavior: allow-discrete;
 }
 
 .rui-dialog {
@@ -175,6 +199,27 @@ defineExpose({
     overflow: hidden;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
+    transform: scale(1);
+    opacity: 1;
+    transition:
+        opacity 45ms #{motion.$easing-linear},
+        transform 150ms #{motion.$easing-decelerated};
+}
+
+.rui-dialog-modal[open] .rui-dialog {
+    transform: scale(1);
+    opacity: 1;
+}
+
+@starting-style {
+    .rui-dialog-modal[open] .rui-dialog {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    .rui-dialog-modal[open]::backdrop {
+        background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0);
+    }
 }
 
 .rui-dialog__header {

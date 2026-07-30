@@ -1,5 +1,5 @@
 import ThemePluginTestApp from "@docs/components/demos/theme/ThemePluginTestApp.vue"
-import { themePlugin } from "@ripple-design/rui"
+import { R_ICON_STYLES, themePlugin } from "@ripple-design/rui"
 import { createApp } from "vue"
 
 const element = document.getElementById("theme-plugin-test")
@@ -8,13 +8,20 @@ if (element) {
     const app = createApp(ThemePluginTestApp)
 
     app.use(themePlugin, {
+        mode: "day",
         theme: {
             color: {
                 primary: "#6200ee",
-                onSurfaceHigh: "rgba(0, 0, 0, 0.87)",
-                onSurfaceMedium: "rgba(0, 0, 0, 0.54)",
+                onSurface: "#000000",
             },
             density: 0,
+            iconStyle: R_ICON_STYLES[0],
+            shape: {
+                small: { family: "rounded" },
+                medium: { family: "rounded" },
+                large: { family: "rounded" },
+                full: { family: "rounded" },
+            },
         },
     })
 

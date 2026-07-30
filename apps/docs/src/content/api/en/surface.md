@@ -20,6 +20,7 @@ import { RSurface } from "@ripple-design/rui"
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `variant` | `"elevated" \| "outlined"` | no | Controls the surface treatment. |
+| `elevation` | `number` | no | Chooses the shadow and stacking level for elevated surfaces. Supports 0 through 24. |
 | `as` | `string` | no | Chooses which HTML element the surface should render as. |
 
 Generated from `packages/rui/src/components/surface/types.ts`.

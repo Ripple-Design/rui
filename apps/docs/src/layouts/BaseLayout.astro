@@ -1,6 +1,7 @@
 ---
 import "@ripple-design/rui/styles.css"
-import ThemeControl from "@docs/components/docs/ThemeControl.vue"
+import ThemeControlSheet from "@docs/components/docs/ThemeControlSheet.vue"
+import { createDocsThemeBootstrapScript } from "@docs/lib/theme"
 import { getDirectionMode, getLocaleUrl, locales } from "../lib/docs"
 
 export interface Props {
@@ -12,6 +13,7 @@ export interface Props {
 
 const { title, locale, currentUrl = Astro.url, sectionLabel = "Components" } = Astro.props
 const direction = getDirectionMode(currentUrl)
+const docsThemeBootstrapScript = createDocsThemeBootstrapScript()
 ---
 
 <!doctype html>
@@ -22,13 +24,14 @@ const direction = getDirectionMode(currentUrl)
         <title>{title}</title>
         <style>
             :root {
-                color-scheme: light;
+                color-scheme: light dark;
                 font-family: Arial, sans-serif;
                 line-height: 1.5;
             }
 
             body {
                 margin: 0;
+                background: var(--rui-sys-color-background);
             }
 
             a,
@@ -75,27 +78,6 @@ const direction = getDirectionMode(currentUrl)
                 margin: 0;
             }
 
-            .header-theme details {
-                position: relative;
-            }
-
-            .header-theme summary {
-                cursor: pointer;
-                user-select: none;
-            }
-
-            .header-theme__panel {
-                position: absolute;
-                top: calc(100% + 0.5rem);
-                inset-inline-end: 0;
-                z-index: 10;
-                min-width: 18rem;
-                padding: 1rem;
-                background: #fff;
-                border: 1px solid #d0d0d0;
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-            }
-
             .page-shell {
                 width: min(1440px, 100% - 2rem);
                 margin: 0 auto;
@@ -108,39 +90,7 @@ const direction = getDirectionMode(currentUrl)
                 }
             }
         </style>
-        <script is:inline>
-            const current = new URL(window.location.href)
-            const readStorage = (key) => {
-                try {
-                    return localStorage.getItem(key)
-                } catch {
-                    return null
-                }
-            }
-            const allowedDensity = new Set(["0", "-1", "-2", "-3"])
-            const dir = current.searchParams.get("dir") === "rtl"
-                ? "rtl"
-                : readStorage("rui-docs-dir") === "rtl"
-                  ? "rtl"
-                  : "ltr"
-            const primary = readStorage("rui-docs-primary")
-            const density = readStorage("rui-docs-density")
-            const shapeFamily = readStorage("rui-docs-shape-family")
-            document.documentElement.setAttribute("dir", dir)
-            localStorage.setItem("rui-docs-dir", dir)
-            if (primary) {
-                document.documentElement.style.setProperty("--rui-sys-color-primary", primary)
-            }
-            if (density != null && allowedDensity.has(density)) {
-                document.documentElement.style.setProperty("--rui-sys-density-scale", density)
-            }
-            if (shapeFamily === "cut" || shapeFamily === "rounded") {
-                const cssFamily = shapeFamily === "cut" ? "bevel" : "round"
-                for (const category of ["small", "medium", "large", "full"]) {
-                    document.documentElement.style.setProperty(`--rui-sys-shape-${category}-family`, cssFamily)
-                }
-            }
-        </script>
+        <script is:inline set:html={docsThemeBootstrapScript}></script>
     </head>
     <body>
         <header class="site-header">
@@ -175,16 +125,7 @@ const direction = getDirectionMode(currentUrl)
                     </ul>
                 </nav>
                 <nav class="header-theme" aria-label="Theme controls">
-                    <ul>
-                        <li>
-                            <details>
-                                <summary>Theme</summary>
-                                <div class="header-theme__panel">
-                                    <ThemeControl client:load />
-                                </div>
-                            </details>
-                        </li>
-                    </ul>
+                    <ThemeControlSheet client:load />
                 </nav>
             </div>
         </header>

@@ -1,0 +1,27 @@
+---
+title: Modal side sheet
+docSlug: components/modal-side-sheet
+tab: implementation
+locale: en
+designOrder: 92
+developOrder: 92
+api: /en/api/modal-side-sheet
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import ModalSideSheetBasicDemo from "@docs/components/demos/sideSheet/ModalSideSheetBasicDemo.vue"
+import modalSideSheetBasicDemoSource from "@docs/components/demos/sideSheet/ModalSideSheetBasicDemo.vue?raw"
+import ModalSideSheetPersistentDemo from "@docs/components/demos/sideSheet/ModalSideSheetPersistentDemo.vue"
+import modalSideSheetPersistentDemoSource from "@docs/components/demos/sideSheet/ModalSideSheetPersistentDemo.vue?raw"
+
+## Basic modal side sheet
+
+<DemoBlock title="Basic modal side sheet" code={modalSideSheetBasicDemoSource} language="vue">
+    <ModalSideSheetBasicDemo client:load />
+</DemoBlock>
+
+## Protected modal side sheet
+
+<DemoBlock title="Protected modal side sheet" code={modalSideSheetPersistentDemoSource} language="vue">
+    <ModalSideSheetPersistentDemo client:load />
+</DemoBlock>

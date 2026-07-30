@@ -1,0 +1,21 @@
+---
+title: Plain tooltip
+docSlug: components/plain-tooltip
+tab: implementation
+locale: en
+designOrder: 145
+developOrder: 145
+api: /en/api/plain-tooltip
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import PlainTooltipBasicDemo from "@docs/components/demos/tooltip/PlainTooltipBasicDemo.vue"
+import plainTooltipBasicDemoSource from "@docs/components/demos/tooltip/PlainTooltipBasicDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock title="Plain tooltip states" code={plainTooltipBasicDemoSource} language="vue">
+    <PlainTooltipBasicDemo client:load />
+</DemoBlock>
+
+`v-tooltip` is the primary API for lightweight anchored hints. Apply it directly to the real control so the tooltip binds to the correct element without introducing extra layout wrappers. `RPlainTooltip` remains the internal render primitive used by the directive.

@@ -19,7 +19,8 @@ import { RIcon } from "@ripple-design/rui"
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `icon` | `string` | yes | Optimized SVG markup for the icon. |
+| `icon` | `RIconResolvableSource` | no | Optimized icon source, a themed icon family, or a Vue component to render. |
+| `iconStyle` | `RIconStyle` | no | Overrides the active themed icon style when resolving an icon family. |
 | `size` | `string \| number` | no | Controls the icon size. Numbers map to pixels, while strings pass through directly. |
 | `decorative` | `boolean` | no | Forces the icon to be decorative and hidden from assistive technology. |
 | `label` | `string` | no | Sets the accessible name announced for a non-decorative icon. |

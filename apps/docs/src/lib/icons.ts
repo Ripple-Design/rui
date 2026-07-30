@@ -1,5 +1,6 @@
 import * as iconPaths from "@ripple-design/icons"
 import iconsData from "@docs/data/icons-data.json"
+import { R_ICON_STYLES, type RIconStyle } from "@ripple-design/rui"
 
 export type IconRecord = {
     name: string
@@ -12,9 +13,10 @@ export type IconRecord = {
     sizes_px: number[]
 }
 
-export type IconVariant = "filled" | "outlined" | "rounded" | "sharp" | "twotone"
+export type IconVariant = RIconStyle
 
 const icons = (iconsData as { icons: IconRecord[] }).icons
+export const ICON_STYLES = R_ICON_STYLES
 
 export function getIconCount() {
     return icons.length
@@ -38,7 +40,7 @@ export function groupIconsByCategory() {
         .sort((a, b) => a.category.localeCompare(b.category))
 }
 
-export function getIconPath(name: string, variant: IconVariant = "filled") {
+export function getIconPath(name: string, variant: IconVariant = ICON_STYLES[0]) {
     const exportName = `RI${toPascalCase(name)}${toVariantSuffix(variant)}` as keyof typeof iconPaths
     return iconPaths[exportName] as string | undefined
 }
