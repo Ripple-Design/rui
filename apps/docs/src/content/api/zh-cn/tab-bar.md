@@ -1,8 +1,8 @@
 ---
-title: Tab bar API
-routeSlug: tab-bar
+title: Tab API
+routeSlug: tab
 locale: zh-cn
-docs: /zh-cn/components/tab-bar/spec
+docs: /zh-cn/components/tab/spec
 designOrder: 142
 developOrder: 72
 ---

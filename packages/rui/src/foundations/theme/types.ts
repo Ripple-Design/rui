@@ -8,10 +8,14 @@ export type RThemeColors = {
     primaryLight?: string
     primaryDark?: string
     onPrimary?: string
+    onPrimaryMedium?: string
+    onPrimaryOutline?: string
     secondary?: string
     secondaryLight?: string
     secondaryDark?: string
     onSecondary?: string
+    onSecondaryMedium?: string
+    onSecondaryOutline?: string
     background?: string
     onBackground?: string
     surface?: string

@@ -88,6 +88,25 @@ export function createThemeBootstrapScript(options: {
       night: mergeTheme(mergeTheme(base.night, shared), night ?? {}),
     };
   };
+  const deriveContrastColors = (colors) => {
+    if (!colors) return colors;
+    const nextColors = { ...colors };
+    if (colors.onSurface) {
+      nextColors.onSurfaceHigh = colors.onSurfaceHigh ?? ('rgb(from ' + colors.onSurface + ' r g b / 0.87)');
+      nextColors.onSurfaceMedium = colors.onSurfaceMedium ?? ('rgb(from ' + colors.onSurface + ' r g b / 0.54)');
+      nextColors.onSurfaceLow = colors.onSurfaceLow ?? ('rgb(from ' + colors.onSurface + ' r g b / 0.38)');
+      nextColors.onSurfaceOutline = colors.onSurfaceOutline ?? ('rgb(from ' + colors.onSurface + ' r g b / 0.12)');
+    }
+    if (colors.onPrimary) {
+      nextColors.onPrimaryMedium = colors.onPrimaryMedium ?? ('rgb(from ' + colors.onPrimary + ' r g b / 0.7)');
+      nextColors.onPrimaryOutline = colors.onPrimaryOutline ?? ('rgb(from ' + colors.onPrimary + ' r g b / 0.24)');
+    }
+    if (colors.onSecondary) {
+      nextColors.onSecondaryMedium = colors.onSecondaryMedium ?? ('rgb(from ' + colors.onSecondary + ' r g b / 0.7)');
+      nextColors.onSecondaryOutline = colors.onSecondaryOutline ?? ('rgb(from ' + colors.onSecondary + ' r g b / 0.24)');
+    }
+    return nextColors;
+  };
   const normalizePatch = ${options.normalizePatchScript};
   const normalizeMode = ${normalizeModeScript};
   const rawPatch = readStorage(${JSON.stringify(options.patchKey)});
@@ -103,6 +122,7 @@ export function createThemeBootstrapScript(options: {
   const resolvedMode = resolveMode(mode);
   const themes = resolveDayNightTheme(defaults, patch);
   const theme = themes[resolvedMode];
+  const colors = deriveContrastColors(theme.color);
   const root = document.documentElement;
   const dir = new URL(window.location.href).searchParams.get('dir') === 'rtl'
     ? 'rtl'
@@ -112,16 +132,20 @@ export function createThemeBootstrapScript(options: {
   root.setAttribute('dir', dir);
   root.dataset.ruiTheme = resolvedMode;
   root.style.colorScheme = resolvedMode === 'night' ? 'dark' : 'light';
-  if (theme.color) {
+  if (colors) {
     const colorMap = {
       primary: '--rui-sys-color-primary',
       primaryLight: '--rui-sys-color-primary-light',
       primaryDark: '--rui-sys-color-primary-dark',
       onPrimary: '--rui-sys-color-on-primary',
+      onPrimaryMedium: '--rui-sys-color-on-primary-medium',
+      onPrimaryOutline: '--rui-sys-color-on-primary-outline',
       secondary: '--rui-sys-color-secondary',
       secondaryLight: '--rui-sys-color-secondary-light',
       secondaryDark: '--rui-sys-color-secondary-dark',
       onSecondary: '--rui-sys-color-on-secondary',
+      onSecondaryMedium: '--rui-sys-color-on-secondary-medium',
+      onSecondaryOutline: '--rui-sys-color-on-secondary-outline',
       background: '--rui-sys-color-background',
       onBackground: '--rui-sys-color-on-background',
       surface: '--rui-sys-color-surface',
@@ -135,7 +159,7 @@ export function createThemeBootstrapScript(options: {
       onError: '--rui-sys-color-on-error',
     };
     for (const key in colorMap) {
-      const value = theme.color[key];
+      const value = colors[key];
       if (value) {
         root.style.setProperty(colorMap[key], value);
       }

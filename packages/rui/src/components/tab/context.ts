@@ -1,8 +1,9 @@
 import type { InjectionKey, Ref } from "vue"
 
-import type { RTabIconLayout } from "./types"
+import type { RTabBarColor, RTabIconLayout } from "./types"
 
 export type RTabBarContext = {
+    color: Readonly<Ref<RTabBarColor>>
     iconLayout: Readonly<Ref<RTabIconLayout>>
 }
 

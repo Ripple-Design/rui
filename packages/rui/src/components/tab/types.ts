@@ -4,6 +4,7 @@ import type { RIconResolvableSource } from "@/components/icon/types"
 
 export type RTabBarVariant = "primary" | "secondary"
 export type RTabIconLayout = "horizontal" | "vertical"
+export type RTabBarColor = "primary" | "secondary" | "on-primary" | "on-secondary"
 
 /** Props for the {@link RTabBar} component. */
 export type RTabBarProps = {
@@ -13,6 +14,10 @@ export type RTabBarProps = {
     fullWidth?: boolean
     /** Controls the default icon and label layout inherited by child `RTab` items. */
     iconLayout?: RTabIconLayout
+    /** Controls the semantic tab-bar color treatment. */
+    color?: RTabBarColor
+    /** Controls whether the bottom divider is rendered. */
+    divider?: boolean
     /** Controls the selected tab value. */
     modelValue?: unknown
 }
@@ -21,8 +26,6 @@ export type RTabBarProps = {
 export type RTabProps = {
     /** Identifies the tab inside the parent `RTabBar`. */
     value: unknown
-    /** Disables the tab and prevents it from becoming selected. */
-    disabled?: boolean
     /** Renders an icon using the shared icon renderer. */
     icon?: RIconResolvableSource
     /** Controls whether the icon and label are laid out vertically or horizontally. */

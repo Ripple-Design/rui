@@ -3,11 +3,15 @@
     --rui-sys-color-primary-light: #bb86fc;
     --rui-sys-color-primary-dark: #3700b3;
     --rui-sys-color-on-primary: #ffffff;
+    --rui-sys-color-on-primary-medium: rgba(from var(--rui-sys-color-on-primary) r g b / 0.7);
+    --rui-sys-color-on-primary-outline: rgba(from var(--rui-sys-color-on-primary) r g b / 0.24);
 
     --rui-sys-color-secondary: #03dac6;
     --rui-sys-color-secondary-light: #70efde;
     --rui-sys-color-secondary-dark: #00b3a6;
     --rui-sys-color-on-secondary: #000000;
+    --rui-sys-color-on-secondary-medium: rgba(from var(--rui-sys-color-on-secondary) r g b / 0.7);
+    --rui-sys-color-on-secondary-outline: rgba(from var(--rui-sys-color-on-secondary) r g b / 0.24);
 
     --rui-sys-color-background: #eeeeee;
     --rui-sys-color-on-background: #000000;
@@ -27,10 +31,14 @@
 $primary: var(--rui-sys-color-primary);
 $primary-dark: var(--rui-sys-color-primary-dark);
 $on-primary: var(--rui-sys-color-on-primary);
+$on-primary-medium: var(--rui-sys-color-on-primary-medium);
+$on-primary-outline: var(--rui-sys-color-on-primary-outline);
 
 $secondary: var(--rui-sys-color-secondary);
 $secondary-dark: var(--rui-sys-color-secondary-dark);
 $on-secondary: var(--rui-sys-color-on-secondary);
+$on-secondary-medium: var(--rui-sys-color-on-secondary-medium);
+$on-secondary-outline: var(--rui-sys-color-on-secondary-outline);
 
 $background: var(--rui-sys-color-background);
 $on-background: var(--rui-sys-color-on-background);

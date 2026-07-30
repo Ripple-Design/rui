@@ -9,7 +9,6 @@ import { tabBarKey } from "./context"
 import type { RTabProps } from "./types"
 
 const props = withDefaults(defineProps<RTabProps>(), {
-    disabled: false,
     ripple: true,
 })
 
@@ -21,24 +20,27 @@ const interactiveRef = ref<HTMLElement | null>(null)
 
 const selected = computed(() => (group ? group.isSelected(props.value) : false))
 const hasIcon = computed(() => props.icon != null)
+const resolvedColor = computed(() => tabBar?.color.value ?? "primary")
 const resolvedIconLayout = computed(() => props.iconLayout ?? tabBar?.iconLayout.value ?? "vertical")
 const rippleOptions = computed<RippleOptions>(() => {
+    const defaultContrast = ["on-primary", "on-secondary"].includes(resolvedColor.value) ? "high" : "low"
+
     if (props.ripple === false) {
         return { disabled: true, unbounded: true }
     }
 
     if (props.ripple === true || props.ripple == null) {
         return {
-            disabled: props.disabled,
-            contrast: "low",
+            disabled: false,
+            contrast: defaultContrast,
             unbounded: true,
         }
     }
 
     return {
         ...props.ripple,
-        contrast: props.ripple.contrast ?? "low",
-        disabled: props.disabled || !!props.ripple.disabled,
+        contrast: props.ripple.contrast ?? defaultContrast,
+        disabled: !!props.ripple.disabled,
         unbounded: props.ripple.unbounded ?? true,
     }
 })
@@ -49,8 +51,6 @@ const classes = computed(() => {
         "rui-tab",
         {
             "rui-tab--selected": selected.value,
-            "rui-tab--disabled": props.disabled,
-            "rui-tab--with-icon": hasIcon.value,
             "rui-tab--icon-horizontal": hasIcon.value && iconLayout === "horizontal",
             "rui-tab--icon-vertical": hasIcon.value && iconLayout !== "horizontal",
         },
@@ -58,9 +58,9 @@ const classes = computed(() => {
 })
 
 watch(
-    [() => props.disabled, () => props.value, interactiveRef, () => group],
-    ([disabled, value, element, nextGroup]) => {
-        nextGroup?.registerItem(tabId, { disabled, element, value })
+    [() => props.value, interactiveRef, () => group],
+    ([value, element, nextGroup]) => {
+        nextGroup?.registerItem(tabId, { disabled: false, element, value })
     },
     { immediate: true },
 )
@@ -70,10 +70,6 @@ onBeforeUnmount(() => {
 })
 
 function handleClick() {
-    if (props.disabled) {
-        return
-    }
-
     group?.activate(tabId)
 }
 </script>
@@ -84,7 +80,6 @@ function handleClick() {
         v-bind="attrs"
         v-ripple="rippleOptions"
         :class="classes"
-        :disabled="disabled"
         type="button"
         @click="handleClick"
     >
@@ -101,8 +96,8 @@ function handleClick() {
 @use "@/styles/typography";
 
 .rui-tab {
-    --rui-comp-tab-bar-tab-color: #{color.$on-surface-medium};
-    --rui-comp-tab-bar-tab-selected-color: #{color.$primary};
+    --rui-comp-tab-bar-tab-color: var(--rui-comp-tab-bar-color, #{color.$on-surface-medium});
+    --rui-comp-tab-bar-tab-selected-color: var(--rui-comp-tab-bar-selected-color, #{color.$primary});
 
     @include normalize.button;
     display: inline-flex;
@@ -110,9 +105,11 @@ function handleClick() {
     overflow: visible;
     align-items: center;
     justify-content: center;
-    min-inline-size: 0;
+    min-inline-size: 90px;
+    max-inline-size: 360px;
+    block-size: 48px;
     padding-inline: 16px;
-    padding-block: 12px;
+    padding-block: 0;
     color: var(--rui-comp-tab-bar-tab-color);
 
     &--selected {
@@ -121,7 +118,7 @@ function handleClick() {
 
     &--disabled {
         cursor: default;
-        color: var(--rui-sys-color-on-surface-low);
+        color: var(--rui-comp-tab-bar-color, #{color.$on-surface-medium});
         pointer-events: none;
     }
 
@@ -130,9 +127,25 @@ function handleClick() {
         gap: 8px;
     }
 
+    &--icon-horizontal .rui-tab__label {
+        line-height: 24px;
+    }
+
+    &--icon-vertical {
+        block-size: 72px;
+        align-items: flex-start;
+        padding-block-start: 12px;
+    }
+
     &--icon-vertical .rui-tab__content {
         flex-direction: column;
-        gap: 4px;
+        gap: 0;
+    }
+
+    &--icon-vertical .rui-tab__label {
+        padding-block-start: calc(20px - 1cap);
+        text-box-trim: trim-both;
+        text-box-edge: cap alphabetic;
     }
 }
 
@@ -142,6 +155,7 @@ function handleClick() {
     justify-content: center;
     gap: 8px;
     min-inline-size: 0;
+    max-inline-size: 100%;
 }
 
 .rui-tab__label {
@@ -149,5 +163,6 @@ function handleClick() {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-align: center;
 }
 </style>

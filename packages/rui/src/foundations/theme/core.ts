@@ -64,29 +64,37 @@ function resolveShapeCategory(shape: RThemeShapeCategory) {
     }
 }
 
-function deriveSurfaceContrastColors(colors?: RThemeColors): RThemeColors | undefined {
+function deriveContrastColors(colors?: RThemeColors): RThemeColors | undefined {
     if (!colors) {
         return colors
     }
 
-    const onSurface = colors.onSurface
-    if (!onSurface) {
-        return colors
+    const nextColors = { ...colors }
+
+    if (colors.onSurface) {
+        nextColors.onSurfaceHigh = colors.onSurfaceHigh ?? `rgb(from ${colors.onSurface} r g b / 0.87)`
+        nextColors.onSurfaceMedium = colors.onSurfaceMedium ?? `rgb(from ${colors.onSurface} r g b / 0.54)`
+        nextColors.onSurfaceLow = colors.onSurfaceLow ?? `rgb(from ${colors.onSurface} r g b / 0.38)`
+        nextColors.onSurfaceOutline = colors.onSurfaceOutline ?? `rgb(from ${colors.onSurface} r g b / 0.12)`
     }
 
-    return {
-        ...colors,
-        onSurfaceHigh: colors.onSurfaceHigh ?? `rgb(from ${onSurface} r g b / 0.87)`,
-        onSurfaceMedium: colors.onSurfaceMedium ?? `rgb(from ${onSurface} r g b / 0.54)`,
-        onSurfaceLow: colors.onSurfaceLow ?? `rgb(from ${onSurface} r g b / 0.38)`,
-        onSurfaceOutline: colors.onSurfaceOutline ?? `rgb(from ${onSurface} r g b / 0.12)`,
+    if (colors.onPrimary) {
+        nextColors.onPrimaryMedium = colors.onPrimaryMedium ?? `rgb(from ${colors.onPrimary} r g b / 0.7)`
+        nextColors.onPrimaryOutline = colors.onPrimaryOutline ?? `rgb(from ${colors.onPrimary} r g b / 0.24)`
     }
+
+    if (colors.onSecondary) {
+        nextColors.onSecondaryMedium = colors.onSecondaryMedium ?? `rgb(from ${colors.onSecondary} r g b / 0.7)`
+        nextColors.onSecondaryOutline = colors.onSecondaryOutline ?? `rgb(from ${colors.onSecondary} r g b / 0.24)`
+    }
+
+    return nextColors
 }
 
 /** Converts a runtime theme object into CSS variable key-value pairs. */
 export function themeToCSSVars(theme: RTheme) {
     const vars: Record<string, string> = {}
-    const colors = deriveSurfaceContrastColors(theme.color)
+    const colors = deriveContrastColors(theme.color)
 
     if (colors?.primary) {
         vars["--rui-sys-color-primary"] = colors.primary
@@ -104,6 +112,14 @@ export function themeToCSSVars(theme: RTheme) {
         vars["--rui-sys-color-on-primary"] = colors.onPrimary
     }
 
+    if (colors?.onPrimaryMedium) {
+        vars["--rui-sys-color-on-primary-medium"] = colors.onPrimaryMedium
+    }
+
+    if (colors?.onPrimaryOutline) {
+        vars["--rui-sys-color-on-primary-outline"] = colors.onPrimaryOutline
+    }
+
     if (colors?.secondary) {
         vars["--rui-sys-color-secondary"] = colors.secondary
     }
@@ -118,6 +134,14 @@ export function themeToCSSVars(theme: RTheme) {
 
     if (colors?.onSecondary) {
         vars["--rui-sys-color-on-secondary"] = colors.onSecondary
+    }
+
+    if (colors?.onSecondaryMedium) {
+        vars["--rui-sys-color-on-secondary-medium"] = colors.onSecondaryMedium
+    }
+
+    if (colors?.onSecondaryOutline) {
+        vars["--rui-sys-color-on-secondary-outline"] = colors.onSecondaryOutline
     }
 
     if (colors?.background) {

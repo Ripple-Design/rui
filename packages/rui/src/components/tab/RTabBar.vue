@@ -11,6 +11,8 @@ const props = withDefaults(defineProps<RTabBarProps>(), {
     variant: "secondary",
     fullWidth: false,
     iconLayout: "vertical",
+    color: "primary",
+    divider: true,
 })
 
 const attrs = useAttrs()
@@ -20,10 +22,12 @@ const scrollerRef = ref<HTMLElement | null>(null)
 const contentRef = ref<HTMLElement | null>(null)
 const indicatorRef = ref<HTMLElement | null>(null)
 const selection = useSelectionModel(model, { variant: props.variant })
+const resolvedColor = computed(() => props.color ?? "primary")
 const resolvedIconLayout = computed(() => props.iconLayout ?? "vertical")
 const classes = computed(() => [
     "rui-tab-bar",
     `rui-tab-bar--${props.variant}`,
+    `rui-tab-bar--color-${resolvedColor.value}`,
     `rui-tab-bar--icon-${resolvedIconLayout.value}`,
     { "rui-tab-bar--full-width": props.fullWidth },
 ])
@@ -31,6 +35,7 @@ const activeElement = computed(() => selection.selectedItem.value?.state.element
 
 provide(selectionModelKey, selection)
 provide(tabBarKey, {
+    color: resolvedColor,
     iconLayout: resolvedIconLayout,
 })
 
@@ -119,7 +124,7 @@ useResizeObserver(activeElement, syncIndicator)
 
 <template>
     <div v-bind="attrs" ref="rootRef" :class="classes">
-        <div class="rui-tab-bar__divider" aria-hidden="true" />
+        <div v-if="divider" class="rui-tab-bar__divider" aria-hidden="true" />
         <div class="rui-tab-bar__scroller" ref="scrollerRef">
             <div class="rui-tab-bar__indicator" ref="indicatorRef" aria-hidden="true" />
             <div class="rui-tab-bar__content" ref="contentRef">
@@ -134,7 +139,35 @@ useResizeObserver(activeElement, syncIndicator)
 @use "@/styles/motion";
 
 .rui-tab-bar {
+    --rui-comp-tab-bar-color: #{color.$on-surface-medium};
+    --rui-comp-tab-bar-selected-color: #{color.$primary};
+    --rui-comp-tab-bar-divider-color: #{color.$on-surface-outline};
+
     position: relative;
+
+    &--color-primary {
+        --rui-comp-tab-bar-color: #{color.$on-surface-medium};
+        --rui-comp-tab-bar-selected-color: #{color.$primary};
+        --rui-comp-tab-bar-divider-color: #{color.$on-surface-outline};
+    }
+
+    &--color-secondary {
+        --rui-comp-tab-bar-color: #{color.$on-surface-medium};
+        --rui-comp-tab-bar-selected-color: #{color.$secondary};
+        --rui-comp-tab-bar-divider-color: #{color.$on-surface-outline};
+    }
+
+    &--color-on-primary {
+        --rui-comp-tab-bar-color: #{color.$on-primary-medium};
+        --rui-comp-tab-bar-selected-color: #{color.$on-primary};
+        --rui-comp-tab-bar-divider-color: #{color.$on-primary-outline};
+    }
+
+    &--color-on-secondary {
+        --rui-comp-tab-bar-color: #{color.$on-secondary-medium};
+        --rui-comp-tab-bar-selected-color: #{color.$on-secondary};
+        --rui-comp-tab-bar-divider-color: #{color.$on-secondary-outline};
+    }
 }
 
 .rui-tab-bar__divider {
@@ -142,7 +175,7 @@ useResizeObserver(activeElement, syncIndicator)
     inset-inline: 0;
     inset-block-end: 0;
     block-size: 1px;
-    background-color: var(--rui-sys-color-on-surface-outline);
+    background-color: var(--rui-comp-tab-bar-divider-color);
     pointer-events: none;
 }
 
@@ -184,7 +217,7 @@ useResizeObserver(activeElement, syncIndicator)
     inset-block-end: 0;
     inset-inline-start: 0;
     block-size: 2px;
-    background: color.$primary;
+    background: var(--rui-comp-tab-bar-selected-color);
     transition:
         transform motion.$duration-medium-out motion.$easing-standard,
         width motion.$duration-medium-out motion.$easing-standard;
