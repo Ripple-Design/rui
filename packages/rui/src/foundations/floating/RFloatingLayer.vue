@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Teleport, computed, onMounted, ref } from "vue"
+import { Teleport, computed, onMounted, ref, type StyleValue } from "vue"
 
 import { ensureFloatingPortalRoot } from "@/foundations"
 
@@ -13,7 +13,7 @@ const portalReady = ref(false)
 const portalSelector = `#${RUI_FLOATING_PORTAL_ID}`
 const layerRef = ref<HTMLElement | null>(null)
 
-const layerStyles = computed(() => ({
+const layerStyles = computed<StyleValue>(() => ({
     ...props.floatingStyles,
     pointerEvents: props.open ? "auto" : "none",
 }))
