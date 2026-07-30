@@ -1,5 +1,7 @@
 import { createVNode, render, type Directive, type VNode } from "vue"
 
+import { resolveTouchTargetAnchor } from "@/foundations/touchTarget"
+
 import RPlainTooltip from "./RPlainTooltip.vue"
 
 import type { TooltipDirectiveValue } from "./types"
@@ -31,11 +33,7 @@ function normalizeTooltipValue(value: TooltipDirectiveValue): { disabled: boolea
 }
 
 function resolveTooltipTarget(element: HTMLElement) {
-    const interactive = element.querySelector<HTMLElement>(
-        "button, a[href], input, textarea, select, [tabindex]:not([tabindex='-1']), [role='button']",
-    )
-
-    return interactive ?? element
+    return resolveTouchTargetAnchor(element) ?? element
 }
 
 function renderTooltip(state: TooltipDirectiveState) {

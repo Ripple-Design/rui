@@ -2,6 +2,7 @@
 import { computed, inject, onBeforeUnmount, ref, useAttrs, watch } from "vue"
 
 import { RIcon } from "@/components"
+import { vRipple, type RippleOptions } from "@/foundations/ripple"
 
 import { menuKey } from "./types"
 
@@ -20,6 +21,10 @@ const menu = inject(menuKey)
 const itemRef = ref<HTMLElement | null>(null)
 const itemId = Symbol("menu-item")
 const focused = computed(() => menu?.focusedItemId.value === itemId)
+const rippleOptions = computed<RippleOptions>(() => ({
+    disabled: props.disabled,
+    contrast: "low",
+}))
 
 const tabIndex = computed(() => {
     if (props.disabled) {
@@ -80,6 +85,7 @@ onBeforeUnmount(() => {
     <div
         ref="itemRef"
         v-bind="attrs"
+        v-ripple="rippleOptions"
         class="rui-menu-item"
         :class="{ 'rui-menu-item--disabled': disabled }"
         role="menuitem"
@@ -102,21 +108,16 @@ onBeforeUnmount(() => {
 @use "@/styles/typography";
 
 .rui-menu-item {
-    @include typography.body2("--rui-comp-menu-item");
+    @include typography.body1("--rui-comp-menu-item");
 
     display: flex;
     align-items: center;
-    gap: 12px;
-    min-block-size: 40px;
-    padding: 0 16px;
-    color: color.$on-surface;
+    gap: 20px;
+    min-block-size: 48px;
+    padding: 0 24px;
+    color: color.$on-surface-high;
     cursor: pointer;
     outline: none;
-
-    &:hover,
-    &:focus-visible {
-        background: color-mix(in srgb, var(--rui-sys-color-on-surface) 8%, transparent);
-    }
 
     &--disabled {
         color: color.$on-surface-low;
@@ -130,6 +131,7 @@ onBeforeUnmount(() => {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    color: color.$on-surface-medium;
 }
 
 .rui-menu-item__label {

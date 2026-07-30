@@ -36,7 +36,7 @@ provide(menuKey, context)
 const floatingRef = computed(() => floatingLayerRef.value?.element ?? null)
 
 const position = useFloatingPosition(triggerRef, floatingRef, {
-    middleware: [offset(8), flip(), shift({ padding: 8 })],
+    middleware: [offset(8), flip(), shift({ padding: 4 })],
     open,
     placement: "bottom-start",
     strategy: "fixed",
@@ -213,7 +213,7 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .rui-menu {
-    min-inline-size: 160px;
+    min-inline-size: 112px;
     max-inline-size: 320px;
     padding: 8px 0;
 }

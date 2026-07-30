@@ -62,6 +62,7 @@ function handleClick(event: MouseEvent) {
             v-if="isLink"
             v-bind="attrs"
             v-ripple="rippleOptions"
+            data-rui-touch-target-anchor
             class="rui-icon-button"
             :class="{ 'rui-icon-button--disabled': disabled }"
             :href="resolvedHref"
@@ -83,6 +84,7 @@ function handleClick(event: MouseEvent) {
             v-else
             v-bind="attrs"
             v-ripple="rippleOptions"
+            data-rui-touch-target-anchor
             class="rui-icon-button"
             :class="{ 'rui-icon-button--disabled': disabled }"
             :type="nativeType"

@@ -202,6 +202,7 @@ function handleClick(event: MouseEvent) {
             ref="interactiveRef"
             v-bind="attrs"
             v-ripple="rippleOptions"
+            data-rui-touch-target-anchor
             :class="classes"
             :href="resolvedHref"
             :target="target"
@@ -254,6 +255,7 @@ function handleClick(event: MouseEvent) {
             ref="interactiveRef"
             v-bind="attrs"
             v-ripple="rippleOptions"
+            data-rui-touch-target-anchor
             :class="classes"
             :type="nativeType"
             :disabled="disabled"
