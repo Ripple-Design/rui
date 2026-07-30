@@ -1,6 +1,8 @@
 import { autoUpdate, computePosition, type MiddlewareData, type Placement, type Strategy } from "@floating-ui/dom"
 import { computed, onBeforeUnmount, ref, watch, type Ref } from "vue"
 
+import { resolveTouchTargetAnchor } from "@/foundations/touchTarget"
+
 import { normalizeFloatingBoolean, normalizeFloatingPlacement, normalizeFloatingStrategy, resolveFloatingValue } from "./shared"
 
 import type { RFloatingPositionOptions, RFloatingPositionState } from "./types"
@@ -21,10 +23,15 @@ export function useFloatingPosition(
     const resolvedPlacement = normalizeFloatingPlacement(options.placement)
     const resolvedStrategy = normalizeFloatingStrategy(options.strategy)
 
+    const resolvedReference = computed(() => {
+        const referenceElement = reference.value
+        return referenceElement ? resolveTouchTargetAnchor(referenceElement) : null
+    })
+
     let cleanup: (() => void) | null = null
 
     async function update() {
-        const referenceElement = reference.value
+        const referenceElement = resolvedReference.value
         const floatingElement = floating.value
 
         if (!referenceElement || !floatingElement || !resolvedOpen.value) {
@@ -56,7 +63,7 @@ export function useFloatingPosition(
     function startAutoUpdate() {
         stopAutoUpdate()
 
-        const referenceElement = reference.value
+        const referenceElement = resolvedReference.value
         const floatingElement = floating.value
         if (!referenceElement || !floatingElement || !resolvedOpen.value) {
             isPositioned.value = false
@@ -71,7 +78,7 @@ export function useFloatingPosition(
     }
 
     watch(
-        [reference, floating, resolvedOpen, resolvedPlacement, resolvedStrategy],
+        [resolvedReference, floating, resolvedOpen, resolvedPlacement, resolvedStrategy],
         () => {
             startAutoUpdate()
         },

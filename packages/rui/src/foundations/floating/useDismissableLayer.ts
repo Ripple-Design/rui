@@ -1,5 +1,7 @@
 import { onBeforeUnmount, watch, type Ref } from "vue"
 
+import { resolveTouchTargetAnchor } from "@/foundations/touchTarget"
+
 import { normalizeFloatingBoolean } from "./shared"
 
 import type { RFloatingDismissOptions } from "./types"
@@ -13,13 +15,17 @@ export function useDismissableLayer(
     const closeOnEscape = normalizeFloatingBoolean(options.closeOnEscape, true)
     const closeOnOutsidePress = normalizeFloatingBoolean(options.closeOnOutsidePress, true)
     const isTopLayer = normalizeFloatingBoolean(options.isTopLayer, true)
+    const resolvedReference = () => {
+        const referenceElement = reference.value
+        return referenceElement ? resolveTouchTargetAnchor(referenceElement) : null
+    }
 
     function isInsideLayer(target: EventTarget | null) {
         if (!(target instanceof Node)) {
             return false
         }
 
-        return !!reference.value?.contains(target) || !!floating.value?.contains(target)
+        return !!resolvedReference()?.contains(target) || !!floating.value?.contains(target)
     }
 
     function handlePointerDown(event: PointerEvent) {
