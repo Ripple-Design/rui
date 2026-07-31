@@ -30,7 +30,6 @@ type HostDataset = DOMStringMap & {
 const SURFACE_CLASS = "rui-ripple-surface"
 const SURFACE_DISABLED_CLASS = "is-disabled"
 const SURFACE_HOVERED_CLASS = "is-hovered"
-const SURFACE_FOCUS_VISIBLE_CLASS = "is-focus-visible"
 const SURFACE_UNBOUNDED_CLASS = "rui-ripple-surface--unbounded"
 const SURFACE_HIGH_CONTRAST_CLASS = "rui-ripple-surface--contrast-high"
 const UNBOUNDED_RIPPLE_CLASS = "rui-ripple-unbounded"
@@ -45,7 +44,6 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
     let activeKeyboardKey: string | null = null
     let activeKeyboardWave: RippleWaveHandle | null = null
     let activeMousePointerId: number | null = null
-    let suppressMouseHoverUntil = 0
 
     const activePointerWaves = new Map<number, RippleWaveHandle>()
     const liveWaves = new Set<RippleWaveHandle>()
@@ -71,13 +69,8 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
         activeMousePointerId = null
     }
 
-    const onPointerEnter = (event: PointerEvent) => {
-        if (
-            destroyed ||
-            isDisabled(host, options) ||
-            event.pointerType !== "mouse" ||
-            performance.now() < suppressMouseHoverUntil
-        ) {
+    const onMouseEnter = () => {
+        if (destroyed || isDisabled(host, options)) {
             return
         }
 
@@ -85,11 +78,7 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
         ensureUnboundedRipple(surface, options)
     }
 
-    const onPointerLeave = (event: PointerEvent) => {
-        if (event.pointerType !== "mouse") {
-            return
-        }
-
+    const onMouseLeave = () => {
         surface.classList.remove(SURFACE_HOVERED_CLASS)
 
         if (activeMousePointerId == null) {
@@ -113,8 +102,6 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
         }
 
         if (["touch", "pen"].includes(event.pointerType)) {
-            suppressMouseHoverUntil = performance.now() + 400
-            surface.classList.remove(SURFACE_HOVERED_CLASS)
             const timeoutId = window.setTimeout(() => {
                 pendingPointerStarts.delete(event.pointerId)
                 if (destroyed || !host.isConnected || isDisabled(host, options)) {
@@ -138,11 +125,6 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
     }
 
     const onPointerDone = (event: PointerEvent) => {
-        if (["touch", "pen"].includes(event.pointerType)) {
-            suppressMouseHoverUntil = performance.now() + 400
-            surface.classList.remove(SURFACE_HOVERED_CLASS)
-        }
-
         const pending = pendingPointerStarts.get(event.pointerId)
         if (pending) {
             clearTimeout(pending.timeoutId)
@@ -190,18 +172,8 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
         activeKeyboardKey = null
     }
 
-    const onFocusIn = () => {
-        if (destroyed || isDisabled(host, options) || !host.matches(":focus-visible")) {
-            return
-        }
-
-        surface.classList.add(SURFACE_FOCUS_VISIBLE_CLASS)
-        ensureUnboundedRipple(surface, options)
-    }
-
     const onBlur = () => {
         surface.classList.remove(SURFACE_HOVERED_CLASS)
-        surface.classList.remove(SURFACE_FOCUS_VISIBLE_CLASS)
 
         if (activeKeyboardWave) {
             activeKeyboardWave.release()
@@ -216,12 +188,11 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
         }
     }
 
-    bind(host, "pointerenter", onPointerEnter, cleanup)
-    bind(host, "pointerleave", onPointerLeave, cleanup)
+    bind(host, "mouseenter", onMouseEnter, cleanup)
+    bind(host, "mouseleave", onMouseLeave, cleanup)
     bind(host, "pointerdown", onPointerDown, cleanup)
     bind(host, "keydown", onKeyDown, cleanup)
     bind(host, "keyup", onKeyUp, cleanup)
-    bind(host, "focusin", onFocusIn, cleanup)
     bind(host, "blur", onBlur, cleanup)
     bind(window, "pointerup", onPointerDone, cleanup)
     bind(window, "pointercancel", onPointerDone, cleanup)
