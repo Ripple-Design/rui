@@ -29,6 +29,7 @@ jobs:
           node-version: 20
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
+          scope: '@ripple-design'
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -39,4 +40,4 @@ jobs:
       - name: Publish to npm
         run: |
           cd packages/rui
-          npm publish --provenance --access public --no-git-checks
+          npm publish --provenance --access public --no-git-checks --registry https://registry.npmjs.org/
