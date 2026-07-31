@@ -34,7 +34,6 @@ const primaryBarRef = ref<HTMLElement | null>(null)
 const primaryBarInnerRef = ref<HTMLElement | null>(null)
 const secondaryBarRef = ref<HTMLElement | null>(null)
 const secondaryBarInnerRef = ref<HTMLElement | null>(null)
-const determinateBarRef = ref<HTMLElement | null>(null)
 
 const phase = ref<LinearProgressIndicatorPhase>(props.indeterminate || props.query ? "indeterminate" : "determinate")
 const liveDirection = ref<LinearProgressIndicatorDirection>(props.query || props.reversed ? "reverse" : "forward")
@@ -59,45 +58,6 @@ const determinateProgress = computed(() =>
 const aria = computed(() =>
     resolveProgressbarAria(props.closed, showIndeterminateLayer.value, progress.value, buffer.value),
 )
-const debugStartTime = typeof performance !== "undefined" ? performance.now() : 0
-
-function logDebug(stage: string, details: Record<string, unknown> = {}) {
-    if (!import.meta.env.DEV) {
-        return
-    }
-
-    console.log("[RLinearProgressIndicator]", stage, {
-        activeDirection: activeDirection.value,
-        buffer: buffer.value,
-        closed: props.closed,
-        determinateProgress: determinateProgress.value,
-        determinateRevealProgress: determinateRevealProgress.value,
-        direction: effectiveDeterminateDirection.value,
-        drainingLaneCount: drainingLaneCount.value,
-        phase: phase.value,
-        progress: progress.value,
-        revealFrame: determinateRevealFrame,
-        t: Math.round((typeof performance !== "undefined" ? performance.now() : 0) - debugStartTime),
-        wantsIndeterminate: props.indeterminate || props.query,
-        ...details,
-    })
-}
-
-function describeAnimation(element: HTMLElement | null) {
-    const animation = element?.getAnimations()[0]
-    const timing = animation?.effect?.getComputedTiming?.()
-
-    return {
-        currentTime: animation?.currentTime ?? null,
-        delay: timing?.delay ?? null,
-        duration: timing?.duration ?? null,
-        endTime: timing?.endTime ?? null,
-        fill: timing?.fill ?? null,
-        iterations: timing?.iterations ?? null,
-        progress: timing?.progress ?? null,
-        playState: animation?.playState ?? null,
-    }
-}
 const rootClasses = computed(() => [
     "rui-linear-progress-indicator",
     {
@@ -154,28 +114,17 @@ function readAnimationTime(element: HTMLElement | null) {
 
 function cancelDeterminateReveal() {
     if (determinateRevealFrame) {
-        logDebug("cancel-determinate-reveal", { revealFrame: determinateRevealFrame })
         cancelAnimationFrame(determinateRevealFrame)
         determinateRevealFrame = 0
     }
 }
 
 function restartDeterminateReveal() {
-    logDebug("restart-determinate-reveal:start", {
-        animation: describeAnimation(primaryBarRef.value),
-    })
     cancelDeterminateReveal()
 
     let remainingFrames = DETERMINATE_REVEAL_FRAME_COUNT
 
     const step = () => {
-        logDebug("restart-determinate-reveal:step", {
-            remainingFrames,
-            animation: describeAnimation(primaryBarRef.value),
-            determinateBarTransform: determinateBarRef.value ? getComputedStyle(determinateBarRef.value).transform : null,
-            determinateRevealProgress: determinateRevealProgress.value,
-        })
-
         if (remainingFrames > 0) {
             remainingFrames -= 1
             determinateRevealFrame = window.requestAnimationFrame(step)
@@ -184,18 +133,12 @@ function restartDeterminateReveal() {
 
         determinateRevealFrame = 0
         determinateRevealProgress.value = progress.value
-        logDebug("restart-determinate-reveal:apply", {
-            progress: progress.value,
-            animation: describeAnimation(primaryBarRef.value),
-            determinateBarTransform: determinateBarRef.value ? getComputedStyle(determinateBarRef.value).transform : null,
-        })
     }
 
     determinateRevealFrame = window.requestAnimationFrame(step)
 }
 
 function startIndeterminate(direction: LinearProgressIndicatorDirection) {
-    logDebug("start-indeterminate", { direction })
     cancelDeterminateReveal()
     determinateRevealDuration.value = "medium"
     determinateRevealProgress.value = progress.value
@@ -207,15 +150,6 @@ function startIndeterminate(direction: LinearProgressIndicatorDirection) {
 }
 
 function startDraining(direction: LinearProgressIndicatorDirection) {
-    logDebug("start-draining", {
-        animation: describeAnimation(primaryBarRef.value),
-        direction,
-        primaryBarTime: readAnimationTime(primaryBarRef.value),
-        primaryInnerTime: readAnimationTime(primaryBarInnerRef.value),
-        secondaryBarTime: readAnimationTime(secondaryBarRef.value),
-        secondaryInnerTime: readAnimationTime(secondaryBarInnerRef.value),
-        revealDuration: props.query ? "large" : "medium",
-    })
     determinateRevealDuration.value = props.query ? "large" : "medium"
     drainSnapshot.value = {
         direction,
@@ -231,36 +165,19 @@ function startDraining(direction: LinearProgressIndicatorDirection) {
 }
 
 function stopDraining() {
-    logDebug("stop-draining:before", {
-        animation: describeAnimation(primaryBarRef.value),
-        drainSnapshot: drainSnapshot.value,
-    })
     determinateRevealProgress.value = 0
     phase.value = "determinate"
     restartDeterminateReveal()
     drainSnapshot.value = null
     drainingLaneCount.value = 0
-    logDebug("stop-draining:after", {
-        animation: describeAnimation(primaryBarRef.value),
-        determinateRevealProgress: determinateRevealProgress.value,
-    })
 }
 
 function handleLaneAnimationEnd(event: AnimationEvent) {
-    logDebug("lane-animation-end", {
-        currentTargetClassName: event.currentTarget instanceof HTMLElement ? event.currentTarget.className : null,
-        eventAnimationName: event.animationName,
-        eventTargetClassName: event.target instanceof HTMLElement ? event.target.className : null,
-    })
-
     if (phase.value !== "draining" || event.target !== event.currentTarget) {
         return
     }
 
     drainingLaneCount.value = Math.max(0, drainingLaneCount.value - 1)
-    logDebug("lane-animation-end:countdown", {
-        drainingLaneCount: drainingLaneCount.value,
-    })
 
     if (drainingLaneCount.value === 0) {
         stopDraining()
@@ -274,15 +191,8 @@ onBeforeUnmount(() => {
 watch(
     () => props.progress,
     () => {
-        logDebug("progress-change", {
-            nextProgress: progress.value,
-        })
-
         if (phase.value === "determinate") {
             determinateRevealProgress.value = progress.value
-            logDebug("progress-change:applied-to-determinate", {
-                determinateRevealProgress: determinateRevealProgress.value,
-            })
         }
     },
     { immediate: true },
@@ -298,15 +208,6 @@ watch(
         const nextDirection: LinearProgressIndicatorDirection = nextQuery || nextReversed ? "reverse" : "forward"
         const prevDirection: LinearProgressIndicatorDirection = prevQuery || prevReversed ? "reverse" : "forward"
 
-        logDebug("mode-change", {
-            nextDirection,
-            nextState,
-            nextWantsIndeterminate,
-            prevDirection,
-            previousState,
-            prevWantsIndeterminate,
-        })
-
         if (nextWantsIndeterminate) {
             if (phase.value !== "indeterminate" || !prevWantsIndeterminate || nextDirection !== prevDirection) {
                 startIndeterminate(nextDirection)
@@ -314,7 +215,6 @@ watch(
             }
 
             liveDirection.value = nextDirection
-            logDebug("mode-change:update-live-direction", { nextDirection })
             return
         }
 
@@ -329,9 +229,6 @@ watch(
         drainSnapshot.value = null
         drainingLaneCount.value = 0
         phase.value = "determinate"
-        logDebug("mode-change:direct-determinate", {
-            determinateRevealProgress: determinateRevealProgress.value,
-        })
     },
     { immediate: true },
 )
@@ -354,7 +251,7 @@ watch(
             <div class="rui-linear-progress-indicator__buffer-dots" />
         </div>
 
-        <div ref="determinateBarRef" class="rui-linear-progress-indicator__determinate-bar" :style="determinateBarStyle" />
+        <div class="rui-linear-progress-indicator__determinate-bar" :style="determinateBarStyle" />
 
         <div
             v-if="showIndeterminateLayer"
@@ -397,13 +294,17 @@ watch(
     inline-size: 100%;
     block-size: 4px;
     overflow: hidden;
-    transform: translateZ(0);
+    transform: translateZ(0) scaleY(1);
+    transform-origin: center bottom;
     color: var(--rui-sys-color-primary);
     opacity: 1;
-    transition: opacity #{motion.$duration-medium-in} #{motion.$easing-standard};
+    transition:
+        opacity var(--rui-sys-motion-duration-medium-out) var(--rui-sys-motion-easing-accelerated),
+        transform var(--rui-sys-motion-duration-medium-out) var(--rui-sys-motion-easing-accelerated);
 
     &--closed {
         opacity: 0;
+        transform: translateZ(0) scaleY(0);
     }
 }
 
@@ -557,17 +458,13 @@ watch(
     left: auto;
 }
 
-.rui-linear-progress-indicator--reversed.rui-linear-progress-indicator--indeterminate
-    .rui-linear-progress-indicator__indeterminate-bar--primary,
-.rui-linear-progress-indicator--reversed.rui-linear-progress-indicator--draining
-    .rui-linear-progress-indicator__indeterminate-bar--primary {
+.rui-linear-progress-indicator--reversed.rui-linear-progress-indicator--indeterminate .rui-linear-progress-indicator__indeterminate-bar--primary,
+.rui-linear-progress-indicator--reversed.rui-linear-progress-indicator--draining .rui-linear-progress-indicator__indeterminate-bar--primary {
     animation-name: rui-linear-progress-indicator-primary-indeterminate-translate-reverse;
 }
 
-.rui-linear-progress-indicator--reversed.rui-linear-progress-indicator--indeterminate
-    .rui-linear-progress-indicator__indeterminate-bar--secondary,
-.rui-linear-progress-indicator--reversed.rui-linear-progress-indicator--draining
-    .rui-linear-progress-indicator__indeterminate-bar--secondary {
+.rui-linear-progress-indicator--reversed.rui-linear-progress-indicator--indeterminate .rui-linear-progress-indicator__indeterminate-bar--secondary,
+.rui-linear-progress-indicator--reversed.rui-linear-progress-indicator--draining .rui-linear-progress-indicator__indeterminate-bar--secondary {
     animation-name: rui-linear-progress-indicator-secondary-indeterminate-translate-reverse;
 }
 
