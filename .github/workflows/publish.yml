@@ -11,7 +11,7 @@ jobs:
     name: Build & Publish to npm
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       id-token: write
 
     steps:
@@ -37,4 +37,6 @@ jobs:
         run: pnpm --filter rui build
 
       - name: Publish to npm
-        run: pnpm --filter rui exec npm publish --provenance --access public
+        run: |
+          cd packages/rui
+          npm publish --provenance --access public --no-git-checks
