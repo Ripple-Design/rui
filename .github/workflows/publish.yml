@@ -1,54 +1,46 @@
 name: Build and Publish
 
 on:
-  workflow_dispatch:
-  push:
-    tags:
-      - 'v*'
+    workflow_dispatch:
+    push:
+        tags:
+            - "v*"
 
 jobs:
-  publish:
-    name: Build & Publish to npm
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
+    publish:
+        name: Build & Publish to npm
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
 
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 9
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v3
+              with:
+                  version: 9
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
-          scope: '@ripple-design'
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: "pnpm"
+                  registry-url: "https://registry.npmjs.org"
+                  scope: "@ripple-design"
 
-      - name: Upgrade npm
-        run: npm install -g npm@latest
+            - name: Upgrade npm
+              run: npm install -g npm@latest
 
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+            - name: Install Dependencies
+              run: pnpm install --frozen-lockfile
 
-      - name: Print OIDC Token Claims
-        run: |
-          TOKEN_RESPONSE=$(curl -sH "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://registry.npmjs.org")
-          JWT_TOKEN=$(echo $TOKEN_RESPONSE | jq -r '.value')
-          echo "==================== OIDC CLAIMS START ===================="
-          echo $JWT_TOKEN | cut -d'.' -f2 | base64 -d 2>/dev/null | jq '{repository, repository_owner, job_workflow_ref, ref, environment}'
-          echo "==================== OIDC CLAIMS END ===================="
+            - name: Build Library
+              run: pnpm --filter rui build
 
-      - name: Build Library
-        run: pnpm --filter rui build
-
-      - name: Publish to npm
-        run: |
-          cd packages/rui
-          npm publish
+            - name: Publish to npm
+              run: |
+                  cd packages/rui
+                  npm publish --provenance
