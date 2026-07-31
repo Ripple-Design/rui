@@ -42,6 +42,10 @@ export type * from "./tab/types"
 export { default as RText } from "./text/RText.vue"
 export type * from "./text/types"
 
+export { default as RCircularProgressIndicator } from "./progressIndicator/RCircularProgressIndicator.vue"
+export { default as RLinearProgressIndicator } from "./progressIndicator/RLinearProgressIndicator.vue"
+export type * from "./progressIndicator/types"
+
 export * from "./tooltip"
 
 export { default as RTextField } from "./textField/RTextField.vue"

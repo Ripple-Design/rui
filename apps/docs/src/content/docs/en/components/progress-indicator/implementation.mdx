@@ -1,0 +1,23 @@
+---
+title: Progress Indicator
+docSlug: components/progress-indicator
+tab: implementation
+locale: en
+designOrder: 147
+developOrder: 147
+api: /en/api/progress-indicator
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import ProgressIndicatorBasicDemo from "@docs/components/demos/progressIndicator/ProgressIndicatorBasicDemo.vue"
+import progressIndicatorBasicDemoSource from "@docs/components/demos/progressIndicator/ProgressIndicatorBasicDemo.vue?raw"
+
+## Basic usage
+
+<DemoBlock title="Circular and linear progress indicators" code={progressIndicatorBasicDemoSource} language="vue">
+    <ProgressIndicatorBasicDemo client:load />
+</DemoBlock>
+
+`RCircularProgressIndicator` and `RLinearProgressIndicator` provide determinate and indeterminate progress feedback. Circular indicators support 24 / 36 / 48 sizes plus the four-color indeterminate variant, while linear indicators support buffer and reversed layouts.
+
+The linear indeterminate animation is rendered as two pulse lanes that share the same visual style but run on different offsets. When indeterminate or query mode stops, the component switches into a short draining phase: it stops restarting the loop, keeps the current animation timeline, and lets the in-flight lanes finish naturally before returning to determinate progress. This keeps the exit rhythm aligned with the running motion instead of synthesizing a separate finishing transform.
