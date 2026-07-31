@@ -53,11 +53,11 @@
 }
 
 .rui-ripple-surface.is-hovered:not(.rui-ripple-surface--unbounded):not(.is-disabled)::before,
-:focus-visible > .rui-ripple-surface:not(.rui-ripple-surface--unbounded):not(.is-disabled)::before {
+.rui-ripple-surface.is-focus-visible:not(.rui-ripple-surface--unbounded):not(.is-disabled)::before {
     opacity: var(--rui-ripple-hover-opacity);
 }
 
-:focus-visible > .rui-ripple-surface:not(.rui-ripple-surface--unbounded):not(.is-disabled)::before {
+.rui-ripple-surface.is-focus-visible:not(.rui-ripple-surface--unbounded):not(.is-disabled)::before {
     opacity: var(--rui-ripple-focus-opacity);
 }
 
@@ -74,11 +74,12 @@
     transition: opacity var(--rui-ripple-surface-duration) motion.$easing-standard;
 }
 
-.rui-ripple-surface--unbounded.is-hovered:not(.is-disabled) .rui-ripple-unbounded {
+.rui-ripple-surface--unbounded.is-hovered:not(.is-disabled) .rui-ripple-unbounded,
+.rui-ripple-surface--unbounded.is-focus-visible:not(.is-disabled) .rui-ripple-unbounded {
     opacity: var(--rui-ripple-hover-opacity);
 }
 
-:focus-visible > .rui-ripple-surface.rui-ripple-surface--unbounded:not(.is-disabled) .rui-ripple-unbounded {
+.rui-ripple-surface--unbounded.is-focus-visible:not(.is-disabled) .rui-ripple-unbounded {
     opacity: var(--rui-ripple-focus-opacity);
 }
 
