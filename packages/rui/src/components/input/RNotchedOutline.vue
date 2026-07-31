@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue"
-
-import { useResizeObserver } from "@/utils/useResizeObserver"
+import { computed } from "vue"
 
 import type { RNotchedOutlineProps } from "./types"
 
@@ -10,13 +8,7 @@ import RFloatingLabel from "./RFloatingLabel.vue"
 const props = defineProps<RNotchedOutlineProps>()
 
 const hasLabel = computed(() => !!props.label?.trim())
-const shadowLabelRef = ref<HTMLSpanElement | null>(null)
-const shadowLabelWidth = ref(0)
-const notchWidthPx = computed(() => (props.floating ? shadowLabelWidth.value + "px" : "0px"))
-
-useResizeObserver(shadowLabelRef, (entry) => {
-    shadowLabelWidth.value = entry.borderBoxSize[0]?.inlineSize ?? 0
-})
+const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
 </script>
 
 <template>
@@ -30,11 +22,13 @@ useResizeObserver(shadowLabelRef, (entry) => {
         }"
     >
         <span class="rui-notched-outline__leading" />
-        <span v-if="hasLabel" class="rui-notched-outline__label-space" :style="{ width: shadowLabelWidth + 'px' }">
-            <span class="rui-notched-outline__label-space__leading" />
-            <span class="rui-notched-outline__label-space__notch" :style="{ width: notchWidthPx }" />
-            <span class="rui-notched-outline__label-space__trailing" />
-            <span class="rui-notched-outline__label-space__shadow-label" ref="shadowLabelRef">{{ label }}</span>
+        <span v-if="hasLabel" class="rui-notched-outline__label-space">
+            <span class="rui-notched-outline__label-space__sizer">{{ label }}</span>
+            <span class="rui-notched-outline__label-space__track">
+                <span class="rui-notched-outline__label-space__leading" />
+                <span class="rui-notched-outline__label-space__notch" :style="{ width: notchWidthPx }" />
+                <span class="rui-notched-outline__label-space__trailing" />
+            </span>
         </span>
         <span class="rui-notched-outline__trailing" />
         <RFloatingLabel
@@ -87,7 +81,25 @@ useResizeObserver(shadowLabelRef, (entry) => {
     }
 
     &__label-space {
-        display: flex;
+        position: relative;
+        display: inline-grid;
+        align-self: stretch;
+
+        &__sizer {
+            @include typography.caption("--rui-comp-text-field-floating-label");
+            display: block;
+            height: 0;
+            overflow: hidden;
+            visibility: hidden;
+            padding: 0 4px;
+            white-space: nowrap;
+        }
+
+        &__track {
+            position: absolute;
+            inset: 0;
+            display: flex;
+        }
 
         &__leading,
         &__trailing {
@@ -104,14 +116,6 @@ useResizeObserver(shadowLabelRef, (entry) => {
             border-bottom-style: solid;
             border-color: var(--rui-comp-notched-outline-color);
         }
-
-        &__shadow-label {
-            @include typography.caption("--rui-comp-text-field-floating-label");
-            opacity: 0;
-            visibility: hidden;
-            position: absolute;
-            padding: 0 4px;
-        }
     }
 
     &__label {
@@ -121,31 +125,31 @@ useResizeObserver(shadowLabelRef, (entry) => {
 
     &--hovered {
         #{$block}__leading,
-        #{$block}__label-space > #{$block}__label-space__leading,
-        #{$block}__label-space > #{$block}__label-space__notch,
-        #{$block}__label-space > #{$block}__label-space__trailing,
+        #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__leading,
+        #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__notch,
+        #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__trailing,
         #{$block}__trailing {
             border-color: color.$on-surface-high;
         }
     }
 
     &--floating {
-        #{$block}__label-space > #{$block}__label-space__notch {
+        #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__notch {
             border-top-style: none;
         }
     }
 
     &--focused {
         #{$block}__leading,
-        #{$block}__label-space > #{$block}__label-space__leading,
-        #{$block}__label-space > #{$block}__label-space__notch,
-        #{$block}__label-space > #{$block}__label-space__trailing,
+        #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__leading,
+        #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__notch,
+        #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__trailing,
         #{$block}__trailing {
             border-width: 2px;
             border-color: color.$primary;
         }
 
-        #{$block}__label-space > #{$block}__label-space__notch {
+        #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__notch {
             transition: width 75ms cubic-bezier(0.4, 0, 0.2, 1);
         }
     }

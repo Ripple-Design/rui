@@ -11,6 +11,8 @@ api: /en/api/text-field
 import DemoBlock from "@docs/components/docs/DemoBlock.astro"
 import TextFieldBasicDemo from "@docs/components/demos/text-field/TextFieldBasicDemo.vue"
 import textFieldBasicDemoSource from "@docs/components/demos/text-field/TextFieldBasicDemo.vue?raw"
+import TextFieldPrefilledDemo from "@docs/components/demos/text-field/TextFieldPrefilledDemo.vue"
+import textFieldPrefilledDemoSource from "@docs/components/demos/text-field/TextFieldPrefilledDemo.vue?raw"
 import TextFieldNumberDemo from "@docs/components/demos/text-field/TextFieldNumberDemo.vue"
 import textFieldNumberDemoSource from "@docs/components/demos/text-field/TextFieldNumberDemo.vue?raw"
 
@@ -18,6 +20,12 @@ import textFieldNumberDemoSource from "@docs/components/demos/text-field/TextFie
 
 <DemoBlock title="Basic text field" code={textFieldBasicDemoSource} language="vue">
     <TextFieldBasicDemo client:load />
+</DemoBlock>
+
+## Prefilled
+
+<DemoBlock title="Prefilled text field" code={textFieldPrefilledDemoSource} language="vue">
+    <TextFieldPrefilledDemo client:load />
 </DemoBlock>
 
 ## Number field
