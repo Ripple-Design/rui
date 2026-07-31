@@ -18,6 +18,7 @@ const itemId = Symbol("navigationRailItem")
 const interactiveRef = ref<HTMLElement | null>(null)
 
 const selected = computed(() => (rail ? rail.isSelected(props.value) : false))
+const selectedIconSource = computed(() => (selected.value && props.selectedIcon ? props.selectedIcon : props.icon))
 const hasLabel = computed(() => !!slots.default?.().length)
 const showLabel = computed(() => {
     if (rail?.compact) {
@@ -82,7 +83,7 @@ function handleClick() {
         @click="handleClick"
     >
         <span class="rui-navigation-rail-item__icon">
-            <RIcon v-if="icon" :icon="icon" :size="24" decorative />
+            <RIcon v-if="selectedIconSource" :icon="selectedIconSource" :size="24" decorative />
         </span>
         <span class="rui-navigation-rail-item__label" :class="{ 'rui-navigation-rail-item__label--hidden': !showLabel }">
             <slot />

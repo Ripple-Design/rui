@@ -17,6 +17,8 @@ export type RNavigationRailItemProps = {
     value: unknown
     /** Renders the leading icon using the shared icon renderer. */
     icon?: RIconResolvableSource
+    /** Uses this icon when the item is selected. */
+    selectedIcon?: RIconResolvableSource
     /** Controls ripple behavior or disables it entirely. */
     ripple?: boolean | RippleOptions
 }

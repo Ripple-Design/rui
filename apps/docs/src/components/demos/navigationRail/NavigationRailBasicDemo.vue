@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { RIHomeOutlined, RIPlayCircleOutlined, RISettingsOutlined } from "@ripple-design/icons"
-import { RColumn, RNavigationRail, RNavigationRailItem, RText } from "@ripple-design/rui"
+import {
+    RIFavoriteBorderFilled,
+    RIFavoriteFilled,
+    RIHomeOutlined,
+    RIPlayCircleOutlined,
+    RISettingsOutlined,
+} from "@ripple-design/icons"
+import { RColumn, RNavigationRail, RNavigationRailItem, RRow, RText } from "@ripple-design/rui"
 import { ref } from "vue"
 
 const active = ref("home")
@@ -10,7 +16,7 @@ const selectedOnly = ref("settings")
 
 <template>
     <div class="navigation-rail-demo">
-        <RColumn gap="24px">
+        <RRow gap="24px">
             <RNavigationRail v-model="active" aria-label="Primary navigation rail">
                 <template #top>
                     <RText variant="button">App</RText>
@@ -18,10 +24,17 @@ const selectedOnly = ref("settings")
 
                 <RNavigationRailItem value="home" :icon="RIHomeOutlined">Home</RNavigationRailItem>
                 <RNavigationRailItem value="listen" :icon="RIPlayCircleOutlined">Listen</RNavigationRailItem>
+                <RNavigationRailItem value="favorites" :icon="RIFavoriteBorderFilled" :selected-icon="RIFavoriteFilled"
+                    >Favorites</RNavigationRailItem
+                >
                 <RNavigationRailItem value="settings" :icon="RISettingsOutlined">Settings</RNavigationRailItem>
             </RNavigationRail>
 
-            <RNavigationRail v-model="selectedOnly" label-visibility="selected" aria-label="Selected label navigation rail">
+            <RNavigationRail
+                v-model="selectedOnly"
+                label-visibility="selected"
+                aria-label="Selected label navigation rail"
+            >
                 <RNavigationRailItem value="home" :icon="RIHomeOutlined">Home</RNavigationRailItem>
                 <RNavigationRailItem value="listen" :icon="RIPlayCircleOutlined">Listen</RNavigationRailItem>
                 <RNavigationRailItem value="settings" :icon="RISettingsOutlined">Settings</RNavigationRailItem>
@@ -32,7 +45,7 @@ const selectedOnly = ref("settings")
                 <RNavigationRailItem value="listen" :icon="RIPlayCircleOutlined">Listen</RNavigationRailItem>
                 <RNavigationRailItem value="settings" :icon="RISettingsOutlined">Settings</RNavigationRailItem>
             </RNavigationRail>
-        </RColumn>
+        </RRow>
     </div>
 </template>
 
