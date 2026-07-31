@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "./BaseLayout.astro"
 import type { CollectionEntry } from "astro:content"
+import { RSurface } from "@ripple-design/rui"
 import type { OutlineItem } from "../lib/docs"
 import { getModeUrl, getReadingMode, getTabsForDoc, groupDocs } from "../lib/docs"
 
@@ -26,8 +27,7 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug)
 
         .docs-sidebar,
         .docs-outline {
-            border: 1px solid #d0d0d0;
-            padding: 1rem;
+            padding: 1.25rem;
         }
 
         .docs-sidebar nav section + section {
@@ -97,7 +97,7 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug)
     </style>
 
     <div class="docs-shell">
-        <aside class="docs-sidebar">
+        <RSurface as="aside" variant="outlined" class="docs-sidebar">
             <nav aria-label="Components navigation">
                 <h2>Components</h2>
                 {groupedDocs.map(({ group, items }) => (
@@ -113,7 +113,7 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug)
                     </section>
                 ))}
             </nav>
-        </aside>
+        </RSurface>
 
         <article class="docs-content">
             <header>
@@ -149,7 +149,7 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug)
             </div>
         </article>
 
-        <aside class="docs-outline">
+        <RSurface as="aside" variant="outlined" class="docs-outline">
             <nav aria-label="Current section outline">
                 <h2>On this page</h2>
                 <h3>{entry.data.tab}</h3>
@@ -165,6 +165,6 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug)
                     )}
                 </ul>
             </nav>
-        </aside>
+        </RSurface>
     </div>
 </BaseLayout>

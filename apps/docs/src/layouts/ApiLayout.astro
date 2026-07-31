@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "./BaseLayout.astro"
 import type { CollectionEntry } from "astro:content"
+import { RSurface } from "@ripple-design/rui"
 import { getModeUrl, getReadingMode, groupApi } from "../lib/docs"
 
 export interface Props {
@@ -22,8 +23,11 @@ const apiEntries = groupApi(allApi, locale, mode)
         }
 
         .api-sidebar,
-        .api-content,
         .api-outline {
+            padding: 1.25rem;
+        }
+
+        .api-content {
             border: 1px solid #d0d0d0;
             padding: 1rem;
         }
@@ -76,7 +80,7 @@ const apiEntries = groupApi(allApi, locale, mode)
     </style>
 
     <div class="api-shell">
-        <aside class="api-sidebar">
+        <RSurface as="aside" variant="outlined" class="api-sidebar">
             <nav aria-label="API navigation">
                 <h2>API</h2>
                 <ol>
@@ -87,7 +91,7 @@ const apiEntries = groupApi(allApi, locale, mode)
                     ))}
                 </ol>
             </nav>
-        </aside>
+        </RSurface>
 
         <article class="api-content">
             <header>
@@ -108,7 +112,7 @@ const apiEntries = groupApi(allApi, locale, mode)
             </div>
         </article>
 
-        <aside class="api-outline">
+        <RSurface as="aside" variant="outlined" class="api-outline">
             <nav aria-label="API page context">
                 <h2>Context</h2>
                 <ul>
@@ -116,6 +120,6 @@ const apiEntries = groupApi(allApi, locale, mode)
                     <li><a href={`/${locale}/api/${entry.data.routeSlug}`}>Current API</a></li>
                 </ul>
             </nav>
-        </aside>
+        </RSurface>
     </div>
 </BaseLayout>
