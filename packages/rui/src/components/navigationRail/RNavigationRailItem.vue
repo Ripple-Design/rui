@@ -19,7 +19,13 @@ const interactiveRef = ref<HTMLElement | null>(null)
 
 const selected = computed(() => (rail ? rail.isSelected(props.value) : false))
 const hasLabel = computed(() => !!slots.default?.().length)
-const showLabel = computed(() => hasLabel.value && (rail?.labelVisibility !== "selected" || selected.value))
+const showLabel = computed(() => {
+    if (rail?.compact) {
+        return false
+    }
+
+    return hasLabel.value && (rail?.labelVisibility !== "selected" || selected.value)
+})
 const rippleOptions = computed<RippleOptions>(() => {
     if (props.ripple === false) {
         return { disabled: true, unbounded: true }
@@ -43,6 +49,7 @@ const rippleOptions = computed<RippleOptions>(() => {
 const classes = computed(() => [
     "rui-navigation-rail-item",
     {
+        "rui-navigation-rail-item--compact": rail?.compact,
         "rui-navigation-rail-item--selected": selected.value,
         "rui-navigation-rail-item--icon-only": !showLabel.value,
     },
@@ -104,12 +111,22 @@ function handleClick() {
         padding-block-start motion.$duration-small-in motion.$easing-standard,
         color motion.$duration-small-in motion.$easing-standard;
 
+    &--compact {
+        width: 56px;
+        height: 56px;
+        padding-block-start: 16px;
+    }
+
     &--selected {
         color: color.$primary;
     }
 
     &--icon-only {
         padding-block-start: 24px;
+    }
+
+    &--compact.rui-navigation-rail-item--icon-only {
+        padding-block-start: 16px;
     }
 }
 

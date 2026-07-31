@@ -5,6 +5,7 @@ import { ref } from "vue"
 
 const active = ref("home")
 const compact = ref("listen")
+const selectedOnly = ref("settings")
 </script>
 
 <template>
@@ -20,7 +21,13 @@ const compact = ref("listen")
                 <RNavigationRailItem value="settings" :icon="RISettingsOutlined">Settings</RNavigationRailItem>
             </RNavigationRail>
 
-            <RNavigationRail v-model="compact" label-visibility="selected" aria-label="Compact navigation rail">
+            <RNavigationRail v-model="selectedOnly" label-visibility="selected" aria-label="Selected label navigation rail">
+                <RNavigationRailItem value="home" :icon="RIHomeOutlined">Home</RNavigationRailItem>
+                <RNavigationRailItem value="listen" :icon="RIPlayCircleOutlined">Listen</RNavigationRailItem>
+                <RNavigationRailItem value="settings" :icon="RISettingsOutlined">Settings</RNavigationRailItem>
+            </RNavigationRail>
+
+            <RNavigationRail v-model="compact" compact aria-label="Compact navigation rail">
                 <RNavigationRailItem value="home" :icon="RIHomeOutlined">Home</RNavigationRailItem>
                 <RNavigationRailItem value="listen" :icon="RIPlayCircleOutlined">Listen</RNavigationRailItem>
                 <RNavigationRailItem value="settings" :icon="RISettingsOutlined">Settings</RNavigationRailItem>

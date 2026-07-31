@@ -6,6 +6,8 @@ export type RNavigationRailLabelVisibility = "always" | "selected"
 export type RNavigationRailProps = {
     /** Controls the selected destination value. */
     modelValue?: unknown
+    /** Controls whether the rail uses compact 56px cells. */
+    compact?: boolean
     /** Controls when destination labels are shown. */
     labelVisibility?: RNavigationRailLabelVisibility
 }
