@@ -37,4 +37,4 @@ jobs:
         run: pnpm --filter rui build
 
       - name: Publish to npm
-        run: pnpm --filter rui publish --no-git-checks
+        run: pnpm --filter rui exec npm publish --provenance --access public
