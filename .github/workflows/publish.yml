@@ -48,4 +48,4 @@ jobs:
       - name: Publish to npm
         run: |
           cd packages/rui
-          npm publish --provenance --access public --no-git-checks --registry https://registry.npmjs.org/
+          npm publish
