@@ -35,6 +35,8 @@ import { RColumn, RRow, vRipple } from "@ripple-design/rui"
     padding: 0 20px;
     font: inherit;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 .demo-button__label {

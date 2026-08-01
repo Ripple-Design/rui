@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, provide, ref, useAttrs, watchEffect } from "vue"
+import { computed, onBeforeUnmount, provide, ref, useAttrs, watchEffect } from "vue"
 
 import { selectionModelKey, useSelectionModel } from "@/foundations/selectionModel"
 import { useResizeObserver } from "@/utils/useResizeObserver"
@@ -21,6 +21,7 @@ const rootRef = ref<HTMLElement | null>(null)
 const scrollerRef = ref<HTMLElement | null>(null)
 const contentRef = ref<HTMLElement | null>(null)
 const indicatorRef = ref<HTMLElement | null>(null)
+const indicatorReady = ref(false)
 const selection = useSelectionModel(model, { variant: props.variant })
 const resolvedColor = computed(() => props.color ?? "primary")
 const resolvedIconLayout = computed(() => props.iconLayout ?? "vertical")
@@ -32,12 +33,33 @@ const classes = computed(() => [
     { "rui-tab-bar--full-width": props.fullWidth },
 ])
 const activeElement = computed(() => selection.selectedItem.value?.state.element ?? null)
+let indicatorReadyFrame: number | null = null
 
 provide(selectionModelKey, selection)
 provide(tabBarKey, {
     color: resolvedColor,
     iconLayout: resolvedIconLayout,
 })
+
+function cancelIndicatorReadyFrame() {
+    if (indicatorReadyFrame == null) {
+        return
+    }
+
+    cancelAnimationFrame(indicatorReadyFrame)
+    indicatorReadyFrame = null
+}
+
+function scheduleIndicatorReady() {
+    if (indicatorReady.value || indicatorReadyFrame != null) {
+        return
+    }
+
+    indicatorReadyFrame = requestAnimationFrame(() => {
+        indicatorReadyFrame = null
+        indicatorReady.value = true
+    })
+}
 
 function resolvePrimaryIndicatorMetrics(root: HTMLElement, element: HTMLElement) {
     const content = element.querySelector<HTMLElement>(".rui-tab__content")
@@ -83,7 +105,9 @@ function syncIndicator() {
     const element = activeElement.value
 
     if (!scroller || !content || !indicator || !element) {
-        if (indicator) {
+        cancelIndicatorReadyFrame()
+
+        if (indicator && !indicatorReady.value) {
             indicator.style.transform = "translateX(0px)"
             indicator.style.width = "0px"
         }
@@ -108,6 +132,7 @@ function syncIndicator() {
 
     indicator.style.transform = `translateX(${indicatorMetrics.left}px)`
     indicator.style.width = `${indicatorMetrics.width}px`
+    scheduleIndicatorReady()
 }
 
 watchEffect(
@@ -120,13 +145,24 @@ watchEffect(
 useResizeObserver(rootRef, syncIndicator)
 useResizeObserver(scrollerRef, syncIndicator)
 useResizeObserver(activeElement, syncIndicator)
+
+onBeforeUnmount(() => {
+    cancelIndicatorReadyFrame()
+})
 </script>
 
 <template>
     <div v-bind="attrs" ref="rootRef" :class="classes">
         <div v-if="divider" class="rui-tab-bar__divider" aria-hidden="true" />
         <div class="rui-tab-bar__scroller" ref="scrollerRef">
-            <div class="rui-tab-bar__indicator" ref="indicatorRef" aria-hidden="true" />
+            <div
+                ref="indicatorRef"
+                :class="[
+                    'rui-tab-bar__indicator',
+                    { 'rui-tab-bar__indicator--ready': indicatorReady },
+                ]"
+                aria-hidden="true"
+            />
             <div class="rui-tab-bar__content" ref="contentRef">
                 <slot />
             </div>
@@ -218,10 +254,13 @@ useResizeObserver(activeElement, syncIndicator)
     inset-inline-start: 0;
     block-size: 2px;
     background: var(--rui-comp-tab-bar-selected-color);
-    transition:
-        transform motion.$duration-medium-out motion.$easing-standard,
-        width motion.$duration-medium-out motion.$easing-standard;
     will-change: transform, width;
     pointer-events: none;
+
+    &--ready {
+        transition:
+            transform motion.$duration-medium-out motion.$easing-standard,
+            width motion.$duration-medium-out motion.$easing-standard;
+    }
 }
 </style>

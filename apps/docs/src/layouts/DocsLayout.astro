@@ -1,9 +1,11 @@
 ---
 import BaseLayout from "./BaseLayout.astro"
+import "../styles/docs-prose.scss"
 import type { CollectionEntry } from "astro:content"
 import { RSurface } from "@ripple-design/rui"
 import type { OutlineItem } from "../lib/docs"
-import { getModeUrl, getReadingMode, getTabsForDoc, groupDocs } from "../lib/docs"
+import { getReadingMode, getTabsForDoc, groupDocs } from "../lib/docs"
+import DocsTabBar from "../components/docs/DocsTabBar.vue"
 
 export interface Props {
     entry: CollectionEntry<"docs">
@@ -15,11 +17,17 @@ export interface Props {
 const { entry, locale, allDocs, outline } = Astro.props
 const mode = getReadingMode(Astro.url)
 const groupedDocs = groupDocs(allDocs, locale, mode)
-const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug)
+const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug).map((tabEntry) => ({
+    value: tabEntry.data.tab,
+    label: tabEntry.data.tab,
+    href: `/${locale}/${tabEntry.data.docSlug}/${tabEntry.data.tab}?mode=${mode}`,
+}))
 ---
 
 <BaseLayout title={entry.data.title} locale={locale} currentUrl={Astro.url} sectionLabel="Components">
-    <style>
+    <style lang="scss">
+        @use "@ripple-design/rui/rui" as rui;
+
         .docs-shell {
             display: grid;
             gap: 1.5rem;
@@ -28,6 +36,35 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug)
         .docs-sidebar,
         .docs-outline {
             padding: 1.25rem;
+            color: rui.$color-on-surface;
+        }
+
+        .docs-sidebar h2,
+        .docs-outline h2 {
+            @include rui.typo-headline6;
+
+            margin: 0 0 1rem;
+        }
+
+        .docs-sidebar h3,
+        .docs-outline h3 {
+            @include rui.typo-subtitle2;
+
+            margin: 0 0 0.5rem;
+        }
+
+        .docs-sidebar a,
+        .docs-outline a {
+            @include rui.typo-body2;
+
+            color: rui.$color-on-surface-high;
+        }
+
+        .docs-sidebar a:hover,
+        .docs-sidebar a:focus-visible,
+        .docs-outline a:hover,
+        .docs-outline a:focus-visible {
+            color: rui.$color-primary;
         }
 
         .docs-sidebar nav section + section {
@@ -38,7 +75,12 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug)
         .docs-content ul,
         .docs-outline ul {
             margin: 0;
-            padding-left: 1.25rem;
+            padding-inline-start: 1.25rem;
+        }
+
+        .docs-sidebar ol {
+            list-style: none;
+            padding-inline-start: 0;
         }
 
         .docs-content header {
@@ -46,17 +88,16 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug)
         }
 
         .docs-content h1 {
-            margin-top: 0;
+            @include rui.typo-headline4;
+
+            margin: 0;
+            color: rui.$color-on-surface;
         }
 
-        .docs-mode ul,
-        .docs-tabs ul {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .docs-links a {
+            @include rui.typo-subtitle2;
+
+            color: rui.$color-primary;
         }
 
         .docs-mode,
@@ -125,20 +166,7 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug)
                 <!--        <li><a href={getModeUrl(Astro.url, "develop")} aria-current={mode === "develop" ? "true" : undefined}>Develop</a></li>-->
                 <!--    </ul>-->
                 <!--</nav>-->
-                <nav class="docs-tabs" aria-label="Page sections">
-                    <ul>
-                        {tabs.map((tabEntry) => (
-                            <li>
-                                <a
-                                    href={`/${locale}/${tabEntry.data.docSlug}/${tabEntry.data.tab}?mode=${mode}`}
-                                    aria-current={tabEntry.data.tab === entry.data.tab ? "page" : undefined}
-                                >
-                                    {tabEntry.data.tab}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
+                <DocsTabBar client:load activeTab={entry.data.tab} tabs={tabs} />
                 <p class="docs-links">
                     <a href={entry.data.api}>View API</a>
                 </p>

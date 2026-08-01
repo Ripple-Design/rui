@@ -1,0 +1,113 @@
+@use "@ripple-design/rui/rui" as rui;
+
+.docs-body {
+    @include rui.typo-body1;
+
+    color: rui.$color-on-surface;
+
+    p,
+    li,
+    td,
+    th {
+        @include rui.typo-body1;
+    }
+
+    h2 {
+        @include rui.typo-headline5;
+
+        margin-block: 2rem 1rem;
+    }
+
+    h3 {
+        @include rui.typo-headline6;
+
+        margin-block: 1.5rem 0.75rem;
+    }
+
+    h4 {
+        @include rui.typo-subtitle1;
+
+        margin-block: 1.25rem 0.5rem;
+    }
+
+    h5,
+    h6 {
+        @include rui.typo-subtitle2;
+
+        margin-block: 1rem 0.5rem;
+    }
+
+    p {
+        margin-block: 0 1rem;
+    }
+
+    ul,
+    ol {
+        margin-block: 0 1rem;
+        padding-inline-start: 1.5rem;
+    }
+
+    li + li {
+        margin-block-start: 0.5rem;
+    }
+
+    a {
+        color: rui.$color-primary;
+    }
+
+    strong {
+        font-weight: 500;
+    }
+
+    blockquote {
+        @include rui.typo-body2;
+
+        margin: 1rem 0;
+        padding-inline-start: 1rem;
+        border-inline-start: 4px solid rui.$color-primary;
+        color: rui.$color-on-surface-medium;
+    }
+
+    code,
+    pre {
+        @include rui.typo-body2;
+    }
+
+    :not(pre) > code {
+        padding: 0.125rem 0.375rem;
+        border-radius: 4px;
+        background: rui.$color-on-surface-outline;
+    }
+
+    pre {
+        overflow-x: auto;
+        margin: 0 0 1rem;
+        padding: 1rem;
+        border-radius: 4px;
+        background: rui.$color-surface-dark;
+    }
+
+    table {
+        width: 100%;
+        margin-block: 1rem;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 0.75rem;
+        border: 1px solid rui.$color-on-surface-outline;
+        text-align: start;
+        vertical-align: top;
+    }
+
+    th {
+        font-weight: 500;
+    }
+
+    hr {
+        margin-block: 2rem;
+        border: 0;
+        border-block-start: 1px solid rui.$color-on-surface-outline;
+    }
+}

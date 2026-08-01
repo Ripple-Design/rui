@@ -10,3 +10,6 @@ dist/
 # Claude AI
 /.claude/
 /CLAUDE.md
+
+# Local TODO notes
+/TODOS.md

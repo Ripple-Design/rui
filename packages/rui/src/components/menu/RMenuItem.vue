@@ -118,6 +118,8 @@ onBeforeUnmount(() => {
     color: color.$on-surface-high;
     cursor: pointer;
     outline: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 
     &--disabled {
         color: color.$on-surface-low;

@@ -26,6 +26,12 @@ export type RTabBarProps = {
 export type RTabProps = {
     /** Identifies the tab inside the parent `RTabBar`. */
     value: unknown
+    /** Renders the tab as a link when provided. */
+    href?: string
+    /** Sets the link target when rendering an anchor. */
+    target?: string
+    /** Sets the link relationship when rendering an anchor. */
+    rel?: string
     /** Renders an icon using the shared icon renderer. */
     icon?: RIconResolvableSource
     /** Controls whether the icon and label are laid out vertically or horizontally. */

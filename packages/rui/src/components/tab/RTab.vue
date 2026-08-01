@@ -1,4 +1,8 @@
 <script setup lang="ts">
+defineOptions({
+    inheritAttrs: false,
+})
+
 import { computed, inject, onBeforeUnmount, ref, useAttrs, watch } from "vue"
 
 import RIcon from "@/components/icon/RIcon.vue"
@@ -20,6 +24,28 @@ const interactiveRef = ref<HTMLElement | null>(null)
 
 const selected = computed(() => (group ? group.isSelected(props.value) : false))
 const hasIcon = computed(() => props.icon != null)
+const resolvedHref = computed(() => {
+    if (typeof props.href === "string") {
+        return props.href
+    }
+
+    return typeof attrs.href === "string" ? attrs.href : undefined
+})
+const resolvedTarget = computed(() => {
+    if (typeof props.target === "string") {
+        return props.target
+    }
+
+    return typeof attrs.target === "string" ? attrs.target : undefined
+})
+const resolvedRel = computed(() => {
+    if (typeof props.rel === "string") {
+        return props.rel
+    }
+
+    return typeof attrs.rel === "string" ? attrs.rel : undefined
+})
+const isLink = computed(() => resolvedHref.value != null)
 const resolvedColor = computed(() => tabBar?.color.value ?? "primary")
 const resolvedIconLayout = computed(() => props.iconLayout ?? tabBar?.iconLayout.value ?? "vertical")
 const rippleOptions = computed<RippleOptions>(() => {
@@ -70,12 +96,34 @@ onBeforeUnmount(() => {
 })
 
 function handleClick() {
+    if (isLink.value) {
+        return
+    }
+
     group?.activate(tabId)
 }
 </script>
 
 <template>
+    <a
+        v-if="isLink"
+        ref="interactiveRef"
+        v-bind="attrs"
+        v-ripple="rippleOptions"
+        :class="classes"
+        :href="resolvedHref"
+        :target="resolvedTarget"
+        :rel="resolvedRel"
+        @click="handleClick"
+    >
+        <span class="rui-tab__content">
+            <span v-if="icon" class="rui-tab__icon"><RIcon :icon="icon" :size="24" decorative /></span>
+            <span class="rui-tab__label"><slot /></span>
+        </span>
+    </a>
+
     <button
+        v-else
         ref="interactiveRef"
         v-bind="attrs"
         v-ripple="rippleOptions"
@@ -111,6 +159,7 @@ function handleClick() {
     padding-inline: 16px;
     padding-block: 0;
     color: var(--rui-comp-tab-bar-tab-color);
+    text-decoration: none;
 
     &--selected {
         color: var(--rui-comp-tab-bar-tab-selected-color);

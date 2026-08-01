@@ -21,17 +21,27 @@ const docsThemeBootstrapScript = createDocsThemeBootstrapScript()
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&family=Roboto:wght@300;400;500;700&display=swap"
+        />
         <title>{title}</title>
-        <style>
+        <style lang="scss">
+            @use "@ripple-design/rui/rui" as rui;
+
             :root {
                 color-scheme: light dark;
-                font-family: Arial, sans-serif;
-                line-height: 1.5;
+                font-family: var(--rui-sys-typo-font-family);
             }
 
             body {
+                @include rui.typo-body1;
+
                 margin: 0;
                 background: var(--rui-sys-color-background);
+                color: rui.$color-on-surface;
             }
 
             a,
@@ -42,7 +52,7 @@ const docsThemeBootstrapScript = createDocsThemeBootstrapScript()
             }
 
             .site-header {
-                border-bottom: 1px solid #d0d0d0;
+                border-bottom: 1px solid rui.$color-on-surface-outline;
                 padding: 1rem;
             }
 
@@ -53,8 +63,10 @@ const docsThemeBootstrapScript = createDocsThemeBootstrapScript()
             }
 
             .site-title {
+                @include rui.typo-headline6;
+
                 margin: 0;
-                font-size: 1.25rem;
+                color: rui.$color-on-surface;
             }
 
             .header-nav,
@@ -76,6 +88,12 @@ const docsThemeBootstrapScript = createDocsThemeBootstrapScript()
                 list-style: none;
                 padding: 0;
                 margin: 0;
+            }
+
+            .header-nav a,
+            .header-tools a,
+            .header-direction button {
+                @include rui.typo-subtitle2;
             }
 
             .page-shell {
