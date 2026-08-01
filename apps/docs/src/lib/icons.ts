@@ -40,8 +40,12 @@ export function groupIconsByCategory() {
         .sort((a, b) => a.category.localeCompare(b.category))
 }
 
+export function getIconExportName(name: string, variant: IconVariant = ICON_STYLES[0]) {
+    return `RI${toPascalCase(name)}${toVariantSuffix(variant)}`
+}
+
 export function getIconPath(name: string, variant: IconVariant = ICON_STYLES[0]) {
-    const exportName = `RI${toPascalCase(name)}${toVariantSuffix(variant)}` as keyof typeof iconPaths
+    const exportName = getIconExportName(name, variant) as keyof typeof iconPaths
     return iconPaths[exportName] as string | undefined
 }
 
