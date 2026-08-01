@@ -11,4 +11,4 @@ api: /en/api/progress-indicator
 ## Overview
 
 `RCircularProgressIndicator` and `RLinearProgressIndicator` provide determinate and indeterminate progress feedback.
-Circular indicators support 24 / 36 / 48 sizes, reversed direction, and indeterminate color cycling via `indicatorColors`, while linear indicators support buffer and direction-aware layouts.
+Circular indicators support 24 / 36 / 48 sizes, reversed direction, and indeterminate color cycling via `indicatorColors`, while linear indicators support buffer, direction-aware layouts, and disjoint/contiguous indeterminate modes. Linear contiguous mode requires at least three `indicatorColors`.

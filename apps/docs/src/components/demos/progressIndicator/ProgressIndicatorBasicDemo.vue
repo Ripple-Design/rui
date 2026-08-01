@@ -15,6 +15,8 @@ const linearClosed = ref(false)
 const determinateProgress = ref(0.55)
 const bufferProgress = ref(0.8)
 const indeterminateMode = ref(true)
+const contiguousMode = ref(true)
+const contiguousColors = ["#4285f4", "#34a853", "#fbbc05", "#ea4335"]
 const reversedIndeterminateMode = ref(true)
 const queryMode = ref(true)
 
@@ -22,8 +24,8 @@ function completeIndeterminate() {
     indeterminateMode.value = false
 }
 
-function completeReversedIndeterminate() {
-    reversedIndeterminateMode.value = false
+function completeContiguous() {
+    contiguousMode.value = false
 }
 
 function completeQuery() {
@@ -61,12 +63,7 @@ function completeQuery() {
                 <RCircularProgressIndicator indeterminate :closed="circularClosed" />
                 <RCircularProgressIndicator
                     indeterminate
-                    :indicator-colors="[
-                        'var(--rui-sys-color-primary)',
-                        'var(--rui-sys-color-secondary)',
-                        'var(--rui-sys-color-primary-light)',
-                        'var(--rui-sys-color-secondary-dark)',
-                    ]"
+                    :indicator-colors="contiguousColors"
                     :closed="circularClosed"
                 />
             </RRow>
@@ -99,20 +96,23 @@ function completeQuery() {
             </RColumn>
 
             <RColumn gap="8px">
-                <RText>Indeterminate right-to-left</RText>
+                <RText>Contiguous</RText>
                 <RText variant="body2"
-                    >The lane uses the same pulse timing, but sweeps right-to-left and drains on the same timeline.</RText
+                    >Contiguous mode cycles a three-segment color queue and returns to determinate immediately when
+                    completed.</RText
                 >
                 <RRow gap="12px" wrap align="center">
-                    <RButton variant="outlined" sentence-case @click="reversedIndeterminateMode = true">
-                        Start right-to-left indeterminate
+                    <RButton variant="outlined" sentence-case @click="contiguousMode = true">
+                        Start contiguous
                     </RButton>
-                    <RButton variant="outlined" sentence-case @click="completeReversedIndeterminate">
-                        Complete right-to-left indeterminate
+                    <RButton variant="outlined" sentence-case @click="completeContiguous">
+                        Complete contiguous
                     </RButton>
                 </RRow>
                 <RLinearProgressIndicator
-                    :indeterminate="reversedIndeterminateMode"
+                    :indeterminate="contiguousMode"
+                    indeterminate-animation-type="contiguous"
+                    :indicator-colors="contiguousColors"
                     direction="right-to-left"
                     :closed="linearClosed"
                 />

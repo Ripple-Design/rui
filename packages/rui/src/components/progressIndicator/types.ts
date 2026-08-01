@@ -31,6 +31,8 @@ export type RLinearProgressIndicatorDirection =
     | "start-to-end"
     | "end-to-start"
 
+export type RLinearProgressIndicatorAnimationType = "disjoint" | "contiguous"
+
 /** Props for the {@link RLinearProgressIndicator} component. */
 export type RLinearProgressIndicatorProps = RProgressIndicatorCommonProps & {
     /** Sets the primary progress bar fill in the interval [0, 1]. */
@@ -41,4 +43,8 @@ export type RLinearProgressIndicatorProps = RProgressIndicatorCommonProps & {
     query?: boolean
     /** Controls the visual direction of the linear indicator. */
     direction?: RLinearProgressIndicatorDirection
+    /** Chooses the indeterminate animation style. */
+    indeterminateAnimationType?: RLinearProgressIndicatorAnimationType
+    /** Supplies contiguous indeterminate segment colors; contiguous mode requires at least three colors. */
+    indicatorColors?: string[]
 }

@@ -18,6 +18,6 @@ import progressIndicatorBasicDemoSource from "@docs/components/demos/progressInd
     <ProgressIndicatorBasicDemo client:load />
 </DemoBlock>
 
-`RCircularProgressIndicator` and `RLinearProgressIndicator` provide determinate and indeterminate progress feedback. Circular indicators support 24 / 36 / 48 sizes plus the four-color indeterminate variant, while linear indicators support buffer and reversed layouts.
+`RCircularProgressIndicator` and `RLinearProgressIndicator` provide determinate and indeterminate progress feedback. Circular indicators support 24 / 36 / 48 sizes, reversed direction, and indeterminate color cycling via `indicatorColors`, while linear indicators support buffer, explicit `direction`, and both `disjoint` / `contiguous` indeterminate modes.
 
-The linear indeterminate animation is rendered as two pulse lanes that share the same visual style but run on different offsets. When indeterminate or query mode stops, the component switches into a short draining phase: it stops restarting the loop, keeps the current animation timeline, and lets the in-flight lanes finish naturally before returning to determinate progress. This keeps the exit rhythm aligned with the running motion instead of synthesizing a separate finishing transform.
+Determinate progress uses a shared no-bounce spring for circular and linear indicators, starting from the currently displayed value when a new target arrives. Indeterminate motion remains CSS-driven: `disjoint` keeps two staggered pulse segments and drains the active cycle when stopped, while `contiguous` renders three adjoining color segments and returns to determinate immediately.

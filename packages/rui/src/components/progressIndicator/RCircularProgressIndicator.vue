@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, onBeforeUnmount, ref, watch } from "vue"
+
+import { createSpring } from "@/foundations/spring"
 
 import { normalizeProgress, resolveProgressbarAria } from "./shared"
 
@@ -15,6 +17,7 @@ const props = withDefaults(defineProps<RCircularProgressIndicatorProps>(), {
 })
 
 const normalizedProgress = computed(() => normalizeProgress(props.progress))
+const displayedProgress = ref(normalizedProgress.value)
 const radiusBySize: Record<RCircularProgressIndicatorSize, number> = {
     24: 8.75,
     36: 12.5,
@@ -87,7 +90,13 @@ const radius = computed(() => radiusBySize[props.size])
 const strokeWidth = computed(() => strokeWidthBySize[props.size])
 const viewBox = computed(() => viewBoxBySize[props.size])
 const circleCenter = computed(() => circleCenterBySize[props.size])
-const determinateDashOffset = computed(() => 100 - normalizedProgress.value * 100)
+const determinateDashOffset = computed(() => 100 - displayedProgress.value * 100)
+const progressSpring = createSpring({
+    initialValue: normalizedProgress.value,
+    onUpdate(value) {
+        displayedProgress.value = value
+    },
+})
 const aria = computed(() => resolveProgressbarAria(props.closed, props.indeterminate, normalizedProgress.value))
 const rootClasses = computed(() => [
     "rui-circular-progress-indicator",
@@ -102,6 +111,14 @@ const sizeStyle = computed<Record<string, string>>(() => ({
     inlineSize: `${props.size}px`,
     blockSize: `${props.size}px`,
 }))
+
+watch(normalizedProgress, (nextProgress) => {
+    progressSpring.setTarget(nextProgress)
+})
+
+onBeforeUnmount(() => {
+    progressSpring.destroy()
+})
 </script>
 
 <template>
@@ -231,7 +248,6 @@ const sizeStyle = computed<Record<string, string>>(() => ({
 
 .rui-circular-progress-indicator__determinate-circle {
     stroke: currentColor;
-    transition: stroke-dashoffset 500ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .rui-circular-progress-indicator__indeterminate-arc {
