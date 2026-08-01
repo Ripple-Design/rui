@@ -16,5 +16,5 @@ import { RCircularProgressIndicator, RLinearProgressIndicator } from "@ripple-de
 ## Notes
 
 - `RCircularProgressIndicator` supports `progress`, `indeterminate`, `closed`, `size`, `reversed`, and `indicatorColors`.
-- `RLinearProgressIndicator` supports `progress`, `buffer`, `indeterminate`, `closed`, and `reversed`.
+- `RLinearProgressIndicator` supports `progress`, `buffer`, `indeterminate`, `closed`, and `direction`.
 - Both components expose `role="progressbar"` semantics and remove `aria-valuenow` in indeterminate mode.

@@ -71,9 +71,7 @@ const indicatorColorLayers = computed(() => {
         const fadeInEnd = Math.min(1, start + fade)
         const fadeOutStart = Math.max(0, end - fade)
         const fadeOutEnd = Math.min(1, end + fade)
-        const values = end >= 1
-            ? "0;0;1;1;0"
-            : "0;0;1;1;0;0"
+        const values = end >= 1 ? "0;0;1;1;0" : "0;0;1;1;0;0"
         const keyTimes = end >= 1
             ? [0, fadeInStart, fadeInEnd, fadeOutStart, 1]
             : [0, fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd, 1]
@@ -120,47 +118,47 @@ const sizeStyle = computed<Record<string, string>>(() => ({
         :style="sizeStyle"
     >
         <div class="rui-circular-progress-indicator__determinate-container">
-            <svg class="rui-circular-progress-indicator__determinate-circle-graphic" :viewBox="viewBox">
+            <svg class="rui-circular-progress-indicator__determinate-circle-graphic" :viewBox.attr="viewBox">
                 <circle
                     class="rui-circular-progress-indicator__determinate-track"
-                    :cx="circleCenter"
-                    :cy="circleCenter"
-                    :r="radius"
-                    :stroke-width="strokeWidth"
+                    :cx.attr="circleCenter"
+                    :cy.attr="circleCenter"
+                    :r.attr="radius"
+                    :stroke-width.attr="strokeWidth"
                 />
                 <circle
                     class="rui-circular-progress-indicator__determinate-circle"
-                    :cx="circleCenter"
-                    :cy="circleCenter"
-                    :r="radius"
+                    :cx.attr="circleCenter"
+                    :cy.attr="circleCenter"
+                    :r.attr="radius"
                     pathLength="100"
-                    :stroke-dasharray="100"
-                    :stroke-dashoffset="determinateDashOffset"
-                    :stroke-width="strokeWidth"
+                    :stroke-dasharray.attr="100"
+                    :stroke-dashoffset.attr="determinateDashOffset"
+                    :stroke-width.attr="strokeWidth"
                 />
             </svg>
         </div>
 
         <div class="rui-circular-progress-indicator__indeterminate-container">
             <div class="rui-circular-progress-indicator__spinner-layer">
-                <svg class="rui-circular-progress-indicator__indeterminate-circle-graphic" :viewBox="viewBox">
+                <svg class="rui-circular-progress-indicator__indeterminate-circle-graphic" :viewBox.attr="viewBox">
                     <template v-for="(layer, index) in indicatorColorLayers" :key="`${layer.color}-${index}`">
                         <circle
                             class="rui-circular-progress-indicator__indeterminate-arc"
-                            :cx="circleCenter"
-                            :cy="circleCenter"
-                            :r="radius"
+                            :cx.attr="circleCenter"
+                            :cy.attr="circleCenter"
+                            :r.attr="radius"
                             pathLength="100"
-                            :stroke="layer.color"
-                            :stroke-width="strokeWidth"
+                            :stroke.attr="layer.color"
+                            :stroke-width.attr="strokeWidth"
                         >
                             <animate
                                 v-if="hasMultipleIndicatorColors"
                                 attributeName="opacity"
-                                :values="layer.opacityValues"
-                                :keyTimes="layer.opacityKeyTimes"
+                                :values.attr="layer.opacityValues"
+                                :keyTimes.attr="layer.opacityKeyTimes"
                                 calcMode="linear"
-                                :dur="colorAnimationDuration"
+                                :dur.attr="colorAnimationDuration"
                                 repeatCount="indefinite"
                             />
                         </circle>

@@ -99,19 +99,23 @@ function completeQuery() {
             </RColumn>
 
             <RColumn gap="8px">
-                <RText>Indeterminate reversed</RText>
+                <RText>Indeterminate right-to-left</RText>
                 <RText variant="body2"
-                    >The reversed lane uses the same pulse timing and drains on the same timeline.</RText
+                    >The lane uses the same pulse timing, but sweeps right-to-left and drains on the same timeline.</RText
                 >
                 <RRow gap="12px" wrap align="center">
                     <RButton variant="outlined" sentence-case @click="reversedIndeterminateMode = true">
-                        Start reversed indeterminate
+                        Start right-to-left indeterminate
                     </RButton>
                     <RButton variant="outlined" sentence-case @click="completeReversedIndeterminate">
-                        Complete reversed indeterminate
+                        Complete right-to-left indeterminate
                     </RButton>
                 </RRow>
-                <RLinearProgressIndicator :indeterminate="reversedIndeterminateMode" reversed :closed="linearClosed" />
+                <RLinearProgressIndicator
+                    :indeterminate="reversedIndeterminateMode"
+                    direction="right-to-left"
+                    :closed="linearClosed"
+                />
             </RColumn>
 
             <RColumn gap="8px">
@@ -124,7 +128,12 @@ function completeQuery() {
                     <RButton variant="outlined" sentence-case @click="queryMode = true"> Start query </RButton>
                     <RButton variant="outlined" sentence-case @click="completeQuery"> Complete query </RButton>
                 </RRow>
-                <RLinearProgressIndicator :query="queryMode" :progress="determinateProgress" :closed="linearClosed" />
+                <RLinearProgressIndicator
+                    :query="queryMode"
+                    :progress="determinateProgress"
+                    direction="end-to-start"
+                    :closed="linearClosed"
+                />
             </RColumn>
         </RColumn>
     </RColumn>

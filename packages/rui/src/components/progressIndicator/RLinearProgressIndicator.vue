@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch, type StyleValue } from "vue"
 
+import type { RLinearProgressIndicatorDirection, RLinearProgressIndicatorProps } from "./types"
+
 import { normalizeBuffer, normalizeProgress, resolveProgressbarAria } from "./shared"
 
-import type { RLinearProgressIndicatorProps } from "./types"
-
 type LinearProgressIndicatorPhase = "determinate" | "indeterminate" | "draining"
-type LinearProgressIndicatorDirection = "forward" | "reverse"
+type LinearProgressIndicatorResolvedDirection = {
+    active: "forward" | "reverse"
+    determinate: "forward" | "reverse"
+}
 type LinearProgressIndicatorRevealDuration = "medium" | "large"
 type LinearProgressIndicatorDrainSnapshot = {
-    direction: LinearProgressIndicatorDirection
-    determinateDirection: LinearProgressIndicatorDirection
+    direction: "forward" | "reverse"
+    determinateDirection: "forward" | "reverse"
     primaryBarTime: number
     primaryInnerTime: number
     secondaryBarTime: number
@@ -24,10 +27,10 @@ const DETERMINATE_REVEAL_FRAME_COUNT = 2
 const props = withDefaults(defineProps<RLinearProgressIndicatorProps>(), {
     buffer: 1,
     closed: false,
+    direction: "start-to-end",
     indeterminate: false,
     progress: 0,
     query: false,
-    reversed: false,
 })
 
 const primaryBarRef = ref<HTMLElement | null>(null)
@@ -35,8 +38,31 @@ const primaryBarInnerRef = ref<HTMLElement | null>(null)
 const secondaryBarRef = ref<HTMLElement | null>(null)
 const secondaryBarInnerRef = ref<HTMLElement | null>(null)
 
+function resolveDirection(direction: RLinearProgressIndicatorDirection): LinearProgressIndicatorResolvedDirection {
+    const rootDirection =
+        typeof document === "undefined" ? "ltr" : document.documentElement.dir === "rtl" ? "rtl" : "ltr"
+
+    switch (direction) {
+        case "left-to-right":
+            return { active: "forward", determinate: "forward" }
+        case "right-to-left":
+            return { active: "reverse", determinate: "reverse" }
+        case "start-to-end":
+            return rootDirection === "rtl"
+                ? { active: "reverse", determinate: "reverse" }
+                : { active: "forward", determinate: "forward" }
+        case "end-to-start":
+            return rootDirection === "rtl"
+                ? { active: "forward", determinate: "forward" }
+                : { active: "reverse", determinate: "reverse" }
+    }
+
+    return { active: "forward", determinate: "forward" }
+}
+
+const resolvedDirection = computed(() => resolveDirection(props.direction))
 const phase = ref<LinearProgressIndicatorPhase>(props.indeterminate || props.query ? "indeterminate" : "determinate")
-const liveDirection = ref<LinearProgressIndicatorDirection>(props.query || props.reversed ? "reverse" : "forward")
+const liveDirection = ref<"forward" | "reverse">(props.query ? "reverse" : resolvedDirection.value.active)
 const drainSnapshot = ref<LinearProgressIndicatorDrainSnapshot | null>(null)
 const drainingLaneCount = ref(0)
 const animationEpoch = ref(0)
@@ -48,13 +74,11 @@ let determinateRevealFrame = 0
 const progress = computed(() => normalizeProgress(props.progress))
 const buffer = computed(() => normalizeBuffer(props.buffer))
 const showIndeterminateLayer = computed(() => phase.value !== "determinate")
-const activeDirection = computed<LinearProgressIndicatorDirection>(() => drainSnapshot.value?.direction ?? liveDirection.value)
-const effectiveDeterminateDirection = computed<LinearProgressIndicatorDirection>(() =>
-    drainSnapshot.value?.determinateDirection ?? (props.reversed ? "reverse" : "forward"),
+const activeDirection = computed<"forward" | "reverse">(() => drainSnapshot.value?.direction ?? liveDirection.value)
+const effectiveDeterminateDirection = computed<"forward" | "reverse">(
+    () => drainSnapshot.value?.determinateDirection ?? resolvedDirection.value.determinate,
 )
-const determinateProgress = computed(() =>
-    phase.value === "determinate" ? determinateRevealProgress.value : 0,
-)
+const determinateProgress = computed(() => (phase.value === "determinate" ? determinateRevealProgress.value : 0))
 const aria = computed(() =>
     resolveProgressbarAria(props.closed, showIndeterminateLayer.value, progress.value, buffer.value),
 )
@@ -65,7 +89,7 @@ const rootClasses = computed(() => [
         "rui-linear-progress-indicator--determinate": phase.value === "determinate",
         "rui-linear-progress-indicator--indeterminate": phase.value === "indeterminate",
         "rui-linear-progress-indicator--draining": phase.value === "draining",
-        "rui-linear-progress-indicator--reversed": activeDirection.value === "reverse",
+        "rui-linear-progress-indicator--active-reversed": activeDirection.value === "reverse",
         "rui-linear-progress-indicator--determinate-reversed": effectiveDeterminateDirection.value === "reverse",
     },
 ])
@@ -76,7 +100,7 @@ const determinateBarStyle = computed<StyleValue>(() => ({
             ? "var(--rui-sys-motion-duration-large-in)"
             : "var(--rui-sys-motion-duration-medium-in)",
 }))
-const bufferStyle = computed<StyleValue>(() => ({
+const trackStyle = computed<StyleValue>(() => ({
     flexBasis: `${(phase.value === "determinate" ? buffer.value : 1) * 100}%`,
 }))
 const indeterminateKey = computed(() => `${phase.value}-${activeDirection.value}-${animationEpoch.value}`)
@@ -138,7 +162,7 @@ function restartDeterminateReveal() {
     determinateRevealFrame = window.requestAnimationFrame(step)
 }
 
-function startIndeterminate(direction: LinearProgressIndicatorDirection) {
+function startIndeterminate(direction: "forward" | "reverse") {
     cancelDeterminateReveal()
     determinateRevealDuration.value = "medium"
     determinateRevealProgress.value = progress.value
@@ -149,11 +173,11 @@ function startIndeterminate(direction: LinearProgressIndicatorDirection) {
     animationEpoch.value += 1
 }
 
-function startDraining(direction: LinearProgressIndicatorDirection) {
+function startDraining(direction: "forward" | "reverse") {
     determinateRevealDuration.value = props.query ? "large" : "medium"
     drainSnapshot.value = {
         direction,
-        determinateDirection: props.reversed ? "reverse" : "forward",
+        determinateDirection: resolvedDirection.value.determinate,
         primaryBarTime: readAnimationTime(primaryBarRef.value),
         primaryInnerTime: readAnimationTime(primaryBarInnerRef.value),
         secondaryBarTime: readAnimationTime(secondaryBarRef.value),
@@ -199,27 +223,31 @@ watch(
 )
 
 watch(
-    () => [props.indeterminate, props.query, props.reversed] as const,
+    () => [props.indeterminate, props.query, props.direction] as const,
     (nextState, previousState) => {
-        const [nextIndeterminate, nextQuery, nextReversed] = nextState
-        const [prevIndeterminate, prevQuery, prevReversed] = previousState ?? [false, false, nextReversed]
+        const [nextIndeterminate, nextQuery, nextDirectionProp] = nextState
+        const [prevIndeterminate, prevQuery, prevDirectionProp] = previousState ?? [false, false, nextDirectionProp]
+        const nextResolvedDirection = resolveDirection(nextDirectionProp)
+        const prevResolvedDirection = resolveDirection(prevDirectionProp)
         const nextWantsIndeterminate = nextIndeterminate || nextQuery
         const prevWantsIndeterminate = prevIndeterminate || prevQuery
-        const nextDirection: LinearProgressIndicatorDirection = nextQuery || nextReversed ? "reverse" : "forward"
-        const prevDirection: LinearProgressIndicatorDirection = prevQuery || prevReversed ? "reverse" : "forward"
 
         if (nextWantsIndeterminate) {
-            if (phase.value !== "indeterminate" || !prevWantsIndeterminate || nextDirection !== prevDirection) {
-                startIndeterminate(nextDirection)
+            if (
+                phase.value !== "indeterminate" ||
+                !prevWantsIndeterminate ||
+                nextResolvedDirection.active !== prevResolvedDirection.active
+            ) {
+                startIndeterminate(nextResolvedDirection.active)
                 return
             }
 
-            liveDirection.value = nextDirection
+            liveDirection.value = nextResolvedDirection.active
             return
         }
 
         if (prevWantsIndeterminate && phase.value === "indeterminate") {
-            startDraining(prevDirection)
+            startDraining(prevResolvedDirection.active)
             return
         }
 
@@ -247,7 +275,7 @@ watch(
         :aria-valuenow="aria.ariaValueNow"
     >
         <div class="rui-linear-progress-indicator__buffer">
-            <div class="rui-linear-progress-indicator__buffer-bar" :style="bufferStyle" />
+            <div class="rui-linear-progress-indicator__track" :style="trackStyle" />
             <div class="rui-linear-progress-indicator__buffer-dots" />
         </div>
 
@@ -322,7 +350,7 @@ watch(
     overflow: hidden;
 }
 
-.rui-linear-progress-indicator__buffer-bar {
+.rui-linear-progress-indicator__track {
     flex: 0 1 100%;
     background-color: currentColor;
     opacity: 0.24;
@@ -437,34 +465,38 @@ watch(
     animation-name: rui-linear-progress-indicator-secondary-indeterminate-scale;
 }
 
-.rui-linear-progress-indicator--reversed .rui-linear-progress-indicator__buffer-dots {
+.rui-linear-progress-indicator--active-reversed .rui-linear-progress-indicator__buffer-dots {
     transform: rotate(0);
     animation-name: rui-linear-progress-indicator-buffering-reverse;
 }
 
-.rui-linear-progress-indicator--reversed .rui-linear-progress-indicator__indeterminate-bar {
+.rui-linear-progress-indicator--active-reversed .rui-linear-progress-indicator__indeterminate-bar {
     right: 0;
     left: auto;
     transform-origin: center right;
 }
 
-.rui-linear-progress-indicator--reversed .rui-linear-progress-indicator__indeterminate-bar--primary {
+.rui-linear-progress-indicator--active-reversed .rui-linear-progress-indicator__indeterminate-bar--primary {
     right: -145.166611%;
     left: auto;
 }
 
-.rui-linear-progress-indicator--reversed .rui-linear-progress-indicator__indeterminate-bar--secondary {
+.rui-linear-progress-indicator--active-reversed .rui-linear-progress-indicator__indeterminate-bar--secondary {
     right: -54.888891%;
     left: auto;
 }
 
-.rui-linear-progress-indicator--reversed.rui-linear-progress-indicator--indeterminate .rui-linear-progress-indicator__indeterminate-bar--primary,
-.rui-linear-progress-indicator--reversed.rui-linear-progress-indicator--draining .rui-linear-progress-indicator__indeterminate-bar--primary {
+.rui-linear-progress-indicator--active-reversed.rui-linear-progress-indicator--indeterminate
+    .rui-linear-progress-indicator__indeterminate-bar--primary,
+.rui-linear-progress-indicator--active-reversed.rui-linear-progress-indicator--draining
+    .rui-linear-progress-indicator__indeterminate-bar--primary {
     animation-name: rui-linear-progress-indicator-primary-indeterminate-translate-reverse;
 }
 
-.rui-linear-progress-indicator--reversed.rui-linear-progress-indicator--indeterminate .rui-linear-progress-indicator__indeterminate-bar--secondary,
-.rui-linear-progress-indicator--reversed.rui-linear-progress-indicator--draining .rui-linear-progress-indicator__indeterminate-bar--secondary {
+.rui-linear-progress-indicator--active-reversed.rui-linear-progress-indicator--indeterminate
+    .rui-linear-progress-indicator__indeterminate-bar--secondary,
+.rui-linear-progress-indicator--active-reversed.rui-linear-progress-indicator--draining
+    .rui-linear-progress-indicator__indeterminate-bar--secondary {
     animation-name: rui-linear-progress-indicator-secondary-indeterminate-translate-reverse;
 }
 

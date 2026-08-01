@@ -25,6 +25,12 @@ export type RCircularProgressIndicatorProps = RProgressIndicatorCommonProps & {
     reversed?: boolean
 }
 
+export type RLinearProgressIndicatorDirection =
+    | "left-to-right"
+    | "right-to-left"
+    | "start-to-end"
+    | "end-to-start"
+
 /** Props for the {@link RLinearProgressIndicator} component. */
 export type RLinearProgressIndicatorProps = RProgressIndicatorCommonProps & {
     /** Sets the primary progress bar fill in the interval [0, 1]. */
@@ -33,6 +39,6 @@ export type RLinearProgressIndicatorProps = RProgressIndicatorCommonProps & {
     buffer?: number
     /** Controls whether the indicator should use the query animation state. */
     query?: boolean
-    /** Reverses the linear direction for RTL-like visual behavior. */
-    reversed?: boolean
+    /** Controls the visual direction of the linear indicator. */
+    direction?: RLinearProgressIndicatorDirection
 }
