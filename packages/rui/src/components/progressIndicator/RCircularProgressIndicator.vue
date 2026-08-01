@@ -7,8 +7,8 @@ import type { RCircularProgressIndicatorProps, RCircularProgressIndicatorSize } 
 
 const props = withDefaults(defineProps<RCircularProgressIndicatorProps>(), {
     closed: false,
-    fourColor: false,
     indeterminate: false,
+    indicatorColors: () => [],
     progress: 0,
     reversed: false,
     size: 48,
@@ -36,6 +36,55 @@ const circleCenterBySize: Record<RCircularProgressIndicatorSize, number> = {
     48: 24,
 }
 
+const resolvedIndicatorColors = computed(() => props.indicatorColors)
+const hasMultipleIndicatorColors = computed(() => resolvedIndicatorColors.value.length > 1)
+const indicatorColor = computed(() => resolvedIndicatorColors.value[0] ?? "var(--rui-sys-color-primary)")
+const colorAnimationDuration = computed(() => `${5400}ms`)
+const indicatorColorLayers = computed(() => {
+    const colors = resolvedIndicatorColors.value
+
+    if (colors.length <= 1) {
+        return [{ color: indicatorColor.value, opacityValues: "1;1", opacityKeyTimes: "0;1" }]
+    }
+
+    const segment = 1 / colors.length
+    const fade = Math.min(segment * 0.18, 0.08)
+
+    return colors.map((color, index) => {
+        if (index === 0) {
+            const fadeOutStart = Math.max(0, segment - fade)
+            const fadeOutEnd = Math.min(1, segment + fade)
+            const wrapFadeInStart = Math.max(0, 1 - fade)
+
+            return {
+                color,
+                opacityValues: "1;1;0;0;1",
+                opacityKeyTimes: [0, fadeOutStart, fadeOutEnd, wrapFadeInStart, 1]
+                    .map((time) => time.toFixed(4))
+                    .join(";"),
+            }
+        }
+
+        const start = segment * index
+        const end = segment * (index + 1)
+        const fadeInStart = Math.max(0, start - fade)
+        const fadeInEnd = Math.min(1, start + fade)
+        const fadeOutStart = Math.max(0, end - fade)
+        const fadeOutEnd = Math.min(1, end + fade)
+        const values = end >= 1
+            ? "0;0;1;1;0"
+            : "0;0;1;1;0;0"
+        const keyTimes = end >= 1
+            ? [0, fadeInStart, fadeInEnd, fadeOutStart, 1]
+            : [0, fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd, 1]
+
+        return {
+            color,
+            opacityValues: values,
+            opacityKeyTimes: keyTimes.map((time) => time.toFixed(4)).join(";"),
+        }
+    })
+})
 const radius = computed(() => radiusBySize[props.size])
 const strokeWidth = computed(() => strokeWidthBySize[props.size])
 const viewBox = computed(() => viewBoxBySize[props.size])
@@ -47,15 +96,14 @@ const rootClasses = computed(() => [
     {
         "rui-circular-progress-indicator--closed": props.closed,
         "rui-circular-progress-indicator--indeterminate": props.indeterminate,
-        "rui-circular-progress-indicator--four-color": props.fourColor,
         "rui-circular-progress-indicator--reversed": props.reversed,
     },
 ])
 const sizeStyle = computed<Record<string, string>>(() => ({
+    "--rui-comp-circular-progress-indicator-color": indicatorColor.value,
     inlineSize: `${props.size}px`,
     blockSize: `${props.size}px`,
 }))
-const indeterminateLayerCount = computed(() => (props.fourColor ? 4 : 1))
 </script>
 
 <template>
@@ -94,21 +142,29 @@ const indeterminateLayerCount = computed(() => (props.fourColor ? 4 : 1))
         </div>
 
         <div class="rui-circular-progress-indicator__indeterminate-container">
-            <div
-                v-for="layer in indeterminateLayerCount"
-                :key="layer"
-                class="rui-circular-progress-indicator__spinner-layer"
-                :class="props.fourColor ? `rui-circular-progress-indicator__color-${layer}` : undefined"
-            >
+            <div class="rui-circular-progress-indicator__spinner-layer">
                 <svg class="rui-circular-progress-indicator__indeterminate-circle-graphic" :viewBox="viewBox">
-                    <circle
-                        class="rui-circular-progress-indicator__indeterminate-arc"
-                        :cx="circleCenter"
-                        :cy="circleCenter"
-                        :r="radius"
-                        pathLength="100"
-                        :stroke-width="strokeWidth"
-                    />
+                    <template v-for="(layer, index) in indicatorColorLayers" :key="`${layer.color}-${index}`">
+                        <circle
+                            class="rui-circular-progress-indicator__indeterminate-arc"
+                            :cx="circleCenter"
+                            :cy="circleCenter"
+                            :r="radius"
+                            pathLength="100"
+                            :stroke="layer.color"
+                            :stroke-width="strokeWidth"
+                        >
+                            <animate
+                                v-if="hasMultipleIndicatorColors"
+                                attributeName="opacity"
+                                :values="layer.opacityValues"
+                                :keyTimes="layer.opacityKeyTimes"
+                                calcMode="linear"
+                                :dur="colorAnimationDuration"
+                                repeatCount="indefinite"
+                            />
+                        </circle>
+                    </template>
                 </svg>
             </div>
         </div>
@@ -139,30 +195,13 @@ const indeterminateLayerCount = computed(() => (props.fourColor ? 4 : 1))
     }
 }
 
-.rui-circular-progress-indicator__color-1 .rui-circular-progress-indicator__indeterminate-circle-graphic {
-    color: var(--rui-sys-color-primary);
-}
-
-.rui-circular-progress-indicator__color-2 .rui-circular-progress-indicator__indeterminate-circle-graphic {
-    color: var(--rui-sys-color-secondary);
-}
-
-.rui-circular-progress-indicator__color-3 .rui-circular-progress-indicator__indeterminate-circle-graphic {
-    color: var(--rui-sys-color-primary-light);
-}
-
-.rui-circular-progress-indicator__color-4 .rui-circular-progress-indicator__indeterminate-circle-graphic {
-    color: var(--rui-sys-color-secondary-dark);
-}
-
 .rui-circular-progress-indicator__determinate-container,
 .rui-circular-progress-indicator__indeterminate-container,
 .rui-circular-progress-indicator__spinner-layer,
 .rui-circular-progress-indicator__determinate-circle-graphic,
 .rui-circular-progress-indicator__indeterminate-circle-graphic {
     position: absolute;
-    inline-size: 100%;
-    block-size: 100%;
+    inset: 0;
     color: inherit;
 }
 
@@ -171,9 +210,6 @@ const indeterminateLayerCount = computed(() => (props.fourColor ? 4 : 1))
 }
 
 .rui-circular-progress-indicator__indeterminate-container {
-    font-size: 0;
-    letter-spacing: 0;
-    white-space: nowrap;
     opacity: 0;
 }
 
@@ -192,12 +228,18 @@ const indeterminateLayerCount = computed(() => (props.fourColor ? 4 : 1))
 .rui-circular-progress-indicator__determinate-circle,
 .rui-circular-progress-indicator__indeterminate-arc {
     fill: transparent;
-    stroke: currentColor;
     transform-origin: center;
 }
 
 .rui-circular-progress-indicator__determinate-circle {
+    stroke: currentColor;
     transition: stroke-dashoffset 500ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.rui-circular-progress-indicator__indeterminate-arc {
+    stroke-dasharray: 5.556 94.444;
+    stroke-dashoffset: 0;
+    animation: rui-circular-progress-indicator-arc-grow 5400ms linear infinite both;
 }
 
 .rui-circular-progress-indicator--indeterminate .rui-circular-progress-indicator__determinate-container {
@@ -210,42 +252,6 @@ const indeterminateLayerCount = computed(() => (props.fourColor ? 4 : 1))
 
 .rui-circular-progress-indicator__spinner-layer {
     animation: rui-circular-progress-indicator-spinner-layer-rotate 5400ms linear infinite both;
-}
-
-.rui-circular-progress-indicator__indeterminate-arc {
-    stroke-dasharray: 5.556 94.444;
-    stroke-dashoffset: 0;
-    animation: rui-circular-progress-indicator-arc-grow 5400ms linear infinite both;
-}
-
-.rui-circular-progress-indicator--four-color .rui-circular-progress-indicator__color-1 {
-    animation:
-        rui-circular-progress-indicator-spinner-layer-rotate 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both,
-        rui-circular-progress-indicator-color-1-fade 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-.rui-circular-progress-indicator--four-color .rui-circular-progress-indicator__color-2 {
-    animation:
-        rui-circular-progress-indicator-spinner-layer-rotate 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both,
-        rui-circular-progress-indicator-color-2-fade 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-.rui-circular-progress-indicator--four-color .rui-circular-progress-indicator__color-3 {
-    animation:
-        rui-circular-progress-indicator-spinner-layer-rotate 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both,
-        rui-circular-progress-indicator-color-3-fade 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-.rui-circular-progress-indicator--four-color .rui-circular-progress-indicator__color-4 {
-    animation:
-        rui-circular-progress-indicator-spinner-layer-rotate 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both,
-        rui-circular-progress-indicator-color-4-fade 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-@keyframes rui-circular-progress-indicator-container-rotate {
-    to {
-        transform: rotate(360deg);
-    }
 }
 
 @keyframes rui-circular-progress-indicator-spinner-layer-rotate {
@@ -577,102 +583,6 @@ const indeterminateLayerCount = computed(() => (props.fourColor ? 4 : 1))
 
     100% {
         stroke-dasharray: 5.556 94.444;
-    }
-}
-
-@keyframes rui-circular-progress-indicator-color-1-fade {
-    0% {
-        opacity: 0.99;
-    }
-
-    18.5% {
-        opacity: 0.99;
-    }
-
-    24.67% {
-        opacity: 0;
-    }
-
-    93.52% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 0.99;
-    }
-}
-
-@keyframes rui-circular-progress-indicator-color-2-fade {
-    0% {
-        opacity: 0;
-    }
-
-    18.5% {
-        opacity: 0;
-    }
-
-    24.67% {
-        opacity: 0.99;
-    }
-
-    43.52% {
-        opacity: 0.99;
-    }
-
-    49.69% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-@keyframes rui-circular-progress-indicator-color-3-fade {
-    0% {
-        opacity: 0;
-    }
-
-    43.52% {
-        opacity: 0;
-    }
-
-    49.69% {
-        opacity: 0.99;
-    }
-
-    68.52% {
-        opacity: 0.99;
-    }
-
-    74.69% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-@keyframes rui-circular-progress-indicator-color-4-fade {
-    0% {
-        opacity: 0;
-    }
-
-    68.52% {
-        opacity: 0;
-    }
-
-    74.69% {
-        opacity: 0.99;
-    }
-
-    93.52% {
-        opacity: 0.99;
-    }
-
-    100% {
-        opacity: 0;
     }
 }
 </style>

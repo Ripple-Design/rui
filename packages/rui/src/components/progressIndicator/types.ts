@@ -19,8 +19,8 @@ export type RCircularProgressIndicatorProps = RProgressIndicatorCommonProps & {
     progress?: number
     /** Chooses the rendered size of the circular indicator. */
     size?: RCircularProgressIndicatorSize
-    /** Enables the four-color indeterminate animation. */
-    fourColor?: boolean
+    /** Supplies one or more indicator colors; multiple colors animate through the indeterminate arc. */
+    indicatorColors?: string[]
     /** Reverses the circular direction for counterclockwise visual behavior. */
     reversed?: boolean
 }

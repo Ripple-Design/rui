@@ -59,7 +59,16 @@ function completeQuery() {
             </RRow>
             <RRow gap="20px" wrap align="center">
                 <RCircularProgressIndicator indeterminate :closed="circularClosed" />
-                <RCircularProgressIndicator indeterminate four-color :closed="circularClosed" />
+                <RCircularProgressIndicator
+                    indeterminate
+                    :indicator-colors="[
+                        'var(--rui-sys-color-primary)',
+                        'var(--rui-sys-color-secondary)',
+                        'var(--rui-sys-color-primary-light)',
+                        'var(--rui-sys-color-secondary-dark)',
+                    ]"
+                    :closed="circularClosed"
+                />
             </RRow>
         </RColumn>
 
