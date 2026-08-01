@@ -17,7 +17,7 @@ type LinearProgressIndicatorDrainSnapshot = {
     secondaryInnerTime: number
 }
 
-const INDETERMINATE_DURATION_MS = 2000
+const INDETERMINATE_DURATION_MS = 1800
 const DRAINING_LANE_COUNT = 2
 const DETERMINATE_REVEAL_FRAME_COUNT = 2
 
@@ -485,13 +485,13 @@ watch(
         transform: translateX(0);
     }
 
-    20% {
-        animation-timing-function: cubic-bezier(0.5, 0, 0.701732, 0.495819);
+    70.39% {
+        animation-timing-function: cubic-bezier(0.2, 0, 0.8, 1);
         transform: translateX(0);
     }
 
-    59.15% {
-        animation-timing-function: cubic-bezier(0.302435, 0.381352, 0.55, 0.956352);
+    85.19% {
+        animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
         transform: translateX(83.67142%);
     }
 
@@ -505,13 +505,13 @@ watch(
         transform: scaleX(0.08);
     }
 
-    36.65% {
-        animation-timing-function: cubic-bezier(0.334731, 0.12482, 0.785844, 1);
+    55.56% {
+        animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
         transform: scaleX(0.08);
     }
 
-    69.15% {
-        animation-timing-function: cubic-bezier(0.06, 0.11, 0.6, 1);
+    87.06% {
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         transform: scaleX(0.661479);
     }
 
@@ -522,17 +522,16 @@ watch(
 
 @keyframes rui-linear-progress-indicator-secondary-indeterminate-translate {
     0% {
-        animation-timing-function: cubic-bezier(0.15, 0, 0.515058, 0.409685);
+        animation-timing-function: cubic-bezier(0, 0, 0.65, 1);
         transform: translateX(0);
     }
 
-    25% {
-        animation-timing-function: cubic-bezier(0.31033, 0.284058, 0.8, 0.733712);
+    18.5% {
         transform: translateX(37.651913%);
     }
 
-    48.35% {
-        animation-timing-function: cubic-bezier(0.4, 0.627035, 0.6, 0.902026);
+    65.72% {
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         transform: translateX(84.386165%);
     }
 
@@ -543,17 +542,16 @@ watch(
 
 @keyframes rui-linear-progress-indicator-secondary-indeterminate-scale {
     0% {
-        animation-timing-function: cubic-bezier(0.205028, 0.057051, 0.57661, 0.453971);
+        animation-timing-function: cubic-bezier(0.1, 0, 0.45, 1);
         transform: scaleX(0.08);
     }
 
-    19.15% {
-        animation-timing-function: cubic-bezier(0.152313, 0.196432, 0.648374, 1.004315);
+    18.5% {
         transform: scaleX(0.457104);
     }
 
-    44.15% {
-        animation-timing-function: cubic-bezier(0.257759, -0.003163, 0.211762, 1.38179);
+    41.67% {
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         transform: scaleX(0.72796);
     }
 

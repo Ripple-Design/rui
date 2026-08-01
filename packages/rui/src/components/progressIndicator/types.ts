@@ -21,6 +21,8 @@ export type RCircularProgressIndicatorProps = RProgressIndicatorCommonProps & {
     size?: RCircularProgressIndicatorSize
     /** Enables the four-color indeterminate animation. */
     fourColor?: boolean
+    /** Reverses the circular direction for counterclockwise visual behavior. */
+    reversed?: boolean
 }
 
 /** Props for the {@link RLinearProgressIndicator} component. */

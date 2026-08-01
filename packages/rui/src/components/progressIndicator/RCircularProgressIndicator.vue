@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<RCircularProgressIndicatorProps>(), {
     fourColor: false,
     indeterminate: false,
     progress: 0,
+    reversed: false,
     size: 48,
 })
 
@@ -26,12 +27,12 @@ const strokeWidthBySize: Record<RCircularProgressIndicatorSize, number> = {
 }
 const viewBoxBySize: Record<RCircularProgressIndicatorSize, string> = {
     24: "0 0 24 24",
-    36: "0 0 32 32",
+    36: "0 0 36 36",
     48: "0 0 48 48",
 }
 const circleCenterBySize: Record<RCircularProgressIndicatorSize, number> = {
     24: 12,
-    36: 16,
+    36: 18,
     48: 24,
 }
 
@@ -39,29 +40,22 @@ const radius = computed(() => radiusBySize[props.size])
 const strokeWidth = computed(() => strokeWidthBySize[props.size])
 const viewBox = computed(() => viewBoxBySize[props.size])
 const circleCenter = computed(() => circleCenterBySize[props.size])
-const gapPatchStrokeWidthBySize: Record<RCircularProgressIndicatorSize, number> = {
-    24: 2,
-    36: 2.4,
-    48: 3.8,
-}
-const gapPatchStrokeWidth = computed(() => gapPatchStrokeWidthBySize[props.size])
-const circumference = computed(() => 2 * Math.PI * radius.value)
-const dashOffset = computed(() => (1 - normalizedProgress.value) * circumference.value)
-const aria = computed(() =>
-    resolveProgressbarAria(props.closed, props.indeterminate, normalizedProgress.value),
-)
+const determinateDashOffset = computed(() => 100 - normalizedProgress.value * 100)
+const aria = computed(() => resolveProgressbarAria(props.closed, props.indeterminate, normalizedProgress.value))
 const rootClasses = computed(() => [
     "rui-circular-progress-indicator",
     {
         "rui-circular-progress-indicator--closed": props.closed,
         "rui-circular-progress-indicator--indeterminate": props.indeterminate,
         "rui-circular-progress-indicator--four-color": props.fourColor,
+        "rui-circular-progress-indicator--reversed": props.reversed,
     },
 ])
-const sizeStyle = computed(() => ({
+const sizeStyle = computed<Record<string, string>>(() => ({
     inlineSize: `${props.size}px`,
     blockSize: `${props.size}px`,
 }))
+const indeterminateLayerCount = computed(() => (props.fourColor ? 4 : 1))
 </script>
 
 <template>
@@ -91,8 +85,9 @@ const sizeStyle = computed(() => ({
                     :cx="circleCenter"
                     :cy="circleCenter"
                     :r="radius"
-                    :stroke-dasharray="circumference"
-                    :stroke-dashoffset="dashOffset"
+                    pathLength="100"
+                    :stroke-dasharray="100"
+                    :stroke-dashoffset="determinateDashOffset"
                     :stroke-width="strokeWidth"
                 />
             </svg>
@@ -100,47 +95,21 @@ const sizeStyle = computed(() => ({
 
         <div class="rui-circular-progress-indicator__indeterminate-container">
             <div
-                v-for="layer in props.fourColor ? 4 : 1"
+                v-for="layer in indeterminateLayerCount"
                 :key="layer"
                 class="rui-circular-progress-indicator__spinner-layer"
                 :class="props.fourColor ? `rui-circular-progress-indicator__color-${layer}` : undefined"
             >
-                <div class="rui-circular-progress-indicator__circle-clipper rui-circular-progress-indicator__circle-left">
-                    <svg class="rui-circular-progress-indicator__indeterminate-circle-graphic" :viewBox="viewBox">
-                        <circle
-                            :cx="circleCenter"
-                            :cy="circleCenter"
-                            :r="radius"
-                            :stroke-dasharray="circumference"
-                            :stroke-dashoffset="circumference / 2"
-                            :stroke-width="strokeWidth"
-                        />
-                    </svg>
-                </div>
-                <div class="rui-circular-progress-indicator__gap-patch">
-                    <svg class="rui-circular-progress-indicator__indeterminate-circle-graphic" :viewBox="viewBox">
-                        <circle
-                            :cx="circleCenter"
-                            :cy="circleCenter"
-                            :r="radius"
-                            :stroke-dasharray="circumference"
-                            :stroke-dashoffset="circumference / 2"
-                            :stroke-width="gapPatchStrokeWidth"
-                        />
-                    </svg>
-                </div>
-                <div class="rui-circular-progress-indicator__circle-clipper rui-circular-progress-indicator__circle-right">
-                    <svg class="rui-circular-progress-indicator__indeterminate-circle-graphic" :viewBox="viewBox">
-                        <circle
-                            :cx="circleCenter"
-                            :cy="circleCenter"
-                            :r="radius"
-                            :stroke-dasharray="circumference"
-                            :stroke-dashoffset="circumference / 2"
-                            :stroke-width="strokeWidth"
-                        />
-                    </svg>
-                </div>
+                <svg class="rui-circular-progress-indicator__indeterminate-circle-graphic" :viewBox="viewBox">
+                    <circle
+                        class="rui-circular-progress-indicator__indeterminate-arc"
+                        :cx="circleCenter"
+                        :cy="circleCenter"
+                        :r="radius"
+                        pathLength="100"
+                        :stroke-width="strokeWidth"
+                    />
+                </svg>
             </div>
         </div>
     </div>
@@ -163,6 +132,10 @@ const sizeStyle = computed(() => ({
 
     &--closed {
         opacity: 0;
+    }
+
+    &--reversed {
+        transform: scaleX(-1);
     }
 }
 
@@ -217,7 +190,7 @@ const sizeStyle = computed(() => ({
 }
 
 .rui-circular-progress-indicator__determinate-circle,
-.rui-circular-progress-indicator__indeterminate-circle-graphic circle {
+.rui-circular-progress-indicator__indeterminate-arc {
     fill: transparent;
     stroke: currentColor;
     transform-origin: center;
@@ -233,72 +206,40 @@ const sizeStyle = computed(() => ({
 
 .rui-circular-progress-indicator--indeterminate .rui-circular-progress-indicator__indeterminate-container {
     opacity: 1;
-    animation: rui-circular-progress-indicator-container-rotate 1333ms linear infinite;
 }
 
 .rui-circular-progress-indicator__spinner-layer {
-    animation: rui-circular-progress-indicator-spinner-layer-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+    animation: rui-circular-progress-indicator-spinner-layer-rotate 5400ms linear infinite both;
+}
+
+.rui-circular-progress-indicator__indeterminate-arc {
+    stroke-dasharray: 5.556 94.444;
+    stroke-dashoffset: 0;
+    animation: rui-circular-progress-indicator-arc-grow 5400ms linear infinite both;
 }
 
 .rui-circular-progress-indicator--four-color .rui-circular-progress-indicator__color-1 {
     animation:
-        rui-circular-progress-indicator-spinner-layer-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both,
-        rui-circular-progress-indicator-color-1-fade 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+        rui-circular-progress-indicator-spinner-layer-rotate 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both,
+        rui-circular-progress-indicator-color-1-fade 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
 }
 
 .rui-circular-progress-indicator--four-color .rui-circular-progress-indicator__color-2 {
     animation:
-        rui-circular-progress-indicator-spinner-layer-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both,
-        rui-circular-progress-indicator-color-2-fade 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+        rui-circular-progress-indicator-spinner-layer-rotate 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both,
+        rui-circular-progress-indicator-color-2-fade 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
 }
 
 .rui-circular-progress-indicator--four-color .rui-circular-progress-indicator__color-3 {
     animation:
-        rui-circular-progress-indicator-spinner-layer-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both,
-        rui-circular-progress-indicator-color-3-fade 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+        rui-circular-progress-indicator-spinner-layer-rotate 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both,
+        rui-circular-progress-indicator-color-3-fade 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
 }
 
 .rui-circular-progress-indicator--four-color .rui-circular-progress-indicator__color-4 {
     animation:
-        rui-circular-progress-indicator-spinner-layer-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both,
-        rui-circular-progress-indicator-color-4-fade 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-.rui-circular-progress-indicator__circle-clipper,
-.rui-circular-progress-indicator__gap-patch {
-    position: absolute;
-    top: 0;
-    overflow: hidden;
-    inline-size: 50%;
-    block-size: 100%;
-}
-
-.rui-circular-progress-indicator__circle-right {
-    right: 0;
-}
-
-.rui-circular-progress-indicator__gap-patch {
-    left: 47.5%;
-    inline-size: 5%;
-}
-
-.rui-circular-progress-indicator__circle-clipper .rui-circular-progress-indicator__indeterminate-circle-graphic {
-    inline-size: 200%;
-}
-
-.rui-circular-progress-indicator__circle-left .rui-circular-progress-indicator__indeterminate-circle-graphic {
-    animation: rui-circular-progress-indicator-left-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-.rui-circular-progress-indicator__circle-right .rui-circular-progress-indicator__indeterminate-circle-graphic {
-    left: -100%;
-    animation: rui-circular-progress-indicator-right-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-.rui-circular-progress-indicator__gap-patch .rui-circular-progress-indicator__indeterminate-circle-graphic {
-    left: -900%;
-    inline-size: 2000%;
-    transform: rotate(180deg);
+        rui-circular-progress-indicator-spinner-layer-rotate 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both,
+        rui-circular-progress-indicator-color-4-fade 5400ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
 }
 
 @keyframes rui-circular-progress-indicator-container-rotate {
@@ -308,100 +249,430 @@ const sizeStyle = computed(() => ({
 }
 
 @keyframes rui-circular-progress-indicator-spinner-layer-rotate {
+    0% {
+        transform: rotate(-20deg);
+    }
+
+    2.5% {
+        transform: rotate(18deg);
+    }
+
+    5% {
+        transform: rotate(56deg);
+    }
+
+    7.5% {
+        transform: rotate(94deg);
+    }
+
+    10% {
+        transform: rotate(132deg);
+    }
+
     12.5% {
-        transform: rotate(135deg);
+        transform: rotate(170.077deg);
+    }
+
+    15% {
+        transform: rotate(247.956deg);
+    }
+
+    17.5% {
+        transform: rotate(407.62deg);
+    }
+
+    20% {
+        transform: rotate(506.592deg);
+    }
+
+    22.5% {
+        transform: rotate(567.18deg);
     }
 
     25% {
-        transform: rotate(270deg);
+        transform: rotate(610deg);
+    }
+
+    27.5% {
+        transform: rotate(648deg);
+    }
+
+    30% {
+        transform: rotate(686deg);
+    }
+
+    32.5% {
+        transform: rotate(724deg);
+    }
+
+    35% {
+        transform: rotate(762deg);
     }
 
     37.5% {
-        transform: rotate(405deg);
+        transform: rotate(800.077deg);
+    }
+
+    40% {
+        transform: rotate(877.956deg);
+    }
+
+    42.5% {
+        transform: rotate(1037.62deg);
+    }
+
+    45% {
+        transform: rotate(1136.592deg);
+    }
+
+    47.5% {
+        transform: rotate(1197.18deg);
     }
 
     50% {
-        transform: rotate(540deg);
+        transform: rotate(1240deg);
+    }
+
+    52.5% {
+        transform: rotate(1278deg);
+    }
+
+    55% {
+        transform: rotate(1316deg);
+    }
+
+    57.5% {
+        transform: rotate(1354deg);
+    }
+
+    60% {
+        transform: rotate(1392deg);
     }
 
     62.5% {
-        transform: rotate(675deg);
+        transform: rotate(1430.077deg);
+    }
+
+    65% {
+        transform: rotate(1507.956deg);
+    }
+
+    67.5% {
+        transform: rotate(1667.62deg);
+    }
+
+    70% {
+        transform: rotate(1766.592deg);
+    }
+
+    72.5% {
+        transform: rotate(1827.18deg);
     }
 
     75% {
-        transform: rotate(810deg);
+        transform: rotate(1870deg);
+    }
+
+    77.5% {
+        transform: rotate(1908deg);
+    }
+
+    80% {
+        transform: rotate(1946deg);
+    }
+
+    82.5% {
+        transform: rotate(1984deg);
+    }
+
+    85% {
+        transform: rotate(2022deg);
     }
 
     87.5% {
-        transform: rotate(945deg);
+        transform: rotate(2060.077deg);
+    }
+
+    90% {
+        transform: rotate(2137.956deg);
+    }
+
+    92.5% {
+        transform: rotate(2297.62deg);
+    }
+
+    95% {
+        transform: rotate(2396.592deg);
+    }
+
+    97.5% {
+        transform: rotate(2457.18deg);
     }
 
     100% {
-        transform: rotate(1080deg);
+        transform: rotate(2500deg);
+    }
+}
+
+@keyframes rui-circular-progress-indicator-arc-grow {
+    0% {
+        stroke-dasharray: 5.556 94.444;
+    }
+
+    2.5% {
+        stroke-dasharray: 15.142 84.858;
+    }
+
+    5% {
+        stroke-dasharray: 48.837 51.163;
+    }
+
+    7.5% {
+        stroke-dasharray: 66.772 33.228;
+    }
+
+    10% {
+        stroke-dasharray: 73.458 26.542;
+    }
+
+    12.5% {
+        stroke-dasharray: 74.979 25.021;
+    }
+
+    15% {
+        stroke-dasharray: 63.901 36.099;
+    }
+
+    17.5% {
+        stroke-dasharray: 30.105 69.895;
+    }
+
+    20% {
+        stroke-dasharray: 13.169 86.831;
+    }
+
+    22.5% {
+        stroke-dasharray: 6.894 93.106;
+    }
+
+    25% {
+        stroke-dasharray: 5.556 94.444;
+    }
+
+    27.5% {
+        stroke-dasharray: 15.142 84.858;
+    }
+
+    30% {
+        stroke-dasharray: 48.837 51.163;
+    }
+
+    32.5% {
+        stroke-dasharray: 66.772 33.228;
+    }
+
+    35% {
+        stroke-dasharray: 73.458 26.542;
+    }
+
+    37.5% {
+        stroke-dasharray: 74.979 25.021;
+    }
+
+    40% {
+        stroke-dasharray: 63.901 36.099;
+    }
+
+    42.5% {
+        stroke-dasharray: 30.105 69.895;
+    }
+
+    45% {
+        stroke-dasharray: 13.169 86.831;
+    }
+
+    47.5% {
+        stroke-dasharray: 6.894 93.106;
+    }
+
+    50% {
+        stroke-dasharray: 5.556 94.444;
+    }
+
+    52.5% {
+        stroke-dasharray: 15.142 84.858;
+    }
+
+    55% {
+        stroke-dasharray: 48.837 51.163;
+    }
+
+    57.5% {
+        stroke-dasharray: 66.772 33.228;
+    }
+
+    60% {
+        stroke-dasharray: 73.458 26.542;
+    }
+
+    62.5% {
+        stroke-dasharray: 74.979 25.021;
+    }
+
+    65% {
+        stroke-dasharray: 63.901 36.099;
+    }
+
+    67.5% {
+        stroke-dasharray: 30.105 69.895;
+    }
+
+    70% {
+        stroke-dasharray: 13.169 86.831;
+    }
+
+    72.5% {
+        stroke-dasharray: 6.894 93.106;
+    }
+
+    75% {
+        stroke-dasharray: 5.556 94.444;
+    }
+
+    77.5% {
+        stroke-dasharray: 15.142 84.858;
+    }
+
+    80% {
+        stroke-dasharray: 48.837 51.163;
+    }
+
+    82.5% {
+        stroke-dasharray: 66.772 33.228;
+    }
+
+    85% {
+        stroke-dasharray: 73.458 26.542;
+    }
+
+    87.5% {
+        stroke-dasharray: 74.979 25.021;
+    }
+
+    90% {
+        stroke-dasharray: 63.901 36.099;
+    }
+
+    92.5% {
+        stroke-dasharray: 30.105 69.895;
+    }
+
+    95% {
+        stroke-dasharray: 13.169 86.831;
+    }
+
+    97.5% {
+        stroke-dasharray: 6.894 93.106;
+    }
+
+    100% {
+        stroke-dasharray: 5.556 94.444;
     }
 }
 
 @keyframes rui-circular-progress-indicator-color-1-fade {
-    0% { opacity: 0.99; }
-    25% { opacity: 0.99; }
-    26% { opacity: 0; }
-    89% { opacity: 0; }
-    90% { opacity: 0.99; }
-    100% { opacity: 0.99; }
+    0% {
+        opacity: 0.99;
+    }
+
+    18.5% {
+        opacity: 0.99;
+    }
+
+    24.67% {
+        opacity: 0;
+    }
+
+    93.52% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0.99;
+    }
 }
 
 @keyframes rui-circular-progress-indicator-color-2-fade {
-    0% { opacity: 0; }
-    15% { opacity: 0; }
-    25% { opacity: 0.99; }
-    50% { opacity: 0.99; }
-    51% { opacity: 0; }
-    100% { opacity: 0; }
+    0% {
+        opacity: 0;
+    }
+
+    18.5% {
+        opacity: 0;
+    }
+
+    24.67% {
+        opacity: 0.99;
+    }
+
+    43.52% {
+        opacity: 0.99;
+    }
+
+    49.69% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
 
 @keyframes rui-circular-progress-indicator-color-3-fade {
-    0% { opacity: 0; }
-    40% { opacity: 0; }
-    50% { opacity: 0.99; }
-    75% { opacity: 0.99; }
-    76% { opacity: 0; }
-    100% { opacity: 0; }
+    0% {
+        opacity: 0;
+    }
+
+    43.52% {
+        opacity: 0;
+    }
+
+    49.69% {
+        opacity: 0.99;
+    }
+
+    68.52% {
+        opacity: 0.99;
+    }
+
+    74.69% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
 
 @keyframes rui-circular-progress-indicator-color-4-fade {
-    0% { opacity: 0; }
-    65% { opacity: 0; }
-    75% { opacity: 0.99; }
-    90% { opacity: 0.99; }
-    100% { opacity: 0; }
-}
-
-@keyframes rui-circular-progress-indicator-left-spin {
-    from {
-        transform: rotate(265deg);
+    0% {
+        opacity: 0;
     }
 
-    50% {
-        transform: rotate(130deg);
+    68.52% {
+        opacity: 0;
     }
 
-    to {
-        transform: rotate(265deg);
-    }
-}
-
-@keyframes rui-circular-progress-indicator-right-spin {
-    from {
-        transform: rotate(-265deg);
+    74.69% {
+        opacity: 0.99;
     }
 
-    50% {
-        transform: rotate(-130deg);
+    93.52% {
+        opacity: 0.99;
     }
 
-    to {
-        transform: rotate(-265deg);
+    100% {
+        opacity: 0;
     }
 }
 </style>
-

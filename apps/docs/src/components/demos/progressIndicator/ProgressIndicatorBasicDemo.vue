@@ -54,6 +54,10 @@ function completeQuery() {
                 <RCircularProgressIndicator :progress="determinateProgress" :size="24" :closed="circularClosed" />
             </RRow>
             <RRow gap="20px" wrap align="center">
+                <RCircularProgressIndicator :progress="determinateProgress" reversed :closed="circularClosed" />
+                <RCircularProgressIndicator indeterminate reversed :closed="circularClosed" />
+            </RRow>
+            <RRow gap="20px" wrap align="center">
                 <RCircularProgressIndicator indeterminate :closed="circularClosed" />
                 <RCircularProgressIndicator indeterminate four-color :closed="circularClosed" />
             </RRow>
