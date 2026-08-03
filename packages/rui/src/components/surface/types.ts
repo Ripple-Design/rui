@@ -11,6 +11,6 @@ export type RSurfaceProps = {
     as?: string
     /** Chooses the semantic container background color. */
     color?: RSurfaceColor
-    /** Overrides the semantic foreground color inherited by surface content. */
+    /** Overrides the inherited content color; emphasized descendants continue using the semantic color emphasis tokens. */
     contentColor?: string
 }

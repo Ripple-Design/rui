@@ -9,11 +9,27 @@ api: /en/api/text
 ---
 
 import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import TextAppearanceDemo from "@docs/components/demos/text/TextAppearanceDemo.vue"
+import textAppearanceDemoSource from "@docs/components/demos/text/TextAppearanceDemo.vue?raw"
 import TextBasicDemo from "@docs/components/demos/text/TextBasicDemo.vue"
 import textBasicDemoSource from "@docs/components/demos/text/TextBasicDemo.vue?raw"
+import TextSurfaceDemo from "@docs/components/demos/text/TextSurfaceDemo.vue"
+import textSurfaceDemoSource from "@docs/components/demos/text/TextSurfaceDemo.vue?raw"
 
-## Basic usage
+## Typography variants
 
 <DemoBlock title="Typography variants" code={textBasicDemoSource} language="vue">
     <TextBasicDemo client:load />
+</DemoBlock>
+
+## Appearance
+
+<DemoBlock title="Text color and emphasis" code={textAppearanceDemoSource} language="vue">
+    <TextAppearanceDemo client:load />
+</DemoBlock>
+
+## Surface inheritance
+
+<DemoBlock title="Inherited Surface color" code={textSurfaceDemoSource} language="vue">
+    <TextSurfaceDemo client:load />
 </DemoBlock>

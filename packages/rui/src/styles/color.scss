@@ -3,15 +3,19 @@
     --rui-sys-color-primary-light: #bb86fc;
     --rui-sys-color-primary-dark: #3700b3;
     --rui-sys-color-on-primary: #ffffff;
-    --rui-sys-color-on-primary-medium: rgba(from var(--rui-sys-color-on-primary) r g b / 0.7);
-    --rui-sys-color-on-primary-outline: rgba(from var(--rui-sys-color-on-primary) r g b / 0.24);
+    --rui-sys-color-on-primary-high: rgba(from var(--rui-sys-color-on-primary) r g b / 0.87);
+    --rui-sys-color-on-primary-medium: rgba(from var(--rui-sys-color-on-primary) r g b / 0.6);
+    --rui-sys-color-on-primary-low: rgba(from var(--rui-sys-color-on-primary) r g b / 0.38);
+    --rui-sys-color-on-primary-outline: rgba(from var(--rui-sys-color-on-primary) r g b / 0.12);
 
     --rui-sys-color-secondary: #03dac6;
     --rui-sys-color-secondary-light: #70efde;
     --rui-sys-color-secondary-dark: #00b3a6;
     --rui-sys-color-on-secondary: #000000;
-    --rui-sys-color-on-secondary-medium: rgba(from var(--rui-sys-color-on-secondary) r g b / 0.7);
-    --rui-sys-color-on-secondary-outline: rgba(from var(--rui-sys-color-on-secondary) r g b / 0.24);
+    --rui-sys-color-on-secondary-high: rgba(from var(--rui-sys-color-on-secondary) r g b / 0.87);
+    --rui-sys-color-on-secondary-medium: rgba(from var(--rui-sys-color-on-secondary) r g b / 0.6);
+    --rui-sys-color-on-secondary-low: rgba(from var(--rui-sys-color-on-secondary) r g b / 0.38);
+    --rui-sys-color-on-secondary-outline: rgba(from var(--rui-sys-color-on-secondary) r g b / 0.12);
 
     --rui-sys-color-background: #eeeeee;
     --rui-sys-color-on-background: #000000;
@@ -20,7 +24,7 @@
     --rui-sys-color-surface-dark: #f5f5f5;
     --rui-sys-color-on-surface: #000000;
     --rui-sys-color-on-surface-high: rgba(from var(--rui-sys-color-on-surface) r g b / 0.87);
-    --rui-sys-color-on-surface-medium: rgba(from var(--rui-sys-color-on-surface) r g b / 0.54);
+    --rui-sys-color-on-surface-medium: rgba(from var(--rui-sys-color-on-surface) r g b / 0.6);
     --rui-sys-color-on-surface-low: rgba(from var(--rui-sys-color-on-surface) r g b / 0.38);
     --rui-sys-color-on-surface-outline: rgba(from var(--rui-sys-color-on-surface) r g b / 0.12);
 
@@ -28,28 +32,40 @@
     --rui-sys-color-on-error: #ffffff;
 }
 
+// Primary
 $primary: var(--rui-sys-color-primary);
 $primary-dark: var(--rui-sys-color-primary-dark);
+
 $on-primary: var(--rui-sys-color-on-primary);
+$on-primary-high: var(--rui-sys-color-on-primary-high);
 $on-primary-medium: var(--rui-sys-color-on-primary-medium);
+$on-primary-low: var(--rui-sys-color-on-primary-low);
 $on-primary-outline: var(--rui-sys-color-on-primary-outline);
 
+// Secondary
 $secondary: var(--rui-sys-color-secondary);
 $secondary-dark: var(--rui-sys-color-secondary-dark);
+
 $on-secondary: var(--rui-sys-color-on-secondary);
+$on-secondary-high: var(--rui-sys-color-on-secondary-high);
 $on-secondary-medium: var(--rui-sys-color-on-secondary-medium);
+$on-secondary-low: var(--rui-sys-color-on-secondary-low);
 $on-secondary-outline: var(--rui-sys-color-on-secondary-outline);
 
+// Background
 $background: var(--rui-sys-color-background);
 $on-background: var(--rui-sys-color-on-background);
 
 $surface: var(--rui-sys-color-surface);
 $surface-dark: var(--rui-sys-color-surface-dark);
+
+// Surface
 $on-surface: var(--rui-sys-color-on-surface);
 $on-surface-high: var(--rui-sys-color-on-surface-high);
 $on-surface-medium: var(--rui-sys-color-on-surface-medium);
 $on-surface-low: var(--rui-sys-color-on-surface-low);
 $on-surface-outline: var(--rui-sys-color-on-surface-outline);
 
+// Error
 $error: var(--rui-sys-color-error);
 $on-error: var(--rui-sys-color-on-error);

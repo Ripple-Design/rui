@@ -51,6 +51,9 @@ const classes = computed(() => [
     --rui-surface-shape-end-start: var(--rui-sys-shape-medium-end-start);
     --rui-comp-surface-background: var(--rui-sys-color-surface);
     --rui-comp-surface-content-color: var(--rui-sys-color-on-surface);
+    --rui-comp-surface-content-color-high: var(--rui-sys-color-on-surface-high);
+    --rui-comp-surface-content-color-medium: var(--rui-sys-color-on-surface-medium);
+    --rui-comp-surface-content-color-low: var(--rui-sys-color-on-surface-low);
     --rui-comp-surface-outline-color: var(--rui-sys-color-on-surface-outline);
 
     display: block;
@@ -72,12 +75,18 @@ const classes = computed(() => [
     &--color-primary {
         --rui-comp-surface-background: var(--rui-sys-color-primary);
         --rui-comp-surface-content-color: var(--rui-sys-color-on-primary);
+        --rui-comp-surface-content-color-high: var(--rui-sys-color-on-primary-high);
+        --rui-comp-surface-content-color-medium: var(--rui-sys-color-on-primary-medium);
+        --rui-comp-surface-content-color-low: var(--rui-sys-color-on-primary-low);
         --rui-comp-surface-outline-color: var(--rui-sys-color-on-primary-outline);
     }
 
     &--color-secondary {
         --rui-comp-surface-background: var(--rui-sys-color-secondary);
         --rui-comp-surface-content-color: var(--rui-sys-color-on-secondary);
+        --rui-comp-surface-content-color-high: var(--rui-sys-color-on-secondary-high);
+        --rui-comp-surface-content-color-medium: var(--rui-sys-color-on-secondary-medium);
+        --rui-comp-surface-content-color-low: var(--rui-sys-color-on-secondary-low);
         --rui-comp-surface-outline-color: var(--rui-sys-color-on-secondary-outline);
     }
 

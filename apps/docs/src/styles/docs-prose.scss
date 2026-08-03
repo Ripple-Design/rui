@@ -5,39 +5,44 @@
 
     color: rui.$color-on-surface;
 
-    p,
-    li,
-    td,
-    th {
+    p:not(.rui-text),
+    li:not(.rui-text),
+    td:not(.rui-text),
+    th:not(.rui-text) {
         @include rui.typo-body1;
     }
 
-    h2 {
-        @include rui.typo-headline5;
+    h2:not(.rui-text) {
+        @include rui.typo-headline2;
 
         margin-block: 2rem 1rem;
     }
 
-    h3 {
-        @include rui.typo-headline6;
+    h3:not(.rui-text) {
+        @include rui.typo-headline3;
 
         margin-block: 1.5rem 0.75rem;
     }
 
-    h4 {
-        @include rui.typo-subtitle1;
+    h4:not(.rui-text) {
+        @include rui.typo-headline4;
 
         margin-block: 1.25rem 0.5rem;
     }
 
-    h5,
-    h6 {
-        @include rui.typo-subtitle2;
+    h5:not(.rui-text) {
+        @include rui.typo-headline5;
 
         margin-block: 1rem 0.5rem;
     }
 
-    p {
+    h6:not(.rui-text) {
+        @include rui.typo-headline6;
+
+        margin-block: 1rem 0.5rem;
+    }
+
+    p:not(.rui-text) {
         margin-block: 0 1rem;
     }
 
@@ -47,7 +52,7 @@
         padding-inline-start: 1.5rem;
     }
 
-    li + li {
+    li:not(.rui-text) + li:not(.rui-text) {
         margin-block-start: 0.5rem;
     }
 
@@ -73,7 +78,7 @@
         @include rui.typo-body2;
     }
 
-    :not(pre) > code {
+    :not(pre) > code:not(.rui-text) {
         padding: 0.125rem 0.375rem;
         border-radius: 4px;
         background: rui.$color-on-surface-outline;
