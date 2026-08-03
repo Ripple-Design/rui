@@ -22,6 +22,9 @@ export type * from "./dialog/types"
 export { default as RSurface } from "./surface/RSurface.vue"
 export type * from "./surface/types"
 
+export { default as RCard } from "./card/RCard.vue"
+export type * from "./card/types"
+
 export { default as RIcon } from "./icon/RIcon.vue"
 export { createIconFamily, isIconFamily, resolveIconSource } from "./icon/family"
 export type * from "./icon/types"

@@ -1,0 +1,11 @@
+---
+title: Card
+docSlug: components/card
+tab: guidelines
+locale: zh-cn
+designOrder: 46
+developOrder: 46
+api: /zh-cn/api/card
+---
+
+<!-- Stub: localized documentation is generated separately. -->

@@ -22,6 +22,8 @@ import { RSurface } from "@ripple-design/rui"
 | `variant` | `"elevated" \| "outlined"` | no | Controls the surface treatment. |
 | `elevation` | `number` | no | Chooses the shadow and stacking level for elevated surfaces. Supports 0 through 24. |
 | `as` | `string` | no | Chooses which HTML element the surface should render as. |
+| `color` | `RSurfaceColor` | no | Chooses the semantic container background color. |
+| `contentColor` | `string` | no | Overrides the semantic foreground color inherited by surface content. |
 
 Generated from `packages/rui/src/components/surface/types.ts`.
 

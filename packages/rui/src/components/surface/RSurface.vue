@@ -10,6 +10,7 @@ defineOptions({
 const props = withDefaults(defineProps<RSurfaceProps>(), {
     variant: "elevated",
     as: "div",
+    color: "surface",
 })
 
 function normalizeElevation(value: number | undefined) {
@@ -21,21 +22,24 @@ const attrs = useAttrs()
 const tagName = computed(() => props.as)
 const elevation = computed(() => normalizeElevation(props.elevation))
 const elevationClass = computed(() => `rui-surface--elevation-${elevation.value}`)
+const style = computed(() =>
+    props.contentColor ? { "--rui-comp-surface-content-color": props.contentColor } : undefined,
+)
 const classes = computed(() => [
     "rui-surface",
     `rui-surface--${props.variant}`,
+    `rui-surface--color-${props.color}`,
     props.variant === "elevated" ? elevationClass.value : "rui-surface--elevation-0",
 ])
 </script>
 
 <template>
-    <component :is="tagName" v-bind="attrs" :class="classes">
+    <component :is="tagName" v-bind="attrs" :class="classes" :style="style">
         <slot />
     </component>
 </template>
 
 <style scoped lang="scss">
-@use "@/styles/color";
 @use "@/styles/shape";
 @use "@/styles/elevations";
 
@@ -46,6 +50,8 @@ const classes = computed(() => [
     --rui-surface-shape-end-end: var(--rui-sys-shape-medium-end-end);
     --rui-surface-shape-end-start: var(--rui-sys-shape-medium-end-start);
     --rui-comp-surface-background: var(--rui-sys-color-surface);
+    --rui-comp-surface-content-color: var(--rui-sys-color-on-surface);
+    --rui-comp-surface-outline-color: var(--rui-sys-color-on-surface-outline);
 
     display: block;
     box-sizing: border-box;
@@ -53,7 +59,7 @@ const classes = computed(() => [
     margin: 0;
     padding: 0;
     background-color: var(--rui-comp-surface-background);
-    color: color.$on-surface;
+    color: var(--rui-comp-surface-content-color);
 
     @include shape.apply(
         var(--rui-surface-shape-family),
@@ -63,110 +69,122 @@ const classes = computed(() => [
         var(--rui-surface-shape-end-start)
     );
 
-    [data-rui-theme="night"] & {
-        &--elevation-0 {
+    &--color-primary {
+        --rui-comp-surface-background: var(--rui-sys-color-primary);
+        --rui-comp-surface-content-color: var(--rui-sys-color-on-primary);
+        --rui-comp-surface-outline-color: var(--rui-sys-color-on-primary-outline);
+    }
+
+    &--color-secondary {
+        --rui-comp-surface-background: var(--rui-sys-color-secondary);
+        --rui-comp-surface-content-color: var(--rui-sys-color-on-secondary);
+        --rui-comp-surface-outline-color: var(--rui-sys-color-on-secondary-outline);
+    }
+
+    [data-rui-theme="night"] &.rui-surface--color-surface {
+        &.rui-surface--elevation-0 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(0)};
         }
 
-        &--elevation-1 {
+        &.rui-surface--elevation-1 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(1)};
         }
 
-        &--elevation-2 {
+        &.rui-surface--elevation-2 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(2)};
         }
 
-        &--elevation-3 {
+        &.rui-surface--elevation-3 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(3)};
         }
 
-        &--elevation-4 {
+        &.rui-surface--elevation-4 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(4)};
         }
 
-        &--elevation-5 {
+        &.rui-surface--elevation-5 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(5)};
         }
 
-        &--elevation-6 {
+        &.rui-surface--elevation-6 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(6)};
         }
 
-        &--elevation-7 {
+        &.rui-surface--elevation-7 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(7)};
         }
 
-        &--elevation-8 {
+        &.rui-surface--elevation-8 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(8)};
         }
 
-        &--elevation-9 {
+        &.rui-surface--elevation-9 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(9)};
         }
 
-        &--elevation-10 {
+        &.rui-surface--elevation-10 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(10)};
         }
 
-        &--elevation-11 {
+        &.rui-surface--elevation-11 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(11)};
         }
 
-        &--elevation-12 {
+        &.rui-surface--elevation-12 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(12)};
         }
 
-        &--elevation-13 {
+        &.rui-surface--elevation-13 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(13)};
         }
 
-        &--elevation-14 {
+        &.rui-surface--elevation-14 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(14)};
         }
 
-        &--elevation-15 {
+        &.rui-surface--elevation-15 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(15)};
         }
 
-        &--elevation-16 {
+        &.rui-surface--elevation-16 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(16)};
         }
 
-        &--elevation-17 {
+        &.rui-surface--elevation-17 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(17)};
         }
 
-        &--elevation-18 {
+        &.rui-surface--elevation-18 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(18)};
         }
 
-        &--elevation-19 {
+        &.rui-surface--elevation-19 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(19)};
         }
 
-        &--elevation-20 {
+        &.rui-surface--elevation-20 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(20)};
         }
 
-        &--elevation-21 {
+        &.rui-surface--elevation-21 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(21)};
         }
 
-        &--elevation-22 {
+        &.rui-surface--elevation-22 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(22)};
         }
 
-        &--elevation-23 {
+        &.rui-surface--elevation-23 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(23)};
         }
 
-        &--elevation-24 {
+        &.rui-surface--elevation-24 {
             --rui-comp-surface-background: #{elevations.dark-surface-color(24)};
         }
     }
 
     &--outlined {
-        border: 1px solid color.$on-surface-outline;
+        border: 1px solid var(--rui-comp-surface-outline-color);
         z-index: elevations.z-index(1);
     }
 

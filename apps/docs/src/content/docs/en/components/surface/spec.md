@@ -12,4 +12,4 @@ api: /en/api/surface
 
 Surface is a generic container primitive for grouping related content on a shared background.
 
-Use `elevated` for the default paper-like treatment and `outlined` when the boundary between sections needs to stay visible.
+Use `elevated` for the default paper-like treatment and `outlined` when the boundary between sections needs to stay visible. Choose `surface`, `primary`, or `secondary` to apply a semantic background and its matching default content color.

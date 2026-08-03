@@ -6,15 +6,29 @@ import { RColumn, RSurface } from "@ripple-design/rui"
     <RColumn gap="16px" class="surface-demo">
         <RSurface>
             <div class="surface-demo__content">
-                <strong>Elevated surface</strong>
-                <p>Default surface container for grouping related content.</p>
+                <strong>Surface</strong>
+                <p>Uses the on-surface content color by default.</p>
             </div>
         </RSurface>
 
-        <RSurface variant="outlined">
+        <RSurface color="primary">
             <div class="surface-demo__content">
-                <strong>Outlined surface</strong>
-                <p>Use the outlined treatment when a visible boundary is needed.</p>
+                <strong>Primary surface</strong>
+                <p>Uses the matching on-primary content color.</p>
+            </div>
+        </RSurface>
+
+        <RSurface color="secondary" variant="outlined">
+            <div class="surface-demo__content">
+                <strong>Outlined secondary surface</strong>
+                <p>Uses the matching on-secondary content color.</p>
+            </div>
+        </RSurface>
+
+        <RSurface color="primary" content-color="var(--rui-sys-color-on-surface)">
+            <div class="surface-demo__content">
+                <strong>Custom content color</strong>
+                <p>Overrides the semantic foreground when needed.</p>
             </div>
         </RSurface>
     </RColumn>

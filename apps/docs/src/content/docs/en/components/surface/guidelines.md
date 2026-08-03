@@ -12,6 +12,10 @@ api: /en/api/surface
 
 Use Surface to visually group related content without introducing button, card, or layout behavior.
 
+### Semantic colors
+
+`color` selects the background treatment. Content inherits the matching `on-*` color by default: on-surface, on-primary, or on-secondary. Use `contentColor` only when a custom foreground is required.
+
 ### Good fits
 
 - Panel-like content blocks

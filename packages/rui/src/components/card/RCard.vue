@@ -1,0 +1,86 @@
+<script setup lang="ts">
+import { computed, ref } from "vue"
+
+import { vRipple, type RippleOptions } from "@/foundations/ripple"
+
+import type { RCardProps } from "./types"
+
+import RSurface from "../surface/RSurface.vue"
+
+const props = withDefaults(defineProps<RCardProps>(), {
+    variant: "elevated",
+    color: "surface",
+    clickable: false,
+    selectable: false,
+    selected: false,
+    activated: false,
+    dragged: false,
+})
+
+const hovered = ref(false)
+const elevation = computed(() => (props.dragged || hovered.value ? 8 : 2))
+const selected = computed(() => props.selectable && props.selected)
+const rippleOptions = computed<RippleOptions>(() => ({
+    disabled: !props.clickable,
+    color: "var(--rui-comp-surface-content-color)",
+    contrast: "low",
+}))
+const classes = computed(() => [
+    "rui-card",
+    `rui-card--${props.variant}`,
+    {
+        "rui-card--selectable": props.selectable,
+        "rui-card--selected": selected.value,
+        "rui-card--activated": props.activated,
+        "rui-card--hovered": hovered.value,
+        "rui-card--dragged": props.dragged,
+    },
+])
+</script>
+
+<template>
+    <RSurface
+        v-ripple="rippleOptions"
+        :variant="variant"
+        :color="color"
+        :content-color="contentColor"
+        :elevation="elevation"
+        :class="classes"
+        @pointerenter="hovered = true"
+        @pointerleave="hovered = false"
+    >
+        <slot />
+    </RSurface>
+</template>
+
+<style scoped lang="scss">
+@use "@/styles/elevations";
+@use "@/styles/motion";
+
+.rui-card.rui-card {
+    --rui-comp-card-hover-shadow: #{elevations.shadow(8)};
+    --rui-comp-card-selected-layer: transparent;
+
+    margin: 0;
+    padding: 0;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+    background-image: linear-gradient(var(--rui-comp-card-selected-layer), var(--rui-comp-card-selected-layer));
+    transition:
+        #{elevations.transitionValue()},
+        outline-color motion.$duration-small-in motion.$easing-standard;
+
+    &--hovered,
+    &--dragged {
+        box-shadow: var(--rui-comp-card-hover-shadow);
+    }
+
+    &--selected {
+        --rui-comp-card-selected-layer: rgb(from var(--rui-comp-surface-content-color) r g b / 0.08);
+    }
+
+    &--activated {
+        outline-color: var(--rui-sys-color-primary);
+    }
+}
+</style>
