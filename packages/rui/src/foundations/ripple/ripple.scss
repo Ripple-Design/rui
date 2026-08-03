@@ -9,6 +9,7 @@
     --rui-ripple-hover-opacity: 0.04;
     --rui-ripple-focus-opacity: 0.08;
     --rui-ripple-wave-opacity: 0.08;
+    --rui-ripple-selected-opacity: 0.08;
 
     --rui-ripple-high-hover-opacity: 0.08;
     --rui-ripple-high-focus-opacity: 0.24;
@@ -43,13 +44,26 @@
     --rui-ripple-wave-opacity: var(--rui-ripple-high-wave-opacity);
 }
 
-.rui-ripple-surface::before {
+.rui-ripple-surface::before,
+.rui-ripple-surface::after {
     content: "";
     position: absolute;
     inset: 0;
     background-color: currentColor;
     opacity: 0;
     transition: opacity var(--rui-ripple-surface-duration) motion.$easing-standard;
+}
+
+.rui-ripple-surface::before {
+    z-index: 1;
+}
+
+.rui-ripple-surface::after {
+    z-index: 0;
+}
+
+.rui-ripple-surface--selected::after {
+    opacity: var(--rui-ripple-selected-opacity);
 }
 
 .rui-ripple-surface.is-hovered:not(.rui-ripple-surface--unbounded):not(.is-disabled)::before,

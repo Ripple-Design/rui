@@ -16,8 +16,15 @@ export type RMenuContext = {
     onItemClick: (id: symbol) => void
     onItemFocus: (id: symbol) => void
     open: Readonly<Ref<boolean>>
+    registerGroup: (id: symbol) => void
     registerItem: (record: RMenuItemRecord) => void
+    unregisterGroup: (id: symbol) => void
     unregisterItem: (id: symbol) => void
+}
+
+export type RMenuGroupContext = {
+    isSelected: (value: unknown) => boolean
+    select: (value: unknown) => void
 }
 
 export type RMenuAlign = "start" | "end"
@@ -28,9 +35,17 @@ export type RMenuProps = {
     open?: boolean
 }
 
+export type RMenuGroupProps = {
+    /** Controls the selected menu item value within this group. */
+    modelValue?: unknown
+}
+
 export type RMenuItemProps = {
     disabled?: boolean
     icon?: RIconResolvableSource
+    /** Identifies this item when it belongs to an RMenuGroup. */
+    value?: unknown
 }
 
 export const menuKey: InjectionKey<RMenuContext> = Symbol("menu")
+export const menuGroupKey: InjectionKey<RMenuGroupContext> = Symbol("menu-group")

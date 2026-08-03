@@ -32,6 +32,7 @@ const SURFACE_DISABLED_CLASS = "is-disabled"
 const SURFACE_HOVERED_CLASS = "is-hovered"
 const SURFACE_UNBOUNDED_CLASS = "rui-ripple-surface--unbounded"
 const SURFACE_HIGH_CONTRAST_CLASS = "rui-ripple-surface--contrast-high"
+const SURFACE_SELECTED_CLASS = "rui-ripple-surface--selected"
 const UNBOUNDED_RIPPLE_CLASS = "rui-ripple-unbounded"
 const WAVE_CLASS = "rui-ripple-wave"
 const WAVE_OUT_CLASS = "is-out"
@@ -250,6 +251,7 @@ function applyOptions(surface: HTMLElement, options: NormalizedRippleOptions) {
     surface.classList.toggle(SURFACE_UNBOUNDED_CLASS, options.unbounded)
     surface.classList.toggle(SURFACE_DISABLED_CLASS, options.disabled)
     surface.classList.toggle(SURFACE_HIGH_CONTRAST_CLASS, options.contrast === "high")
+    surface.classList.toggle(SURFACE_SELECTED_CLASS, options.selected)
 
     if (options.color) {
         surface.style.setProperty("--rui-ripple-color", options.color)

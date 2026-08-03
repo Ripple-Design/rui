@@ -4,7 +4,7 @@ import { computed, inject, onBeforeUnmount, ref, useAttrs, watch } from "vue"
 import { RIcon } from "@/components"
 import { vRipple, type RippleOptions } from "@/foundations/ripple"
 
-import { menuKey } from "./types"
+import { menuGroupKey, menuKey } from "./types"
 
 import type { RMenuItemProps } from "./types"
 
@@ -18,14 +18,18 @@ const emit = defineEmits<{
 
 const attrs = useAttrs()
 const menu = inject(menuKey)
+const group = inject(menuGroupKey, null)
 const itemRef = ref<HTMLElement | null>(null)
 const itemId = Symbol("menu-item")
 const focused = computed(() => menu?.focusedItemId.value === itemId)
+const selectable = computed(() => group != null && props.value !== undefined)
+const selected = computed(() => (selectable.value ? group?.isSelected(props.value) ?? false : false))
 const rippleOptions = computed<RippleOptions>(() => ({
     disabled: props.disabled,
     contrast: "low",
+    selected: selected.value,
 }))
-
+const role = computed(() => (selectable.value ? "menuitemradio" : "menuitem"))
 const tabIndex = computed(() => {
     if (props.disabled) {
         return -1
@@ -54,25 +58,28 @@ function handleFocus() {
     menu?.onItemFocus(itemId)
 }
 
-function handleClick(event: MouseEvent) {
+function activate(event: MouseEvent | KeyboardEvent) {
     if (props.disabled) {
         event.preventDefault()
         return
+    }
+
+    if (selectable.value) {
+        group?.select(props.value)
     }
 
     emit("click", event)
     menu?.onItemClick(itemId)
 }
 
-function handleKeyDown(event: KeyboardEvent) {
-    if (props.disabled) {
-        return
-    }
+function handleClick(event: MouseEvent) {
+    activate(event)
+}
 
+function handleKeyDown(event: KeyboardEvent) {
     if (event.key === "Enter" || event.key === " ") {
         event.preventDefault()
-        emit("click", event)
-        menu?.onItemClick(itemId)
+        activate(event)
     }
 }
 
@@ -87,8 +94,9 @@ onBeforeUnmount(() => {
         v-bind="attrs"
         v-ripple="rippleOptions"
         class="rui-menu-item"
-        :class="{ 'rui-menu-item--disabled': disabled }"
-        role="menuitem"
+        :class="{ 'rui-menu-item--disabled': disabled, 'rui-menu-item--selected': selected }"
+        :role="role"
+        :aria-checked="selectable ? String(selected) : undefined"
         :tabindex="tabIndex"
         @focus="handleFocus"
         @click="handleClick"

@@ -24,6 +24,7 @@ const rippleOptions = computed<RippleOptions>(() => ({
     disabled: !props.clickable,
     color: "var(--rui-comp-surface-content-color)",
     contrast: "low",
+    selected: selected.value,
 }))
 const classes = computed(() => [
     "rui-card",
@@ -59,13 +60,11 @@ const classes = computed(() => [
 
 .rui-card.rui-card {
     --rui-comp-card-hover-shadow: #{elevations.shadow(8)};
-    --rui-comp-card-selected-layer: transparent;
 
     margin: 0;
     padding: 0;
     outline: 2px solid transparent;
     outline-offset: -2px;
-    background-image: linear-gradient(var(--rui-comp-card-selected-layer), var(--rui-comp-card-selected-layer));
     transition:
         #{elevations.transitionValue()},
         outline-color motion.$duration-small-in motion.$easing-standard;
@@ -73,10 +72,6 @@ const classes = computed(() => [
     &--hovered,
     &--dragged {
         box-shadow: var(--rui-comp-card-hover-shadow);
-    }
-
-    &--selected {
-        --rui-comp-card-selected-layer: rgb(from var(--rui-comp-surface-content-color) r g b / 0.08);
     }
 
     &--activated {

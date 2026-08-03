@@ -4,6 +4,7 @@ import type { RMenuContext, RMenuItemRecord } from "./types"
 
 export function useMenuState(open: Ref<boolean>, disabled: Ref<boolean>) {
     const items = ref<RMenuItemRecord[]>([])
+    const groups = ref<symbol[]>([])
     const focusedItemId = ref<symbol | null>(null)
 
     const enabledItems = computed(() => items.value.filter((item) => !item.disabled && item.element))
@@ -31,6 +32,16 @@ export function useMenuState(open: Ref<boolean>, disabled: Ref<boolean>) {
         if (focusedItemId.value === id) {
             focusedItemId.value = enabledItems.value[0]?.id ?? null
         }
+    }
+
+    function registerGroup(id: symbol) {
+        if (!groups.value.includes(id)) {
+            groups.value.push(id)
+        }
+    }
+
+    function unregisterGroup(id: symbol) {
+        groups.value = groups.value.filter((groupId) => groupId !== id)
     }
 
     function focusByDirection(fromId: symbol, direction: "next" | "prev" | "first" | "last") {
@@ -82,10 +93,13 @@ export function useMenuState(open: Ref<boolean>, disabled: Ref<boolean>) {
             onItemClick,
             onItemFocus,
             open,
+            registerGroup,
             registerItem,
+            unregisterGroup,
             unregisterItem,
         } satisfies RMenuContext,
         enabledItems,
+        hasGroups: computed(() => groups.value.length > 0),
         focusFirst() {
             const target = enabledItems.value[0]
             if (!target?.element) {

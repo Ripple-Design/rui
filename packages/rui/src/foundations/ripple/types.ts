@@ -5,6 +5,7 @@ export type RippleOptions = {
     unbounded?: boolean
     color?: string | null
     contrast?: RippleContrast
+    selected?: boolean
 }
 
 export type RippleDirectiveValue = RippleOptions | null | undefined
@@ -16,6 +17,7 @@ export type NormalizedRippleOptions = {
     unbounded: boolean
     color: string | null
     contrast: RippleContrast
+    selected: boolean
 }
 
 export function normalizeRippleOptions(
@@ -29,5 +31,6 @@ export function normalizeRippleOptions(
         unbounded: !!(modifiers.unbounded || options.unbounded),
         color: options.color ?? null,
         contrast: options.contrast ?? "low",
+        selected: !!options.selected,
     }
 }
