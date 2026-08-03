@@ -13,6 +13,15 @@ import { RColumn, RRow, RText } from "@ripple-design/rui"
         </RColumn>
 
         <RColumn gap="8px">
+            <RText variant="subtitle1">Ellipsize</RText>
+            <div class="text-appearance-demo__ellipsis">
+                <RText ellipsize="end">
+                    This long single-line text is truncated at the end when its available width is exhausted.
+                </RText>
+            </div>
+        </RColumn>
+
+        <RColumn gap="8px">
             <RText variant="subtitle1">Semantic colors</RText>
             <RRow gap="16px" wrap>
                 <RText color="primary">Primary</RText>
@@ -26,5 +35,9 @@ import { RColumn, RRow, RText } from "@ripple-design/rui"
 <style scoped lang="scss">
 .text-appearance-demo {
     width: 100%;
+}
+
+.text-appearance-demo__ellipsis {
+    max-inline-size: 280px;
 }
 </style>

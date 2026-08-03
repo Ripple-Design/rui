@@ -52,6 +52,7 @@ const classes = computed(() => [
         [`rui-text--color-${props.color}`]: props.color,
         [`rui-text--emphasis-${effectiveEmphasis.value}`]: effectiveEmphasis.value,
         "rui-text--disabled": props.disabled,
+        "rui-text--ellipsize-end": props.ellipsize === "end",
     },
 ])
 </script>
@@ -63,6 +64,8 @@ const classes = computed(() => [
 </template>
 
 <style scoped lang="scss">
+@use "@/styles/typography";
+
 .rui-text {
     --rui-comp-text-color: inherit;
     --rui-comp-text-color-high: var(--rui-comp-surface-content-color-high, var(--rui-sys-color-on-surface-high));
@@ -72,6 +75,13 @@ const classes = computed(() => [
     margin: 0;
     padding: 0;
     color: var(--rui-comp-text-color);
+
+    &--ellipsize-end {
+        display: block;
+        min-inline-size: 0;
+
+        @include typography.overflowEllipsis;
+    }
 
     &--color-primary {
         --rui-comp-text-color: var(--rui-sys-color-primary);

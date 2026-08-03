@@ -28,4 +28,6 @@ export type RTextProps = {
     color?: RTextColor
     /** Forces low emphasis and applies the disabled ARIA state. */
     disabled?: boolean
+    /** Truncates overflowing single-line text at the end with an ellipsis. */
+    ellipsize?: "end"
 }
