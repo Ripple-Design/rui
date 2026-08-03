@@ -12,6 +12,7 @@ import type {
 import { normalizeBuffer, normalizeProgress, resolveProgressbarAria } from "./shared"
 
 type LinearProgressIndicatorPhase = "determinate" | "indeterminate" | "draining"
+type LinearProgressIndicatorDisjointLane = "primary" | "secondary"
 type LinearProgressIndicatorResolvedDirection = {
     active: "forward" | "reverse"
     determinate: "forward" | "reverse"
@@ -20,11 +21,22 @@ type LinearProgressIndicatorDrainSnapshot = {
     direction: "forward" | "reverse"
     determinateDirection: "forward" | "reverse"
     timelineTime: number
+    visibleLanes: Record<LinearProgressIndicatorDisjointLane, boolean>
+}
+
+type LinearProgressIndicatorDisjointLaneVisibilityWindow = {
+    start: number
+    end: number
 }
 
 const INDETERMINATE_DURATION_MS = 1800
+// Wait until the determinate bar has been painted at zero before springing it to the target.
 const DETERMINATE_REVEAL_FRAME_COUNT = 2
-const DRAINING_LANE_COUNT = 2
+// Keep these boundaries in sync with the disjoint keyframes. A boundary has zero width, so it is not visible.
+const DISJOINT_LANE_VISIBILITY_WINDOWS = {
+    primary: { start: 0.555556, end: 1 },
+    secondary: { start: 0, end: 0.657222 },
+} satisfies Record<LinearProgressIndicatorDisjointLane, LinearProgressIndicatorDisjointLaneVisibilityWindow>
 const TERMINAL_ANIMATION_NAMES = new Set([
     "rui-linear-progress-indicator-disjoint-primary-start",
     "rui-linear-progress-indicator-disjoint-secondary-start",
@@ -131,14 +143,23 @@ const indeterminateKey = computed(
     () => `${phase.value}-${activeDirection.value}-${props.indeterminateAnimationType}-${animationEpoch.value}`,
 )
 const primaryBarStyle = computed<StyleValue>(() =>
+    // Recreate the animation at its stopped timeline position instead of restarting the lane.
     phase.value === "draining" && drainSnapshot.value
         ? { animationDelay: `${-drainSnapshot.value.timelineTime}ms` }
         : {},
 )
 const secondaryBarStyle = computed<StyleValue>(() =>
+    // Both disjoint lanes share a timeline, so the same snapshot applies to both.
     phase.value === "draining" && drainSnapshot.value
         ? { animationDelay: `${-drainSnapshot.value.timelineTime}ms` }
         : {},
+)
+// Omitting an absent lane prevents a pulse that was not visible at stop from appearing during drain.
+const shouldRenderPrimaryBar = computed(
+    () => phase.value !== "draining" || drainSnapshot.value?.visibleLanes.primary === true,
+)
+const shouldRenderSecondaryBar = computed(
+    () => phase.value !== "draining" || drainSnapshot.value?.visibleLanes.secondary === true,
 )
 
 function resetContiguousColors() {
@@ -175,6 +196,19 @@ function readAnimationTime(element: HTMLElement | null) {
     }
 
     return ((currentTime % INDETERMINATE_DURATION_MS) + INDETERMINATE_DURATION_MS) % INDETERMINATE_DURATION_MS
+}
+
+function resolveVisibleDisjointLanes(timelineTime: number) {
+    const timelineProgress = timelineTime / INDETERMINATE_DURATION_MS
+
+    return {
+        primary:
+            timelineProgress > DISJOINT_LANE_VISIBILITY_WINDOWS.primary.start &&
+            timelineProgress < DISJOINT_LANE_VISIBILITY_WINDOWS.primary.end,
+        secondary:
+            timelineProgress > DISJOINT_LANE_VISIBILITY_WINDOWS.secondary.start &&
+            timelineProgress < DISJOINT_LANE_VISIBILITY_WINDOWS.secondary.end,
+    } satisfies Record<LinearProgressIndicatorDisjointLane, boolean>
 }
 
 function cancelDeterminateReveal() {
@@ -230,12 +264,28 @@ function startDraining(direction: "forward" | "reverse") {
         return
     }
 
+    const timelineTime = readAnimationTime(primaryBarRef.value)
+    // Preserve only lanes with pixels on screen now; unseen lanes must not be emitted after stop.
+    const visibleLanes = resolveVisibleDisjointLanes(timelineTime)
+    const visibleLaneCount = Number(visibleLanes.primary) + Number(visibleLanes.secondary)
+
+    if (visibleLaneCount === 0) {
+        determinateRevealProgress.value = 0
+        phase.value = "determinate"
+        restartDeterminateReveal()
+        drainSnapshot.value = null
+        drainingLaneCount.value = 0
+        animationEpoch.value += 1
+        return
+    }
+
     drainSnapshot.value = {
         direction,
         determinateDirection: resolvedDirection.value.determinate,
-        timelineTime: readAnimationTime(primaryBarRef.value),
+        timelineTime,
+        visibleLanes,
     }
-    drainingLaneCount.value = DRAINING_LANE_COUNT
+    drainingLaneCount.value = visibleLaneCount
     phase.value = "draining"
     animationEpoch.value += 1
 }
@@ -248,6 +298,7 @@ function stopDraining() {
 }
 
 function handleLaneAnimationEnd(event: AnimationEvent) {
+    // Each lane runs paired start/end animations; count only start so one lane completes once.
     if (
         phase.value !== "draining" ||
         event.target !== event.currentTarget ||
@@ -356,12 +407,14 @@ watch(
         >
             <template v-if="usesDisjointAnimation">
                 <div
+                    v-if="shouldRenderPrimaryBar"
                     ref="primaryBarRef"
                     class="rui-linear-progress-indicator__disjoint-segment rui-linear-progress-indicator__disjoint-segment--primary"
                     :style="primaryBarStyle"
                     @animationend="handleLaneAnimationEnd"
                 />
                 <div
+                    v-if="shouldRenderSecondaryBar"
                     ref="secondaryBarRef"
                     class="rui-linear-progress-indicator__disjoint-segment rui-linear-progress-indicator__disjoint-segment--secondary"
                     :style="secondaryBarStyle"
@@ -486,6 +539,11 @@ watch(
 .rui-linear-progress-indicator--draining .rui-linear-progress-indicator__disjoint-segment {
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
+}
+
+.rui-linear-progress-indicator--draining .rui-linear-progress-indicator__disjoint-segment--secondary {
+    // Secondary leaves at 65.7222% of the shared timeline, so do not wait for an invisible tail.
+    animation-iteration-count: 0.657222;
 }
 
 .rui-linear-progress-indicator--draining .rui-linear-progress-indicator__disjoint-segment--primary {
