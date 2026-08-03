@@ -96,6 +96,10 @@
     opacity: var(--rui-ripple-hover-opacity);
 }
 
+.rui-ripple-surface--unbounded:has(.rui-ripple-wave) .rui-ripple-unbounded {
+    opacity: 0;
+}
+
 :focus-visible > .rui-ripple-surface.rui-ripple-surface--unbounded:not(.is-disabled) .rui-ripple-unbounded {
     opacity: var(--rui-ripple-focus-opacity);
 }

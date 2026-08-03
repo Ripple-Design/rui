@@ -2,7 +2,7 @@ import type { NormalizedRippleOptions } from "./types.ts"
 
 export type RippleController = {
     update: (nextOptions: NormalizedRippleOptions) => void
-    refreshGeometry: () => void
+    refreshGeometry: (_options?: NormalizedRippleOptions) => void
     destroy: () => void
 }
 
@@ -12,7 +12,7 @@ type RippleWaveHandle = {
     clientY: number | null
     release: () => void
     remove: () => void
-    refreshGeometry: () => void
+    refreshGeometry: (_options?: NormalizedRippleOptions) => void
 }
 
 type PendingPointerStart = {
@@ -51,7 +51,7 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
     const pendingPointerStarts = new Map<number, PendingPointerStart>()
     const cleanup: Cleanup[] = []
     const dataset = host.dataset as HostDataset
-    const surface = createSurface(host)
+    const surface = createSurface(host, initialOptions)
 
     if (getComputedStyle(host).position === "static") {
         host.style.position = "relative"
@@ -218,8 +218,8 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
             }
 
             refreshUnboundedRippleGeometry(surface, options)
-            liveWaves.forEach((wave) => wave.refreshGeometry())
-            activeKeyboardWave?.refreshGeometry()
+            liveWaves.forEach((wave) => wave.refreshGeometry(options))
+            activeKeyboardWave?.refreshGeometry(options)
         },
         destroy() {
             if (destroyed) {
@@ -239,11 +239,12 @@ export function createRippleController(host: HTMLElement, initialOptions: Normal
     }
 }
 
-function createSurface(host: HTMLElement) {
+function createSurface(host: HTMLElement, options: NormalizedRippleOptions) {
     const surface = document.createElement("span")
     surface.className = SURFACE_CLASS
     surface.setAttribute("aria-hidden", "true")
-    host.append(surface)
+    const target = options.getSurfaceTarget?.(host) ?? host
+    target.append(surface)
     return surface
 }
 
@@ -274,20 +275,29 @@ function applyResolvedRippleColor(surface: HTMLElement, element: HTMLElement, op
     element.style.setProperty("--rui-ripple-color", resolvedColor)
 }
 
-function updateUnboundedRippleGeometry(surface: HTMLElement, wave: HTMLElement) {
+function resolveUnboundedGeometry(surface: HTMLElement, options: NormalizedRippleOptions) {
     const rect = surface.getBoundingClientRect()
-    const width = rect.width
-    const height = rect.height
-    const centerX = width / 2
-    const centerY = height / 2
-    const diameter = Math.max(Math.hypot(width, height), 48)
+    const center = options.getUnboundedCenter?.(surface) ?? {
+        x: rect.width / 2,
+        y: rect.height / 2,
+    }
+    const diameter = options.unboundedRadius == null ? Math.max(Math.hypot(rect.width, rect.height), 48) : options.unboundedRadius * 2
 
+    return { center, diameter }
+}
+
+function applyCircleGeometry(wave: HTMLElement, center: { x: number; y: number }, diameter: number) {
     wave.style.width = `${diameter}px`
     wave.style.height = `${diameter}px`
     wave.style.marginTop = `${-diameter / 2}px`
     wave.style.marginLeft = `${-diameter / 2}px`
-    wave.style.left = `${centerX}px`
-    wave.style.top = `${centerY}px`
+    wave.style.left = `${center.x}px`
+    wave.style.top = `${center.y}px`
+}
+
+function updateUnboundedRippleGeometry(surface: HTMLElement, wave: HTMLElement, options: NormalizedRippleOptions) {
+    const { center, diameter } = resolveUnboundedGeometry(surface, options)
+    applyCircleGeometry(wave, center, diameter)
 }
 
 function refreshUnboundedRippleGeometry(surface: HTMLElement, options: NormalizedRippleOptions) {
@@ -300,7 +310,7 @@ function refreshUnboundedRippleGeometry(surface: HTMLElement, options: Normalize
         return
     }
 
-    updateUnboundedRippleGeometry(surface, wave)
+    updateUnboundedRippleGeometry(surface, wave, options)
 }
 
 function ensureUnboundedRipple(surface: HTMLElement, options: NormalizedRippleOptions) {
@@ -313,7 +323,7 @@ function ensureUnboundedRipple(surface: HTMLElement, options: NormalizedRippleOp
     // Do not snapshot the color for the persistent unbounded layer. It should
     // keep inheriting the host color so CSS can transition it after the press
     // wave finishes.
-    updateUnboundedRippleGeometry(surface, wave)
+    updateUnboundedRippleGeometry(surface, wave, options)
     surface.append(wave)
 }
 
@@ -325,15 +335,18 @@ function updateWaveGeometry(
         clientX: number | null
         clientY: number | null
     },
+    options: NormalizedRippleOptions,
 ) {
     const rect = surface.getBoundingClientRect()
     const width = rect.width
     const height = rect.height
-    const originX = origin.centered || origin.clientX == null ? width / 2 : origin.clientX - rect.left
-    const originY = origin.centered || origin.clientY == null ? height / 2 : origin.clientY - rect.top
-    const diameter = Math.max(Math.hypot(width, height), 48)
-    const translateX = `${-originX + width / 2}px`
-    const translateY = `${-originY + height / 2}px`
+    const fixedUnbounded = options.unboundedRadius != null && options.getUnboundedCenter != null
+    const unboundedGeometry = fixedUnbounded ? resolveUnboundedGeometry(surface, options) : null
+    const originX = unboundedGeometry?.center.x ?? (origin.centered || origin.clientX == null ? width / 2 : origin.clientX - rect.left)
+    const originY = unboundedGeometry?.center.y ?? (origin.centered || origin.clientY == null ? height / 2 : origin.clientY - rect.top)
+    const diameter = unboundedGeometry?.diameter ?? Math.max(Math.hypot(width, height), 48)
+    const translateX = unboundedGeometry ? "0px" : `${-originX + width / 2}px`
+    const translateY = unboundedGeometry ? "0px" : `${-originY + height / 2}px`
 
     wave.style.width = `${diameter}px`
     wave.style.height = `${diameter}px`
@@ -366,7 +379,7 @@ function createWave(
     const clientX = origin.clientX ?? null
     const clientY = origin.clientY ?? null
 
-    updateWaveGeometry(surface, wave, { centered, clientX, clientY })
+    updateWaveGeometry(surface, wave, { centered, clientX, clientY }, options)
 
     let filled = false
     let released = false
@@ -427,12 +440,12 @@ function createWave(
         }
     }
 
-    const refreshGeometry = () => {
+    const refreshGeometry = (nextOptions: NormalizedRippleOptions = options) => {
         if (removed) {
             return
         }
 
-        updateWaveGeometry(surface, wave, { centered, clientX, clientY })
+        updateWaveGeometry(surface, wave, { centered, clientX, clientY }, nextOptions)
     }
 
     handle = {
