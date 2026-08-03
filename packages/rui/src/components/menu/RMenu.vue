@@ -1,12 +1,32 @@
 <script setup lang="ts">
-import { cloneVNode, computed, defineComponent, nextTick, onBeforeUnmount, onMounted, provide, ref, useId, useSlots, watch, type Slots, type VNode } from "vue"
 import { offset, flip, shift } from "@floating-ui/dom"
+import {
+    cloneVNode,
+    computed,
+    defineComponent,
+    nextTick,
+    onBeforeUnmount,
+    onMounted,
+    provide,
+    ref,
+    useId,
+    useSlots,
+    watch,
+    type Slots,
+    type VNode,
+} from "vue"
 
 import RSurface from "@/components/surface/RSurface.vue"
-import { RFloatingLayer, useDismissableLayer, useFloatingFocus, useFloatingPosition, useOverlayStack } from "@/foundations/floating"
+import {
+    RFloatingLayer,
+    useDismissableLayer,
+    useFloatingFocus,
+    useFloatingPosition,
+    useOverlayStack,
+} from "@/foundations/floating"
 
-import { useMenuState } from "./useMenuState"
 import { menuKey, type RMenuProps } from "./types"
+import { useMenuState } from "./useMenuState"
 
 const props = withDefaults(defineProps<RMenuProps>(), {
     align: "start",
@@ -30,13 +50,20 @@ const open = ref(props.open)
 const overlayStack = useOverlayStack()
 const layer = overlayStack.register()
 const { capture, restore } = useFloatingFocus()
-const { context, focusFirst } = useMenuState(open, computed(() => props.disabled))
+const { context, focusFirst, hasGroups } = useMenuState(
+    open,
+    computed(() => props.disabled),
+)
 
 provide(menuKey, context)
 
 const floatingRef = computed(() => floatingLayerRef.value?.element ?? null)
 const resolvedPlacement = computed(() => `bottom-${props.align}` as const)
-const menuClasses = computed(() => ["rui-menu", `rui-menu--align-${props.align}`, { "rui-menu--open": open.value }])
+const menuClasses = computed(() => [
+    "rui-menu",
+    `rui-menu--align-${props.align}`,
+    { "rui-menu--open": open.value, "rui-menu--grouped": hasGroups.value },
+])
 
 const position = useFloatingPosition(triggerRef, floatingRef, {
     middleware: [offset(8), flip(), shift({ padding: 4 })],
@@ -45,9 +72,12 @@ const position = useFloatingPosition(triggerRef, floatingRef, {
     strategy: "fixed",
 })
 
-watch(() => props.open, (value) => {
-    open.value = value
-})
+watch(
+    () => props.open,
+    (value) => {
+        open.value = value
+    },
+)
 
 watch(open, async (value, previous) => {
     if (value === previous) {
@@ -227,6 +257,10 @@ onBeforeUnmount(() => {
     transition:
         opacity motion.$duration-small-in motion.$easing-standard,
         transform motion.$duration-small-in motion.$easing-standard;
+    &--grouped {
+        padding-block: 0;
+    }
+
     &--open {
         opacity: 1;
         transform: scale(1);

@@ -22,7 +22,10 @@ export type RMenuContext = {
     unregisterItem: (id: symbol) => void
 }
 
+export type RMenuGroupSelectionIndicator = "overlay" | "check"
+
 export type RMenuGroupContext = {
+    indicator: Readonly<Ref<RMenuGroupSelectionIndicator>>
     isSelected: (value: unknown) => boolean
     select: (value: unknown) => void
 }
@@ -38,6 +41,8 @@ export type RMenuProps = {
 export type RMenuGroupProps = {
     /** Controls the selected menu item value within this group. */
     modelValue?: unknown
+    /** Controls whether selected items use an overlay or a leading check indicator. */
+    indicator?: RMenuGroupSelectionIndicator
 }
 
 export type RMenuItemProps = {

@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import { RICheckFilled, RICheckOutlined, RICheckRounded, RICheckSharp, RICheckTwoTone } from "@ripple-design/icons"
 import { computed, inject, onBeforeUnmount, ref, useAttrs, watch } from "vue"
 
 import { RIcon } from "@/components"
+import { createIconFamily } from "@/components/icon/family"
 import { vRipple, type RippleOptions } from "@/foundations/ripple"
 
-import { menuGroupKey, menuKey } from "./types"
-
 import type { RMenuItemProps } from "./types"
+
+import { menuGroupKey, menuKey } from "./types"
 
 const props = withDefaults(defineProps<RMenuItemProps>(), {
     disabled: false,
@@ -17,17 +19,21 @@ const emit = defineEmits<{
 }>()
 
 const attrs = useAttrs()
+const selectedCheckIcon = createIconFamily(RICheckFilled, RICheckOutlined, RICheckRounded, RICheckSharp, RICheckTwoTone)
 const menu = inject(menuKey)
 const group = inject(menuGroupKey, null)
 const itemRef = ref<HTMLElement | null>(null)
 const itemId = Symbol("menu-item")
 const focused = computed(() => menu?.focusedItemId.value === itemId)
 const selectable = computed(() => group != null && props.value !== undefined)
-const selected = computed(() => (selectable.value ? group?.isSelected(props.value) ?? false : false))
+const selected = computed(() => (selectable.value ? (group?.isSelected(props.value) ?? false) : false))
+const usesCheckIndicator = computed(() => group?.indicator.value === "check")
+const showLeadingIndicator = computed(() => selectable.value && usesCheckIndicator.value)
+const showSelectedCheck = computed(() => selectable.value && usesCheckIndicator.value && selected.value)
 const rippleOptions = computed<RippleOptions>(() => ({
     disabled: props.disabled,
     contrast: "low",
-    selected: selected.value,
+    selected: selected.value && !usesCheckIndicator.value,
 }))
 const role = computed(() => (selectable.value ? "menuitemradio" : "menuitem"))
 const tabIndex = computed(() => {
@@ -96,14 +102,15 @@ onBeforeUnmount(() => {
         class="rui-menu-item"
         :class="{ 'rui-menu-item--disabled': disabled, 'rui-menu-item--selected': selected }"
         :role="role"
-        :aria-checked="selectable ? String(selected) : undefined"
+        :aria-checked="selectable ? selected : undefined"
         :tabindex="tabIndex"
         @focus="handleFocus"
         @click="handleClick"
         @keydown="handleKeyDown"
     >
-        <span v-if="icon" class="rui-menu-item__icon">
-            <RIcon :icon="icon" :size="20" decorative />
+        <span v-if="showLeadingIndicator || icon" class="rui-menu-item__leading">
+            <RIcon v-if="showSelectedCheck" :icon="selectedCheckIcon" :size="20" decorative />
+            <RIcon v-else-if="icon" :icon="icon" :size="20" decorative />
         </span>
         <span class="rui-menu-item__label">
             <slot />
@@ -136,11 +143,13 @@ onBeforeUnmount(() => {
     }
 }
 
-.rui-menu-item__icon {
+.rui-menu-item__leading {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    inline-size: 24px;
+    block-size: 24px;
+    flex: 0 0 24px;
     color: color.$on-surface-medium;
 }
 

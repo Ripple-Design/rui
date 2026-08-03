@@ -17,10 +17,11 @@ import { vRipple } from "@ripple-design/rui"
 
 ```ts
 type RippleOptions = {
-  disabled?: boolean
-  unbounded?: boolean
-  color?: string | null
-  contrast?: "low" | "high"
+    disabled?: boolean
+    unbounded?: boolean
+    color?: string | null
+    contrast?: "low" | "high"
+    selected?: boolean
 }
 ```
 
@@ -29,4 +30,5 @@ type RippleOptions = {
 - keyboard-triggered ripples launch from the center automatically
 - `v-ripple.unbounded` allows the ripple to extend beyond the host bounds
 - `contrast` defaults to `"low"`; use `"high"` for ripple drawn on top of filled / high-emphasis backgrounds
+- `selected` applies a persistent 8% state layer using the resolved ripple color
 - `:focus-visible` applies a focus state layer using `--rui-ripple-focus-opacity`

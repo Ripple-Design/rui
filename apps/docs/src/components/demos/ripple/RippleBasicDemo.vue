@@ -9,6 +9,10 @@ import { RColumn, RRow, vRipple } from "@ripple-design/rui"
                 <span class="demo-button__label">Low contrast</span>
             </button>
 
+            <button v-ripple="{ selected: true }" class="demo-button" type="button">
+                <span class="demo-button__label">Selected layer</span>
+            </button>
+
             <button v-ripple="{ contrast: 'high' }" class="demo-button demo-button--filled" type="button">
                 <span class="demo-button__label">High contrast</span>
             </button>

@@ -11,11 +11,19 @@ api: /en/api/menu
 import DemoBlock from "@docs/components/docs/DemoBlock.astro"
 import MenuBasicDemo from "@docs/components/demos/menu/MenuBasicDemo.vue"
 import menuBasicDemoSource from "@docs/components/demos/menu/MenuBasicDemo.vue?raw"
+import MenuGroupDemo from "@docs/components/demos/menu/MenuGroupDemo.vue"
+import menuGroupDemoSource from "@docs/components/demos/menu/MenuGroupDemo.vue?raw"
 
-## Basic usage
+## Alignment
 
 <DemoBlock title="Menu alignment" code={menuBasicDemoSource} language="vue">
     <MenuBasicDemo client:load />
 </DemoBlock>
 
-`RMenu` and `RMenuItem` provide an action-only anchored menu. The trigger is supplied through the `trigger` slot, items emit `click` when activated, and `align="start" | "end"` controls which logical edge of the trigger the menu aligns to.
+## Groups and selection
+
+<DemoBlock title="Menu groups" code={menuGroupDemoSource} language="vue">
+    <MenuGroupDemo client:load />
+</DemoBlock>
+
+`RMenu` and `RMenuItem` provide anchored command actions. `RMenuGroup` additionally owns an independent controlled single-selection value for its child items.

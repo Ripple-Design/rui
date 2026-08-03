@@ -50,7 +50,10 @@ export function useMenuState(open: Ref<boolean>, disabled: Ref<boolean>) {
             return
         }
 
-        const currentIndex = Math.max(0, list.findIndex((item) => item.id === fromId))
+        const currentIndex = Math.max(
+            0,
+            list.findIndex((item) => item.id === fromId),
+        )
         let nextIndex = currentIndex
 
         if (direction === "next") nextIndex = (currentIndex + 1) % list.length

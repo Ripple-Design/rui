@@ -15,4 +15,5 @@ api: /en/api/menu
 - Triggered by a single trigger slot.
 - Focuses menu items with keyboard navigation.
 - Closes on outside press and Escape.
-- `RMenuItem` entries are action-only in v1.
+- `RMenuItem` entries provide action commands or controlled selections within an `RMenuGroup`.
+- Groups use full-width dividers with 8px spacing on both sides.

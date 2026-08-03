@@ -1,13 +1,20 @@
 <script setup lang="ts">
-import { inject, onBeforeUnmount, provide } from "vue"
+import { computed, inject, onBeforeUnmount, provide } from "vue"
 
 import { menuGroupKey, menuKey } from "./types"
 
+import type { RMenuGroupProps } from "./types"
+
+const props = withDefaults(defineProps<RMenuGroupProps>(), {
+    indicator: "overlay",
+})
 const modelValue = defineModel<unknown>()
 const menu = inject(menuKey)
 const groupId = Symbol("menu-group")
+const indicator = computed(() => props.indicator)
 
 provide(menuGroupKey, {
+    indicator,
     isSelected(value) {
         return Object.is(modelValue.value, value)
     },
