@@ -44,7 +44,8 @@ const primaryBarRef = ref<HTMLElement | null>(null)
 const secondaryBarRef = ref<HTMLElement | null>(null)
 
 function resolveDirection(direction: RLinearProgressIndicatorDirection): LinearProgressIndicatorResolvedDirection {
-    const rootDirection = typeof document === "undefined" ? "ltr" : document.documentElement.dir === "rtl" ? "rtl" : "ltr"
+    const rootDirection =
+        typeof document === "undefined" ? "ltr" : document.documentElement.dir === "rtl" ? "rtl" : "ltr"
 
     switch (direction) {
         case "left-to-right":
@@ -278,7 +279,14 @@ watch(
 )
 
 watch(
-    () => [props.indeterminate, props.query, props.direction, props.indeterminateAnimationType, props.indicatorColors] as const,
+    () =>
+        [
+            props.indeterminate,
+            props.query,
+            props.direction,
+            props.indeterminateAnimationType,
+            props.indicatorColors,
+        ] as const,
     (nextState, previousState) => {
         const [nextIndeterminate, nextQuery, nextDirectionProp, nextAnimationType] = nextState
         const [prevIndeterminate, prevQuery, prevDirectionProp, prevAnimationType] = previousState ?? [
@@ -465,18 +473,14 @@ watch(
     animation-fill-mode: both;
 }
 
-.rui-linear-progress-indicator--indeterminate
-    .rui-linear-progress-indicator__disjoint-segment--primary {
+.rui-linear-progress-indicator--indeterminate .rui-linear-progress-indicator__disjoint-segment--primary {
     animation-name:
-        rui-linear-progress-indicator-disjoint-primary-start,
-        rui-linear-progress-indicator-disjoint-primary-end;
+        rui-linear-progress-indicator-disjoint-primary-start, rui-linear-progress-indicator-disjoint-primary-end;
 }
 
-.rui-linear-progress-indicator--indeterminate
-    .rui-linear-progress-indicator__disjoint-segment--secondary {
+.rui-linear-progress-indicator--indeterminate .rui-linear-progress-indicator__disjoint-segment--secondary {
     animation-name:
-        rui-linear-progress-indicator-disjoint-secondary-start,
-        rui-linear-progress-indicator-disjoint-secondary-end;
+        rui-linear-progress-indicator-disjoint-secondary-start, rui-linear-progress-indicator-disjoint-secondary-end;
 }
 
 .rui-linear-progress-indicator--draining .rui-linear-progress-indicator__disjoint-segment {
@@ -484,31 +488,24 @@ watch(
     animation-fill-mode: forwards;
 }
 
-.rui-linear-progress-indicator--draining
-    .rui-linear-progress-indicator__disjoint-segment--primary {
+.rui-linear-progress-indicator--draining .rui-linear-progress-indicator__disjoint-segment--primary {
     animation-name:
-        rui-linear-progress-indicator-disjoint-primary-start,
-        rui-linear-progress-indicator-disjoint-primary-end;
+        rui-linear-progress-indicator-disjoint-primary-start, rui-linear-progress-indicator-disjoint-primary-end;
 }
 
-.rui-linear-progress-indicator--draining
-    .rui-linear-progress-indicator__disjoint-segment--secondary {
+.rui-linear-progress-indicator--draining .rui-linear-progress-indicator__disjoint-segment--secondary {
     animation-name:
-        rui-linear-progress-indicator-disjoint-secondary-start,
-        rui-linear-progress-indicator-disjoint-secondary-end;
+        rui-linear-progress-indicator-disjoint-secondary-start, rui-linear-progress-indicator-disjoint-secondary-end;
 }
 
-.rui-linear-progress-indicator--active-reversed
-    .rui-linear-progress-indicator__indeterminate-layer {
+.rui-linear-progress-indicator--active-reversed .rui-linear-progress-indicator__indeterminate-layer {
     transform: scaleX(-1);
 }
 
-.rui-linear-progress-indicator--active-reversed
-    .rui-linear-progress-indicator__buffer-dots {
+.rui-linear-progress-indicator--active-reversed .rui-linear-progress-indicator__buffer-dots {
     transform: rotate(0);
     animation-name: rui-linear-progress-indicator-buffering-reverse;
 }
-
 
 .rui-linear-progress-indicator__contiguous-track {
     overflow: hidden;
@@ -552,7 +549,7 @@ watch(
 @keyframes rui-linear-progress-indicator-disjoint-primary-start {
     0%,
     70.3889% {
-        inset-inline-start: 0%;
+        inset-inline-start: 0;
     }
 
     70.3889% {
@@ -576,14 +573,14 @@ watch(
 
     87.0556%,
     100% {
-        inset-inline-end: 0%;
+        inset-inline-end: 0;
     }
 }
 
 @keyframes rui-linear-progress-indicator-disjoint-secondary-start {
     0%,
     18.5% {
-        inset-inline-start: 0%;
+        inset-inline-start: 0;
     }
 
     18.5% {
@@ -604,59 +601,59 @@ watch(
 
     41.6667%,
     100% {
-        inset-inline-end: 0%;
+        inset-inline-end: 0;
     }
 }
 @keyframes rui-linear-progress-indicator-contiguous-first {
     0% {
-        inset-inline-start: 0%;
+        inset-inline-start: 0;
         inset-inline-end: 100%;
     }
 
     12.5% {
-        inset-inline-start: 0%;
+        inset-inline-start: 0;
         inset-inline-end: 99.076%;
     }
 
     25% {
-        inset-inline-start: 0%;
+        inset-inline-start: 0;
         inset-inline-end: 95.718%;
     }
 
     37.5% {
-        inset-inline-start: 0%;
+        inset-inline-start: 0;
         inset-inline-end: 88.655%;
     }
 
     50% {
-        inset-inline-start: 0%;
+        inset-inline-start: 0;
         inset-inline-end: 76.431%;
     }
 
     62.5% {
-        inset-inline-start: 0%;
+        inset-inline-start: 0;
         inset-inline-end: 59.985%;
     }
 
     75% {
-        inset-inline-start: 0%;
+        inset-inline-start: 0;
         inset-inline-end: 44.155%;
     }
 
     87.5% {
-        inset-inline-start: 0%;
+        inset-inline-start: 0;
         inset-inline-end: 31.753%;
     }
 
     100% {
-        inset-inline-start: 0%;
+        inset-inline-start: 0;
         inset-inline-end: 22.539%;
     }
 }
 
 @keyframes rui-linear-progress-indicator-contiguous-second {
     0% {
-        inset-inline-start: 0%;
+        inset-inline-start: 0;
         inset-inline-end: 22.539%;
     }
 
@@ -697,55 +694,54 @@ watch(
 
     100% {
         inset-inline-start: 77.461%;
-        inset-inline-end: 0%;
+        inset-inline-end: 0;
     }
 }
 
 @keyframes rui-linear-progress-indicator-contiguous-third {
     0% {
         inset-inline-start: 77.461%;
-        inset-inline-end: 0%;
+        inset-inline-end: 0;
     }
 
     12.5% {
         inset-inline-start: 84.296%;
-        inset-inline-end: 0%;
+        inset-inline-end: 0;
     }
 
     25% {
         inset-inline-start: 89.382%;
-        inset-inline-end: 0%;
+        inset-inline-end: 0;
     }
 
     37.5% {
         inset-inline-start: 93.151%;
-        inset-inline-end: 0%;
+        inset-inline-end: 0;
     }
 
     50% {
         inset-inline-start: 95.895%;
-        inset-inline-end: 0%;
+        inset-inline-end: 0;
     }
 
     62.5% {
         inset-inline-start: 97.822%;
-        inset-inline-end: 0%;
+        inset-inline-end: 0;
     }
 
     75% {
         inset-inline-start: 99.078%;
-        inset-inline-end: 0%;
+        inset-inline-end: 0;
     }
 
     87.5% {
         inset-inline-start: 99.776%;
-        inset-inline-end: 0%;
+        inset-inline-end: 0;
     }
 
     100% {
         inset-inline-start: 100%;
-        inset-inline-end: 0%;
+        inset-inline-end: 0;
     }
 }
-
 </style>
