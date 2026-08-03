@@ -149,7 +149,7 @@ onBeforeUnmount(() => {
                     :cy.attr="circleCenter"
                     :r.attr="radius"
                     pathLength="100"
-                    :stroke-dasharray.attr="100"
+                    :stroke-dasharray.attr="101"
                     :stroke-dashoffset.attr="determinateDashOffset"
                     :stroke-width.attr="strokeWidth"
                 />
