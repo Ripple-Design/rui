@@ -16,6 +16,8 @@ export type RButtonProps = {
     disabled?: boolean
     /** Expands the button to fill the available inline size. */
     fullWidth?: boolean
+    /** Expands the button to fill the available block size. */
+    fullHeight?: boolean
     /** Allows the label to remain in sentence case instead of uppercase. */
     sentenceCase?: boolean
     /** Sets the native button type when rendering a `<button>`. */

@@ -64,6 +64,7 @@ const wrapperClasses = computed(() => [
     "rui-button__touch-target-wrapper",
     {
         "rui-button__touch-target-wrapper--full-width": resolvedFullWidth.value,
+        "rui-button__touch-target-wrapper--full-height": props.fullHeight,
         "rui-button__touch-target-wrapper--with-top": hasTop.value,
     },
 ])
@@ -76,6 +77,7 @@ const classes = computed(() => {
         `rui-button--${variant}`,
         {
             "rui-button--full-width": resolvedFullWidth.value,
+            "rui-button--full-height": props.fullHeight,
             "rui-button--disabled": props.disabled,
             "rui-button--selectable": isSelectableInGroup.value,
             "rui-button--icon-group": isIconGroup.value,
@@ -222,7 +224,7 @@ function handleClick(event: MouseEvent) {
             <span class="rui-button__content">
                 <span v-if="hasTop" class="rui-button__top">
                     <slot v-if="$slots.top" name="top" />
-                    <RIcon v-else-if="topIcon" :icon="topIcon" :size="iconSize" decorative />
+                    <RIcon v-else-if="topIcon" :icon="topIcon" :size="24" decorative />
                 </span>
 
                 <span class="rui-button__main">
@@ -273,7 +275,7 @@ function handleClick(event: MouseEvent) {
             <span class="rui-button__content">
                 <span v-if="hasTop" class="rui-button__top">
                     <slot v-if="$slots.top" name="top" />
-                    <RIcon v-else-if="topIcon" :icon="topIcon" :size="iconSize" decorative />
+                    <RIcon v-else-if="topIcon" :icon="topIcon" :size="24" decorative />
                 </span>
 
                 <span class="rui-button__main">
@@ -328,6 +330,10 @@ function handleClick(event: MouseEvent) {
         width: 100%;
     }
 
+    &--full-height {
+        height: 100%;
+    }
+
     &--with-top {
         padding-top: 0;
         padding-bottom: 0;
@@ -380,8 +386,13 @@ function handleClick(event: MouseEvent) {
         width: 100%;
     }
 
+    &--full-height {
+        height: 100%;
+    }
+
     &--with-top {
-        --rui-button-height: #{density.withDecrement(56px, --rui-button-density)};
+        --rui-button-height: #{density.withDecrement(68px, --rui-button-density)};
+        min-height: var(--rui-button-height);
     }
 
     &--sentence-case {
@@ -543,6 +554,11 @@ function handleClick(event: MouseEvent) {
     justify-content: center;
     gap: var(--rui-button-vertical-gap);
     min-height: calc(var(--rui-button-height) - 2px);
+}
+
+.rui-button--with-top .rui-button__content {
+    min-height: 0;
+    padding-block: 12px;
 }
 
 .rui-button__main {
