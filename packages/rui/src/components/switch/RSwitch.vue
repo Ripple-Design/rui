@@ -261,14 +261,9 @@ function resetGesture() {
         var(--rui-sys-color-surface) 62%,
         var(--rui-sys-color-on-surface) 38%
     );
-    --rui-comp-switch-thumb-shadow: 0 2px 4px rgb(0 0 0 / 30%);
     --rui-comp-thumb-size: var(--rui-comp-switch-thumb-size);
-    --rui-comp-thumb-color: color-mix(
-        in srgb,
-        var(--rui-comp-switch-thumb-off-color) calc((1 - var(--rui-comp-switch-progress)) * 100%),
-        var(--rui-comp-switch-thumb-on-color)
-    );
-    --rui-comp-thumb-shadow: var(--rui-comp-switch-thumb-shadow);
+    --rui-comp-thumb-color: var(--rui-comp-switch-thumb-off-color);
+    --rui-comp-thumb-shadow: 0 2px 4px rgb(0 0 0 / 30%);
 
     position: relative;
     display: inline-grid;
@@ -285,6 +280,7 @@ function resetGesture() {
 
     &--checked {
         --rui-comp-switch-state-layer-color: var(--rui-sys-color-primary);
+        --rui-comp-thumb-color: var(--rui-comp-switch-thumb-on-color);
     }
 
     &--disabled {
@@ -304,7 +300,12 @@ function resetGesture() {
             var(--rui-sys-color-surface),
             var(--rui-sys-color-primary) 12%
         );
+        --rui-comp-thumb-color: var(--rui-comp-switch-disabled-thumb-color);
         cursor: default;
+
+        &.rui-switch--checked {
+            --rui-comp-thumb-color: var(--rui-comp-switch-thumb-on-color);
+        }
     }
 }
 

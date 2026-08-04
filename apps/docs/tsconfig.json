@@ -10,6 +10,8 @@
             "@ripple-design/rui": ["../../packages/rui/src/index.ts"],
             "@ripple-design/rui/rui": ["../../packages/rui/rui.scss"],
             "@ripple-design/rui/rui.scss": ["../../packages/rui/rui.scss"],
+            "@ripple-design/rux-video-player": ["../../packages/rux-video-player/src/index.ts"],
+            "@ripple-design/rux-video-player/styles.css": ["../../packages/rux-video-player/src/styles.ts"],
             "@ripple-design/rui/*": ["../../packages/rui/src/*"]
         },
         "plugins": [

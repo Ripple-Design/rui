@@ -118,12 +118,6 @@ function isIndicatorVisible(thumb: SliderThumb) {
     return dragging.value ? isRange.value || activeThumb.value === thumb : focusedThumb.value === thumb
 }
 
-function isHaloVisible(thumb: SliderThumb) {
-    return (
-        !props.disabled && (activeThumb.value === thumb || focusedThumb.value === thumb || hoveredThumb.value === thumb)
-    )
-}
-
 function inputForThumb(thumb: SliderThumb) {
     if (thumb === "single") {
         return singleInputRef.value
@@ -196,6 +190,7 @@ function handlePointerDown(event: PointerEvent) {
         return
     }
 
+    event.preventDefault()
     const percent = resolvePointerPercent(event)
     const thumb = resolveClosestThumb(percent)
     pointer = { id: event.pointerId, startX: event.clientX, thumb }
@@ -355,7 +350,7 @@ onBeforeUnmount(() => observer?.disconnect())
 
         <template v-for="thumb in (isRange ? ['start', 'end'] : ['single']) as SliderThumb[]" :key="thumb">
             <span class="rui-slider__thumb" :style="thumbStyle(thumb)" aria-hidden="true">
-                <RThumb :halo="true" :halo-visible="isHaloVisible(thumb)">
+                <RThumb>
                     <span
                         class="rui-slider__value-indicator"
                         :class="{ 'rui-slider__value-indicator--visible': isIndicatorVisible(thumb) }"
@@ -475,6 +470,10 @@ onBeforeUnmount(() => observer?.disconnect())
     --rui-comp-thumb-color: var(--rui-comp-slider-thumb-color);
     --rui-comp-thumb-shadow: var(--rui-comp-slider-thumb-shadow);
     --rui-comp-thumb-halo-color: var(--rui-comp-slider-halo-color);
+    --rui-comp-thumb-size: var(--rui-comp-slider-thumb-size);
+    --rui-comp-thumb-color: var(--rui-comp-slider-thumb-color);
+    --rui-comp-thumb-shadow: var(--rui-comp-slider-thumb-shadow);
+    --rui-comp-thumb-halo-color: var(--rui-comp-slider-halo-color);
 
     position: relative;
     display: block;
@@ -482,7 +481,8 @@ onBeforeUnmount(() => observer?.disconnect())
     inline-size: 100%;
     block-size: var(--rui-comp-slider-height);
     cursor: pointer;
-    touch-action: pan-y;
+    touch-action: none;
+    user-select: none;
 
     &--disabled {
         --rui-comp-slider-active-track-color: rgb(from var(--rui-sys-color-on-surface) r g b / 32%);
@@ -564,7 +564,7 @@ onBeforeUnmount(() => observer?.disconnect())
     );
     inline-size: var(--rui-comp-slider-thumb-size);
     block-size: var(--rui-comp-slider-thumb-size);
-    pointer-events: none;
+    pointer-events: auto;
     transform: translate(-50%, -50%);
     transition: inset-inline-start var(--rui-comp-slider-position-duration) var(--rui-comp-slider-position-easing);
 

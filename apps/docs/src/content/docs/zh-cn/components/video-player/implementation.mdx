@@ -1,0 +1,17 @@
+---
+title: Video player
+docSlug: components/video-player
+tab: implementation
+locale: zh-cn
+designOrder: 149
+developOrder: 149
+api: /zh-cn/api/video-player
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import VideoPlayerBasicDemo from "@docs/components/demos/videoPlayer/VideoPlayerBasicDemo.vue"
+import videoPlayerBasicDemoSource from "@docs/components/demos/videoPlayer/VideoPlayerBasicDemo.vue?raw"
+
+<DemoBlock title="Basic usage" code={videoPlayerBasicDemoSource} language="vue">
+    <VideoPlayerBasicDemo client:load />
+</DemoBlock>

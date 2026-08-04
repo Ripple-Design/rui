@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url"
 const docsSrc = fileURLToPath(new URL("./src", import.meta.url))
 const ruiRoot = fileURLToPath(new URL("../../packages/rui", import.meta.url))
 const ruiSrc = fileURLToPath(new URL("../../packages/rui/src", import.meta.url))
+const videoPlayerSrc = fileURLToPath(new URL("../../packages/rux-video-player/src", import.meta.url))
 
 export default defineConfig({
     integrations: [vue(), mdx()],
@@ -27,6 +28,8 @@ export default defineConfig({
                 "@ripple-design/rui/components": path.join(ruiSrc, "components/index.ts"),
                 "@ripple-design/rui/rui": path.join(ruiRoot, "rui.scss"),
                 "@ripple-design/rui/rui.scss": path.join(ruiRoot, "rui.scss"),
+                "@ripple-design/rux-video-player/styles.css": path.join(videoPlayerSrc, "styles.ts"),
+                "@ripple-design/rux-video-player": path.join(videoPlayerSrc, "index.ts"),
                 "@ripple-design/rui": path.join(ruiSrc, "index.ts"),
             },
         },

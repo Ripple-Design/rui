@@ -1,19 +1,18 @@
 <script setup lang="ts">
 withDefaults(
     defineProps<{
-        halo?: boolean
-        haloVisible?: boolean
+        disabled?: boolean
     }>(),
     {
-        halo: false,
-        haloVisible: false,
+        disabled: false,
     },
 )
 </script>
 
 <template>
-    <span class="rui-thumb" aria-hidden="true">
-        <span v-if="halo" class="rui-thumb__halo" :class="{ 'rui-thumb__halo--visible': haloVisible }" />
+    <span class="rui-thumb" :class="{ 'rui-thumb--disabled': disabled }" aria-hidden="true">
+        <span class="rui-touch-target rui-touch-target--interactive" aria-hidden="true" />
+        <span class="rui-thumb__halo" />
         <span class="rui-thumb__underlay"><slot name="underlay" /></span>
         <span class="rui-thumb__knob" />
         <span class="rui-thumb__overlay"><slot /></span>
@@ -21,11 +20,23 @@ withDefaults(
 </template>
 
 <style scoped lang="scss">
+@use "../touchTarget/touchTarget.scss";
+
 .rui-thumb {
     position: relative;
     display: block;
     inline-size: var(--rui-comp-thumb-size, 20px);
     block-size: var(--rui-comp-thumb-size, 20px);
+
+    &:has(.rui-touch-target:hover) .rui-thumb__halo,
+    &:has(.rui-touch-target:active) .rui-thumb__halo {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    &--disabled .rui-thumb__halo {
+        opacity: 0;
+    }
 }
 
 .rui-thumb__halo,
@@ -41,7 +52,7 @@ withDefaults(
     inline-size: var(--rui-comp-thumb-halo-size, 40px);
     block-size: var(--rui-comp-thumb-halo-size, 40px);
     border-radius: 50%;
-    background: var(--rui-comp-thumb-halo-color, transparent);
+    background: var(--rui-comp-thumb-halo-color, rgb(from var(--rui-sys-color-primary) r g b / 24%));
     opacity: 0;
     pointer-events: none;
     transform: translate(-50%, -50%) scale(0.8);
@@ -69,8 +80,8 @@ withDefaults(
     z-index: 2;
     inset: 0;
     border-radius: 50%;
-    background: var(--rui-comp-thumb-color);
-    box-shadow: var(--rui-comp-thumb-shadow);
+    background: var(--rui-comp-thumb-color, var(--rui-sys-color-primary));
+    box-shadow: var(--rui-comp-thumb-shadow, 0 1px 2px rgb(0 0 0 / 30%));
 }
 
 .rui-thumb__overlay {

@@ -2,9 +2,19 @@ name: Build and Publish
 
 on:
     workflow_dispatch:
+        inputs:
+            package:
+                description: Package to publish
+                required: true
+                default: rui
+                type: choice
+                options:
+                    - rui
+                    - rux-video-player
     push:
         tags:
             - "v*"
+            - "rux-video-player-v*"
 
 jobs:
     publish:
@@ -37,10 +47,23 @@ jobs:
             - name: Install Dependencies
               run: pnpm install --frozen-lockfile
 
+            - name: Resolve Package
+              id: package
+              shell: bash
+              env:
+                  SELECTED_PACKAGE: ${{ inputs.package }}
+                  REF_NAME: ${{ github.ref_name }}
+              run: |
+                  package="$SELECTED_PACKAGE"
+                  if [[ "$REF_NAME" == rux-video-player-v* ]]; then
+                      package="rux-video-player"
+                  fi
+                  echo "name=$package" >> "$GITHUB_OUTPUT"
+                  echo "directory=packages/$package" >> "$GITHUB_OUTPUT"
+
             - name: Build Library
-              run: pnpm --filter rui build
+              run: pnpm --filter ${{ steps.package.outputs.name }} build
 
             - name: Publish to npm
-              run: |
-                  cd packages/rui
-                  npm publish --provenance
+              working-directory: ${{ steps.package.outputs.directory }}
+              run: npm publish --provenance
