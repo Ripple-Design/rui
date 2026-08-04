@@ -1,0 +1,17 @@
+---
+title: Slider
+docSlug: components/slider
+tab: implementation
+locale: en
+designOrder: 148
+developOrder: 148
+api: /en/api/slider
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import SliderBasicDemo from "@docs/components/demos/slider/SliderBasicDemo.vue"
+import sliderBasicDemoSource from "@docs/components/demos/slider/SliderBasicDemo.vue?raw"
+
+<DemoBlock title="Basic usage" code={sliderBasicDemoSource} language="vue">
+    <SliderBasicDemo client:load />
+</DemoBlock>

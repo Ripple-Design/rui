@@ -59,9 +59,15 @@ export type * from "./progressIndicator/types"
 export * from "./tooltip"
 
 export { default as RTextField } from "./textField/RTextField.vue"
+export { default as RSelectField } from "./selectField/RSelectField.vue"
+export { default as RSelectOption } from "./menu/RMenuItem.vue"
 export { default as RInput } from "./input/RInput.vue"
 export type * from "./textField/types"
+export type * from "./selectField/types"
 
 export { default as RNumberField } from "./numberField/RNumberField.vue"
 export type * from "./numberField/types"
+
+export { default as RSlider } from "./slider/RSlider.vue"
+export type * from "./slider/types"
 export * from "./menu"
