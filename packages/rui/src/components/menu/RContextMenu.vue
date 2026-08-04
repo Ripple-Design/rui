@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue"
+import { computed, onBeforeUnmount, ref, watch } from "vue"
 
 import { createFloatingVirtualReference, type RFloatingReference } from "@/foundations/floating"
 import RMenuLayer from "@/foundations/menu/RMenuLayer.vue"
@@ -20,6 +20,7 @@ const emit = defineEmits<{
 
 const open = ref(props.open)
 const reference = ref<RFloatingReference | null>(null)
+const usesVirtualReference = ref(false)
 const dismissalBoundary = ref<HTMLElement | null>(null)
 const offset = ref(0)
 const placement = ref<"bottom-start" | "bottom-end" | "right-start">("right-start")
@@ -39,6 +40,43 @@ function requestOpen(value: boolean) {
 function handleLayerOpenUpdate(value: boolean) {
     requestOpen(value)
 }
+
+function handleViewportResize() {
+    if (!open.value || !usesVirtualReference.value) {
+        return
+    }
+
+    requestOpen(false)
+}
+
+function attachViewportListeners() {
+    if (typeof window === "undefined") {
+        return
+    }
+
+    window.addEventListener("resize", handleViewportResize)
+    window.visualViewport?.addEventListener("resize", handleViewportResize)
+}
+
+function detachViewportListeners() {
+    if (typeof window === "undefined") {
+        return
+    }
+
+    window.removeEventListener("resize", handleViewportResize)
+    window.visualViewport?.removeEventListener("resize", handleViewportResize)
+}
+
+watch([open, usesVirtualReference], () => {
+    detachViewportListeners()
+    if (open.value && usesVirtualReference.value) {
+        attachViewportListeners()
+    }
+}, { immediate: true })
+
+onBeforeUnmount(() => {
+    detachViewportListeners()
+})
 
 function isHTMLElement(value: unknown): value is HTMLElement {
     return typeof HTMLElement !== "undefined" && value instanceof HTMLElement
@@ -66,6 +104,7 @@ function openAt(anchor: MouseEvent | PointerEvent | HTMLElement | RContextMenuPo
 
     if (isHTMLElement(anchor)) {
         reference.value = anchor
+        usesVirtualReference.value = false
         dismissalBoundary.value = anchor
         offset.value = 8
         placement.value = `bottom-${props.align}`
@@ -84,6 +123,7 @@ function openAt(anchor: MouseEvent | PointerEvent | HTMLElement | RContextMenuPo
             clientY: anchor.clientY,
             contextElement: contextElement ?? undefined,
         })
+        usesVirtualReference.value = true
         dismissalBoundary.value = contextElement
         offset.value = 0
         placement.value = "right-start"
@@ -92,6 +132,7 @@ function openAt(anchor: MouseEvent | PointerEvent | HTMLElement | RContextMenuPo
     }
 
     reference.value = createFloatingVirtualReference(anchor)
+    usesVirtualReference.value = true
     dismissalBoundary.value = anchor.contextElement ?? null
     offset.value = 0
     placement.value = "right-start"
