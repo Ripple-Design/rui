@@ -19,7 +19,7 @@ const interactiveRef = ref<HTMLElement | null>(null)
 
 const selected = computed(() => (rail ? rail.isSelected(props.value) : false))
 const selectedIconSource = computed(() => (selected.value && props.selectedIcon ? props.selectedIcon : props.icon))
-const hasLabel = computed(() => !!slots.default?.().length)
+const hasLabel = computed(() => !!slots.default?.({}).length)
 const showLabel = computed(() => {
     if (rail?.compact) {
         return false

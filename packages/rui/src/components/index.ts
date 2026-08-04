@@ -37,6 +37,10 @@ export type * from "./button/types"
 export { default as RSwitch } from "./switch/RSwitch.vue"
 export type * from "./switch/types"
 
+export { default as RChip } from "./chip/RChip.vue"
+export { default as RChipGroup } from "./chip/RChipGroup.vue"
+export type * from "./chip/types"
+
 export { default as RNavigationRail } from "./navigationRail/RNavigationRail.vue"
 export { default as RNavigationRailItem } from "./navigationRail/RNavigationRailItem.vue"
 export type * from "./navigationRail/types"

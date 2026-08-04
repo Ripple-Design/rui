@@ -1,0 +1,43 @@
+---
+title: Chip
+docSlug: components/chip
+tab: implementation
+locale: en
+designOrder: 143
+developOrder: 73
+api: /en/api/chip
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import ChipActionDemo from "@docs/components/demos/chip/ChipActionDemo.vue"
+import chipActionDemoSource from "@docs/components/demos/chip/ChipActionDemo.vue?raw"
+import ChipChoiceDemo from "@docs/components/demos/chip/ChipChoiceDemo.vue"
+import chipChoiceDemoSource from "@docs/components/demos/chip/ChipChoiceDemo.vue?raw"
+import ChipFilterDemo from "@docs/components/demos/chip/ChipFilterDemo.vue"
+import chipFilterDemoSource from "@docs/components/demos/chip/ChipFilterDemo.vue?raw"
+import ChipInputDemo from "@docs/components/demos/chip/ChipInputDemo.vue"
+import chipInputDemoSource from "@docs/components/demos/chip/ChipInputDemo.vue?raw"
+
+## Action chips
+
+<DemoBlock title="Action chips" code={chipActionDemoSource} language="vue">
+    <ChipActionDemo client:load />
+</DemoBlock>
+
+## Choice chips
+
+<DemoBlock title="Choice chips" code={chipChoiceDemoSource} language="vue">
+    <ChipChoiceDemo client:load />
+</DemoBlock>
+
+## Filter chips
+
+<DemoBlock title="Filter chips" code={chipFilterDemoSource} language="vue">
+    <ChipFilterDemo client:load />
+</DemoBlock>
+
+## Input chips
+
+<DemoBlock title="Input chips" code={chipInputDemoSource} language="vue">
+    <ChipInputDemo client:load />
+</DemoBlock>
