@@ -13,6 +13,7 @@ defineProps<RFloatingLabelProps>()
         :class="{
             'rui-floating-label--floating': floating,
             'rui-floating-label--focused': focused,
+            'rui-floating-label--error': error,
             'rui-floating-label--has-value': hasValue,
             'rui-floating-label--text-area': textArea,
         }"
@@ -56,8 +57,12 @@ defineProps<RFloatingLabelProps>()
         top: 0;
     }
 
-    &--focused {
+    &--focused:not(.rui-floating-label--error) {
         color: color.$primary;
+    }
+
+    &--error {
+        color: color.$error;
     }
 
     &--has-value {

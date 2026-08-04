@@ -18,6 +18,7 @@ const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
             'rui-notched-outline--hovered': hovered,
             'rui-notched-outline--floating': floating,
             'rui-notched-outline--focused': focused,
+            'rui-notched-outline--error': error,
             'rui-notched-outline--has-start-icon': hasStartIcon,
             'has-label': hasLabel,
         }"
@@ -35,6 +36,7 @@ const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
         <RFloatingLabel
             class="rui-notched-outline__label"
             :focused="focused"
+            :error="error"
             :floating="floating"
             :text-area="textArea"
             :has-value="hasValue"
@@ -132,7 +134,7 @@ const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
         );
     }
 
-    &--hovered {
+    &--hovered:not(#{$block}--error) {
         #{$block}__leading,
         #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__leading,
         #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__notch,
@@ -148,7 +150,27 @@ const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
         }
     }
 
-    &--focused {
+    &--error {
+        #{$block}__leading,
+        #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__leading,
+        #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__notch,
+        #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__trailing,
+        #{$block}__trailing {
+            border-color: color.$error;
+        }
+
+        &#{$block}--focused {
+            #{$block}__leading,
+            #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__leading,
+            #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__notch,
+            #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__trailing,
+            #{$block}__trailing {
+                border-width: 2px;
+            }
+        }
+    }
+
+    &--focused:not(#{$block}--error) {
         #{$block}__leading,
         #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__leading,
         #{$block}__label-space > #{$block}__label-space__track > #{$block}__label-space__notch,

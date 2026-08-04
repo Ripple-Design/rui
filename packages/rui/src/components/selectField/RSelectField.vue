@@ -34,6 +34,7 @@ const describedBy = computed(() => {
         .filter(Boolean)
     return [...new Set(ids)].join(" ") || undefined
 })
+const error = computed(() => !!props.errorText?.trim())
 const labelId = `${controlId.value}-label`
 const shellRef = ref<InstanceType<typeof RFieldShell> | null>(null)
 const triggerRef = ref<HTMLElement | null>(null)
@@ -145,6 +146,8 @@ function handleTriggerKeyDown(event: KeyboardEvent) {
         :label-id="labelId"
         :helper-id="helperId"
         :helper-text="helperText"
+        :error-text="errorText"
+        :error="error"
         :has-end-icon="true"
         @focus-state-change="isFocused = $event"
     >
@@ -161,6 +164,7 @@ function handleTriggerKeyDown(event: KeyboardEvent) {
             :aria-controls="listboxId"
             :aria-labelledby="hasLabel ? labelId : undefined"
             :aria-describedby="describedBy"
+            :aria-invalid="error ? 'true' : undefined"
             :aria-activedescendant="open && activeOptionId ? activeOptionId : undefined"
             @click="handleTriggerClick"
             @focus="isFocused = true"

@@ -28,9 +28,10 @@ const slots = useSlots()
 const generatedId = useId()
 const inputId = computed(() => (typeof attrs.id === "string" ? attrs.id : generatedId))
 const helperId = computed(() => `${inputId.value}-helper`)
+const error = computed(() => !!props.errorText?.trim())
 const describedBy = computed(() => {
     const external = typeof attrs["aria-describedby"] === "string" ? attrs["aria-describedby"] : ""
-    const ids = [external, props.helperText?.trim() ? helperId.value : ""]
+    const ids = [external, props.errorText?.trim() || props.helperText?.trim() ? helperId.value : ""]
         .flatMap((value) => value.split(/\s+/))
         .filter(Boolean)
     return [...new Set(ids)].join(" ") || undefined
@@ -68,6 +69,8 @@ function clear() {
         :input-id="inputId"
         :helper-id="helperId"
         :helper-text="helperText"
+        :error-text="errorText"
+        :error="error"
         :has-start-icon="hasStartIcon"
         :has-end-icon="hasEndIcon"
         @focus-request="focus"
@@ -84,6 +87,7 @@ function clear() {
             v-bind="attrs"
             :id="inputId"
             :aria-describedby="describedBy"
+            :aria-invalid="error ? 'true' : undefined"
             v-model="model"
             :focused="isFocused"
             :has-start-icon="hasStartIcon"

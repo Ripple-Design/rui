@@ -13,7 +13,9 @@ const emit = defineEmits<{
 const props = defineProps<RFieldShellProps>()
 const isHovered = ref(false)
 const shellRef = ref<HTMLElement | null>(null)
-const hasHelper = computed(() => !!props.helperText?.trim())
+const hasError = computed(() => !!props.errorText?.trim())
+const captionText = computed(() => (hasError.value ? props.errorText : props.helperText))
+const captionKind = computed(() => (hasError.value ? "error" : "helper"))
 const helperId = computed(() => props.helperId ?? `${props.inputId ?? "field"}-helper`)
 
 defineExpose({
@@ -71,6 +73,7 @@ function handleClick(event: MouseEvent) {
             </span>
             <RNotchedOutline
                 :focused="focused"
+                :error="hasError"
                 :floating="floating"
                 :has-value="hasValue"
                 :text-area="textArea"
@@ -82,11 +85,19 @@ function handleClick(event: MouseEvent) {
             />
         </div>
 
-        <Transition name="rui-field-helper">
-            <div v-if="hasHelper" :id="helperId" class="rui-field-helper">
-                {{ helperText }}
-            </div>
-        </Transition>
+        <div class="rui-field-shell__caption-area">
+            <Transition name="rui-field-helper">
+                <div
+                    v-if="captionText"
+                    :id="helperId"
+                    :key="captionKind"
+                    class="rui-field-helper"
+                    :class="{ 'rui-field-helper--error': hasError }"
+                >
+                    {{ captionText }}
+                </div>
+            </Transition>
+        </div>
     </div>
 </template>
 
@@ -116,6 +127,7 @@ function handleClick(event: MouseEvent) {
     --rui-comp-field-helper-padding-top: 4px;
     --rui-comp-field-helper-padding-inline: 16px;
     --rui-comp-field-helper-color: #{color.$on-surface-medium};
+    --rui-comp-field-helper-error-color: #{color.$error};
     --rui-comp-field-helper-caption-translate-y: -5px;
     --rui-comp-field-helper-opacity-duration: 167ms;
     --rui-comp-field-helper-translate-duration: 217ms;
@@ -173,6 +185,10 @@ function handleClick(event: MouseEvent) {
         padding-top: var(--rui-comp-text-field-content-padding-vertical);
     }
 
+    &__caption-area {
+        display: grid;
+    }
+
     :slotted(.rui-field-input) {
         z-index: 1;
         flex: 1 1 auto;
@@ -183,10 +199,15 @@ function handleClick(event: MouseEvent) {
 .rui-field-helper {
     @include typography.caption("--rui-comp-field-helper-text");
 
+    grid-area: 1 / 1;
     box-sizing: border-box;
     inline-size: 100%;
     padding: var(--rui-comp-field-helper-padding-top) var(--rui-comp-field-helper-padding-inline) 0;
     color: var(--rui-comp-field-helper-color);
+}
+
+.rui-field-helper--error {
+    color: var(--rui-comp-field-helper-error-color);
 }
 
 .rui-field-helper-enter-active,
@@ -196,10 +217,14 @@ function handleClick(event: MouseEvent) {
         transform var(--rui-comp-field-helper-translate-duration) #{motion.$easing-decelerated};
 }
 
-.rui-field-helper-enter-from,
-.rui-field-helper-leave-to {
+.rui-field-helper-enter-from {
     opacity: 0;
     transform: translateY(var(--rui-comp-field-helper-caption-translate-y));
+}
+
+.rui-field-helper-leave-to {
+    opacity: 0;
+    transform: translateY(0);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -19,9 +19,10 @@ const attrs = useAttrs()
 const generatedId = useId()
 const inputId = computed(() => (typeof attrs.id === "string" ? attrs.id : generatedId))
 const helperId = computed(() => `${inputId.value}-helper`)
+const error = computed(() => !!props.errorText?.trim())
 const describedBy = computed(() => {
     const external = typeof attrs["aria-describedby"] === "string" ? attrs["aria-describedby"] : ""
-    const ids = [external, props.helperText?.trim() ? helperId.value : ""]
+    const ids = [external, props.errorText?.trim() || props.helperText?.trim() ? helperId.value : ""]
         .flatMap((value) => value.split(/\s+/))
         .filter(Boolean)
     return [...new Set(ids)].join(" ") || undefined
@@ -105,6 +106,8 @@ function focus() {
         :input-id="inputId"
         :helper-id="helperId"
         :helper-text="helperText"
+        :error-text="errorText"
+        :error="error"
         @focus-request="focus"
         @focus-state-change="isFocused = $event"
     >
@@ -113,6 +116,7 @@ function focus() {
             v-bind="attrs"
             :id="inputId"
             :aria-describedby="describedBy"
+            :aria-invalid="error ? 'true' : undefined"
             v-model="inputValue"
             :focused="isFocused"
             :input-type="inputType ?? 'numeric'"
