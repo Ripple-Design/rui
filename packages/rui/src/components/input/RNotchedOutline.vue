@@ -40,6 +40,7 @@ const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
             :has-value="hasValue"
             :label="label"
             :input-id="inputId"
+            :label-id="labelId"
         />
     </span>
 </template>

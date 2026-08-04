@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { RICheckFilled, RICheckOutlined, RICheckRounded, RICheckSharp, RICheckTwoTone } from "@ripple-design/icons"
-import { computed, inject, onBeforeUnmount, ref, useAttrs, watch } from "vue"
+import { computed, inject, onBeforeUnmount, ref, useAttrs, useId, watch } from "vue"
 
 import { RIcon } from "@/components"
 import { createIconFamily } from "@/components/icon/family"
+import { selectContextKey } from "@/components/selectField/context"
 import { vRipple, type RippleOptions } from "@/foundations/ripple"
 
 import type { RMenuItemProps } from "./types"
@@ -20,22 +21,38 @@ const emit = defineEmits<{
 
 const attrs = useAttrs()
 const selectedCheckIcon = createIconFamily(RICheckFilled, RICheckOutlined, RICheckRounded, RICheckSharp, RICheckTwoTone)
-const menu = inject(menuKey)
+const menu = inject(menuKey, null)
+const selectContext = inject(selectContextKey, null)
 const group = inject(menuGroupKey, null)
 const itemRef = ref<HTMLElement | null>(null)
 const itemId = Symbol("menu-item")
+const itemDomId = useId()
 const focused = computed(() => menu?.focusedItemId.value === itemId)
-const selectable = computed(() => group != null && props.value !== undefined)
-const selected = computed(() => (selectable.value ? (group?.isSelected(props.value) ?? false) : false))
+const active = computed(() => selectContext?.activeOptionId.value === itemDomId)
+const selectable = computed(() => (selectContext != null || group != null) && props.value !== undefined)
+const selected = computed(() => {
+    if (selectContext && props.value !== undefined) {
+        return selectContext.isSelected(props.value)
+    }
+
+    return selectable.value ? (group?.isSelected(props.value) ?? false) : false
+})
+const displayLabel = computed(() => props.label ?? "")
 const usesCheckIndicator = computed(() => group?.indicator.value === "check")
 const showLeadingIndicator = computed(() => selectable.value && usesCheckIndicator.value)
 const showSelectedCheck = computed(() => selectable.value && usesCheckIndicator.value && selected.value)
 const rippleOptions = computed<RippleOptions>(() => ({
     disabled: props.disabled,
     contrast: "low",
-    selected: selected.value && !usesCheckIndicator.value,
+    selected: selected.value && (selectContext == null || !usesCheckIndicator.value),
 }))
-const role = computed(() => (selectable.value ? "menuitemradio" : "menuitem"))
+const role = computed(() => {
+    if (selectContext && props.value !== undefined) {
+        return "option"
+    }
+
+    return selectable.value ? "menuitemradio" : "menuitem"
+})
 const tabIndex = computed(() => {
     if (props.disabled) {
         return -1
@@ -45,17 +62,25 @@ const tabIndex = computed(() => {
 })
 
 watch(
-    [itemRef, () => props.disabled],
-    ([element, disabled]) => {
-        if (!menu) {
-            return
+    [itemRef, () => props.disabled, () => props.label, () => props.value],
+    ([element, disabled, label, value]) => {
+        if (menu) {
+            menu.registerItem({
+                disabled,
+                element,
+                id: itemId,
+            })
         }
 
-        menu.registerItem({
-            disabled,
-            element,
-            id: itemId,
-        })
+        if (selectContext) {
+            selectContext.register({
+                disabled,
+                element,
+                id: itemDomId,
+                label: label ?? "",
+                value,
+            })
+        }
     },
     { immediate: true },
 )
@@ -72,6 +97,16 @@ function activate(event: MouseEvent | KeyboardEvent) {
 
     if (selectable.value) {
         group?.select(props.value)
+    }
+
+    if (selectContext && props.value !== undefined) {
+        selectContext.commit({
+            disabled: props.disabled,
+            element: itemRef.value,
+            id: itemDomId,
+            label: props.label ?? "",
+            value: props.value,
+        })
     }
 
     emit("click", event)
@@ -91,6 +126,7 @@ function handleKeyDown(event: KeyboardEvent) {
 
 onBeforeUnmount(() => {
     menu?.unregisterItem(itemId)
+    selectContext?.unregister(itemDomId)
 })
 </script>
 
@@ -100,9 +136,16 @@ onBeforeUnmount(() => {
         v-bind="attrs"
         v-ripple="rippleOptions"
         class="rui-menu-item"
-        :class="{ 'rui-menu-item--disabled': disabled, 'rui-menu-item--selected': selected }"
+        :class="{
+            'rui-menu-item--active': active,
+            'rui-menu-item--disabled': disabled,
+            'rui-menu-item--selected': selected,
+        }"
         :role="role"
-        :aria-checked="selectable ? selected : undefined"
+        :aria-selected="role === 'option' ? selected : undefined"
+        :aria-checked="role === 'menuitemradio' ? selected : undefined"
+        :id="role === 'option' ? itemDomId : undefined"
+        :aria-disabled="disabled ? 'true' : undefined"
         :tabindex="tabIndex"
         @focus="handleFocus"
         @click="handleClick"
@@ -113,7 +156,7 @@ onBeforeUnmount(() => {
             <RIcon v-else-if="icon" :icon="icon" :size="20" decorative />
         </span>
         <span class="rui-menu-item__label">
-            <slot />
+            <slot>{{ displayLabel }}</slot>
         </span>
     </div>
 </template>

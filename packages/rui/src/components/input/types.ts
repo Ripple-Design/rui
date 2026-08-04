@@ -1,3 +1,9 @@
+/** Props shared by public fields that render supporting helper text. */
+export type RFieldHelperProps = {
+    /** Displays supporting text below the field control. */
+    helperText?: string
+}
+
 /** Props for the {@link RInput} component. */
 export type RInputProps = {
     /** Renders a multiline textarea instead of a single-line input. */
@@ -36,6 +42,8 @@ export type RFloatingLabelProps = {
     label?: string
     /** Associates the visible label with the native input. */
     inputId?: string
+    /** Sets the ID used to reference the visible label. */
+    labelId?: string
 }
 
 /** Props for the internal notched outline container. */
@@ -47,9 +55,12 @@ export type RNotchedOutlineProps = RFloatingLabelProps & {
 }
 
 /** Props for the internal input field shell. */
-export type RFieldShellProps = RFloatingLabelProps & {
-    /** Reserves the logical inline-start adornment region. */
-    hasStartIcon?: boolean
-    /** Reserves the logical inline-end adornment region. */
-    hasEndIcon?: boolean
-}
+export type RFieldShellProps = RFloatingLabelProps &
+    RFieldHelperProps & {
+        /** Sets the ID used by the helper text description. */
+        helperId?: string
+        /** Reserves the logical inline-start adornment region. */
+        hasStartIcon?: boolean
+        /** Reserves the logical inline-end adornment region. */
+        hasEndIcon?: boolean
+    }

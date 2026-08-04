@@ -1,7 +1,8 @@
 import type { RIconResolvableSource } from "@/components/icon/types"
+import type { RFieldHelperProps } from "@/components/input/types"
 
 /** Props for the {@link RTextField} component. */
-export type RTextFieldProps = {
+export type RTextFieldProps = RFieldHelperProps & {
     /** Sets the visible field label. */
     label?: string
     /** Renders a multiline textarea instead of a single-line input. */

@@ -8,6 +8,7 @@ defineProps<RFloatingLabelProps>()
     <label
         v-if="label"
         class="rui-floating-label"
+        :id="labelId"
         :for="inputId"
         :class="{
             'rui-floating-label--floating': floating,

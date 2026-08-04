@@ -15,20 +15,27 @@ import {
 import { menuKey } from "./types"
 import { useMenuState } from "./useMenuState"
 
-const props = withDefaults(defineProps<{
-    align?: "start" | "end"
-    dismissalBoundary?: HTMLElement | null
-    disabled?: boolean
-    id?: string
-    open: boolean
-    offset?: number
-    placement: Placement
-    reference: RFloatingReference | null
-}>(), {
-    align: "start",
-    disabled: false,
-    offset: 8,
-})
+const props = withDefaults(
+    defineProps<{
+        align?: "start" | "end"
+        dismissalBoundary?: HTMLElement | null
+        disabled?: boolean
+        id?: string
+        mode?: "menu" | "listbox"
+        matchWidth?: boolean
+        open: boolean
+        offset?: number
+        placement: Placement
+        reference: RFloatingReference | null
+    }>(),
+    {
+        align: "start",
+        disabled: false,
+        mode: "menu",
+        matchWidth: false,
+        offset: 8,
+    },
+)
 
 const emit = defineEmits<{
     (e: "update:open", value: boolean): void
@@ -46,6 +53,7 @@ const disabled = computed(() => props.disabled)
 const reference = computed(() => props.reference)
 const dismissalBoundary = computed(() => props.dismissalBoundary ?? null)
 const floatingRef = computed(() => floatingLayerRef.value?.element ?? null)
+const popupWidth = ref(0)
 
 const overlayStack = useOverlayStack()
 const layer = overlayStack.register()
@@ -57,7 +65,11 @@ provide(menuKey, context)
 const menuClasses = computed(() => [
     "rui-menu",
     `rui-menu--align-${props.align}`,
-    { "rui-menu--open": open.value, "rui-menu--grouped": hasGroups.value },
+    {
+        "rui-menu--grouped": hasGroups.value,
+        "rui-menu--match-width": props.matchWidth,
+        "rui-menu--open": open.value,
+    },
 ])
 
 const position = useFloatingPosition(reference, floatingRef, {
@@ -66,6 +78,36 @@ const position = useFloatingPosition(reference, floatingRef, {
     placement: computed(() => props.placement),
     strategy: "fixed",
 })
+
+const floatingStyles = computed(() => ({
+    ...position.floatingStyles.value,
+    width: props.matchWidth && popupWidth.value ? `${popupWidth.value}px` : undefined,
+}))
+
+let resizeObserver: ResizeObserver | null = null
+
+watch(
+    reference,
+    (element) => {
+        resizeObserver?.disconnect()
+        resizeObserver = null
+
+        if (
+            !props.matchWidth ||
+            typeof HTMLElement === "undefined" ||
+            !(element instanceof HTMLElement) ||
+            typeof ResizeObserver === "undefined"
+        ) {
+            return
+        }
+
+        resizeObserver = new ResizeObserver(([entry]) => {
+            popupWidth.value = entry?.contentRect.width ?? element.getBoundingClientRect().width
+        })
+        resizeObserver.observe(element)
+    },
+    { immediate: true },
+)
 
 watch(open, async (value, previous) => {
     if (value === previous) {
@@ -78,8 +120,13 @@ watch(open, async (value, previous) => {
         capture()
         emit("open")
         await nextTick()
+        if (props.matchWidth && typeof HTMLElement !== "undefined" && reference.value instanceof HTMLElement) {
+            popupWidth.value = reference.value.getBoundingClientRect().width
+        }
         await position.update()
-        focusFirst()
+        if (props.mode === "menu") {
+            focusFirst()
+        }
         return
     }
 
@@ -96,6 +143,10 @@ useDismissableLayer(dismissalBoundary, floatingRef, {
 })
 
 function handleMenuKeyDown(event: KeyboardEvent) {
+    if (props.mode === "listbox") {
+        return
+    }
+
     const currentId = context.focusedItemId.value
     if (!currentId) {
         return
@@ -132,6 +183,7 @@ function handleMenuKeyDown(event: KeyboardEvent) {
 }
 
 onBeforeUnmount(() => {
+    resizeObserver?.disconnect()
     overlayStack.unregister(layer.id)
 })
 </script>
@@ -140,9 +192,9 @@ onBeforeUnmount(() => {
     <RFloatingLayer
         ref="floatingLayerRef"
         :id="id ?? menuId"
-        :floating-styles="position.floatingStyles.value"
+        :floating-styles="floatingStyles"
         :open="open"
-        role="menu"
+        :role="mode"
     >
         <RSurface :class="menuClasses" :elevation="8" @keydown="handleMenuKeyDown">
             <slot />
@@ -162,6 +214,11 @@ onBeforeUnmount(() => {
     transition:
         opacity motion.$duration-small-in motion.$easing-standard,
         transform motion.$duration-small-in motion.$easing-standard;
+
+    &--match-width {
+        inline-size: 100%;
+        max-inline-size: none;
+    }
 
     &--grouped {
         padding-block: 0;

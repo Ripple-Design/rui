@@ -18,6 +18,14 @@ const props = defineProps<RNumberFieldProps>()
 const attrs = useAttrs()
 const generatedId = useId()
 const inputId = computed(() => (typeof attrs.id === "string" ? attrs.id : generatedId))
+const helperId = computed(() => `${inputId.value}-helper`)
+const describedBy = computed(() => {
+    const external = typeof attrs["aria-describedby"] === "string" ? attrs["aria-describedby"] : ""
+    const ids = [external, props.helperText?.trim() ? helperId.value : ""]
+        .flatMap((value) => value.split(/\s+/))
+        .filter(Boolean)
+    return [...new Set(ids)].join(" ") || undefined
+})
 const inputRef = ref<InstanceType<typeof RFieldInput> | null>(null)
 
 const model = defineModel<number | null>()
@@ -95,6 +103,8 @@ function focus() {
         :floating="isFloating"
         :has-value="hasValue"
         :input-id="inputId"
+        :helper-id="helperId"
+        :helper-text="helperText"
         @focus-request="focus"
         @focus-state-change="isFocused = $event"
     >
@@ -102,6 +112,7 @@ function focus() {
             ref="inputRef"
             v-bind="attrs"
             :id="inputId"
+            :aria-describedby="describedBy"
             v-model="inputValue"
             :focused="isFocused"
             :input-type="inputType ?? 'numeric'"

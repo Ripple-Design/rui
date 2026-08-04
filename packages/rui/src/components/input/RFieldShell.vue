@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { computed, ref } from "vue"
 
 import type { RFieldShellProps } from "./types"
 
@@ -10,9 +10,15 @@ const emit = defineEmits<{
     focusRequest: []
 }>()
 
+const props = defineProps<RFieldShellProps>()
 const isHovered = ref(false)
+const shellRef = ref<HTMLElement | null>(null)
+const hasHelper = computed(() => !!props.helperText?.trim())
+const helperId = computed(() => props.helperId ?? `${props.inputId ?? "field"}-helper`)
 
-defineProps<RFieldShellProps>()
+defineExpose({
+    element: shellRef,
+})
 
 function handleFocusOut(event: FocusEvent) {
     const shell = event.currentTarget
@@ -40,42 +46,56 @@ function handleClick(event: MouseEvent) {
 
 <template>
     <div
+        ref="shellRef"
         class="rui-field-shell rui-field-shell--outlined"
         :class="{
             'rui-field-shell--has-start-icon': hasStartIcon,
             'rui-field-shell--has-end-icon': hasEndIcon,
             'rui-field-shell--text-area': textArea,
         }"
-        @click="handleClick"
-        @focusin="emit('focusStateChange', true)"
-        @focusout="handleFocusOut"
-        @mouseenter="isHovered = true"
-        @mouseleave="isHovered = false"
     >
-        <span v-if="hasStartIcon" class="rui-field-shell__icon rui-field-shell__icon--start">
-            <slot name="start-icon" />
-        </span>
-        <slot />
-        <span v-if="hasEndIcon" class="rui-field-shell__icon rui-field-shell__icon--end">
-            <slot name="end-icon" />
-        </span>
-        <RNotchedOutline
-            :focused="focused"
-            :floating="floating"
-            :has-value="hasValue"
-            :text-area="textArea"
-            :hovered="isHovered && !focused"
-            :label="label"
-            :input-id="inputId"
-            :has-start-icon="hasStartIcon"
-        />
+        <div
+            class="rui-field-shell__control"
+            @click="handleClick"
+            @focusin="emit('focusStateChange', true)"
+            @focusout="handleFocusOut"
+            @mouseenter="isHovered = true"
+            @mouseleave="isHovered = false"
+        >
+            <span v-if="hasStartIcon" class="rui-field-shell__icon rui-field-shell__icon--start">
+                <slot name="start-icon" />
+            </span>
+            <slot />
+            <span v-if="hasEndIcon" class="rui-field-shell__icon rui-field-shell__icon--end">
+                <slot name="end-icon" />
+            </span>
+            <RNotchedOutline
+                :focused="focused"
+                :floating="floating"
+                :has-value="hasValue"
+                :text-area="textArea"
+                :hovered="isHovered && !focused"
+                :label="label"
+                :input-id="inputId"
+                :label-id="labelId"
+                :has-start-icon="hasStartIcon"
+            />
+        </div>
+
+        <Transition name="rui-field-helper">
+            <div v-if="hasHelper" :id="helperId" class="rui-field-helper">
+                {{ helperText }}
+            </div>
+        </Transition>
     </div>
 </template>
 
 <style scoped lang="scss">
-@use "@/styles/density";
-@use "@/styles/shape";
 @use "@/styles/color";
+@use "@/styles/density";
+@use "@/styles/motion";
+@use "@/styles/shape";
+@use "@/styles/typography";
 
 .rui-field-shell {
     --rui-comp-text-field-shape-family: var(--rui-sys-shape-small-family);
@@ -93,18 +113,16 @@ function handleClick(event: MouseEvent) {
     --rui-comp-text-field-input-label-inset-inline-start: 0px;
     --rui-comp-text-field-floating-label-inset-inline-start: var(--rui-comp-text-field-content-padding-inline);
     --rui-comp-text-field-icon-color: #{color.$on-surface-medium};
+    --rui-comp-field-helper-padding-top: 4px;
+    --rui-comp-field-helper-padding-inline: 16px;
+    --rui-comp-field-helper-color: #{color.$on-surface-medium};
+    --rui-comp-field-helper-caption-translate-y: -5px;
+    --rui-comp-field-helper-opacity-duration: 167ms;
+    --rui-comp-field-helper-translate-duration: 217ms;
 
-    position: relative;
     display: flex;
-    align-items: center;
-
-    @include shape.apply(
-        var(--rui-comp-text-field-shape-family),
-        var(--rui-comp-text-field-shape-start-start),
-        var(--rui-comp-text-field-shape-start-end),
-        var(--rui-comp-text-field-shape-end-end),
-        var(--rui-comp-text-field-shape-end-start)
-    );
+    flex-direction: column;
+    min-inline-size: 0;
 
     &--has-start-icon {
         --rui-comp-text-field-input-padding-inline-start: var(--rui-comp-text-field-adornment-text-gap);
@@ -115,6 +133,20 @@ function handleClick(event: MouseEvent) {
 
     &--has-end-icon {
         --rui-comp-text-field-input-padding-inline-end: var(--rui-comp-text-field-adornment-text-gap);
+    }
+
+    &__control {
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        @include shape.apply(
+            var(--rui-comp-text-field-shape-family),
+            var(--rui-comp-text-field-shape-start-start),
+            var(--rui-comp-text-field-shape-start-end),
+            var(--rui-comp-text-field-shape-end-end),
+            var(--rui-comp-text-field-shape-end-start)
+        );
     }
 
     &__icon {
@@ -145,6 +177,35 @@ function handleClick(event: MouseEvent) {
         z-index: 1;
         flex: 1 1 auto;
         min-inline-size: 0;
+    }
+}
+
+.rui-field-helper {
+    @include typography.caption("--rui-comp-field-helper-text");
+
+    box-sizing: border-box;
+    inline-size: 100%;
+    padding: var(--rui-comp-field-helper-padding-top) var(--rui-comp-field-helper-padding-inline) 0;
+    color: var(--rui-comp-field-helper-color);
+}
+
+.rui-field-helper-enter-active,
+.rui-field-helper-leave-active {
+    transition:
+        opacity var(--rui-comp-field-helper-opacity-duration) #{motion.$easing-linear},
+        transform var(--rui-comp-field-helper-translate-duration) #{motion.$easing-decelerated};
+}
+
+.rui-field-helper-enter-from,
+.rui-field-helper-leave-to {
+    opacity: 0;
+    transform: translateY(var(--rui-comp-field-helper-caption-translate-y));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rui-field-helper-enter-active,
+    .rui-field-helper-leave-active {
+        transition-duration: 0ms;
     }
 }
 </style>

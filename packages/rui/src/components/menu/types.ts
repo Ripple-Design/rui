@@ -10,10 +10,16 @@ export { menuGroupKey, menuKey } from "@/foundations/menu/types"
 
 export type RMenuAlign = "start" | "end"
 
+export type RMenuMode = "menu" | "listbox"
+
 export type RMenuProps = {
     align?: RMenuAlign
     disabled?: boolean
+    id?: string
     open?: boolean
+    mode?: RMenuMode
+    matchWidth?: boolean
+    reference?: HTMLElement | null
 }
 
 export type RContextMenuPoint = {
@@ -47,6 +53,8 @@ export type RMenuGroupProps = {
 export type RMenuItemProps = {
     disabled?: boolean
     icon?: RIconResolvableSource
+    /** Optional visible label used by select-field triggers. */
+    label?: string
     /** Identifies this item when it belongs to an RMenuGroup. */
     value?: unknown
 }

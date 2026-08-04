@@ -19,6 +19,7 @@ import type { RMenuProps } from "./types"
 const props = withDefaults(defineProps<RMenuProps>(), {
     align: "start",
     disabled: false,
+    mode: "menu",
     open: false,
 })
 
@@ -30,8 +31,10 @@ const emit = defineEmits<{
 
 const slots: Slots = useSlots()
 const triggerId = useId()
-const menuId = useId()
+const generatedMenuId = useId()
+const menuId = computed(() => props.id ?? generatedMenuId)
 const triggerRef = ref<HTMLElement | null>(null)
+const resolvedReference = computed(() => props.reference ?? triggerRef.value)
 const open = ref(props.open)
 
 watch(
@@ -114,7 +117,7 @@ const TriggerRenderer = defineComponent({
             return cloneVNode(node, {
                 "aria-controls": menuId,
                 "aria-expanded": open.value ? "true" : "false",
-                "aria-haspopup": "menu",
+                "aria-haspopup": props.mode === "listbox" ? "listbox" : "menu",
                 id: triggerId,
                 onClick: toggleMenu,
                 onKeydown: handleTriggerKeyDown,
@@ -125,8 +128,8 @@ const TriggerRenderer = defineComponent({
 })
 
 onMounted(() => {
-    if (!slots.trigger) {
-        throw new Error("[RMenu] The trigger slot is required.")
+    if (!slots.trigger && !props.reference && props.mode === "menu") {
+        throw new Error("[RMenu] Provide either a trigger slot or a reference element.")
     }
 })
 </script>
@@ -138,10 +141,13 @@ onMounted(() => {
         :align="align"
         :disabled="disabled"
         :id="menuId"
-        :dismissal-boundary="triggerRef"
+        :mode="mode"
+        :offset="mode === 'listbox' ? 0 : undefined"
+        :match-width="matchWidth"
+        :dismissal-boundary="resolvedReference"
         :open="open"
         :placement="`bottom-${align}`"
-        :reference="triggerRef"
+        :reference="resolvedReference"
         @update:open="handleLayerOpenUpdate"
         @open="emit('open')"
         @close="emit('close')"
