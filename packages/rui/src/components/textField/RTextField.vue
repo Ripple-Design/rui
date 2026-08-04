@@ -3,8 +3,11 @@
  * Text fields let users enter and edit text.
  */
 
+import { RICancelFilled, RICancelOutlined, RICancelRounded, RICancelSharp, RICancelTwoTone } from "@ripple-design/icons"
 import { computed, ref, useAttrs, useId, useSlots } from "vue"
 
+import RIconButton from "@/components/button/RIconButton.vue"
+import { createIconFamily } from "@/components/icon/family"
 import RIcon from "@/components/icon/RIcon.vue"
 import RFieldInput from "@/components/input/RFieldInput.vue"
 import RFieldShell from "@/components/input/RFieldShell.vue"
@@ -15,7 +18,10 @@ defineOptions({
     inheritAttrs: false,
 })
 
-const props = defineProps<RTextFieldProps>()
+const props = withDefaults(defineProps<RTextFieldProps>(), {
+    clearable: false,
+    clearLabel: "Clear",
+})
 
 const attrs = useAttrs()
 const slots = useSlots()
@@ -30,10 +36,17 @@ const hasValue = computed(() => model.value != null && model.value !== "")
 const isFloating = computed(() => isFocused.value || hasValue.value)
 const showPlaceholder = computed(() => !props.label || isFloating.value)
 const hasStartIcon = computed(() => !!props.startIcon || !!slots["start-icon"])
-const hasEndIcon = computed(() => !!props.endIcon || !!slots["end-icon"])
+const showClear = computed(() => props.clearable && hasValue.value)
+const hasEndIcon = computed(() => !!props.endIcon || !!slots["end-icon"] || showClear.value)
+const clearIcon = createIconFamily(RICancelFilled, RICancelOutlined, RICancelRounded, RICancelSharp, RICancelTwoTone)
 
 function focus() {
     inputRef.value?.focus()
+}
+
+function clear() {
+    model.value = ""
+    focus()
 }
 </script>
 
@@ -71,7 +84,8 @@ function focus() {
 
         <template #end-icon>
             <slot name="end-icon">
-                <RIcon v-if="endIcon" :icon="endIcon" :size="24" decorative />
+                <RIconButton v-if="showClear" :icon="clearIcon" :label="clearLabel" @click="clear" />
+                <RIcon v-else-if="endIcon" :icon="endIcon" :size="24" decorative />
             </slot>
         </template>
     </RFieldShell>

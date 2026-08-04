@@ -12,4 +12,8 @@ export type RTextFieldProps = {
     startIcon?: RIconResolvableSource
     /** Renders a decorative icon at the logical inline end of the field. */
     endIcon?: RIconResolvableSource
+    /** Shows an end action that clears the field while it is focused and has a value. */
+    clearable?: boolean
+    /** Sets the accessible name announced for the clear action. */
+    clearLabel?: string
 }
