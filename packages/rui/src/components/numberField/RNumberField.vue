@@ -2,14 +2,23 @@
 /**
  * Number fields let users enter and edit numeric values.
  */
-import { computed, ref, watch } from "vue"
+import { computed, ref, useAttrs, useId, watch } from "vue"
 
 import RFieldInput from "@/components/input/RFieldInput.vue"
 import RFieldShell from "@/components/input/RFieldShell.vue"
 
 import type { RNumberFieldProps } from "./types"
 
+defineOptions({
+    inheritAttrs: false,
+})
+
 const props = defineProps<RNumberFieldProps>()
+
+const attrs = useAttrs()
+const generatedId = useId()
+const inputId = computed(() => (typeof attrs.id === "string" ? attrs.id : generatedId))
+const inputRef = ref<InstanceType<typeof RFieldInput> | null>(null)
 
 const model = defineModel<number | null>()
 const inputValue = ref(model.value == null ? "" : String(model.value))
@@ -73,6 +82,10 @@ watch(isFocused, (focused) => {
 const hasValue = computed(() => inputValue.value.trim() !== "")
 const isFloating = computed(() => isFocused.value || hasValue.value)
 const showPlaceholder = computed(() => !props.label || isFloating.value)
+
+function focus() {
+    inputRef.value?.focus()
+}
 </script>
 
 <template>
@@ -81,9 +94,14 @@ const showPlaceholder = computed(() => !props.label || isFloating.value)
         :focused="isFocused"
         :floating="isFloating"
         :has-value="hasValue"
+        :input-id="inputId"
+        @focus-request="focus"
         @focus-state-change="isFocused = $event"
     >
         <RFieldInput
+            ref="inputRef"
+            v-bind="attrs"
+            :id="inputId"
             v-model="inputValue"
             :focused="isFocused"
             :input-type="inputType ?? 'numeric'"

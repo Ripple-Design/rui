@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, ref, useAttrs } from "vue"
 
 import type { RInputProps } from "./types"
 
+defineOptions({
+    inheritAttrs: false,
+})
+
+const attrs = useAttrs()
+const inputRef = ref<HTMLInputElement | HTMLTextAreaElement | null>(null)
 const props = withDefaults(defineProps<RInputProps>(), {
     textArea: false,
     showPlaceholder: true,
@@ -71,11 +77,21 @@ function handleInput(event: Event) {
 
     model.value = value
 }
+
+function focus() {
+    inputRef.value?.focus()
+}
+
+defineExpose({
+    focus,
+})
 </script>
 
 <template>
     <input
         v-if="!textArea"
+        ref="inputRef"
+        v-bind="attrs"
         :value="model ?? ''"
         class="rui-input"
         :class="{ 'rui-input--show-placeholder': showPlaceholder }"
@@ -87,6 +103,8 @@ function handleInput(event: Event) {
     />
     <textarea
         v-else
+        ref="inputRef"
+        v-bind="attrs"
         :value="model ?? ''"
         class="rui-input rui-input--text-area"
         :class="{ 'rui-input--show-placeholder': showPlaceholder }"

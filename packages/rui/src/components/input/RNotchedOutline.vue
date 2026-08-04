@@ -18,6 +18,7 @@ const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
             'rui-notched-outline--hovered': hovered,
             'rui-notched-outline--floating': floating,
             'rui-notched-outline--focused': focused,
+            'rui-notched-outline--has-start-icon': hasStartIcon,
             'has-label': hasLabel,
         }"
     >
@@ -38,6 +39,7 @@ const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
             :text-area="textArea"
             :has-value="hasValue"
             :label="label"
+            :input-id="inputId"
         />
     </span>
 </template>
@@ -69,11 +71,11 @@ const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
     &__leading {
         width: 12px;
         @include shape.apply(
-            var(--rui-text-field-shape-family),
-            var(--rui-text-field-shape-start-start),
+            var(--rui-comp-text-field-shape-family),
+            var(--rui-comp-text-field-shape-start-start),
             0,
             0,
-            var(--rui-text-field-shape-end-start)
+            var(--rui-comp-text-field-shape-end-start)
         );
         border-inline-start-style: solid;
         border-top-style: solid;
@@ -120,7 +122,13 @@ const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
 
     &__label {
         position: absolute;
-        inset-inline-start: var(--rui-text-field-content-padding-inline);
+        inset-inline-start: var(--rui-comp-text-field-floating-label-inset-inline-start);
+    }
+
+    &--has-start-icon:not(#{$block}--floating) #{$block}__label {
+        inset-inline-start: calc(
+            var(--rui-comp-text-field-adornment-inline-size) + var(--rui-comp-text-field-adornment-text-gap)
+        );
     }
 
     &--hovered {
@@ -158,10 +166,10 @@ const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
         #{$block}__trailing {
             flex-grow: 1;
             @include shape.apply(
-                var(--rui-text-field-shape-family),
+                var(--rui-comp-text-field-shape-family),
                 0,
-                var(--rui-text-field-shape-start-end),
-                var(--rui-text-field-shape-end-end),
+                var(--rui-comp-text-field-shape-start-end),
+                var(--rui-comp-text-field-shape-end-end),
                 0
             );
             border-inline-end-style: solid;
@@ -184,10 +192,10 @@ const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
         #{$block}__trailing {
             flex-grow: 1;
             @include shape.apply(
-                var(--rui-text-field-shape-family),
+                var(--rui-comp-text-field-shape-family),
                 0,
-                var(--rui-text-field-shape-start-end),
-                var(--rui-text-field-shape-end-end),
+                var(--rui-comp-text-field-shape-start-end),
+                var(--rui-comp-text-field-shape-end-end),
                 0
             );
             border-inline-start-style: solid;

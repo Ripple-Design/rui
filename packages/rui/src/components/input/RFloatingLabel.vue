@@ -5,8 +5,10 @@ defineProps<RFloatingLabelProps>()
 </script>
 
 <template>
-    <span
+    <label
+        v-if="label"
         class="rui-floating-label"
+        :for="inputId"
         :class="{
             'rui-floating-label--floating': floating,
             'rui-floating-label--focused': focused,
@@ -15,7 +17,7 @@ defineProps<RFloatingLabelProps>()
         }"
     >
         {{ label }}
-    </span>
+    </label>
 </template>
 
 <style scoped lang="scss">
@@ -23,33 +25,33 @@ defineProps<RFloatingLabelProps>()
 @use "@/styles/color";
 
 .rui-floating-label {
-    --rui-text-field-label-position-duration: 167ms;
-    --rui-text-field-label-color-duration: 167ms;
-    --rui-text-field-label-easing: cubic-bezier(0.4, 0, 0.2, 1);
+    --rui-comp-text-field-label-position-duration: 167ms;
+    --rui-comp-text-field-label-color-duration: 167ms;
+    --rui-comp-text-field-label-easing: cubic-bezier(0.4, 0, 0.2, 1);
 
     @include typography.subtitle1("--rui-comp-text-field-input-text");
     display: inline-block;
     position: absolute;
     top: 50%;
-    inset-inline-start: 0;
+    inset-inline-start: var(--rui-comp-text-field-input-label-inset-inline-start);
     transform: translateY(-50%);
     pointer-events: none;
     color: color.$on-surface-medium;
     transition:
-        top var(--rui-text-field-label-position-duration) var(--rui-text-field-label-easing),
-        inset-inline-start var(--rui-text-field-label-position-duration) var(--rui-text-field-label-easing),
-        font-size var(--rui-text-field-label-position-duration) var(--rui-text-field-label-easing),
-        font-weight var(--rui-text-field-label-position-duration) var(--rui-text-field-label-easing),
-        letter-spacing var(--rui-text-field-label-position-duration) var(--rui-text-field-label-easing),
-        color var(--rui-text-field-label-color-duration) var(--rui-text-field-label-easing);
+        top var(--rui-comp-text-field-label-position-duration) var(--rui-comp-text-field-label-easing),
+        inset-inline-start var(--rui-comp-text-field-label-position-duration) var(--rui-comp-text-field-label-easing),
+        font-size var(--rui-comp-text-field-label-position-duration) var(--rui-comp-text-field-label-easing),
+        font-weight var(--rui-comp-text-field-label-position-duration) var(--rui-comp-text-field-label-easing),
+        letter-spacing var(--rui-comp-text-field-label-position-duration) var(--rui-comp-text-field-label-easing),
+        color var(--rui-comp-text-field-label-color-duration) var(--rui-comp-text-field-label-easing);
 
     &--text-area {
-        top: calc(var(--rui-text-field-content-padding-vertical) + 12px);
-        //top: var(--rui-text-field-content-padding-vertical);
+        top: calc(var(--rui-comp-text-field-content-padding-vertical) + 12px);
     }
 
     &--floating {
         @include typography.caption("--rui-comp-text-field-floating-label");
+        inset-inline-start: 0;
         top: 0;
     }
 
@@ -58,7 +60,7 @@ defineProps<RFloatingLabelProps>()
     }
 
     &--has-value {
-        --rui-text-field-label-color-duration: 0ms;
+        --rui-comp-text-field-label-color-duration: 0ms;
     }
 }
 </style>

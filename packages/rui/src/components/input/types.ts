@@ -16,6 +16,10 @@ export type RInputProps = {
 export type RFieldInputProps = RInputProps & {
     /** Indicates whether the field is currently focused. */
     focused: boolean
+    /** Reserves the logical inline-start adornment region. */
+    hasStartIcon?: boolean
+    /** Reserves the logical inline-end adornment region. */
+    hasEndIcon?: boolean
 }
 
 /** Props shared by field label and container primitives. */
@@ -30,13 +34,22 @@ export type RFloatingLabelProps = {
     textArea?: boolean
     /** Sets the visible field label. */
     label?: string
+    /** Associates the visible label with the native input. */
+    inputId?: string
 }
 
 /** Props for the internal notched outline container. */
 export type RNotchedOutlineProps = RFloatingLabelProps & {
     /** Indicates whether the field is currently hovered. */
     hovered: boolean
+    /** Indicates whether the field has a logical inline-start adornment. */
+    hasStartIcon?: boolean
 }
 
 /** Props for the internal input field shell. */
-export type RFieldShellProps = RFloatingLabelProps
+export type RFieldShellProps = RFloatingLabelProps & {
+    /** Reserves the logical inline-start adornment region. */
+    hasStartIcon?: boolean
+    /** Reserves the logical inline-end adornment region. */
+    hasEndIcon?: boolean
+}

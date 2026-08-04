@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { RTextField } from "@ripple-design/rui"
+import { RICloseFilled, RISearchFilled } from "@ripple-design/icons"
+import { RIconButton, RTextField } from "@ripple-design/rui"
+import { ref } from "vue"
+
+const query = ref("")
 </script>
 
 <template>
@@ -8,6 +12,12 @@ import { RTextField } from "@ripple-design/rui"
         <RTextField placeholder="No label" />
         <RTextField label="Label" text-area />
         <RTextField placeholder="No label textarea" text-area />
+        <RTextField label="Search" :start-icon="RISearchFilled" :end-icon="RICloseFilled" />
+        <RTextField v-model="query" label="Search" :start-icon="RISearchFilled">
+            <template #end-icon>
+                <RIconButton :icon="RICloseFilled" label="Clear search" @click="query = ''" />
+            </template>
+        </RTextField>
     </div>
 </template>
 

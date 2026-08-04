@@ -1,3 +1,5 @@
+import type { RIconResolvableSource } from "@/components/icon/types"
+
 /** Props for the {@link RTextField} component. */
 export type RTextFieldProps = {
     /** Sets the visible field label. */
@@ -6,4 +8,8 @@ export type RTextFieldProps = {
     textArea?: boolean
     /** Sets the placeholder text shown when the field is empty. */
     placeholder?: string
+    /** Renders a decorative icon at the logical inline start of the field. */
+    startIcon?: RIconResolvableSource
+    /** Renders a decorative icon at the logical inline end of the field. */
+    endIcon?: RIconResolvableSource
 }
