@@ -205,6 +205,7 @@ function handleTriggerKeyDown(event: KeyboardEvent) {
 
 <style scoped lang="scss">
 @use "@/styles/color";
+@use "@/styles/density";
 @use "@/styles/normalize";
 @use "@/styles/typography";
 
@@ -219,7 +220,7 @@ function handleTriggerKeyDown(event: KeyboardEvent) {
     flex: 1 1 auto;
     align-items: center;
     min-inline-size: 0;
-    block-size: 56px;
+    block-size: density.withDecrement(56px, --rui-comp-text-field-density);
     padding-inline: 16px 4px;
     color: var(--rui-comp-select-field-trigger-color);
     text-align: start;
