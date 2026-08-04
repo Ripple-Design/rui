@@ -25,7 +25,12 @@ export function useDismissableLayer(
             return false
         }
 
-        return !!resolvedReference()?.contains(target) || !!floating.value?.contains(target)
+        const referenceElement = reference.value
+        return (
+            !!referenceElement?.contains(target) ||
+            !!resolvedReference()?.contains(target) ||
+            !!floating.value?.contains(target)
+        )
     }
 
     function handlePointerDown(event: PointerEvent) {
