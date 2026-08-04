@@ -81,5 +81,6 @@ const isStringSource = computed(() => typeof resolvedIcon.value === "string")
     justify-content: center;
     vertical-align: middle;
     fill: currentColor;
+    shape-rendering: geometricPrecision;
 }
 </style>
