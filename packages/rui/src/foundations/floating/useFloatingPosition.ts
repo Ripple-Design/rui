@@ -5,10 +5,10 @@ import { resolveTouchTargetAnchor } from "@/foundations/touchTarget"
 
 import { normalizeFloatingBoolean, normalizeFloatingPlacement, normalizeFloatingStrategy, resolveFloatingValue } from "./shared"
 
-import type { RFloatingPositionOptions, RFloatingPositionState } from "./types"
+import type { RFloatingPositionOptions, RFloatingPositionState, RFloatingReference } from "./types"
 
 export function useFloatingPosition(
-    reference: Ref<HTMLElement | null>,
+    reference: Ref<RFloatingReference | null>,
     floating: Ref<HTMLElement | null>,
     options: RFloatingPositionOptions = {},
 ): RFloatingPositionState {
@@ -25,7 +25,9 @@ export function useFloatingPosition(
 
     const resolvedReference = computed(() => {
         const referenceElement = reference.value
-        return referenceElement ? resolveTouchTargetAnchor(referenceElement) : null
+        return typeof HTMLElement !== "undefined" && referenceElement instanceof HTMLElement
+            ? resolveTouchTargetAnchor(referenceElement)
+            : referenceElement
     })
 
     let cleanup: (() => void) | null = null

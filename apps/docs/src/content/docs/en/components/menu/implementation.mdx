@@ -13,6 +13,8 @@ import MenuBasicDemo from "@docs/components/demos/menu/MenuBasicDemo.vue"
 import menuBasicDemoSource from "@docs/components/demos/menu/MenuBasicDemo.vue?raw"
 import MenuGroupDemo from "@docs/components/demos/menu/MenuGroupDemo.vue"
 import menuGroupDemoSource from "@docs/components/demos/menu/MenuGroupDemo.vue?raw"
+import MenuContextDemo from "@docs/components/demos/menu/MenuContextDemo.vue"
+import menuContextDemoSource from "@docs/components/demos/menu/MenuContextDemo.vue?raw"
 
 ## Alignment
 
@@ -24,6 +26,10 @@ import menuGroupDemoSource from "@docs/components/demos/menu/MenuGroupDemo.vue?r
 
 <DemoBlock title="Menu groups" code={menuGroupDemoSource} language="vue">
     <MenuGroupDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Shared context menu" code={menuContextDemoSource} language="vue">
+    <MenuContextDemo client:load />
 </DemoBlock>
 
 `RMenu` and `RMenuItem` provide anchored command actions. `RMenuGroup` additionally owns an independent controlled single-selection value for its child items.

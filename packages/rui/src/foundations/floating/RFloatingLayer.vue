@@ -49,10 +49,12 @@ defineExpose({
 .rui-floating-layer {
     visibility: hidden;
     transition: visibility 0s linear motion.$duration-small-out;
+    transition-behavior: allow-discrete;
 
     &--open {
         visibility: visible;
         transition-delay: 0s;
+        transition-behavior: allow-discrete;
     }
 }
 </style>

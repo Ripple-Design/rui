@@ -1,7 +1,9 @@
-import type { Middleware, MiddlewareData, Placement, Strategy } from "@floating-ui/dom"
+import type { Middleware, MiddlewareData, Placement, Strategy, VirtualElement } from "@floating-ui/dom"
 import type { ComputedRef, CSSProperties, Ref } from "vue"
 
 export type RFloatingDismissReason = "escape-key" | "pointer-outside" | "reference-press"
+
+export type RFloatingReference = HTMLElement | VirtualElement
 
 export type RFloatingLayerProps = {
     floatingStyles: CSSProperties

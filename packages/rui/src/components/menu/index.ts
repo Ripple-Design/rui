@@ -1,4 +1,5 @@
-export type * from "./types"
+export { default as RContextMenu } from "./RContextMenu.vue"
 export { default as RMenu } from "./RMenu.vue"
 export { default as RMenuGroup } from "./RMenuGroup.vue"
 export { default as RMenuItem } from "./RMenuItem.vue"
+export type * from "./types"

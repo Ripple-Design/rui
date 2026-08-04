@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import { offset, flip, shift } from "@floating-ui/dom"
 import {
     cloneVNode,
     computed,
     defineComponent,
-    nextTick,
-    onBeforeUnmount,
     onMounted,
-    provide,
     ref,
     useId,
     useSlots,
@@ -16,17 +12,9 @@ import {
     type VNode,
 } from "vue"
 
-import RSurface from "@/components/surface/RSurface.vue"
-import {
-    RFloatingLayer,
-    useDismissableLayer,
-    useFloatingFocus,
-    useFloatingPosition,
-    useOverlayStack,
-} from "@/foundations/floating"
+import RMenuLayer from "@/foundations/menu/RMenuLayer.vue"
 
-import { menuKey, type RMenuProps } from "./types"
-import { useMenuState } from "./useMenuState"
+import type { RMenuProps } from "./types"
 
 const props = withDefaults(defineProps<RMenuProps>(), {
     align: "start",
@@ -44,33 +32,7 @@ const slots: Slots = useSlots()
 const triggerId = useId()
 const menuId = useId()
 const triggerRef = ref<HTMLElement | null>(null)
-const floatingLayerRef = ref<InstanceType<typeof RFloatingLayer> | null>(null)
 const open = ref(props.open)
-
-const overlayStack = useOverlayStack()
-const layer = overlayStack.register()
-const { capture, restore } = useFloatingFocus()
-const { context, focusFirst, hasGroups } = useMenuState(
-    open,
-    computed(() => props.disabled),
-)
-
-provide(menuKey, context)
-
-const floatingRef = computed(() => floatingLayerRef.value?.element ?? null)
-const resolvedPlacement = computed(() => `bottom-${props.align}` as const)
-const menuClasses = computed(() => [
-    "rui-menu",
-    `rui-menu--align-${props.align}`,
-    { "rui-menu--open": open.value, "rui-menu--grouped": hasGroups.value },
-])
-
-const position = useFloatingPosition(triggerRef, floatingRef, {
-    middleware: [offset(8), flip(), shift({ padding: 4 })],
-    open,
-    placement: resolvedPlacement,
-    strategy: "fixed",
-})
 
 watch(
     () => props.open,
@@ -79,34 +41,14 @@ watch(
     },
 )
 
-watch(open, async (value, previous) => {
-    if (value === previous) {
-        return
-    }
-
-    overlayStack.setActive(layer.id, value)
+function requestOpen(value: boolean) {
+    open.value = value
     emit("update:open", value)
+}
 
-    if (value) {
-        capture()
-        emit("open")
-        await nextTick()
-        await position.update()
-        focusFirst()
-        return
-    }
-
-    restore(true)
-    emit("close")
-})
-
-useDismissableLayer(triggerRef, floatingRef, {
-    enabled: open,
-    isTopLayer: computed(() => overlayStack.isTopLayer(layer.id)),
-    onDismiss() {
-        open.value = false
-    },
-})
+function handleLayerOpenUpdate(value: boolean) {
+    requestOpen(value)
+}
 
 function setTriggerRef(element: Element | import("vue").ComponentPublicInstance | null) {
     if (element instanceof HTMLElement) {
@@ -123,7 +65,7 @@ function openMenu() {
         return
     }
 
-    open.value = true
+    requestOpen(true)
 }
 
 function toggleMenu() {
@@ -131,7 +73,7 @@ function toggleMenu() {
         return
     }
 
-    open.value = !open.value
+    requestOpen(!open.value)
 }
 
 function handleTriggerKeyDown(event: KeyboardEvent) {
@@ -182,96 +124,28 @@ const TriggerRenderer = defineComponent({
     },
 })
 
-function handleMenuKeyDown(event: KeyboardEvent) {
-    const currentId = context.focusedItemId.value
-    if (!currentId) {
-        return
-    }
-
-    if (event.key === "ArrowDown") {
-        event.preventDefault()
-        context.focusByDirection(currentId, "next")
-        return
-    }
-
-    if (event.key === "ArrowUp") {
-        event.preventDefault()
-        context.focusByDirection(currentId, "prev")
-        return
-    }
-
-    if (event.key === "Home") {
-        event.preventDefault()
-        context.focusByDirection(currentId, "first")
-        return
-    }
-
-    if (event.key === "End") {
-        event.preventDefault()
-        context.focusByDirection(currentId, "last")
-        return
-    }
-
-    if (event.key === "Escape") {
-        event.preventDefault()
-        open.value = false
-    }
-}
-
 onMounted(() => {
     if (!slots.trigger) {
         throw new Error("[RMenu] The trigger slot is required.")
     }
-})
-
-onBeforeUnmount(() => {
-    overlayStack.unregister(layer.id)
 })
 </script>
 
 <template>
     <TriggerRenderer />
 
-    <RFloatingLayer
-        ref="floatingLayerRef"
+    <RMenuLayer
+        :align="align"
+        :disabled="disabled"
         :id="menuId"
-        :floating-styles="position.floatingStyles.value"
+        :dismissal-boundary="triggerRef"
         :open="open"
-        role="menu"
+        :placement="`bottom-${align}`"
+        :reference="triggerRef"
+        @update:open="handleLayerOpenUpdate"
+        @open="emit('open')"
+        @close="emit('close')"
     >
-        <RSurface :class="menuClasses" :elevation="8" @keydown="handleMenuKeyDown">
-            <slot />
-        </RSurface>
-    </RFloatingLayer>
+        <slot />
+    </RMenuLayer>
 </template>
-
-<style scoped lang="scss">
-@use "@/styles/motion";
-
-.rui-menu {
-    min-inline-size: 112px;
-    max-inline-size: 320px;
-    padding: 8px 0;
-    opacity: 0;
-    transform: scale(0.8);
-    transition:
-        opacity motion.$duration-small-in motion.$easing-standard,
-        transform motion.$duration-small-in motion.$easing-standard;
-    &--grouped {
-        padding-block: 0;
-    }
-
-    &--open {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    &--align-start {
-        transform-origin: top left;
-    }
-
-    &--align-end {
-        transform-origin: top right;
-    }
-}
-</style>
