@@ -11,7 +11,7 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [ ] Buttons: floating action button
 - [x] Cards
 - [ ] Checkboxes
-- [ ] Chips
+- [x] Chips
 - [ ] Data tables
 - [ ] Date pickers
 - [x] Dialogs
@@ -25,9 +25,9 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [ ] Radio buttons
 - [ ] Sheets: bottom
 - [x] Sheets: side
-- [ ] Sliders
+- [x] Sliders
 - [ ] Snackbars
-- [ ] Switches
+- [x] Switches
 - [x] Tabs
 - [x] Text fields
 - [ ] Time pickers
