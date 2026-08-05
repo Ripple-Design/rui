@@ -6,6 +6,7 @@ dist/
 
 # Astro build output
 /apps/docs/.astro/
+/.astro/
 
 # Claude AI
 /.claude/
