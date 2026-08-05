@@ -11,7 +11,9 @@ const emit = defineEmits<{
     focusRequest: []
 }>()
 
-const props = defineProps<RFieldShellProps>()
+const props = withDefaults(defineProps<RFieldShellProps>(), {
+    ripple: () => ({ disabled: true }),
+})
 const isHovered = ref(false)
 const shellRef = ref<HTMLElement | null>(null)
 const hasError = computed(() => !!props.errorText?.trim())

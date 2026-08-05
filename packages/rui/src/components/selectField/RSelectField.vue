@@ -215,7 +215,7 @@ watch(filteredOptions, () => {
             :error-text="errorText"
             :error="error"
             :required="required"
-            :has-end-icon="!filterable"
+            :has-end-icon="true"
             @focus-state-change="isFocused = $event"
         >
             <input
@@ -237,6 +237,7 @@ watch(filteredOptions, () => {
                 :aria-invalid="error ? 'true' : undefined"
                 :aria-activedescendant="open && activeOptionId ? activeOptionId : undefined"
                 :placeholder="placeholder"
+                @click="openSelect"
                 @input="handleFilterInput"
                 @focus="isFocused = true"
                 @keydown="handleTriggerKeyDown"
@@ -271,14 +272,16 @@ watch(filteredOptions, () => {
 
         <template #end-icon>
             <RIconButton
-                v-if="!filterable"
                 :icon="open ? RIArrowDropUpFilled : RIArrowDropDownFilled"
                 :label="open ? 'Close options' : 'Open options'"
                 :pressed="open"
                 :disabled="disabled"
                 :style="{
-                    '--rui-icon-button-color':
-                        isFocused || open ? 'var(--rui-sys-color-primary)' : 'var(--rui-sys-color-on-surface-medium)',
+                    '--rui-icon-button-color': error
+                        ? 'var(--rui-sys-color-error)'
+                        : isFocused || open
+                          ? 'var(--rui-sys-color-primary)'
+                          : 'var(--rui-sys-color-on-surface-medium)',
                 }"
                 @click.stop="handleIconClick"
             />
