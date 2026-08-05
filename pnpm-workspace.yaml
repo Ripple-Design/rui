@@ -4,22 +4,25 @@ packages:
 
 catalog:
     vue: 3.5.39
+    "@vitejs/plugin-vue": ^6.0.7
+    vite: ^8.0.16
+    vite-plugin-dts: ^4.5.4
 
 allowBuilds:
     esbuild: true
     sharp: true
 
 overrides:
-    "vue": "beta"
-    "@vue/compiler-core": "beta"
-    "@vue/compiler-dom": "beta"
-    "@vue/compiler-sfc": "beta"
-    "@vue/compiler-ssr": "beta"
-    "@vue/compiler-vapor": "beta"
-    "@vue/reactivity": "beta"
-    "@vue/runtime-core": "beta"
-    "@vue/runtime-dom": "beta"
-    "@vue/runtime-vapor": "beta"
-    "@vue/server-renderer": "beta"
-    "@vue/shared": "beta"
-    "@vue/compat": "beta"
+    "vue": "3.5.39"
+    "@vue/compiler-core": "3.5.39"
+    "@vue/compiler-dom": "3.5.39"
+    "@vue/compiler-sfc": "3.5.39"
+    "@vue/compiler-ssr": "3.5.39"
+    "@vue/compiler-vapor": "3.5.39"
+    "@vue/reactivity": "3.5.39"
+    "@vue/runtime-core": "3.5.39"
+    "@vue/runtime-dom": "3.5.39"
+    "@vue/runtime-vapor": "3.5.39"
+    "@vue/server-renderer": "3.5.39"
+    "@vue/shared": "3.5.39"
+    "@vue/compat": "3.5.39"
