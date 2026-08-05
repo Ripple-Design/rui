@@ -154,8 +154,8 @@ onBeforeUnmount(() => {
         @keydown="handleKeyDown"
     >
         <span v-if="showLeadingIndicator || icon" class="rui-menu-item__leading">
-            <RIcon v-if="showSelectedCheck" :icon="selectedCheckIcon" :size="20" decorative />
-            <RIcon v-else-if="icon" :icon="icon" :size="20" decorative />
+            <RIcon v-if="showSelectedCheck" :icon="selectedCheckIcon" :size="24" decorative />
+            <RIcon v-else-if="icon" :icon="icon" :size="24" decorative />
         </span>
         <span class="rui-menu-item__label">
             <slot>{{ displayLabel }}</slot>
