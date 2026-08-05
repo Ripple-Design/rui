@@ -1,9 +1,20 @@
-import { computed } from "vue"
+import { computed, inject, type InjectionKey, type Ref } from "vue"
 
 import { RUI_FLOATING_PORTAL_ID } from "./constants"
 import { resolveFloatingValue } from "./shared"
 
 import type { RFloatingPortalTarget, RFloatingReactive } from "./types"
+
+export const floatingPortalTargetKey: InjectionKey<Ref<HTMLElement | null>> = Symbol("rFloatingPortalTarget")
+
+export function useFloatingPortalTarget(target?: RFloatingReactive<RFloatingPortalTarget>) {
+    const inheritedTarget = inject(floatingPortalTargetKey, null)
+
+    return computed(() => {
+        const resolvedTarget = resolveFloatingValue(target, inheritedTarget?.value ?? null)
+        return resolvedTarget ? resolvePortalTarget(resolvedTarget) : null
+    })
+}
 
 export function resolvePortalTarget(target?: RFloatingPortalTarget) {
     if (typeof document === "undefined") {

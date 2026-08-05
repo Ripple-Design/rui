@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RIArrowDropDownFilled, RIArrowDropUpFilled } from "@ripple-design/icons"
-import { computed, provide, ref, toRaw, useAttrs, useId } from "vue"
+import { computed, provide, ref, toRaw, useAttrs, useId, watch } from "vue"
 
 import { RIconButton } from "@/components"
 import RFieldShell from "@/components/input/RFieldShell.vue"
@@ -19,6 +19,7 @@ defineOptions({
 const props = withDefaults(defineProps<RSelectFieldProps>(), {
     align: "start",
     disabled: false,
+    filterable: false,
 })
 
 const attrs = useAttrs()
@@ -42,18 +43,34 @@ const options = ref<RSelectOptionRecord[]>([])
 const activeOptionId = ref<string | null>(null)
 const open = ref(false)
 const isFocused = ref(false)
+const filterText = ref("")
 const fieldRef = computed(() => shellRef.value?.element ?? null)
 
 const optionMatchesModel = (option: RSelectOptionRecord) => Object.is(toRaw(option.value), toRaw(model.value))
 const selectedOption = computed(() => options.value.find(optionMatchesModel))
-const hasValue = computed(() => selectedOption.value !== undefined)
+const normalizedFilterText = computed(() => filterText.value.trim().toLocaleLowerCase())
+const filteredOptions = computed(() => {
+    if (!props.filterable || !normalizedFilterText.value) {
+        return options.value
+    }
+
+    return options.value.filter((option) => option.label.toLocaleLowerCase().includes(normalizedFilterText.value))
+})
+const hasValue = computed(() => selectedOption.value !== undefined || (props.filterable && !!filterText.value))
 const isFloating = computed(() => isFocused.value || open.value || hasValue.value)
-const displayText = computed(() => selectedOption.value?.label ?? props.placeholder ?? "")
+const displayText = computed(() => (props.filterable ? filterText.value : selectedOption.value?.label ?? props.placeholder ?? ""))
 const hasLabel = computed(() => !!props.label?.trim())
+const rippleOptions = computed(() => ({
+    disabled: props.disabled || props.filterable,
+    contrast: "low",
+}))
 
 provide(selectContextKey, {
     activeOptionId,
     commit,
+    isOptionVisible(label) {
+        return !props.filterable || !normalizedFilterText.value || label.toLocaleLowerCase().includes(normalizedFilterText.value)
+    },
     isSelected(value) {
         return Object.is(toRaw(value), toRaw(model.value))
     },
@@ -78,8 +95,8 @@ provide(selectContextKey, {
 })
 
 function setInitialActiveOption() {
-    const selected = options.value.find((option) => optionMatchesModel(option) && !option.disabled)
-    activeOptionId.value = selected?.id ?? options.value.find((option) => !option.disabled)?.id ?? null
+    const selected = filteredOptions.value.find((option) => optionMatchesModel(option) && !option.disabled)
+    activeOptionId.value = selected?.id ?? filteredOptions.value.find((option) => !option.disabled)?.id ?? null
 }
 
 function openSelect() {
@@ -91,9 +108,16 @@ function openSelect() {
     open.value = true
 }
 
+function restoreFilterText() {
+    filterText.value = selectedOption.value?.label ?? ""
+}
+
 function close(restoreFocus = true) {
     open.value = false
     activeOptionId.value = null
+    if (props.filterable) {
+        restoreFilterText()
+    }
     if (restoreFocus) {
         triggerRef.value?.focus()
     }
@@ -121,7 +145,18 @@ function commit(option: RSelectOptionRecord) {
     }
 
     model.value = option.value
+    if (props.filterable) {
+        filterText.value = option.label
+    }
     close()
+}
+
+function handleFilterInput() {
+    if (props.disabled) {
+        return
+    }
+
+    openSelect()
 }
 
 function handleTriggerKeyDown(event: KeyboardEvent) {
@@ -131,55 +166,111 @@ function handleTriggerKeyDown(event: KeyboardEvent) {
 
     if (event.key === "Tab") {
         close(false)
+        return
+    }
+
+    if (event.key === "Escape" && open.value) {
+        event.preventDefault()
+        close()
+        return
+    }
+
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault()
+        openSelect()
     }
 }
+
+watch(
+    () => model.value,
+    () => {
+        if (props.filterable && !open.value) {
+            restoreFilterText()
+        }
+    },
+    { immediate: true },
+)
+
+watch(filteredOptions, () => {
+    if (open.value) {
+        setInitialActiveOption()
+    }
+})
 </script>
 
 <template>
-    <RFieldShell
-        ref="shellRef"
-        :label="label"
-        :focused="isFocused || open"
-        :floating="isFloating"
-        :has-value="hasValue"
-        :input-id="controlId"
-        :label-id="labelId"
-        :helper-id="helperId"
-        :helper-text="helperText"
-        :error-text="errorText"
-        :error="error"
-        :required="required"
-        :has-end-icon="true"
-        @focus-state-change="isFocused = $event"
-    >
-        <button
-            :id="controlId"
-            ref="triggerRef"
-            v-bind="attrs"
-            class="rui-select-field__trigger"
-            type="button"
-            role="combobox"
-            :disabled="disabled"
-            :aria-haspopup="'listbox'"
-            :aria-expanded="open ? 'true' : 'false'"
-            :aria-controls="listboxId"
-            :aria-labelledby="hasLabel ? labelId : undefined"
-            :aria-describedby="describedBy"
-            :aria-invalid="error ? 'true' : undefined"
+    <div class="rui-select-field">
+        <RFieldShell
+            ref="shellRef"
+            :ripple="rippleOptions"
+            :label="label"
+            :focused="isFocused || open"
+            :floating="isFloating"
+            :has-value="hasValue"
+            :input-id="controlId"
+            :label-id="labelId"
+            :helper-id="helperId"
+            :helper-text="helperText"
+            :error-text="errorText"
+            :error="error"
             :required="required"
-            :aria-activedescendant="open && activeOptionId ? activeOptionId : undefined"
-            @click="handleTriggerClick"
-            @focus="isFocused = true"
-            @keydown="handleTriggerKeyDown"
-            @blur="isFocused = false"
+            :has-end-icon="!filterable"
+            @focus-state-change="isFocused = $event"
         >
-            <span class="rui-select-field__value" :class="{ 'rui-select-field__value--placeholder': !hasValue }">
-                {{ displayText }}
-            </span>
-        </button>
+            <input
+                v-if="filterable"
+                :id="controlId"
+                ref="triggerRef"
+                v-bind="attrs"
+                v-model="filterText"
+                class="rui-select-field__trigger rui-select-field__trigger--filterable"
+                type="text"
+                role="combobox"
+                :disabled="disabled"
+                aria-autocomplete="list"
+                :aria-haspopup="'listbox'"
+                :aria-expanded="open ? 'true' : 'false'"
+                :aria-controls="listboxId"
+                :aria-labelledby="hasLabel ? labelId : undefined"
+                :aria-describedby="describedBy"
+                :aria-invalid="error ? 'true' : undefined"
+                :aria-activedescendant="open && activeOptionId ? activeOptionId : undefined"
+                :placeholder="placeholder"
+                @input="handleFilterInput"
+                @focus="isFocused = true"
+                @keydown="handleTriggerKeyDown"
+                @blur="isFocused = false"
+            />
+            <button
+                v-else
+                :id="controlId"
+                ref="triggerRef"
+                v-bind="attrs"
+                class="rui-select-field__trigger"
+                type="button"
+                role="combobox"
+                :disabled="disabled"
+                :aria-haspopup="'listbox'"
+                :aria-expanded="open ? 'true' : 'false'"
+                :aria-controls="listboxId"
+                :aria-labelledby="hasLabel ? labelId : undefined"
+                :aria-describedby="describedBy"
+                :aria-invalid="error ? 'true' : undefined"
+                :required="required"
+                :aria-activedescendant="open && activeOptionId ? activeOptionId : undefined"
+                @click="handleTriggerClick"
+                @focus="isFocused = true"
+                @keydown="handleTriggerKeyDown"
+                @blur="isFocused = false"
+            >
+                <span class="rui-select-field__value" :class="{ 'rui-select-field__value--placeholder': !hasValue }">
+                    {{ displayText }}
+                </span>
+            </button>
 
         <template #end-icon>
             <RIconButton
+                v-if="!filterable"
                 :icon="open ? RIArrowDropUpFilled : RIArrowDropDownFilled"
                 :label="open ? 'Close options' : 'Open options'"
                 :pressed="open"
@@ -191,22 +282,23 @@ function handleTriggerKeyDown(event: KeyboardEvent) {
                 @click.stop="handleIconClick"
             />
         </template>
-    </RFieldShell>
+        </RFieldShell>
 
-    <RMenu
-        mode="listbox"
-        :id="listboxId"
-        :open="open"
-        :disabled="disabled"
-        :match-width="true"
-        :reference="fieldRef"
-        :align="align"
-        @update:open="handleMenuOpenUpdate"
-    >
-        <RMenuGroup>
-            <slot />
-        </RMenuGroup>
-    </RMenu>
+        <RMenu
+            mode="listbox"
+            :id="listboxId"
+            :open="open"
+            :disabled="disabled"
+            :match-width="true"
+            :reference="fieldRef"
+            :align="align"
+            @update:open="handleMenuOpenUpdate"
+        >
+            <RMenuGroup>
+                <slot />
+            </RMenuGroup>
+        </RMenu>
+    </div>
 </template>
 
 <style scoped lang="scss">
@@ -214,6 +306,10 @@ function handleTriggerKeyDown(event: KeyboardEvent) {
 @use "@/styles/density";
 @use "@/styles/normalize";
 @use "@/styles/typography";
+
+.rui-select-field {
+    min-inline-size: 0;
+}
 
 .rui-select-field__trigger {
     @include normalize.button;
@@ -230,6 +326,16 @@ function handleTriggerKeyDown(event: KeyboardEvent) {
     padding-inline: 16px 4px;
     color: var(--rui-comp-select-field-trigger-color);
     text-align: start;
+
+    &--filterable {
+        @include normalize.input;
+
+        cursor: text;
+    }
+
+    &::placeholder {
+        color: var(--rui-comp-select-field-placeholder-color);
+    }
 }
 
 .rui-select-field__value {

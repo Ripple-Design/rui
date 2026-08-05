@@ -5,6 +5,7 @@
 @forward "shape" as shape-*;
 @forward "elevations" as elevation-*;
 @forward "breakpoints" as breakpoint-*;
+@forward "scrollbar" as scrollbar-*;
 @use "../foundations/ripple/ripple";
 @use "../foundations/touchTarget/touchTarget";
 

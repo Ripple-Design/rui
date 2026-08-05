@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { Teleport, computed, onMounted, ref, type StyleValue } from "vue"
 
-import { ensureFloatingPortalRoot } from "@/foundations"
+import { ensureFloatingPortalRoot, useFloatingPortalTarget } from "@/foundations"
 
 import type { RFloatingLayerProps } from "./types"
-
-import { RUI_FLOATING_PORTAL_ID } from "./constants"
 
 const props = defineProps<RFloatingLayerProps>()
 
 const portalReady = ref(false)
-const portalSelector = `#${RUI_FLOATING_PORTAL_ID}`
+const fallbackPortalTarget = ref<HTMLElement | null>(null)
+const portalTarget = useFloatingPortalTarget(props.portalTarget)
+const resolvedPortalTarget = computed(() => portalTarget.value ?? fallbackPortalTarget.value)
 const layerRef = ref<HTMLElement | null>(null)
 
 const layerStyles = computed<StyleValue>(() => ({
@@ -19,7 +19,9 @@ const layerStyles = computed<StyleValue>(() => ({
 }))
 
 onMounted(() => {
-    ensureFloatingPortalRoot()
+    if (!portalTarget.value) {
+        fallbackPortalTarget.value = ensureFloatingPortalRoot()
+    }
     portalReady.value = true
 })
 
@@ -29,7 +31,7 @@ defineExpose({
 </script>
 
 <template>
-    <Teleport v-if="portalReady" :to="portalSelector">
+    <Teleport v-if="portalReady && resolvedPortalTarget" :to="resolvedPortalTarget">
         <div
             ref="layerRef"
             :id="id"

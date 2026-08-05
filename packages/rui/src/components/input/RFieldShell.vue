@@ -4,6 +4,7 @@ import { computed, ref } from "vue"
 import type { RFieldShellProps } from "./types"
 
 import RNotchedOutline from "./RNotchedOutline.vue"
+import { vRipple } from "@/foundations/ripple"
 
 const emit = defineEmits<{
     focusStateChange: [focused: boolean]
@@ -57,6 +58,7 @@ function handleClick(event: MouseEvent) {
         }"
     >
         <div
+            v-ripple="ripple"
             class="rui-field-shell__control"
             @click="handleClick"
             @focusin="emit('focusStateChange', true)"

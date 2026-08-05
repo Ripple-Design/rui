@@ -68,6 +68,7 @@ export function useMenuState(open: Ref<boolean>, disabled: Ref<boolean>) {
 
         focusedItemId.value = target.id
         target.element.focus({ preventScroll: true })
+        target.element.scrollIntoView({ block: "nearest" })
     }
 
     function onItemFocus(id: symbol) {
@@ -111,6 +112,7 @@ export function useMenuState(open: Ref<boolean>, disabled: Ref<boolean>) {
 
             focusedItemId.value = target.id
             target.element.focus({ preventScroll: true })
+            target.element.scrollIntoView({ block: "nearest" })
         },
     }
 }

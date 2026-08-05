@@ -9,6 +9,7 @@ export type RFloatingLayerProps = {
     floatingStyles: CSSProperties
     id?: string
     open: boolean
+    portalTarget?: RFloatingReactive<RFloatingPortalTarget>
     role?: string
 }
 

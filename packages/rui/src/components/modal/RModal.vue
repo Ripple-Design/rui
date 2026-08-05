@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, useAttrs } from "vue"
+import { computed, nextTick, onMounted, provide, ref, useAttrs } from "vue"
 
 import { RUI_MODAL_ACTION_ATTRIBUTE } from "@/components/modal/constants.ts"
+import { floatingPortalTargetKey } from "@/foundations/floating"
 import { useModal } from "@/components/modal/useModal.ts"
 import { getActionTarget, getActionValue, isBackdropClick } from "@/components/modal/useModalDismiss.ts"
 import { useReturnFocus } from "@/components/modal/useReturnFocus.ts"
@@ -26,6 +27,7 @@ const emit = defineEmits<{
 
 const attrs = useAttrs()
 const dialogRef = ref<HTMLDialogElement | null>(null)
+provide(floatingPortalTargetKey, dialogRef)
 const pendingClose = ref<RModalCloseDetail | null>(null)
 const { capture, restore } = useReturnFocus()
 

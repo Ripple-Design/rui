@@ -1,0 +1,17 @@
+@mixin scrollbar {
+    scrollbar-color: var(--rui-sys-color-on-surface-low) transparent;
+
+    &::-webkit-scrollbar,
+    &::-webkit-scrollbar-track,
+    &::-webkit-scrollbar-corner {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--rui-sys-color-on-surface-low);
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: var(--rui-sys-color-on-surface-medium);
+    }
+}

@@ -1,3 +1,5 @@
+import type { RippleOptions } from "@/foundations/ripple"
+
 /** Props shared by public fields that render supporting helper text. */
 export type RFieldHelperProps = {
     /** Displays supporting text below the field control. */
@@ -65,6 +67,8 @@ export type RNotchedOutlineProps = RFloatingLabelProps & {
 /** Props for the internal input field shell. */
 export type RFieldShellProps = RFloatingLabelProps &
     RFieldHelperProps & {
+        /** Configures the control-area interaction ripple. */
+        ripple?: RippleOptions
         /** Sets the ID used by the helper text description. */
         helperId?: string
         /** Reserves the logical inline-start adornment region. */

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { offset, flip, shift, type Placement } from "@floating-ui/dom"
+import { offset, flip, shift, size, type Placement } from "@floating-ui/dom"
 import { computed, nextTick, onBeforeUnmount, provide, ref, useId, watch } from "vue"
 
 import RSurface from "@/components/surface/RSurface.vue"
@@ -14,6 +14,15 @@ import {
 
 import { menuKey } from "./types"
 import { useMenuState } from "./useMenuState"
+
+const MENU_VIEWPORT_INSET = 48
+const MENU_HORIZONTAL_VIEWPORT_INSET = 4
+const menuViewportPadding = {
+    bottom: MENU_VIEWPORT_INSET,
+    left: MENU_HORIZONTAL_VIEWPORT_INSET,
+    right: MENU_HORIZONTAL_VIEWPORT_INSET,
+    top: MENU_VIEWPORT_INSET,
+}
 
 const props = withDefaults(
     defineProps<{
@@ -73,7 +82,17 @@ const menuClasses = computed(() => [
 ])
 
 const position = useFloatingPosition(reference, floatingRef, {
-    middleware: [offset(props.offset), flip(), shift({ padding: 4 })],
+    middleware: [
+        offset(props.offset),
+        flip({ padding: menuViewportPadding }),
+        shift({ padding: menuViewportPadding }),
+        size({
+            padding: menuViewportPadding,
+            apply({ availableHeight, elements }) {
+                elements.floating.style.setProperty("--rui-menu-available-height", `${Math.max(0, availableHeight)}px`)
+            },
+        }),
+    ],
     open,
     placement: computed(() => props.placement),
     strategy: "fixed",
@@ -82,6 +101,7 @@ const position = useFloatingPosition(reference, floatingRef, {
 const floatingStyles = computed(() => ({
     ...position.floatingStyles.value,
     width: props.matchWidth && popupWidth.value ? `${popupWidth.value}px` : undefined,
+    zIndex: layer.zIndex,
 }))
 
 let resizeObserver: ResizeObserver | null = null
@@ -204,10 +224,17 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 @use "@/styles/motion";
+@use "@/styles/scrollbar";
 
 .rui-menu {
     min-inline-size: 112px;
+    @include scrollbar.scrollbar;
+
     max-inline-size: 320px;
+    max-block-size: var(--rui-menu-available-height, calc(100dvh - 96px));
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 8px 0;
     opacity: 0;
     transform: scale(0.8);

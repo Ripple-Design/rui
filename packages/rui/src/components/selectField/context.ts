@@ -11,6 +11,7 @@ export type RSelectOptionRecord = {
 export type RSelectContext = {
     activeOptionId: Ref<string | null>
     commit: (option: RSelectOptionRecord) => void
+    isOptionVisible: (label: string) => boolean
     isSelected: (value: unknown) => boolean
     register: (option: RSelectOptionRecord) => void
     unregister: (id: string) => void

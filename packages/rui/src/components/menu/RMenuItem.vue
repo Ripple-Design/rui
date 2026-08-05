@@ -37,6 +37,7 @@ const selected = computed(() => {
 
     return selectable.value ? (group?.isSelected(props.value) ?? false) : false
 })
+const visible = computed(() => selectContext?.isOptionVisible(props.label ?? "") ?? true)
 const displayLabel = computed(() => props.label ?? "")
 const usesCheckIndicator = computed(() => group?.indicator.value === "check")
 const showLeadingIndicator = computed(() => selectable.value && usesCheckIndicator.value)
@@ -132,6 +133,7 @@ onBeforeUnmount(() => {
 
 <template>
     <div
+        v-if="visible"
         ref="itemRef"
         v-bind="attrs"
         v-ripple="rippleOptions"
