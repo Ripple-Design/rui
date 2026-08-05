@@ -7,6 +7,7 @@ import RFieldShell from "@/components/input/RFieldShell.vue"
 import RMenu from "@/components/menu/RMenu.vue"
 import RMenuGroup from "@/components/menu/RMenuGroup.vue"
 
+import type { RippleOptions } from "@/foundations/ripple"
 import type { RSelectOptionRecord } from "./context"
 import type { RSelectFieldProps } from "./types"
 
@@ -60,7 +61,7 @@ const hasValue = computed(() => selectedOption.value !== undefined || (props.fil
 const isFloating = computed(() => isFocused.value || open.value || hasValue.value)
 const displayText = computed(() => (props.filterable ? filterText.value : selectedOption.value?.label ?? props.placeholder ?? ""))
 const hasLabel = computed(() => !!props.label?.trim())
-const rippleOptions = computed(() => ({
+const rippleOptions = computed<RippleOptions>(() => ({
     disabled: props.disabled || props.filterable,
     contrast: "low",
 }))
