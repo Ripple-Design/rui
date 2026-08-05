@@ -21,16 +21,6 @@
     "main": "dist/es/index.js",
     "module": "dist/es/index.js",
     "types": "dist/types/src/index.d.ts",
-    "typesVersions": {
-        "*": {
-            "": [
-                "./dist/types/src/index.d.ts"
-            ],
-            "playground": [
-                "./dist/types/src/playground/index.d.ts"
-            ]
-        }
-    },
     "exports": {
         ".": {
             "types": "./dist/types/src/index.d.ts",
