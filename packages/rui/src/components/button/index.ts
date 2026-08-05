@@ -1,4 +1,5 @@
 export { default } from "./RButton.vue"
 export { default as RIconButton } from "./RIconButton.vue"
+export { default as RFab } from "./RFab.vue"
 export { default as RButtonGroup } from "./RButtonGroup.vue"
 export type * from "./types"

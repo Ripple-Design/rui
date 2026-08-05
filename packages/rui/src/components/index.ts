@@ -31,6 +31,7 @@ export type * from "./icon/types"
 
 export { default as RButton } from "./button/RButton.vue"
 export { default as RIconButton } from "./button/RIconButton.vue"
+export { default as RFab } from "./button/RFab.vue"
 export { default as RButtonGroup } from "./button/RButtonGroup.vue"
 export type * from "./button/types"
 

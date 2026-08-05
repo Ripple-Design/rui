@@ -7,6 +7,8 @@ export type RButtonGroupVariant = RButtonVariant | "icon"
 export type RButtonType = "button" | "submit" | "reset"
 export type RButtonGroupSelection = "single" | "multiple"
 export type RButtonGroupModelValue = unknown | unknown[] | null
+export type RFabVariant = "standard" | "extended"
+export type RFabSize = "normal" | "mini" | "auto"
 
 /** Props for the {@link RButton} component. */
 export type RButtonProps = {
@@ -60,6 +62,34 @@ export type RIconButtonProps = {
     ripple?: boolean | RippleOptions
     /** Exposes a toggle state for icon-only buttons that stay pressed. */
     pressed?: boolean
+}
+
+/** Props for the {@link RFab} component. */
+export type RFabProps = {
+    /** Selects the circular standard or pill-shaped extended FAB. */
+    variant?: RFabVariant
+    /** Sets the standard FAB size; `auto` uses mini below the Material 470px viewport threshold. */
+    size?: RFabSize
+    /** Renders the FAB icon. Required for standard and collapsed extended FABs. */
+    icon?: RIconResolvableSource
+    /** Sets the accessible name when the action has no visible text label. */
+    label?: string
+    /** Shows or hides the FAB with the Material motion specification. */
+    visible?: boolean
+    /** Expands or collapses an extended FAB. */
+    extended?: boolean
+    /** Disables the FAB and all interactive feedback. */
+    disabled?: boolean
+    /** Sets the native button type when rendering a `<button>`. */
+    type?: RButtonType
+    /** Renders the FAB as a link when provided. */
+    href?: string
+    /** Sets the link target when rendering an anchor. */
+    target?: string
+    /** Sets the link relationship when rendering an anchor. */
+    rel?: string
+    /** Controls ripple behavior or disables it entirely. */
+    ripple?: boolean | RippleOptions
 }
 
 /** Props for the {@link RButtonGroup} component. */
