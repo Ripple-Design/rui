@@ -54,7 +54,7 @@ jobs:
                   SELECTED_PACKAGE: ${{ inputs.package }}
                   REF_NAME: ${{ github.ref_name }}
               run: |
-                  package="$SELECTED_PACKAGE"
+                  package="${SELECTED_PACKAGE:-rui}"
                   if [[ "$REF_NAME" == rux-video-player-v* ]]; then
                       package="rux-video-player"
                   fi
