@@ -148,6 +148,7 @@ function handleTriggerKeyDown(event: KeyboardEvent) {
         :helper-text="helperText"
         :error-text="errorText"
         :error="error"
+        :required="required"
         :has-end-icon="true"
         @focus-state-change="isFocused = $event"
     >
@@ -165,6 +166,7 @@ function handleTriggerKeyDown(event: KeyboardEvent) {
             :aria-labelledby="hasLabel ? labelId : undefined"
             :aria-describedby="describedBy"
             :aria-invalid="error ? 'true' : undefined"
+            :required="required"
             :aria-activedescendant="open && activeOptionId ? activeOptionId : undefined"
             @click="handleTriggerClick"
             @focus="isFocused = true"

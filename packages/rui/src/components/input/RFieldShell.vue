@@ -79,6 +79,7 @@ function handleClick(event: MouseEvent) {
                 :text-area="textArea"
                 :hovered="isHovered && !focused"
                 :label="label"
+                :required="required"
                 :input-id="inputId"
                 :label-id="labelId"
                 :has-start-icon="hasStartIcon"

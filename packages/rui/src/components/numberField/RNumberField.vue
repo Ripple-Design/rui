@@ -108,6 +108,7 @@ function focus() {
         :helper-text="helperText"
         :error-text="errorText"
         :error="error"
+        :required="required"
         @focus-request="focus"
         @focus-state-change="isFocused = $event"
     >
@@ -117,6 +118,7 @@ function focus() {
             :id="inputId"
             :aria-describedby="describedBy"
             :aria-invalid="error ? 'true' : undefined"
+            :required="required"
             v-model="inputValue"
             :focused="isFocused"
             :input-type="inputType ?? 'numeric'"

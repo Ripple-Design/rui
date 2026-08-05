@@ -4,6 +4,8 @@ export type RFieldHelperProps = {
     helperText?: string
     /** Displays an error message below the field control. */
     errorText?: string
+    /** Requires a value before the field can be submitted. */
+    required?: boolean
 }
 
 /** Props for the {@link RInput} component. */
@@ -36,6 +38,8 @@ export type RFloatingLabelProps = {
     focused: boolean
     /** Indicates whether the field currently has an error. */
     error?: boolean
+    /** Indicates whether the field requires a value. */
+    required?: boolean
     /** Indicates whether the label should float above the input area. */
     floating: boolean
     /** Indicates whether the field currently has a value. */
