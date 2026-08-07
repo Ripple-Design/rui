@@ -9,10 +9,6 @@ import RFieldShell from "@/components/input/RFieldShell.vue"
 
 import type { RNumberFieldProps } from "./types"
 
-defineOptions({
-    inheritAttrs: false,
-})
-
 const props = defineProps<RNumberFieldProps>()
 
 const attrs = useAttrs()

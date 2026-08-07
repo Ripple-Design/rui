@@ -5,10 +5,6 @@ import type { RFieldInputProps } from "./types"
 
 import RInput from "./RInput.vue"
 
-defineOptions({
-    inheritAttrs: false,
-})
-
 withDefaults(defineProps<RFieldInputProps>(), {
     textArea: false,
     hasStartIcon: false,

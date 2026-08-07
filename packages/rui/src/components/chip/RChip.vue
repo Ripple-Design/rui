@@ -35,10 +35,6 @@ const emit = defineEmits<{
     remove: [event: MouseEvent]
 }>()
 
-defineOptions({
-    inheritAttrs: false,
-})
-
 const model = defineModel<boolean>({ default: false })
 const attrs = useAttrs()
 const primaryRef = ref<HTMLElement | null>(null)
@@ -152,7 +148,9 @@ watch(
 
         warnedMissingValue = true
         if (import.meta.env.DEV) {
-            console.warn("[RChipGroup] Selectable groups require every checkable RChip child to provide a unique `value`.")
+            console.warn(
+                "[RChipGroup] Selectable groups require every checkable RChip child to provide a unique `value`.",
+            )
         }
     },
     { immediate: true },
@@ -196,7 +194,10 @@ function handleRemove(event: MouseEvent) {
                 :aria-pressed="resolvedAriaPressed"
                 @click="handlePrimaryClick"
             >
-                <span class="rui-touch-target rui-touch-target--vertical rui-touch-target--interactive" aria-hidden="true" />
+                <span
+                    class="rui-touch-target rui-touch-target--vertical rui-touch-target--interactive"
+                    aria-hidden="true"
+                />
 
                 <span v-if="showLeadingIcon" class="rui-chip__leading" aria-hidden="true">
                     <span v-if="showSelectedIcon && type === 'input'" class="rui-chip__input-check">
@@ -219,7 +220,10 @@ function handleRemove(event: MouseEvent) {
                 :aria-label="removeLabel"
                 @click="handleRemove"
             >
-                <span class="rui-touch-target rui-touch-target--vertical rui-touch-target--interactive" aria-hidden="true" />
+                <span
+                    class="rui-touch-target rui-touch-target--vertical rui-touch-target--interactive"
+                    aria-hidden="true"
+                />
                 <RIcon :icon="removeIcon ?? cancelIcon" :size="18" decorative />
             </button>
         </span>

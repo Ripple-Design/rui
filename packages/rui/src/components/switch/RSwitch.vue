@@ -11,10 +11,6 @@ import { RTouchTargetWrapper } from "@/foundations/touchTarget"
 
 import type { RSwitchProps } from "./types"
 
-defineOptions({
-    inheritAttrs: false,
-})
-
 const props = withDefaults(defineProps<RSwitchProps>(), {
     disabled: false,
     ripple: true,

@@ -9,10 +9,6 @@ import type { RIconProps, RIconSource } from "./types"
 
 import { resolveIconSource } from "./family"
 
-defineOptions({
-    inheritAttrs: false,
-})
-
 const props = defineProps<RIconProps>()
 const slots = useSlots()
 const theme = inject(themeKey, null)
@@ -25,7 +21,9 @@ const isDecorative = computed(() => props.decorative || !props.label)
 const role = computed(() => (isDecorative.value ? undefined : "img"))
 const ariaLabel = computed(() => (isDecorative.value ? undefined : props.label))
 const hasDefaultSlot = computed(() => !!slots.default)
-const resolvedIconStyle = computed(() => props.iconStyle ?? theme?.theme.value.iconStyle ?? globalTheme.value.iconStyle ?? R_ICON_STYLES[0])
+const resolvedIconStyle = computed(
+    () => props.iconStyle ?? theme?.theme.value.iconStyle ?? globalTheme.value.iconStyle ?? R_ICON_STYLES[0],
+)
 const resolvedIcon = computed<RIconSource | undefined>(() => resolveIconSource(props.icon, resolvedIconStyle.value))
 const isComponentSource = computed(() => !!resolvedIcon.value && typeof resolvedIcon.value !== "string")
 const isStringSource = computed(() => typeof resolvedIcon.value === "string")

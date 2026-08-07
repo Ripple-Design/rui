@@ -2,20 +2,17 @@
 import { RIArrowDropDownFilled, RIArrowDropUpFilled } from "@ripple-design/icons"
 import { computed, provide, ref, toRaw, useAttrs, useId, watch } from "vue"
 
+import type { RippleOptions } from "@/foundations/ripple"
+
 import { RIconButton } from "@/components"
 import RFieldShell from "@/components/input/RFieldShell.vue"
 import RMenu from "@/components/menu/RMenu.vue"
 import RMenuGroup from "@/components/menu/RMenuGroup.vue"
 
-import type { RippleOptions } from "@/foundations/ripple"
 import type { RSelectOptionRecord } from "./context"
 import type { RSelectFieldProps } from "./types"
 
 import { selectContextKey } from "./context"
-
-defineOptions({
-    inheritAttrs: false,
-})
 
 const props = withDefaults(defineProps<RSelectFieldProps>(), {
     align: "start",
@@ -59,7 +56,9 @@ const filteredOptions = computed(() => {
 })
 const hasValue = computed(() => selectedOption.value !== undefined || (props.filterable && !!filterText.value))
 const isFloating = computed(() => isFocused.value || open.value || hasValue.value)
-const displayText = computed(() => (props.filterable ? filterText.value : selectedOption.value?.label ?? props.placeholder ?? ""))
+const displayText = computed(() =>
+    props.filterable ? filterText.value : (selectedOption.value?.label ?? props.placeholder ?? ""),
+)
 const hasLabel = computed(() => !!props.label?.trim())
 const rippleOptions = computed<RippleOptions>(() => ({
     disabled: props.disabled || props.filterable,
@@ -70,7 +69,11 @@ provide(selectContextKey, {
     activeOptionId,
     commit,
     isOptionVisible(label) {
-        return !props.filterable || !normalizedFilterText.value || label.toLocaleLowerCase().includes(normalizedFilterText.value)
+        return (
+            !props.filterable ||
+            !normalizedFilterText.value ||
+            label.toLocaleLowerCase().includes(normalizedFilterText.value)
+        )
     },
     isSelected(value) {
         return Object.is(toRaw(value), toRaw(model.value))
@@ -270,22 +273,22 @@ watch(filteredOptions, () => {
                 </span>
             </button>
 
-        <template #end-icon>
-            <RIconButton
-                :icon="open ? RIArrowDropUpFilled : RIArrowDropDownFilled"
-                :label="open ? 'Close options' : 'Open options'"
-                :pressed="open"
-                :disabled="disabled"
-                :style="{
-                    '--rui-icon-button-color': error
-                        ? 'var(--rui-sys-color-error)'
-                        : isFocused || open
-                          ? 'var(--rui-sys-color-primary)'
-                          : 'var(--rui-sys-color-on-surface-medium)',
-                }"
-                @click.stop="handleIconClick"
-            />
-        </template>
+            <template #end-icon>
+                <RIconButton
+                    :icon="open ? RIArrowDropUpFilled : RIArrowDropDownFilled"
+                    :label="open ? 'Close options' : 'Open options'"
+                    :pressed="open"
+                    :disabled="disabled"
+                    :style="{
+                        '--rui-icon-button-color': error
+                            ? 'var(--rui-sys-color-error)'
+                            : isFocused || open
+                              ? 'var(--rui-sys-color-primary)'
+                              : 'var(--rui-sys-color-on-surface-medium)',
+                    }"
+                    @click.stop="handleIconClick"
+                />
+            </template>
         </RFieldShell>
 
         <RMenu

@@ -5,16 +5,9 @@
 
 import { computed, useAttrs } from "vue"
 
-import type {
-    RContainerResponsiveValue,
-    RViewportResponsiveValue,
-} from "@/components/shared/responsive"
+import type { RContainerResponsiveValue, RViewportResponsiveValue } from "@/components/shared/responsive"
 
 import type { RGridColsValue, RGridProps, RGridResponsiveCols } from "./types"
-
-defineOptions({
-    inheritAttrs: false,
-})
 
 const props = withDefaults(defineProps<RGridProps>(), {
     cols: 1,
@@ -186,7 +179,10 @@ const style = computed(() => {
     }
 
     :slotted([data-rui-grid-row-span-mode="viewport"]) {
-        grid-row: var(--rui-comp-grid-row-span-lg, var(--rui-comp-grid-row-span-md, var(--rui-comp-grid-row-span-sm, auto)));
+        grid-row: var(
+            --rui-comp-grid-row-span-lg,
+            var(--rui-comp-grid-row-span-md, var(--rui-comp-grid-row-span-sm, auto))
+        );
     }
 }
 
@@ -201,7 +197,10 @@ const style = computed(() => {
     :slotted([data-rui-grid-column-span-mode="viewport"]) {
         grid-column: var(
             --rui-comp-grid-column-span-xl,
-            var(--rui-comp-grid-column-span-lg, var(--rui-comp-grid-column-span-md, var(--rui-comp-grid-column-span-sm, auto)))
+            var(
+                --rui-comp-grid-column-span-lg,
+                var(--rui-comp-grid-column-span-md, var(--rui-comp-grid-column-span-sm, auto))
+            )
         );
     }
 
@@ -261,14 +260,20 @@ const style = computed(() => {
     :slotted([data-rui-grid-column-span-mode="container"]) {
         grid-column: var(
             --rui-comp-grid-column-span-cxl,
-            var(--rui-comp-grid-column-span-clg, var(--rui-comp-grid-column-span-cmd, var(--rui-comp-grid-column-span-csm, auto)))
+            var(
+                --rui-comp-grid-column-span-clg,
+                var(--rui-comp-grid-column-span-cmd, var(--rui-comp-grid-column-span-csm, auto))
+            )
         );
     }
 
     :slotted([data-rui-grid-row-span-mode="container"]) {
         grid-row: var(
             --rui-comp-grid-row-span-cxl,
-            var(--rui-comp-grid-row-span-clg, var(--rui-comp-grid-row-span-cmd, var(--rui-comp-grid-row-span-csm, auto)))
+            var(
+                --rui-comp-grid-row-span-clg,
+                var(--rui-comp-grid-row-span-cmd, var(--rui-comp-grid-row-span-csm, auto))
+            )
         );
     }
 }

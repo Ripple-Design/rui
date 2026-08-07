@@ -1,16 +1,13 @@
 <script setup lang="ts">
-defineOptions({
-    inheritAttrs: false,
-})
-
 import { computed, inject, onBeforeUnmount, ref, useAttrs, watch } from "vue"
 
 import RIcon from "@/components/icon/RIcon.vue"
 import { vRipple, type RippleOptions } from "@/foundations/ripple"
 import { selectionModelKey } from "@/foundations/selectionModel"
 
-import { tabBarKey } from "./context"
 import type { RTabProps } from "./types"
+
+import { tabBarKey } from "./context"
 
 const props = withDefaults(defineProps<RTabProps>(), {
     ripple: true,

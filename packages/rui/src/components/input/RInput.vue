@@ -3,10 +3,6 @@ import { computed, ref, useAttrs } from "vue"
 
 import type { RInputProps } from "./types"
 
-defineOptions({
-    inheritAttrs: false,
-})
-
 const attrs = useAttrs()
 const inputRef = ref<HTMLInputElement | HTMLTextAreaElement | null>(null)
 const props = withDefaults(defineProps<RInputProps>(), {

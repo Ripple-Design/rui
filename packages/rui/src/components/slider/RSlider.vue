@@ -16,10 +16,6 @@ import {
 
 type SliderThumb = "single" | "start" | "end"
 
-defineOptions({
-    inheritAttrs: false,
-})
-
 const props = withDefaults(defineProps<RSliderProps>(), {
     disabled: false,
     max: 100,

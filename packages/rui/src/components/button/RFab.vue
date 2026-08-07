@@ -1,8 +1,4 @@
 <script setup lang="ts">
-defineOptions({
-    inheritAttrs: false,
-})
-
 import { computed, ref, useAttrs, useSlots } from "vue"
 
 import { RIcon } from "@/components"
@@ -113,11 +109,7 @@ function handleSizeTransitionEnd(event: TransitionEvent) {
                     <span v-if="icon" class="rui-fab__icon">
                         <RIcon :icon="icon" :size="24" decorative />
                     </span>
-                    <span
-                        v-if="hasLabel"
-                        class="rui-fab__label"
-                        :aria-hidden="isCollapsed ? 'true' : undefined"
-                    >
+                    <span v-if="hasLabel" class="rui-fab__label" :aria-hidden="isCollapsed ? 'true' : undefined">
                         <slot />
                     </span>
                 </span>
@@ -141,11 +133,7 @@ function handleSizeTransitionEnd(event: TransitionEvent) {
                     <span v-if="icon" class="rui-fab__icon">
                         <RIcon :icon="icon" :size="24" decorative />
                     </span>
-                    <span
-                        v-if="hasLabel"
-                        class="rui-fab__label"
-                        :aria-hidden="isCollapsed ? 'true' : undefined"
-                    >
+                    <span v-if="hasLabel" class="rui-fab__label" :aria-hidden="isCollapsed ? 'true' : undefined">
                         <slot />
                     </span>
                 </span>

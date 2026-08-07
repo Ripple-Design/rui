@@ -14,10 +14,6 @@ import RFieldShell from "@/components/input/RFieldShell.vue"
 
 import type { RTextFieldProps } from "./types"
 
-defineOptions({
-    inheritAttrs: false,
-})
-
 const props = withDefaults(defineProps<RTextFieldProps>(), {
     clearable: false,
     clearLabel: "Clear",

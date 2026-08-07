@@ -3,10 +3,6 @@ import { computed, useAttrs } from "vue"
 
 import type { RSurfaceProps } from "./types"
 
-defineOptions({
-    inheritAttrs: false,
-})
-
 const props = withDefaults(defineProps<RSurfaceProps>(), {
     variant: "elevated",
     as: "div",

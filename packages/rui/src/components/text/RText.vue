@@ -3,10 +3,6 @@ import { computed, useAttrs } from "vue"
 
 import type { RTextProps, RTextVariant } from "./types"
 
-defineOptions({
-    inheritAttrs: false,
-})
-
 const props = withDefaults(defineProps<RTextProps>(), {
     variant: "body1",
     emphasis: "high",
