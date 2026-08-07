@@ -33,7 +33,7 @@ const selectedObjectLabel = computed(() => objectSelection.value?.id ?? "None")
             <RSelectOption value="jp" label="Japan" disabled />
         </RSelectField>
 
-        <RGrid :cols="2" gap="16px">
+        <RGrid :columns="2" gap="16px">
             <RSelectField v-span="2" v-model="filterSelection" label="Filterable country" filterable>
                 <RSelectOption value="us" label="United States" />
                 <RSelectOption value="ca" label="Canada" />
@@ -43,7 +43,12 @@ const selectedObjectLabel = computed(() => objectSelection.value?.id ?? "None")
         </RGrid>
 
         <RSelectField v-model="longSelection" label="Long option list">
-            <RSelectOption v-for="option in longOptions" :key="option.value" :value="option.value" :label="option.label" />
+            <RSelectOption
+                v-for="option in longOptions"
+                :key="option.value"
+                :value="option.value"
+                :label="option.label"
+            />
         </RSelectField>
 
         <RSelectField v-model="objectSelection" label="Object value">

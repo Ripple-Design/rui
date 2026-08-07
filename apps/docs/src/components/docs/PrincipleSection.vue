@@ -13,7 +13,7 @@ defineProps<{
 </script>
 
 <template>
-    <RGrid :cols="3" gap="24px">
+    <RGrid :columns="3" gap="24px">
         <section v-for="item in items" :key="item.title" class="principle-card">
             <img :src="item.image" :alt="item.body" class="principle-card__image" />
             <h4>{{ item.title }}</h4>
