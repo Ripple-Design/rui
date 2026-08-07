@@ -8,7 +8,7 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [ ] Banners
 - [ ] Bottom navigation
 - [x] Buttons
-- [ ] Buttons: floating action button
+- [x] Buttons: floating action button
 - [x] Cards
 - [ ] Checkboxes
 - [x] Chips

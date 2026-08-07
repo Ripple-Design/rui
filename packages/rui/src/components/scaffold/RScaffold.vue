@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, provide, ref } from "vue"
 
-import type { RResponsiveContainerMode } from "@/components/responsiveContainer/types"
+import type { RResponsiveContainerMode } from "@/components/responsive/types"
+
+import type { RScaffoldProps } from "./types"
 
 import { scaffoldContextKey, type RScaffoldAppBarState, type RScaffoldScrollMotionDirection } from "./context"
-import type { RScaffoldProps } from "./types"
 
 const props = withDefaults(defineProps<RScaffoldProps>(), {
     scrollDirection: "vertical",
@@ -93,11 +94,7 @@ provide(scaffoldContextKey, {
             <slot name="side-sheet" />
         </aside>
 
-        <div
-            v-if="$slots.fab"
-            class="rui-scaffold__fab"
-            :class="`rui-scaffold__fab--${props.fabPlacement}`"
-        >
+        <div v-if="$slots.fab" class="rui-scaffold__fab" :class="`rui-scaffold__fab--${props.fabPlacement}`">
             <slot name="fab" />
         </div>
 
@@ -146,12 +143,7 @@ provide(scaffoldContextKey, {
 
 .rui-scaffold__app-bar {
     position: relative;
-    z-index: 2;
     transition: transform 180ms ease;
-}
-
-.rui-scaffold--bars-hidden:not(:has(.rui-scaffold__fab--app-bar-seam)) .rui-scaffold__app-bar {
-    transform: translateY(-100%);
 }
 
 .rui-scaffold__body {

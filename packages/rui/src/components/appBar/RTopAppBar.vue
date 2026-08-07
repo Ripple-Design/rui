@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, onMounted, onUnmounted } from "vue"
+import { computed, inject, onUnmounted, watchEffect } from "vue"
 
 import RResponsiveContainer from "@/components/responsive/RResponsiveContainer.vue"
 import { scaffoldContextKey } from "@/components/scaffold/context"
@@ -21,12 +21,7 @@ const contentMode = computed(() => {
     return props.contentAlign
 })
 const shouldCollapse = computed(() => props.collapsing && scaffold?.fabPlacement.value !== "app-bar-seam")
-const hidden = computed(
-    () =>
-        props.hideOnScroll &&
-        scaffold?.fabPlacement.value !== "app-bar-seam" &&
-        scaffold?.scrollState.value.direction === "down",
-)
+const hidden = computed(() => props.hideOnScroll && scaffold?.scrollState.value.direction === "down")
 const collapsed = computed(() => shouldCollapse.value && scaffold?.appBarState.value === "collapsed")
 const style = computed(() => ({
     "--rui-comp-app-bar-expanded-height": props.expandedHeight ?? props.collapsedHeight,
@@ -42,7 +37,7 @@ const classes = computed(() => [
     },
 ])
 
-onMounted(() => {
+watchEffect(() => {
     scaffold?.setAppBarExpandedHeight(props.expandedHeight ?? props.collapsedHeight)
 })
 
@@ -67,7 +62,6 @@ onUnmounted(() => {
 <style scoped lang="scss">
 .rui-app-bar {
     position: relative;
-    z-index: 1;
     min-block-size: var(--rui-comp-app-bar-expanded-height);
     transition:
         transform 180ms ease,

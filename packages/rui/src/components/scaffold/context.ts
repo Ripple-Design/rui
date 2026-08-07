@@ -1,6 +1,6 @@
 import type { InjectionKey, Ref } from "vue"
 
-import type { RResponsiveContainerMode } from "@/components/responsiveContainer/types"
+import type { RResponsiveContainerMode } from "@/components/responsive/types"
 
 export type RScaffoldScrollDirection = "vertical" | "horizontal" | "none"
 export type RScaffoldFabPlacement = "viewport" | "body" | "app-bar-seam"

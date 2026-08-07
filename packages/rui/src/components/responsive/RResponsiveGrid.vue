@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, onMounted } from "vue"
+import { computed, inject, watchEffect } from "vue"
 
 import RGrid from "@/components/grid/RGrid.vue"
 import { scaffoldContextKey } from "@/components/scaffold/context"
@@ -19,7 +19,7 @@ const gridProps = computed(() => ({
     rowGap: props.rowGap,
 }))
 
-onMounted(() => {
+watchEffect(() => {
     scaffold?.setBodyGridMode(props.mode)
 })
 </script>
