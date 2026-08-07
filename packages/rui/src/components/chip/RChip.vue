@@ -23,8 +23,6 @@ import type { RChipProps } from "./types"
 import { chipGroupKey } from "./groupContext"
 
 const props = withDefaults(defineProps<RChipProps>(), {
-    variant: "plain",
-    type: "action",
     disabled: false,
     removable: false,
     removeLabel: "Remove",
@@ -44,7 +42,9 @@ const checkIcon = createIconFamily(RICheckFilled, RICheckOutlined, RICheckRounde
 const cancelIcon = createIconFamily(RICancelFilled, RICancelOutlined, RICancelRounded, RICancelSharp, RICancelTwoTone)
 let warnedMissingValue = false
 
-const isCheckable = computed(() => props.type !== "action")
+const resolvedVariant = computed(() => props.variant ?? group?.variant.value ?? "plain")
+const resolvedType = computed(() => props.type ?? group?.type.value ?? "action")
+const isCheckable = computed(() => resolvedType.value !== "action")
 const hasSelectionValue = computed(() => props.value !== undefined)
 const selectionMode = computed(() => group?.selection.value)
 const isInSelectableGroup = computed(() => selectionMode.value != null && isCheckable.value)
@@ -56,15 +56,17 @@ const selected = computed(() => {
 
     return isCheckable.value && !isInSelectableGroup.value && model.value
 })
-const showSelectedIcon = computed(() => selected.value && (props.type === "filter" || props.type === "input"))
+const showSelectedIcon = computed(
+    () => selected.value && (resolvedType.value === "filter" || resolvedType.value === "input"),
+)
 const showLeadingIcon = computed(() => {
-    if (props.type === "filter" || props.type === "choice") {
+    if (resolvedType.value === "filter" || resolvedType.value === "choice") {
         return showSelectedIcon.value
     }
 
     return showSelectedIcon.value || !!props.icon
 })
-const showRemove = computed(() => props.type === "input" && props.removable)
+const showRemove = computed(() => resolvedType.value === "input" && props.removable)
 const resolvedRole = computed(() => {
     if (selectionMode.value === "single" && isSelectableInGroup.value) {
         return "radio"
@@ -106,14 +108,14 @@ const rippleOptions = computed<RippleOptions>(() => {
 })
 const classes = computed(() => [
     "rui-chip",
-    `rui-chip--${props.variant}`,
-    `rui-chip--${props.type}`,
+    `rui-chip--${resolvedVariant.value}`,
+    `rui-chip--${resolvedType.value}`,
     {
         "rui-chip--selected": selected.value,
         "rui-chip--disabled": props.disabled,
         "rui-chip--removable": showRemove.value,
         "rui-chip--with-leading": showLeadingIcon.value,
-        "rui-chip--with-input-check": showSelectedIcon.value && props.type === "input",
+        "rui-chip--with-input-check": showSelectedIcon.value && resolvedType.value === "input",
     },
 ])
 
@@ -200,7 +202,7 @@ function handleRemove(event: MouseEvent) {
                 />
 
                 <span v-if="showLeadingIcon" class="rui-chip__leading" aria-hidden="true">
-                    <span v-if="showSelectedIcon && type === 'input'" class="rui-chip__input-check">
+                    <span v-if="showSelectedIcon && resolvedType === 'input'" class="rui-chip__input-check">
                         <RIcon :icon="checkIcon" :size="18" decorative />
                     </span>
                     <RIcon v-else-if="showSelectedIcon" :icon="checkIcon" :size="18" decorative />

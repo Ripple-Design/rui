@@ -148,6 +148,8 @@ function activate(id: symbol) {
 }
 
 provide(chipGroupKey, {
+    variant: computed(() => props.variant),
+    type: computed(() => props.type),
     selection: computed(() => props.selection),
     required: computed(() => requiredSelection.value),
     registerItem,

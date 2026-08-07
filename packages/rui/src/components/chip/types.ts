@@ -31,6 +31,10 @@ export type RChipProps = {
 
 /** Props for the {@link RChipGroup} component. */
 export type RChipGroupProps = {
+    /** Controls the visual treatment for child chips. */
+    variant?: RChipVariant
+    /** Controls the chip family and interaction behavior for child chips. */
+    type?: RChipType
     /** Enables single or multiple selection behavior for child chips. */
     selection?: RChipGroupSelection
     /** Prevents a selectable group from becoming empty. */

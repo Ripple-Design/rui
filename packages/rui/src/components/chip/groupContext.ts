@@ -1,6 +1,6 @@
 import type { InjectionKey, Ref } from "vue"
 
-import type { RChipGroupSelection } from "./types"
+import type { RChipGroupSelection, RChipType, RChipVariant } from "./types"
 
 export type RChipGroupItemState = {
     disabled: boolean
@@ -10,6 +10,8 @@ export type RChipGroupItemState = {
 }
 
 export type RChipGroupContext = {
+    variant: Readonly<Ref<RChipVariant | undefined>>
+    type: Readonly<Ref<RChipType | undefined>>
     selection: Readonly<Ref<RChipGroupSelection | undefined>>
     required: Readonly<Ref<boolean>>
     registerItem: (id: symbol, state: RChipGroupItemState) => void
