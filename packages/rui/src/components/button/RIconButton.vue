@@ -19,9 +19,9 @@ const props = withDefaults(defineProps<RIconButtonProps>(), {
     disabled: false,
     type: "button",
     ripple: true,
-    pressed: undefined,
 })
 
+const active = defineModel<boolean>({ default: false })
 const attrs = useAttrs()
 let warnedMissingLabel = false
 
@@ -29,13 +29,9 @@ const isLink = computed(() => !!props.href)
 const nativeType = computed<RButtonType>(() => props.type ?? "button")
 const resolvedHref = computed(() => resolveButtonHref(props.href, props.disabled))
 const resolvedTabIndex = computed(() => resolveDisabledLinkTabIndex(isLink.value, props.disabled))
-const resolvedAriaPressed = computed(() => {
-    if (props.pressed == null) {
-        return undefined
-    }
-
-    return props.pressed ? "true" : "false"
-})
+const resolvedIcon = computed(() => (active.value ? (props.activeIcon ?? props.icon) : props.icon))
+const resolvedLabel = computed(() => (active.value ? (props.activeLabel ?? props.label) : props.label))
+const resolvedAriaPressed = computed(() => (active.value ? "true" : "false"))
 const rippleOptions = computed(() => resolveButtonRippleOptions("text", props.ripple, props.disabled))
 
 watchEffect(() => {
@@ -48,7 +44,13 @@ watchEffect(() => {
 })
 
 function handleClick(event: MouseEvent) {
-    consumeDisabledLinkClick(event, isLink.value, props.disabled)
+    if (consumeDisabledLinkClick(event, isLink.value, props.disabled)) {
+        return
+    }
+
+    if (!isLink.value) {
+        active.value = !active.value
+    }
 }
 </script>
 
@@ -64,7 +66,7 @@ function handleClick(event: MouseEvent) {
             :href="resolvedHref"
             :target="target"
             :rel="rel"
-            :aria-label="label"
+            :aria-label="resolvedLabel"
             :aria-disabled="disabled ? 'true' : undefined"
             :aria-pressed="resolvedAriaPressed"
             :tabindex="resolvedTabIndex"
@@ -72,7 +74,7 @@ function handleClick(event: MouseEvent) {
         >
             <span class="rui-touch-target rui-touch-target--interactive" aria-hidden="true" />
             <span class="rui-icon-button__content">
-                <RIcon :icon="icon" :size="24" decorative />
+                <RIcon :key="active ? 'active' : 'inactive'" :icon="resolvedIcon" :size="24" decorative />
             </span>
         </a>
 
@@ -85,13 +87,13 @@ function handleClick(event: MouseEvent) {
             :class="{ 'rui-icon-button--disabled': disabled }"
             :type="nativeType"
             :disabled="disabled"
-            :aria-label="label"
+            :aria-label="resolvedLabel"
             :aria-pressed="resolvedAriaPressed"
             @click="handleClick"
         >
             <span class="rui-touch-target rui-touch-target--interactive" aria-hidden="true" />
             <span class="rui-icon-button__content">
-                <RIcon :icon="icon" :size="24" decorative />
+                <RIcon :key="active ? 'active' : 'inactive'" :icon="resolvedIcon" :size="24" decorative />
             </span>
         </button>
     </RTouchTargetWrapper>

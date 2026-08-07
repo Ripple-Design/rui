@@ -45,11 +45,8 @@ const volumeStyle = computed(() => ({
     "--rui-comp-video-player-range-progress": `${resolvedVolume.value * 100}%`,
     "--rui-comp-video-player-range-buffered": "0%",
 }))
-const playIcon = computed(() => (props.playing ? RIPauseFilled : RIPlayArrowFilled))
 const playLabel = computed(() => (props.playing ? "Pause" : "Play"))
-const muteIcon = computed(() => (props.muted ? RIVolumeMuteFilled : RIVolumeUpFilled))
 const muteLabel = computed(() => (props.muted ? "Unmute" : "Mute"))
-const fullscreenIcon = computed(() => (props.fullscreen ? RIFullscreenExitFilled : RIFullscreenFilled))
 const fullscreenLabel = computed(() => (props.fullscreen ? "Exit fullscreen" : "Enter fullscreen"))
 const timeText = computed(() => `${formatTime(resolvedCurrentTime.value)} / ${formatTime(resolvedDuration.value)}`)
 const seekValueText = computed(() => `${formatTime(resolvedCurrentTime.value)} of ${formatTime(resolvedDuration.value)}`)
@@ -156,18 +153,20 @@ function requestSettingsOpen(open: boolean) {
             <RRow class="rui-video-player__control-row" align="center" justify="space-between" gap="8px">
                 <RRow align="center" gap="4px">
                     <RIconButton
-                        :icon="playIcon"
+                        :model-value="playing"
+                        :icon="RIPlayArrowFilled"
+                        :active-icon="RIPauseFilled"
                         :label="playLabel"
-                        :pressed="playing"
                         :disabled="disabled"
-                        @click="requestPlayback"
+                        @update:model-value="requestPlayback"
                     />
                     <RIconButton
-                        :icon="muteIcon"
+                        :model-value="muted"
+                        :icon="RIVolumeUpFilled"
+                        :active-icon="RIVolumeMuteFilled"
                         :label="muteLabel"
-                        :pressed="muted"
                         :disabled="disabled"
-                        @click="requestMute"
+                        @update:model-value="requestMute"
                     />
                     <input
                         class="rui-video-player__range rui-video-player__range--volume"
@@ -203,11 +202,12 @@ function requestSettingsOpen(open: boolean) {
                         </RMenuItem>
                     </RMenu>
                     <RIconButton
-                        :icon="fullscreenIcon"
+                        :model-value="fullscreen"
+                        :icon="RIFullscreenFilled"
+                        :active-icon="RIFullscreenExitFilled"
                         :label="fullscreenLabel"
-                        :pressed="fullscreen"
                         :disabled="disabled"
-                        @click="requestFullscreen"
+                        @update:model-value="requestFullscreen"
                     />
                 </RRow>
             </RRow>

@@ -46,8 +46,12 @@ export type RButtonProps = {
 export type RIconButtonProps = {
     /** Renders the icon-only button glyph using the shared icon renderer. */
     icon: RIconResolvableSource
+    /** Renders the icon-only button glyph while the button is active. */
+    activeIcon?: RIconResolvableSource
     /** Sets the accessible name announced for the icon-only button. */
     label: string
+    /** Sets the accessible name announced while the button is active. */
+    activeLabel?: string
     /** Disables the icon button and all interactive feedback. */
     disabled?: boolean
     /** Sets the native button type when rendering a `<button>`. */
@@ -60,8 +64,6 @@ export type RIconButtonProps = {
     rel?: string
     /** Controls ripple behavior or disables it entirely. */
     ripple?: boolean | RippleOptions
-    /** Exposes a toggle state for icon-only buttons that stay pressed. */
-    pressed?: boolean
 }
 
 /** Props for the {@link RFab} component. */

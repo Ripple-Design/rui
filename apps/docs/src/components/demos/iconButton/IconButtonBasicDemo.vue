@@ -21,10 +21,11 @@ const favorite = ref(false)
 
         <RRow gap="16px" wrap align="center">
             <RIconButton
-                :icon="favorite ? RIFavoriteFilled : RIFavoriteBorderFilled"
-                :label="favorite ? 'Remove from favorites' : 'Add to favorites'"
-                :pressed="favorite"
-                @click="favorite = !favorite"
+                v-model="favorite"
+                :icon="RIFavoriteBorderFilled"
+                :active-icon="RIFavoriteFilled"
+                label="Add to favorites"
+                active-label="Remove from favorites"
             />
             <RIconButton :icon="RICloseFilled" label="Disabled close action" disabled />
         </RRow>

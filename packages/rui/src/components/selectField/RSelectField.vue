@@ -135,10 +135,6 @@ function handleTriggerClick() {
     handleMenuOpenUpdate(!open.value)
 }
 
-function handleIconClick() {
-    handleMenuOpenUpdate(!open.value)
-}
-
 function handleMenuOpenUpdate(value: boolean) {
     if (value) {
         openSelect()
@@ -280,9 +276,10 @@ watch(filteredOptions, () => {
 
             <template #end-icon>
                 <RIconButton
-                    :icon="open ? RIArrowDropUpFilled : RIArrowDropDownFilled"
+                    :model-value="open"
+                    :icon="RIArrowDropDownFilled"
+                    :active-icon="RIArrowDropUpFilled"
                     :label="open ? 'Close options' : 'Open options'"
-                    :pressed="open"
                     :disabled="disabled"
                     :style="{
                         '--rui-icon-button-color': error
@@ -291,7 +288,8 @@ watch(filteredOptions, () => {
                               ? 'var(--rui-sys-color-primary)'
                               : 'var(--rui-sys-color-on-surface-medium)',
                     }"
-                    @click.stop="handleIconClick"
+                    @update:model-value="handleMenuOpenUpdate"
+                    @click.stop
                 />
             </template>
         </RFieldShell>
