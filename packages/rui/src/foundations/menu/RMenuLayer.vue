@@ -36,6 +36,7 @@ const props = withDefaults(
         offset?: number
         placement: Placement
         reference: RFloatingReference | null
+        restoreFocus?: boolean
     }>(),
     {
         align: "start",
@@ -43,6 +44,7 @@ const props = withDefaults(
         mode: "menu",
         matchWidth: false,
         offset: 8,
+        restoreFocus: true,
     },
 )
 
@@ -150,7 +152,7 @@ watch(open, async (value, previous) => {
         return
     }
 
-    restore(true)
+    restore(props.restoreFocus)
     emit("close")
 })
 

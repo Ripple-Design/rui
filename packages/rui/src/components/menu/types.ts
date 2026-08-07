@@ -27,6 +27,7 @@ export type RMenuProps = {
     mode?: RMenuMode
     matchWidth?: boolean
     reference?: HTMLElement | null
+    restoreFocus?: boolean
 }
 
 export type RContextMenuPoint = {

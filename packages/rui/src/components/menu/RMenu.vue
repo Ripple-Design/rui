@@ -19,6 +19,7 @@ const props = withDefaults(defineProps<RMenuProps>(), {
     disabled: false,
     mode: "menu",
     open: false,
+    restoreFocus: true,
 })
 
 const emit = defineEmits<{
@@ -146,6 +147,7 @@ onMounted(() => {
         :open="open"
         :placement="`bottom-${align}`"
         :reference="resolvedReference"
+        :restore-focus="restoreFocus"
         @update:open="handleLayerOpenUpdate"
         @open="emit('open')"
         @close="emit('close')"

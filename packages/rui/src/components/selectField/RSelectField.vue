@@ -40,6 +40,7 @@ const triggerRef = ref<HTMLElement | null>(null)
 const options = ref<RSelectOptionRecord[]>([])
 const activeOptionId = ref<string | null>(null)
 const open = ref(false)
+const restoreMenuFocus = ref(true)
 const isFocused = ref(false)
 const filterText = ref("")
 const fieldRef = computed(() => shellRef.value?.element ?? null)
@@ -108,6 +109,7 @@ function openSelect() {
         return
     }
 
+    restoreMenuFocus.value = true
     setInitialActiveOption()
     open.value = true
 }
@@ -124,6 +126,8 @@ function close(restoreFocus = true) {
     }
     if (restoreFocus) {
         triggerRef.value?.focus()
+    } else {
+        triggerRef.value?.blur()
     }
 }
 
@@ -152,7 +156,8 @@ function commit(option: RSelectOptionRecord) {
     if (props.filterable) {
         filterText.value = option.label
     }
-    close()
+    restoreMenuFocus.value = false
+    close(false)
 }
 
 function handleFilterInput() {
@@ -298,6 +303,7 @@ watch(filteredOptions, () => {
             :disabled="disabled"
             :match-width="true"
             :reference="fieldRef"
+            :restore-focus="restoreMenuFocus"
             :align="align"
             @update:open="handleMenuOpenUpdate"
         >
