@@ -21,7 +21,6 @@ const contentMode = computed(() => {
     return props.contentAlign
 })
 const shouldCollapse = computed(() => props.collapsing && scaffold?.fabPlacement.value !== "app-bar-seam")
-const hidden = computed(() => props.hideOnScroll && scaffold?.scrollState.value.direction === "down")
 const collapsed = computed(() => shouldCollapse.value && scaffold?.appBarState.value === "collapsed")
 const style = computed(() => ({
     "--rui-comp-app-bar-expanded-height": props.expandedHeight ?? props.collapsedHeight,
@@ -31,7 +30,6 @@ const style = computed(() => ({
 const classes = computed(() => [
     "rui-app-bar",
     {
-        "rui-app-bar--hidden": hidden.value,
         "rui-app-bar--collapsed": collapsed.value,
         "rui-app-bar--underlap": props.underlap,
     },
@@ -39,10 +37,16 @@ const classes = computed(() => [
 
 watchEffect(() => {
     scaffold?.setAppBarExpandedHeight(props.expandedHeight ?? props.collapsedHeight)
+    scaffold?.setAppBarCollapsedHeight(props.collapsedHeight)
+    scaffold?.setAppBarHideOnScroll(props.hideOnScroll)
+    scaffold?.setAppBarCollapsing(shouldCollapse.value)
 })
 
 onUnmounted(() => {
     scaffold?.setAppBarExpandedHeight("64px")
+    scaffold?.setAppBarCollapsedHeight("64px")
+    scaffold?.setAppBarHideOnScroll(false)
+    scaffold?.setAppBarCollapsing(false)
 })
 </script>
 
@@ -63,14 +67,8 @@ onUnmounted(() => {
 .rui-app-bar {
     position: relative;
     min-block-size: var(--rui-comp-app-bar-expanded-height);
-    transition:
-        transform 180ms ease,
-        min-block-size 180ms ease;
+    transition: min-block-size 180ms ease;
     overflow: visible;
-}
-
-.rui-app-bar--hidden {
-    transform: translateY(-100%);
 }
 
 .rui-app-bar--collapsed {

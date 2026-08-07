@@ -17,19 +17,38 @@ const scrollMotionDirection = ref<RScaffoldScrollMotionDirection>("idle")
 const appBarState = ref<RScaffoldAppBarState>("expanded")
 const bodyGridMode = ref<RResponsiveContainerMode | null>(null)
 const appBarExpandedHeight = ref("64px")
+const appBarCollapsedHeight = ref("64px")
+const appBarHideOnScroll = ref(false)
+const appBarCollapsing = ref(false)
 let previousScrollTop = 0
+
+const appBarOffset = computed(() => {
+    if (appBarState.value === "hidden") {
+        return "0px"
+    }
+
+    return appBarState.value === "collapsed" ? appBarCollapsedHeight.value : appBarExpandedHeight.value
+})
+
+const appBarFlowHeight = computed(() => {
+    if (appBarState.value === "collapsed" || (appBarState.value === "hidden" && appBarCollapsing.value)) {
+        return appBarCollapsedHeight.value
+    }
+
+    return appBarExpandedHeight.value
+})
 
 const classes = computed(() => [
     "rui-scaffold",
     `rui-scaffold--scroll-${props.scrollDirection}`,
-    {
-        "rui-scaffold--bars-hidden": scrollMotionDirection.value === "down" && scrollTop.value > 24,
-        "rui-scaffold--app-bar-collapsed": appBarState.value === "collapsed",
-    },
+    `rui-scaffold--app-bar-${appBarState.value}`,
 ])
 
 const style = computed(() => ({
-    "--rui-comp-scaffold-app-bar-fab-top": appBarExpandedHeight.value,
+    "--rui-comp-scaffold-app-bar-offset": appBarOffset.value,
+    "--rui-comp-scaffold-app-bar-expanded-height": appBarExpandedHeight.value,
+    "--rui-comp-scaffold-app-bar-flow-height": appBarFlowHeight.value,
+    "--rui-comp-scaffold-app-bar-fab-top": appBarOffset.value,
 }))
 
 function handleScroll(event: Event) {
@@ -38,14 +57,31 @@ function handleScroll(event: Event) {
     const target = event.currentTarget as HTMLElement
     const nextTop = Math.max(0, target.scrollTop)
     const delta = nextTop - previousScrollTop
+    const maxScrollTop = Math.max(0, target.scrollHeight - target.clientHeight)
+    const isAtTop = nextTop <= 0
+    const isAtBottom = nextTop >= maxScrollTop - 1
 
-    if (Math.abs(delta) >= 4) {
+    if (isAtTop) {
+        appBarState.value = "expanded"
+        scrollMotionDirection.value = "up"
+    } else if (Math.abs(delta) >= 4) {
         scrollMotionDirection.value = delta > 0 ? "down" : "up"
+
+        if (appBarHideOnScroll.value) {
+            if (delta > 0 && !isAtBottom && appBarState.value !== "hidden") {
+                appBarState.value = "hidden"
+            } else if (delta < 0 && !isAtBottom && appBarState.value === "hidden") {
+                appBarState.value = "collapsed"
+            }
+        }
     }
 
     scrollTop.value = nextTop
     previousScrollTop = nextTop
-    appBarState.value = nextTop > 48 ? "collapsed" : "expanded"
+
+    if (appBarState.value !== "hidden") {
+        appBarState.value = appBarCollapsing.value && nextTop > 48 ? "collapsed" : "expanded"
+    }
 }
 
 provide(scaffoldContextKey, {
@@ -55,11 +91,29 @@ provide(scaffoldContextKey, {
     bodyGridMode: computed(() => bodyGridMode.value),
     fabPlacement: computed(() => props.fabPlacement),
     appBarExpandedHeight: computed(() => appBarExpandedHeight.value),
+    appBarOffset,
+    appBarHideOnScroll: computed(() => appBarHideOnScroll.value),
+    appBarCollapsing: computed(() => appBarCollapsing.value),
     setBodyGridMode(mode) {
         bodyGridMode.value = mode
     },
     setAppBarExpandedHeight(height) {
         appBarExpandedHeight.value = height
+    },
+    setAppBarCollapsedHeight(height) {
+        appBarCollapsedHeight.value = height
+    },
+    setAppBarHideOnScroll(enabled) {
+        appBarHideOnScroll.value = enabled
+        if (!enabled && appBarState.value === "hidden") {
+            appBarState.value = appBarCollapsing.value && scrollTop.value > 48 ? "collapsed" : "expanded"
+        }
+    },
+    setAppBarCollapsing(enabled) {
+        appBarCollapsing.value = enabled
+        if (!enabled && appBarState.value === "collapsed") {
+            appBarState.value = "expanded"
+        }
     },
 })
 </script>
@@ -77,12 +131,14 @@ provide(scaffoldContextKey, {
         </div>
 
         <div class="rui-scaffold__main">
-            <header v-if="$slots['app-bar']" class="rui-scaffold__app-bar">
-                <slot name="app-bar" />
-            </header>
-
             <main class="rui-scaffold__body" @scroll="handleScroll">
-                <slot />
+                <header v-if="$slots['app-bar']" class="rui-scaffold__app-bar">
+                    <slot name="app-bar" />
+                </header>
+
+                <div class="rui-scaffold__body-content">
+                    <slot />
+                </div>
             </main>
 
             <footer v-if="$slots['bottom-bar']" class="rui-scaffold__bottom-bar">
@@ -119,10 +175,6 @@ provide(scaffoldContextKey, {
     grid-column: 1;
 }
 
-.rui-scaffold__main {
-    grid-column: 2;
-}
-
 .rui-scaffold__side-sheet {
     grid-column: 3;
 }
@@ -135,15 +187,33 @@ provide(scaffoldContextKey, {
 }
 
 .rui-scaffold__main {
+    grid-column: 2;
+    position: relative;
     display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto;
     min-inline-size: 0;
     min-block-size: 0;
 }
 
 .rui-scaffold__app-bar {
-    position: relative;
-    transition: transform 180ms ease;
+    position: sticky;
+    z-index: 3;
+    inset-block-start: 0;
+    inline-size: calc(100% - var(--rui-scaffold-scrollbar-width, 0px));
+    margin-block-end: calc(-1 * var(--rui-comp-scaffold-app-bar-expanded-height, 64px));
+    overflow-anchor: none;
+    transition: transform 225ms var(--rui-sys-motion-easing-decelerated), margin-block-end 225ms var(--rui-sys-motion-easing-decelerated);
+}
+
+.rui-scaffold--app-bar-hidden .rui-scaffold__app-bar {
+    transform: translateY(-100%);
+    transition-duration: 175ms;
+    transition-timing-function: var(--rui-sys-motion-easing-accelerated);
+}
+
+.rui-scaffold--app-bar-expanded .rui-scaffold__app-bar,
+.rui-scaffold--app-bar-collapsed .rui-scaffold__app-bar {
+    transform: translateY(0);
 }
 
 .rui-scaffold__body {
@@ -151,6 +221,16 @@ provide(scaffoldContextKey, {
     min-block-size: 0;
     overflow: auto;
     overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+}
+
+.rui-scaffold__body-content {
+    min-block-size: 100%;
+    padding-block-start: var(--rui-comp-scaffold-app-bar-expanded-height, 64px);
+}
+
+.rui-scaffold--app-bar-hidden .rui-scaffold__body-content {
+    padding-block-start: var(--rui-comp-scaffold-app-bar-expanded-height, 64px);
 }
 
 .rui-scaffold--scroll-none .rui-scaffold__body {
@@ -159,6 +239,13 @@ provide(scaffoldContextKey, {
 
 .rui-scaffold--scroll-horizontal .rui-scaffold__body {
     overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rui-scaffold__app-bar,
+    .rui-scaffold__body-content {
+        transition-duration: 0ms !important;
+    }
 }
 
 .rui-scaffold__bottom-bar {
