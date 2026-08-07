@@ -1,0 +1,17 @@
+---
+title: Scaffold
+docSlug: components/scaffold
+tab: implementation
+locale: en
+designOrder: 31
+developOrder: 31
+api: /en/api/scaffold
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import ScaffoldBasicDemo from "@docs/components/demos/scaffold/ScaffoldBasicDemo.vue"
+import scaffoldBasicDemoSource from "@docs/components/demos/scaffold/ScaffoldBasicDemo.vue?raw"
+
+<DemoBlock title="Scaffold" code={scaffoldBasicDemoSource} language="vue">
+    <ScaffoldBasicDemo client:load />
+</DemoBlock>

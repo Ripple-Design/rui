@@ -16,12 +16,35 @@ const highlightedCode = codeToHtml(code.trimEnd(), {
 
 <section class="demo-block">
     <div class="demo-preview">
+        <button class="demo-preview__fullscreen-trigger" type="button">Fullscreen</button>
         <slot/>
     </div>
     <details class="demo-source">
         <summary>Show code</summary>
         <div class="demo-source__content" set:html={highlightedCode}/>
     </details>
+
+    <script>
+        document.querySelectorAll<HTMLElement>(".demo-block").forEach((block) => {
+            const preview = block.querySelector<HTMLElement>(".demo-preview")
+            const fullscreenButton = block.querySelector<HTMLButtonElement>(".demo-preview__fullscreen-trigger")
+
+            fullscreenButton?.addEventListener("click", () => {
+                if (document.fullscreenElement === preview) {
+                    void document.exitFullscreen()
+                    return
+                }
+
+                void preview?.requestFullscreen()
+            })
+
+            document.addEventListener("fullscreenchange", () => {
+                const isFullscreen = document.fullscreenElement === preview
+                fullscreenButton.textContent = isFullscreen ? "Exit fullscreen" : "Fullscreen"
+                fullscreenButton.setAttribute("aria-pressed", String(isFullscreen))
+            })
+        })
+    </script>
 </section>
 
 <style lang="scss">
@@ -43,12 +66,40 @@ const highlightedCode = codeToHtml(code.trimEnd(), {
     }
 
     .demo-preview {
+        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 24px;
         gap: 16px;
         background: rui.$color-background;
+    }
+
+    .demo-preview:fullscreen {
+        box-sizing: border-box;
+        inline-size: 100vw;
+        block-size: 100vh;
+        padding: 48px;
+        overflow: auto;
+    }
+
+    .demo-preview__fullscreen-trigger {
+        position: absolute;
+        z-index: 1;
+        inset-block-start: 8px;
+        inset-inline-end: 8px;
+        border: 0;
+        border-radius: 4px;
+        cursor: pointer;
+        padding: 0.5rem 0.75rem;
+        background: #111111;
+        color: #FFFFFF;
+        font: inherit;
+    }
+
+    .demo-preview__fullscreen-trigger:focus-visible {
+        outline: 2px solid #111111;
+        outline-offset: 2px;
     }
 
     .demo-source {
@@ -76,9 +127,5 @@ const highlightedCode = codeToHtml(code.trimEnd(), {
         margin: 0;
         overflow-x: auto;
         padding: 1rem;
-    }
-
-    .demo-source__content :global(code) {
-        font-size: 0.875rem;
     }
 </style>
