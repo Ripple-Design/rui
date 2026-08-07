@@ -46,6 +46,9 @@
         "@floating-ui/dom": "^1.8.0",
         "@ripple-design/icons": "^1.0.7"
     },
+    "optionalDependencies": {
+        "@lottiefiles/dotlottie-vue": "^0.11.24"
+    },
     "devDependencies": {
         "@vitejs/plugin-vue": "catalog:",
         "sass": "^1.93.2",

@@ -1,0 +1,17 @@
+---
+title: Checkbox
+docSlug: components/checkbox
+tab: implementation
+locale: en
+designOrder: 144
+developOrder: 74
+api: /en/api/checkbox
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import CheckboxBasicDemo from "@docs/components/demos/checkbox/CheckboxBasicDemo.vue"
+import checkboxBasicDemoSource from "@docs/components/demos/checkbox/CheckboxBasicDemo.vue?raw"
+
+<DemoBlock title="Basic usage" code={checkboxBasicDemoSource} language="vue">
+    <CheckboxBasicDemo client:load />
+</DemoBlock>

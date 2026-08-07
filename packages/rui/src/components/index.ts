@@ -43,6 +43,7 @@ export { default as RSwitch } from "./switch/RSwitch.vue"
 export type * from "./switch/types"
 
 export * from "./radioButton"
+export * from "./checkbox"
 
 export { default as RChip } from "./chip/RChip.vue"
 export { default as RChipGroup } from "./chip/RChipGroup.vue"

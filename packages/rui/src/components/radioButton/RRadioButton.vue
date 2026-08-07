@@ -41,15 +41,7 @@ const rippleOptions = computed<RippleOptions>(() => {
     const options = props.ripple === true ? {} : props.ripple
     return {
         ...options,
-        color: options?.color ?? (checked.value ? "var(--rui-sys-color-primary)" : "var(--rui-sys-color-on-surface)"),
-        contrast: options?.contrast ?? "low",
         disabled: props.disabled || !!options?.disabled,
-        unbounded: {
-            radius: 20,
-            getCenter() {
-                return { x: 24, y: 24 }
-            },
-        },
     }
 })
 
@@ -140,7 +132,6 @@ function handleKeydown(event: KeyboardEvent) {
 <template>
     <RTouchTargetWrapper class="rui-radio-button__touch-target-wrapper">
         <label
-            v-ripple="rippleOptions"
             class="rui-radio-button"
             :class="{
                 'rui-radio-button--checked': checked,
@@ -149,34 +140,35 @@ function handleKeydown(event: KeyboardEvent) {
             }"
             :style="{ '--rui-comp-radio-button-indicator-color': indicatorColor }"
         >
-            <input
-                ref="input"
-                v-bind="attrs"
-                class="rui-radio-button__native-control"
-                type="radio"
-                :name="resolvedName"
-                :value="value"
-                :checked="checked"
-                :disabled="disabled"
-                :required="group?.required.value"
-                :tabindex="tabIndex"
-                @change="handleChange"
-                @keydown="handleKeydown"
-            />
-            <span class="rui-radio-button__state-layer" aria-hidden="true" />
-            <span class="rui-radio-button__indicator" aria-hidden="true">
-                <svg class="rui-radio-button__indicator-vector" viewBox="0 0 32 32">
-                    <g class="rui-radio-button__ring-motion">
+            <span v-ripple="rippleOptions" class="rui-radio-button__control">
+                <input
+                    ref="input"
+                    v-bind="attrs"
+                    class="rui-radio-button__native-control"
+                    type="radio"
+                    :name="resolvedName"
+                    :value="value"
+                    :checked="checked"
+                    :disabled="disabled"
+                    :required="group?.required.value"
+                    :tabindex="tabIndex"
+                    @change="handleChange"
+                    @keydown="handleKeydown"
+                />
+                <span class="rui-radio-button__content" aria-hidden="true">
+                    <svg class="rui-radio-button__indicator-vector" viewBox="0 0 32 32">
+                        <g class="rui-radio-button__ring-motion">
+                            <path
+                                class="rui-radio-button__ring"
+                                d="M 16 7 c 4.9705627482 0 9 4.0294372518 9 9 c 0 4.9705627482 -4.0294372518 9 -9 9 c -4.9705627482 0 -9 -4.0294372518 -9 -9 c 0 -4.9705627482 4.0294372518 -9 9 -9 Z"
+                            />
+                        </g>
                         <path
-                            class="rui-radio-button__ring"
-                            d="M 16 7 c 4.9705627482 0 9 4.0294372518 9 9 c 0 4.9705627482 -4.0294372518 9 -9 9 c -4.9705627482 0 -9 -4.0294372518 -9 -9 c 0 -4.9705627482 4.0294372518 -9 9 -9 Z"
+                            class="rui-radio-button__dot"
+                            d="M 16 11 c -2.7619934082 0 -5 2.2380065918 -5 5 c 0 2.7619935918 2.2380065918 5 5 5 c 2.7619935918 0 5 -2.2380065918 5 -5 c 0 -2.7619935918 -2.2380065918 -5 -5 -5 Z"
                         />
-                    </g>
-                    <path
-                        class="rui-radio-button__dot"
-                        d="M 16 11 c -2.7619934082 0 -5 2.2380065918 -5 5 c 0 2.7619935918 2.2380065918 5 5 5 c 2.7619935918 0 5 -2.2380065918 5 -5 c 0 -2.7619934082 -2.2380065918 -5 -5 -5 Z"
-                    />
-                </svg>
+                    </svg>
+                </span>
             </span>
             <span v-if="$slots.default" class="rui-radio-button__label"><slot /></span>
         </label>
@@ -184,10 +176,16 @@ function handleKeydown(event: KeyboardEvent) {
 </template>
 
 <style scoped lang="scss">
+@use "@/styles/density";
 @use "@/styles/typography";
 
 .rui-radio-button__touch-target-wrapper {
-    display: inline-flex;
+    @include density.touchTargetEnabled();
+    @include density.touchTargetPaddingXY(40px, 40px);
+
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
 }
 
 .rui-radio-button {
@@ -203,8 +201,6 @@ function handleKeydown(event: KeyboardEvent) {
     position: relative;
     display: inline-flex;
     align-items: center;
-    min-block-size: var(--rui-comp-radio-button-target-size);
-    min-inline-size: var(--rui-comp-radio-button-target-size);
     cursor: pointer;
     color: var(--rui-sys-color-on-surface-high);
 
@@ -217,36 +213,42 @@ function handleKeydown(event: KeyboardEvent) {
     }
 }
 
+.rui-radio-button__control {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 40px;
+    align-items: center;
+    justify-content: center;
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: 50%;
+}
+
 .rui-radio-button__native-control {
     position: absolute;
     z-index: 2;
-    inset: 0 auto auto 0;
-    inline-size: var(--rui-comp-radio-button-target-size);
-    block-size: var(--rui-comp-radio-button-target-size);
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
     margin: 0;
     appearance: none;
     cursor: inherit;
     opacity: 0;
 }
 
-.rui-radio-button__state-layer {
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-start: 0;
-    inline-size: var(--rui-comp-radio-button-target-size);
-    block-size: var(--rui-comp-radio-button-target-size);
-    border-radius: 50%;
+.rui-radio-button__content {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     pointer-events: none;
 }
 
-.rui-radio-button__indicator {
-    position: relative;
-    display: grid;
-    flex: 0 0 var(--rui-comp-radio-button-target-size);
-    inline-size: var(--rui-comp-radio-button-target-size);
-    block-size: var(--rui-comp-radio-button-target-size);
-    place-items: center;
-    pointer-events: none;
+.rui-radio-button__control:has(.rui-radio-button__native-control:focus-visible) {
+    outline: 2px solid var(--rui-sys-color-primary);
+    outline-offset: -2px;
+    border-radius: 50%;
 }
 
 .rui-radio-button__indicator-vector {
