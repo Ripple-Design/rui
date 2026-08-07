@@ -1,4 +1,6 @@
+import type { Slot } from "vue"
 import type { RIconResolvableSource } from "@/components/icon/types"
+import type { RMenuGroupSelectionIndicator } from "@/foundations/menu/types"
 
 export type {
     RMenuContext,
@@ -11,6 +13,11 @@ export { menuGroupKey, menuKey } from "@/foundations/menu/types"
 export type RMenuAlign = "start" | "end"
 
 export type RMenuMode = "menu" | "listbox"
+
+export type RMenuSlots = {
+    default?: Slot
+    trigger?: Slot
+}
 
 export type RMenuProps = {
     align?: RMenuAlign
@@ -47,7 +54,7 @@ export type RMenuGroupProps = {
     /** Controls the selected menu item value within this group. */
     modelValue?: unknown
     /** Controls whether selected items use an overlay or a leading check indicator. */
-    indicator?: import("@/foundations/menu/types").RMenuGroupSelectionIndicator
+    indicator?: RMenuGroupSelectionIndicator
 }
 
 export type RMenuItemProps = {

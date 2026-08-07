@@ -6,15 +6,13 @@ import {
     onMounted,
     ref,
     useId,
-    useSlots,
     watch,
-    type Slots,
     type VNode,
 } from "vue"
 
 import RMenuLayer from "@/foundations/menu/RMenuLayer.vue"
 
-import type { RMenuProps } from "./types"
+import type { RMenuProps, RMenuSlots } from "./types"
 
 const props = withDefaults(defineProps<RMenuProps>(), {
     align: "start",
@@ -29,7 +27,7 @@ const emit = defineEmits<{
     (e: "close"): void
 }>()
 
-const slots: Slots = useSlots()
+const slots = defineSlots<RMenuSlots>()
 const triggerId = useId()
 const generatedMenuId = useId()
 const menuId = computed(() => props.id ?? generatedMenuId)
