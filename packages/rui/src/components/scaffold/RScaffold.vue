@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { computed, provide, ref } from "vue"
+import { computed, onBeforeUnmount, provide, ref, watch } from "vue"
 
 import type { RResponsiveContainerMode } from "@/components/responsive/types"
 
 import type { RScaffoldProps } from "./types"
 
-import { scaffoldContextKey, type RScaffoldAppBarState, type RScaffoldScrollMotionDirection } from "./context"
+import { scaffoldContextKey, type RScaffoldAppBarState, type RScaffoldBottomBarState, type RScaffoldScrollMotionDirection } from "./context"
 
 const props = withDefaults(defineProps<RScaffoldProps>(), {
     scrollDirection: "vertical",
     fabPlacement: "viewport",
+    bottomBarHideOnScroll: false,
 })
 
 const scrollTop = ref(0)
@@ -20,7 +21,16 @@ const appBarExpandedHeight = ref("64px")
 const appBarCollapsedHeight = ref("64px")
 const appBarHideOnScroll = ref(false)
 const appBarCollapsing = ref(false)
+const bottomBarHideOnScroll = ref(false)
+const bottomBarState = ref<RScaffoldBottomBarState>("shown")
+const bottomBarHeight = ref(0)
+const bottomBarFabOffset = computed(() => (bottomBarState.value === "shown" ? bottomBarHeight.value : 0))
+const scrollbarWidth = ref(0)
+const bodyElement = ref<HTMLElement | null>(null)
+const bottomBarElement = ref<HTMLElement | null>(null)
 let previousScrollTop = 0
+let bottomBarResizeObserver: ResizeObserver | null = null
+let bodyResizeObserver: ResizeObserver | null = null
 
 const appBarOffset = computed(() => {
     if (appBarState.value === "hidden") {
@@ -49,7 +59,64 @@ const style = computed(() => ({
     "--rui-comp-scaffold-app-bar-expanded-height": appBarExpandedHeight.value,
     "--rui-comp-scaffold-app-bar-flow-height": appBarFlowHeight.value,
     "--rui-comp-scaffold-app-bar-fab-top": appBarOffset.value,
+    "--rui-comp-scaffold-bottom-bar-height": `${bottomBarHeight.value}px`,
+    "--rui-comp-scaffold-fab-bottom-offset": `${bottomBarFabOffset.value}px`,
+    "--rui-scaffold-scrollbar-width": `${scrollbarWidth.value}px`,
 }))
+
+watch(bodyElement, (element) => {
+    bodyResizeObserver?.disconnect()
+    bodyResizeObserver = null
+
+    if (!element) {
+        scrollbarWidth.value = 0
+        return
+    }
+
+    const updateScrollbarWidth = () => {
+        scrollbarWidth.value = Math.max(0, element.offsetWidth - element.clientWidth)
+    }
+
+    updateScrollbarWidth()
+    if (typeof ResizeObserver !== "undefined") {
+        bodyResizeObserver = new ResizeObserver(updateScrollbarWidth)
+        bodyResizeObserver.observe(element)
+    }
+})
+
+watch(bottomBarElement, (element, previousElement) => {
+    bottomBarResizeObserver?.disconnect()
+    bottomBarResizeObserver = null
+
+    if (!element || typeof ResizeObserver === "undefined") {
+        bottomBarHeight.value = 0
+        return
+    }
+
+    const updateHeight = () => {
+        bottomBarHeight.value = element.getBoundingClientRect().height
+    }
+
+    bottomBarResizeObserver = new ResizeObserver(updateHeight)
+    bottomBarResizeObserver.observe(element)
+    updateHeight()
+})
+
+watch(
+    () => props.bottomBarHideOnScroll,
+    (enabled) => {
+        bottomBarHideOnScroll.value = enabled
+        if (!enabled) {
+            bottomBarState.value = "shown"
+        }
+    },
+    { immediate: true },
+)
+
+onBeforeUnmount(() => {
+    bodyResizeObserver?.disconnect()
+    bottomBarResizeObserver?.disconnect()
+})
 
 function handleScroll(event: Event) {
     if (props.scrollDirection !== "vertical") return
@@ -63,6 +130,7 @@ function handleScroll(event: Event) {
 
     if (isAtTop) {
         appBarState.value = "expanded"
+        bottomBarState.value = "shown"
         scrollMotionDirection.value = "up"
     } else if (Math.abs(delta) >= 4) {
         scrollMotionDirection.value = delta > 0 ? "down" : "up"
@@ -72,6 +140,14 @@ function handleScroll(event: Event) {
                 appBarState.value = "hidden"
             } else if (delta < 0 && !isAtBottom && appBarState.value === "hidden") {
                 appBarState.value = "collapsed"
+            }
+        }
+
+        if (bottomBarHideOnScroll.value) {
+            if (delta > 0 && bottomBarState.value !== "hidden") {
+                bottomBarState.value = "hidden"
+            } else if (delta < 0 && bottomBarState.value === "hidden") {
+                bottomBarState.value = "shown"
             }
         }
     }
@@ -94,6 +170,7 @@ provide(scaffoldContextKey, {
     appBarOffset,
     appBarHideOnScroll: computed(() => appBarHideOnScroll.value),
     appBarCollapsing: computed(() => appBarCollapsing.value),
+    bottomBarState: computed(() => bottomBarState.value),
     setBodyGridMode(mode) {
         bodyGridMode.value = mode
     },
@@ -115,6 +192,12 @@ provide(scaffoldContextKey, {
             appBarState.value = "expanded"
         }
     },
+    setBottomBarHideOnScroll(enabled) {
+        bottomBarHideOnScroll.value = enabled
+        if (!enabled) {
+            bottomBarState.value = "shown"
+        }
+    },
 })
 </script>
 
@@ -131,7 +214,7 @@ provide(scaffoldContextKey, {
         </div>
 
         <div class="rui-scaffold__main">
-            <main class="rui-scaffold__body" @scroll="handleScroll">
+            <main ref="bodyElement" class="rui-scaffold__body" @scroll="handleScroll">
                 <header v-if="$slots['app-bar']" class="rui-scaffold__app-bar">
                     <slot name="app-bar" />
                 </header>
@@ -141,7 +224,12 @@ provide(scaffoldContextKey, {
                 </div>
             </main>
 
-            <footer v-if="$slots['bottom-bar']" class="rui-scaffold__bottom-bar">
+            <footer
+                v-if="$slots['bottom-bar']"
+                ref="bottomBarElement"
+                class="rui-scaffold__bottom-bar"
+                :class="{ 'rui-scaffold__bottom-bar--hidden': bottomBarState === 'hidden' }"
+            >
                 <slot name="bottom-bar" />
             </footer>
         </div>
@@ -150,7 +238,14 @@ provide(scaffoldContextKey, {
             <slot name="side-sheet" />
         </aside>
 
-        <div v-if="$slots.fab" class="rui-scaffold__fab" :class="`rui-scaffold__fab--${props.fabPlacement}`">
+        <div
+            v-if="$slots.fab"
+            class="rui-scaffold__fab"
+            :class="[
+                `rui-scaffold__fab--${props.fabPlacement}`,
+                { 'rui-scaffold__fab--bottom-bar-offset': props.fabPlacement !== 'app-bar-seam' },
+            ]"
+        >
             <slot name="fab" />
         </div>
 
@@ -189,8 +284,6 @@ provide(scaffoldContextKey, {
 .rui-scaffold__main {
     grid-column: 2;
     position: relative;
-    display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
     min-inline-size: 0;
     min-block-size: 0;
 }
@@ -199,7 +292,7 @@ provide(scaffoldContextKey, {
     position: sticky;
     z-index: 3;
     inset-block-start: 0;
-    inline-size: calc(100% - var(--rui-scaffold-scrollbar-width, 0px));
+    inline-size: 100%;
     margin-block-end: calc(-1 * var(--rui-comp-scaffold-app-bar-expanded-height, 64px));
     overflow-anchor: none;
     transition: transform 225ms var(--rui-sys-motion-easing-decelerated), margin-block-end 225ms var(--rui-sys-motion-easing-decelerated);
@@ -219,6 +312,7 @@ provide(scaffoldContextKey, {
 .rui-scaffold__body {
     min-inline-size: 0;
     min-block-size: 0;
+    block-size: 100%;
     overflow: auto;
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
@@ -249,19 +343,31 @@ provide(scaffoldContextKey, {
 }
 
 .rui-scaffold__bottom-bar {
-    position: relative;
-    z-index: 2;
+    position: absolute;
+    z-index: 3;
+    inset-inline: 0;
+    inset-block-end: 0;
+    inset-inline-end: var(--rui-scaffold-scrollbar-width, 0px);
+    pointer-events: auto;
+    transition: transform 225ms var(--rui-sys-motion-easing-decelerated);
+}
+
+.rui-scaffold__bottom-bar--hidden {
+    transform: translateY(var(--rui-comp-scaffold-bottom-bar-height, 0px));
+    transition-duration: 175ms;
+    transition-timing-function: var(--rui-sys-motion-easing-accelerated);
+    pointer-events: none;
 }
 
 .rui-scaffold__fab {
     position: absolute;
     z-index: 4;
     inset-inline-end: 24px;
-    inset-block-end: 24px;
-    pointer-events: none;
+    inset-block-end: calc(24px + var(--rui-comp-scaffold-fab-bottom-offset, 0px));
+    transition: inset-block-end 225ms var(--rui-sys-motion-easing-decelerated);
 }
 
-.rui-scaffold__fab :deep(*) {
+.rui-scaffold__fab--bottom-bar-offset {
     pointer-events: auto;
 }
 

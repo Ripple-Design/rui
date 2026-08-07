@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import {
+    RIFavoriteBorderFilled,
+    RIFavoriteFilled,
+    RIHomeOutlined,
+    RIPlayCircleOutlined,
+    RISettingsOutlined,
+} from "@ripple-design/icons"
 import { computed, ref } from "vue"
 
 import {
@@ -6,6 +13,8 @@ import {
     RButtonGroup,
     RCard,
     RFab,
+    RNavigationRail,
+    RNavigationRailItem,
     RResponsiveGrid,
     RScaffold,
     RSideSheet,
@@ -23,7 +32,12 @@ const collapsing = ref(false)
 const hideOnScroll = ref(false)
 const underlap = ref(false)
 const sideSheet = ref(false)
+const navigationRail = ref(false)
+const navigationDrawer = ref(false)
+const railActive = ref("home")
+const drawerActive = ref("home")
 const bottomBar = ref(false)
+const bottomBarHideOnScroll = ref(false)
 const previewWidth = ref(100)
 
 const previewStyle = computed(() => ({
@@ -95,12 +109,24 @@ const previewStyle = computed(() => ({
                 <RSwitch v-model="underlap" aria-label="Toggle underlap" />
             </label>
             <label class="scaffold-demo-controls__switch">
+                <span>Navigation rail</span>
+                <RSwitch v-model="navigationRail" aria-label="Toggle navigation rail" />
+            </label>
+            <label class="scaffold-demo-controls__switch">
+                <span>Navigation drawer</span>
+                <RSwitch v-model="navigationDrawer" aria-label="Toggle navigation drawer" />
+            </label>
+            <label class="scaffold-demo-controls__switch">
                 <span>Side sheet</span>
                 <RSwitch v-model="sideSheet" aria-label="Toggle side sheet" />
             </label>
             <label class="scaffold-demo-controls__switch">
                 <span>Bottom bar</span>
                 <RSwitch v-model="bottomBar" aria-label="Toggle bottom bar" />
+            </label>
+            <label class="scaffold-demo-controls__switch">
+                <span>Bottom bar hide on scroll</span>
+                <RSwitch v-model="bottomBarHideOnScroll" aria-label="Toggle bottom bar hide on scroll" />
             </label>
         </div>
 
@@ -109,7 +135,52 @@ const previewStyle = computed(() => ({
             :style="previewStyle"
             :scroll-direction="scrollDirection"
             :fab-placement="fabPlacement"
+            :bottom-bar-hide-on-scroll="bottomBarHideOnScroll"
         >
+            <template v-if="navigationRail || navigationDrawer" #navigation>
+                <div class="scaffold-demo__navigation">
+                    <RNavigationRail v-if="navigationRail" v-model="railActive" aria-label="Primary navigation rail">
+                        <template #top>App</template>
+                        <RNavigationRailItem value="home" :icon="RIHomeOutlined">Home</RNavigationRailItem>
+                        <RNavigationRailItem value="listen" :icon="RIPlayCircleOutlined">Listen</RNavigationRailItem>
+                        <RNavigationRailItem
+                            value="favorites"
+                            :icon="RIFavoriteBorderFilled"
+                            :selected-icon="RIFavoriteFilled"
+                        >
+                            Favorites
+                        </RNavigationRailItem>
+                        <RNavigationRailItem value="settings" :icon="RISettingsOutlined">Settings</RNavigationRailItem>
+                    </RNavigationRail>
+
+                    <RSideSheet v-if="navigationDrawer" side="start" title="Navigation" width="280px">
+                        <div class="scaffold-demo__drawer-items">
+                            <RButton
+                                :variant="drawerActive === 'home' ? 'contained' : 'text'"
+                                full-width
+                                @click="drawerActive = 'home'"
+                            >
+                                Home
+                            </RButton>
+                            <RButton
+                                :variant="drawerActive === 'library' ? 'contained' : 'text'"
+                                full-width
+                                @click="drawerActive = 'library'"
+                            >
+                                Library
+                            </RButton>
+                            <RButton
+                                :variant="drawerActive === 'settings' ? 'contained' : 'text'"
+                                full-width
+                                @click="drawerActive = 'settings'"
+                            >
+                                Settings
+                            </RButton>
+                        </div>
+                    </RSideSheet>
+                </div>
+            </template>
+
             <template #app-bar>
                 <RTopAppBar
                     :content-align="appBarAlign"
@@ -196,6 +267,23 @@ const previewStyle = computed(() => ({
 
 .scaffold-demo__app-bar-spacer {
     flex: 1;
+}
+
+.scaffold-demo__navigation {
+    display: inline-flex;
+    block-size: 100%;
+    min-block-size: 0;
+    overflow: hidden;
+}
+
+.scaffold-demo__navigation :deep(.rui-navigation-rail),
+.scaffold-demo__navigation :deep(.rui-side-sheet) {
+    block-size: 100%;
+}
+
+.scaffold-demo__drawer-items {
+    display: grid;
+    gap: 8px;
 }
 
 .scaffold-demo__card {
