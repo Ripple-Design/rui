@@ -58,11 +58,9 @@ const classes = computed(() => [
 @use "@/styles/elevations";
 @use "@/styles/motion";
 
-.rui-card.rui-card {
+.rui-card {
     --rui-comp-card-hover-shadow: #{elevations.shadow(8)};
 
-    margin: 0;
-    padding: 0;
     outline: 2px solid transparent;
     outline-offset: -2px;
     transition:
