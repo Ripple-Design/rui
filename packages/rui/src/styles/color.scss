@@ -1,5 +1,6 @@
 :root {
     --rui-sys-color-primary: #6200ee;
+    --rui-sys-color-primary-low: rgb(from var(--rui-sys-color-primary) r g b / 0.38);
     --rui-sys-color-primary-light: #bb86fc;
     --rui-sys-color-primary-dark: #3700b3;
     --rui-sys-color-on-primary: #ffffff;

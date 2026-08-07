@@ -1,5 +1,5 @@
 export * from "./scaffold"
-export * from "./responsiveContainer"
+export * from "./responsive"
 export * from "./appBar"
 
 export { default as RGrid } from "./grid/RGrid.vue"
@@ -41,6 +41,8 @@ export type * from "./button/types"
 
 export { default as RSwitch } from "./switch/RSwitch.vue"
 export type * from "./switch/types"
+
+export * from "./radio"
 
 export { default as RChip } from "./chip/RChip.vue"
 export { default as RChipGroup } from "./chip/RChipGroup.vue"

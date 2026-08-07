@@ -91,6 +91,9 @@ export function createThemeBootstrapScript(options: {
   const deriveContrastColors = (colors) => {
     if (!colors) return colors;
     const nextColors = { ...colors };
+    if (colors.primary) {
+      nextColors.primaryLow = colors.primaryLow ?? ('rgb(from ' + colors.primary + ' r g b / 0.38)');
+    }
     if (colors.onSurface) {
       nextColors.onSurfaceHigh = colors.onSurfaceHigh ?? ('rgb(from ' + colors.onSurface + ' r g b / 0.87)');
       nextColors.onSurfaceMedium = colors.onSurfaceMedium ?? ('rgb(from ' + colors.onSurface + ' r g b / 0.54)');
@@ -135,6 +138,7 @@ export function createThemeBootstrapScript(options: {
   if (colors) {
     const colorMap = {
       primary: '--rui-sys-color-primary',
+      primaryLow: '--rui-sys-color-primary-low',
       primaryLight: '--rui-sys-color-primary-light',
       primaryDark: '--rui-sys-color-primary-dark',
       onPrimary: '--rui-sys-color-on-primary',

@@ -5,6 +5,7 @@ import type { RThemeTarget } from "./dom"
 
 export type RThemeColors = {
     primary?: string
+    primaryLow?: string
     primaryLight?: string
     primaryDark?: string
     onPrimary?: string
