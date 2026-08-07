@@ -67,10 +67,12 @@ const style = computed(() => {
             "--rui-comp-grid-cols-md": normalized,
             "--rui-comp-grid-cols-lg": normalized,
             "--rui-comp-grid-cols-xl": normalized,
+            "--rui-comp-grid-cols-xxl": normalized,
             "--rui-comp-grid-cols-csm": normalized,
             "--rui-comp-grid-cols-cmd": normalized,
             "--rui-comp-grid-cols-clg": normalized,
             "--rui-comp-grid-cols-cxl": normalized,
+            "--rui-comp-grid-cols-cxxl": normalized,
         }
     }
 
@@ -79,6 +81,7 @@ const style = computed(() => {
         const cmd = normalizeTemplateColumns(props.columns.cmd ?? props.columns.csm)
         const clg = normalizeTemplateColumns(props.columns.clg ?? props.columns.cmd ?? props.columns.csm)
         const cxl = normalizeTemplateColumns(props.columns.cxl ?? props.columns.clg ?? props.columns.cmd ?? props.columns.csm)
+        const cxxl = normalizeTemplateColumns(props.columns.cxxl ?? props.columns.cxl ?? props.columns.clg ?? props.columns.cmd ?? props.columns.csm)
 
         return {
             ...baseStyle,
@@ -86,10 +89,12 @@ const style = computed(() => {
             "--rui-comp-grid-cols-md": undefined,
             "--rui-comp-grid-cols-lg": undefined,
             "--rui-comp-grid-cols-xl": undefined,
+            "--rui-comp-grid-cols-xxl": undefined,
             "--rui-comp-grid-cols-csm": csm,
             "--rui-comp-grid-cols-cmd": cmd,
             "--rui-comp-grid-cols-clg": clg,
             "--rui-comp-grid-cols-cxl": cxl,
+            "--rui-comp-grid-cols-cxxl": cxxl,
         }
     }
 
@@ -98,6 +103,7 @@ const style = computed(() => {
     const md = normalizeTemplateColumns(columns.md ?? columns.sm)
     const lg = normalizeTemplateColumns(columns.lg ?? columns.md ?? columns.sm)
     const xl = normalizeTemplateColumns(columns.xl ?? columns.lg ?? columns.md ?? columns.sm)
+    const xxl = normalizeTemplateColumns(columns.xxl ?? columns.xl ?? columns.lg ?? columns.md ?? columns.sm)
 
     return {
         ...baseStyle,
@@ -105,6 +111,7 @@ const style = computed(() => {
         "--rui-comp-grid-cols-md": md,
         "--rui-comp-grid-cols-lg": lg,
         "--rui-comp-grid-cols-xl": xl,
+        "--rui-comp-grid-cols-xxl": xxl,
         "--rui-comp-grid-cols-csm": undefined,
         "--rui-comp-grid-cols-cmd": undefined,
         "--rui-comp-grid-cols-clg": undefined,
@@ -212,6 +219,29 @@ const style = computed(() => {
     }
 }
 
+@include breakpoint.up(xxl) {
+    .rui-grid--viewport-responsive {
+        grid-template-columns: var(
+            --rui-comp-grid-cols-xxl,
+            var(--rui-comp-grid-cols-xl, var(--rui-comp-grid-cols-lg, var(--rui-comp-grid-cols-md, var(--rui-comp-grid-cols-sm, minmax(0, 1fr)))))
+        );
+    }
+
+    :slotted([data-rui-grid-column-span-mode="viewport"]) {
+        grid-column: var(
+            --rui-comp-grid-column-span-xxl,
+            var(--rui-comp-grid-column-span-xl, var(--rui-comp-grid-column-span-lg, var(--rui-comp-grid-column-span-md, var(--rui-comp-grid-column-span-sm, auto))))
+        );
+    }
+
+    :slotted([data-rui-grid-row-span-mode="viewport"]) {
+        grid-row: var(
+            --rui-comp-grid-row-span-xxl,
+            var(--rui-comp-grid-row-span-xl, var(--rui-comp-grid-row-span-lg, var(--rui-comp-grid-row-span-md, var(--rui-comp-grid-row-span-sm, auto))))
+        );
+    }
+}
+
 @include breakpoint.c-up(cmd) {
     .rui-grid--container-responsive {
         grid-template-columns: var(--rui-comp-grid-cols-cmd, var(--rui-comp-grid-cols-csm, minmax(0, 1fr)));
@@ -274,6 +304,28 @@ const style = computed(() => {
                 --rui-comp-grid-row-span-clg,
                 var(--rui-comp-grid-row-span-cmd, var(--rui-comp-grid-row-span-csm, auto))
             )
+        );
+    }
+}
+@include breakpoint.c-up(cxxl) {
+    .rui-grid--container-responsive {
+        grid-template-columns: var(
+            --rui-comp-grid-cols-cxxl,
+            var(--rui-comp-grid-cols-cxl, var(--rui-comp-grid-cols-clg, var(--rui-comp-grid-cols-cmd, var(--rui-comp-grid-cols-csm, minmax(0, 1fr)))))
+        );
+    }
+
+    :slotted([data-rui-grid-column-span-mode="container"]) {
+        grid-column: var(
+            --rui-comp-grid-column-span-cxxl,
+            var(--rui-comp-grid-column-span-cxl, var(--rui-comp-grid-column-span-clg, var(--rui-comp-grid-column-span-cmd, var(--rui-comp-grid-column-span-csm, auto))))
+        );
+    }
+
+    :slotted([data-rui-grid-row-span-mode="container"]) {
+        grid-row: var(
+            --rui-comp-grid-row-span-cxxl,
+            var(--rui-comp-grid-row-span-cxl, var(--rui-comp-grid-row-span-clg, var(--rui-comp-grid-row-span-cmd, var(--rui-comp-grid-row-span-csm, auto))))
         );
     }
 }

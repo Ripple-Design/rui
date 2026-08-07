@@ -63,4 +63,9 @@ const style = computed(() => ({
         inline-size: min(calc(100% - 64px), var(--rui-comp-responsive-container-max-width, 1040px));
     }
 }
+@container (min-width: 1920px) {
+    .rui-responsive-container--centered {
+        inline-size: min(calc(100% - 64px), var(--rui-comp-responsive-container-max-width, 1440px));
+    }
+}
 </style>

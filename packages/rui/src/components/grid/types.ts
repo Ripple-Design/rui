@@ -11,8 +11,8 @@ export type RGridProps = {
     /**
      * Defines the grid columns.
      * Numbers become `repeat(n, minmax(0, 1fr))`, strings pass through as native CSS Grid templates,
-     * and object values map either viewport breakpoints (`sm`, `md`, `lg`, `xl`) or container breakpoints
-     * (`csm`, `cmd`, `clg`, `cxl`) to templates.
+     * and object values map either viewport breakpoints (`sm`, `md`, `lg`, `xl`, `xxl`) or container breakpoints
+     * (`csm`, `cmd`, `clg`, `cxl`, `cxxl`) to templates.
      */
     columns?: RResponsiveValue<RGridColumnsValue>
     /** Sets both row and column gaps between grid items. */

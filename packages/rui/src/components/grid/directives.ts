@@ -11,8 +11,8 @@ export type GridSpanValue = GridSpanScalar | GridResponsiveSpanValue
 type SpanProperty = "column" | "row"
 type ResponsiveMode = "viewport" | "container" | null
 
-const VIEWPORT_SUFFIXES = ["sm", "md", "lg", "xl"] as const
-const CONTAINER_SUFFIXES = ["csm", "cmd", "clg", "cxl"] as const
+const VIEWPORT_SUFFIXES = ["sm", "md", "lg", "xl", "xxl"] as const
+const CONTAINER_SUFFIXES = ["csm", "cmd", "clg", "cxl", "cxxl"] as const
 const SPAN_SUFFIXES = [...VIEWPORT_SUFFIXES, ...CONTAINER_SUFFIXES] as const
 
 function isResponsiveSpanValue(value: GridSpanValue): value is GridResponsiveSpanValue {
@@ -52,11 +52,13 @@ function resolveSpanState(value: GridSpanValue, property: SpanProperty) {
         const cmd = normalizeSpan(value.cmd ?? value.csm)
         const clg = normalizeSpan(value.clg ?? value.cmd ?? value.csm)
         const cxl = normalizeSpan(value.cxl ?? value.clg ?? value.cmd ?? value.csm)
+        const cxxl = normalizeSpan(value.cxxl ?? value.cxl ?? value.clg ?? value.cmd ?? value.csm)
 
         styles[`${prefix}-csm`] = csm
         styles[`${prefix}-cmd`] = cmd
         styles[`${prefix}-clg`] = clg
         styles[`${prefix}-cxl`] = cxl
+        styles[`${prefix}-cxxl`] = cxxl
         return { mode, styles }
     }
 
@@ -65,11 +67,13 @@ function resolveSpanState(value: GridSpanValue, property: SpanProperty) {
     const md = normalizeSpan(value.md ?? value.sm)
     const lg = normalizeSpan(value.lg ?? value.md ?? value.sm)
     const xl = normalizeSpan(value.xl ?? value.lg ?? value.md ?? value.sm)
+    const xxl = normalizeSpan(value.xxl ?? value.xl ?? value.lg ?? value.md ?? value.sm)
 
     styles[`${prefix}-sm`] = sm
     styles[`${prefix}-md`] = md
     styles[`${prefix}-lg`] = lg
     styles[`${prefix}-xl`] = xl
+    styles[`${prefix}-xxl`] = xxl
     return { mode, styles }
 }
 

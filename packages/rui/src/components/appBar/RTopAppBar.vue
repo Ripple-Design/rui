@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, onUnmounted } from "vue"
 
-import RResponsiveContainer from "@/components/responsiveContainer/RResponsiveContainer.vue"
-import RSurface from "@/components/surface/RSurface.vue"
+import RResponsiveContainer from "@/components/responsive/RResponsiveContainer.vue"
 import { scaffoldContextKey } from "@/components/scaffold/context"
+import RSurface from "@/components/surface/RSurface.vue"
 
 import type { RAppBarProps } from "./types"
 
@@ -22,7 +22,10 @@ const contentMode = computed(() => {
 })
 const shouldCollapse = computed(() => props.collapsing && scaffold?.fabPlacement.value !== "app-bar-seam")
 const hidden = computed(
-    () => props.hideOnScroll && scaffold?.fabPlacement.value !== "app-bar-seam" && scaffold?.scrollState.value.direction === "down",
+    () =>
+        props.hideOnScroll &&
+        scaffold?.fabPlacement.value !== "app-bar-seam" &&
+        scaffold?.scrollState.value.direction === "down",
 )
 const collapsed = computed(() => shouldCollapse.value && scaffold?.appBarState.value === "collapsed")
 const style = computed(() => ({
@@ -66,7 +69,9 @@ onUnmounted(() => {
     position: relative;
     z-index: 1;
     min-block-size: var(--rui-comp-app-bar-expanded-height);
-    transition: transform 180ms ease, min-block-size 180ms ease;
+    transition:
+        transform 180ms ease,
+        min-block-size 180ms ease;
     overflow: visible;
 }
 

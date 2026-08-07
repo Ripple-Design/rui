@@ -64,7 +64,7 @@ export type RScaffoldSlots = {
 
 | Slot         | 内容                                     |
 | ------------ | ---------------------------------------- |
-| `app-bar`    | `RAppBar`                                |
+| `app-bar`    | `RTopAppBar`                             |
 | `navigation` | `RNavigationDrawer` 或 `RNavigationRail` |
 | `default`    | Body 内容                                |
 | `side-sheet` | `RSideSheet` 或 `RModalSideSheet`        |
@@ -195,15 +195,16 @@ const defaultProps: RResponsiveGridProps = {
 }
 ```
 
-`RResponsiveGrid` 根据当前容器宽度自动使用 M2 的 4/8/12 列规则，并将列数传递给内部 `RGrid`。
+`RResponsiveGrid` 根据当前容器宽度自动使用 M2 的 4/8/12 列规则，并将列数传递给内部 `RGrid`。容器响应值支持 `csm`、`cmd`、`clg`、`cxl` 和 `cxxl`。
 
-| Screen size | Margin | Body | Layout columns |
-| --- | --- | --- | ---: |
-| 0–599dp | 16dp | Scaling | 4 |
-| 600–904dp | 32dp | Scaling | 8 |
-| 905–1239dp | Scaling，最大 200dp | 固定 840dp | 12 |
-| 1240–1439dp | 200dp | Scaling | 12 |
-| 1440dp 及以上 | Scaling | 默认最大 1040dp | 12 |
+| Screen size   | Margin              | Body            | Layout columns |
+| ------------- | ------------------- | --------------- | -------------: |
+| 0–599dp       | 16dp                | Scaling         |              4 |
+| 600–904dp     | 32dp                | Scaling         |              8 |
+| 905–1239dp    | Scaling，最大 200dp | 固定 840dp      |             12 |
+| 1240–1439dp   | 200dp               | Scaling         |             12 |
+| 1440–1919dp   | Scaling             | 默认最大 1040dp |             12 |
+| xxl（1920dp 以上） | Scaling         | 默认最大 1440dp |             12 |
 
 ```ts
 export type RResponsiveGridColumns = 4 | 8 | 12
@@ -222,8 +223,9 @@ export type RResponsiveGridRule = {
 - 600–904dp 使用 32dp Margin、可伸缩 Body 和 8 列；
 - 905–1239dp 使用固定 840dp Body，Margin 弹性增长至最大 200dp，并使用 12 列；
 - 1240–1439dp 使用 200dp Margin、可伸缩 Body 和 12 列；
-- 1440dp 以上默认使用最大 1040dp 的 Centered Body，Margin 弹性增长，并使用 12 列；
-- 桌面端选择 `mode="full-width"` 时，Body 不受 1040dp 最大宽度限制，继续使用可用宽度和 12 列；
+- 1440–1919dp 默认使用最大 1040dp 的 Centered Body，Margin 弹性增长，并使用 12 列；
+- 1920dp 以上进入 `xxl`，默认 Centered Body 最大宽度为 1440dp，并保持 12 列；
+- 桌面端选择 `mode="full-width"` 时，Body 不受 Centered 最大宽度限制，继续使用可用宽度和 12 列；
 - 响应式规则根据当前容器宽度计算，不根据浏览器视口直接计算。
 
 ### Slots
@@ -363,4 +365,4 @@ export type RFabProps = {
 | `body`         | Body 内容区域       |
 | `app-bar-seam` | AppBar 与 Body 接缝 |
 
-`app-bar-seam` 要求所属 `RAppBar` 保持展开，不启用 `collapsing`。
+`app-bar-seam` 要求所属 `RTopAppBar` 保持展开，不启用 `collapsing`。
