@@ -3,7 +3,7 @@ import { RGrid, vColumnSpan, vRowSpan, vSpan } from "@ripple-design/rui"
 </script>
 
 <template>
-    <RGrid :cols="3" gap="16px" class="grid-basic-demo">
+    <RGrid :columns="3" gap="16px" class="grid-basic-demo">
         <div v-span="2" class="grid-card">Span 2 columns</div>
         <div class="grid-card">Two</div>
         <div class="grid-card">Three</div>

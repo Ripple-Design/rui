@@ -2,9 +2,9 @@ import type { CSSProperties } from "vue"
 
 import type { RResponsiveObjectValue, RResponsiveValue } from "@/components/shared/responsive"
 
-export type RGridColsValue = number | string
+export type RGridColumnsValue = number | string
 
-export type RGridResponsiveCols = RResponsiveObjectValue<RGridColsValue>
+export type RGridResponsiveColumns = RResponsiveObjectValue<RGridColumnsValue>
 
 /** Props for the {@link RGrid} component. */
 export type RGridProps = {
@@ -14,7 +14,7 @@ export type RGridProps = {
      * and object values map either viewport breakpoints (`sm`, `md`, `lg`, `xl`) or container breakpoints
      * (`csm`, `cmd`, `clg`, `cxl`) to templates.
      */
-    cols?: RResponsiveValue<RGridColsValue>
+    columns?: RResponsiveValue<RGridColumnsValue>
     /** Sets both row and column gaps between grid items. */
     gap?: CSSProperties["gap"]
     /** Sets the horizontal gap between grid items. */

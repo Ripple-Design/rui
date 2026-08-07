@@ -7,24 +7,24 @@ import { computed, useAttrs } from "vue"
 
 import type { RContainerResponsiveValue, RViewportResponsiveValue } from "@/components/shared/responsive"
 
-import type { RGridColsValue, RGridProps, RGridResponsiveCols } from "./types"
+import type { RGridColumnsValue, RGridProps, RGridResponsiveColumns } from "./types"
 
 const props = withDefaults(defineProps<RGridProps>(), {
-    cols: 1,
+    columns: 1,
     dense: false,
 })
 
 const attrs = useAttrs()
 
-function isResponsiveCols(value: RGridProps["cols"]): value is RGridResponsiveCols {
+function isResponsiveCols(value: RGridProps["columns"]): value is RGridResponsiveColumns {
     return typeof value === "object" && value != null
 }
 
-function isContainerCols(value: RGridResponsiveCols): value is RContainerResponsiveValue<RGridColsValue> {
+function isContainerCols(value: RGridResponsiveColumns): value is RContainerResponsiveValue<RGridColumnsValue> {
     return "csm" in value
 }
 
-function normalizeTemplateColumns(value: RGridColsValue | undefined) {
+function normalizeTemplateColumns(value: RGridColumnsValue | undefined) {
     if (typeof value === "number") {
         return `repeat(${value}, minmax(0, 1fr))`
     }
@@ -33,8 +33,8 @@ function normalizeTemplateColumns(value: RGridColsValue | undefined) {
 }
 
 const responsiveMode = computed<"viewport" | "container" | null>(() => {
-    if (!isResponsiveCols(props.cols)) return null
-    return isContainerCols(props.cols) ? "container" : "viewport"
+    if (!isResponsiveCols(props.columns)) return null
+    return isContainerCols(props.columns) ? "container" : "viewport"
 })
 
 const classes = computed(() => [
@@ -58,8 +58,8 @@ const style = computed(() => {
         "--rui-comp-grid-auto-flow": autoFlow,
     }
 
-    if (!isResponsiveCols(props.cols)) {
-        const normalized = normalizeTemplateColumns(props.cols)
+    if (!isResponsiveCols(props.columns)) {
+        const normalized = normalizeTemplateColumns(props.columns)
 
         return {
             ...baseStyle,
@@ -74,11 +74,11 @@ const style = computed(() => {
         }
     }
 
-    if (isContainerCols(props.cols)) {
-        const csm = normalizeTemplateColumns(props.cols.csm)
-        const cmd = normalizeTemplateColumns(props.cols.cmd ?? props.cols.csm)
-        const clg = normalizeTemplateColumns(props.cols.clg ?? props.cols.cmd ?? props.cols.csm)
-        const cxl = normalizeTemplateColumns(props.cols.cxl ?? props.cols.clg ?? props.cols.cmd ?? props.cols.csm)
+    if (isContainerCols(props.columns)) {
+        const csm = normalizeTemplateColumns(props.columns.csm)
+        const cmd = normalizeTemplateColumns(props.columns.cmd ?? props.columns.csm)
+        const clg = normalizeTemplateColumns(props.columns.clg ?? props.columns.cmd ?? props.columns.csm)
+        const cxl = normalizeTemplateColumns(props.columns.cxl ?? props.columns.clg ?? props.columns.cmd ?? props.columns.csm)
 
         return {
             ...baseStyle,
@@ -93,11 +93,11 @@ const style = computed(() => {
         }
     }
 
-    const cols = props.cols as RViewportResponsiveValue<RGridColsValue>
-    const sm = normalizeTemplateColumns(cols.sm)
-    const md = normalizeTemplateColumns(cols.md ?? cols.sm)
-    const lg = normalizeTemplateColumns(cols.lg ?? cols.md ?? cols.sm)
-    const xl = normalizeTemplateColumns(cols.xl ?? cols.lg ?? cols.md ?? cols.sm)
+    const columns = props.columns as RViewportResponsiveValue<RGridColumnsValue>
+    const sm = normalizeTemplateColumns(columns.sm)
+    const md = normalizeTemplateColumns(columns.md ?? columns.sm)
+    const lg = normalizeTemplateColumns(columns.lg ?? columns.md ?? columns.sm)
+    const xl = normalizeTemplateColumns(columns.xl ?? columns.lg ?? columns.md ?? columns.sm)
 
     return {
         ...baseStyle,

@@ -3,7 +3,7 @@ import { RGrid } from "@ripple-design/rui"
 </script>
 
 <template>
-    <RGrid cols="repeat(auto-fit, minmax(12rem, 1fr))" column-gap="24px" row-gap="12px">
+    <RGrid columns="repeat(auto-fit, minmax(12rem, 1fr))" column-gap="24px" row-gap="12px">
         <div class="grid-card">Auto-fit cards</div>
         <div class="grid-card">Cards wrap as space changes</div>
         <div class="grid-card">Minimum width stays readable</div>
