@@ -21,6 +21,7 @@ const playerComponent = shallowRef<any>(null)
 const playerReady = ref(false)
 const playerFailed = ref(false)
 const mounted = ref(false)
+const devicePixelRatio = ref(1)
 type CheckboxFrameTarget = "start" | "end"
 type CheckboxActionMode = "static" | "transition"
 type CheckboxPendingAction = {
@@ -49,6 +50,7 @@ let loadListener: (() => void) | null = null
 let completeListener: (() => void) | null = null
 
 const assetUrl = new URL("./assets/checkbox-transitions.lottie", import.meta.url).href
+const renderConfig = computed(() => ({ devicePixelRatio: devicePixelRatio.value }))
 
 type CheckboxVisualState = "unchecked" | "checked" | "indeterminate"
 const visualState = computed<CheckboxVisualState>(() => {
@@ -112,11 +114,21 @@ function parseCssColorToLottieRgba(colorValue: string) {
     if (normalized.startsWith("#")) {
         const hex = normalized.slice(1)
         if (hex.length === 6 || hex.length === 8) {
-            return [Number.parseInt(hex.slice(0, 2), 16) / 255, Number.parseInt(hex.slice(2, 4), 16) / 255, Number.parseInt(hex.slice(4, 6), 16) / 255, hex.length === 8 ? Number.parseInt(hex.slice(6, 8), 16) / 255 : 1]
+            return [
+                Number.parseInt(hex.slice(0, 2), 16) / 255,
+                Number.parseInt(hex.slice(2, 4), 16) / 255,
+                Number.parseInt(hex.slice(4, 6), 16) / 255,
+                hex.length === 8 ? Number.parseInt(hex.slice(6, 8), 16) / 255 : 1,
+            ]
         }
 
         if (hex.length === 3 || hex.length === 4) {
-            return [Number.parseInt(`${hex[0]}${hex[0]}`, 16) / 255, Number.parseInt(`${hex[1]}${hex[1]}`, 16) / 255, Number.parseInt(`${hex[2]}${hex[2]}`, 16) / 255, hex.length === 4 ? Number.parseInt(`${hex[3]}${hex[3]}`, 16) / 255 : 1]
+            return [
+                Number.parseInt(`${hex[0]}${hex[0]}`, 16) / 255,
+                Number.parseInt(`${hex[1]}${hex[1]}`, 16) / 255,
+                Number.parseInt(`${hex[2]}${hex[2]}`, 16) / 255,
+                hex.length === 4 ? Number.parseInt(`${hex[3]}${hex[3]}`, 16) / 255 : 1,
+            ]
         }
     }
 
@@ -139,7 +151,10 @@ function resolveThemeData() {
     const blue = rgba[2] ?? 0
     const alpha = rgba[3] ?? 1
     return JSON.stringify({
-        rules: [{ id: "themeColor", type: "Color", value: [red, green, blue] }, { id: "themeOpacity", type: "Scalar", value: alpha * 100 }],
+        rules: [
+            { id: "themeColor", type: "Color", value: [red, green, blue] },
+            { id: "themeOpacity", type: "Scalar", value: alpha * 100 },
+        ],
     })
 }
 
@@ -267,6 +282,7 @@ watch(
 
 onMounted(async () => {
     await nextTick()
+    devicePixelRatio.value = window.devicePixelRatio || 1
     mounted.value = true
     await loadOptionalPlayer()
 })
@@ -312,6 +328,7 @@ onBeforeUnmount(() => {
                         v-if="playerComponent && !playerFailed"
                         ref="dotLottie"
                         class="rui-checkbox__lottie"
+                        :render-config="renderConfig"
                         :src="assetUrl"
                         :autoplay="false"
                         :loop="false"
@@ -350,7 +367,10 @@ onBeforeUnmount(() => {
     --rui-comp-checkbox-indicator-color: var(--rui-sys-color-primary);
     --rui-comp-checkbox-state-layer-color: var(--rui-sys-color-primary);
 }
-.rui-checkbox--disabled { --rui-comp-checkbox-indicator-color: var(--rui-sys-color-on-surface-low); cursor: default; }
+.rui-checkbox--disabled {
+    --rui-comp-checkbox-indicator-color: var(--rui-sys-color-on-surface-low);
+    cursor: default;
+}
 .rui-checkbox__control {
     position: relative;
     display: inline-flex;
@@ -361,14 +381,46 @@ onBeforeUnmount(() => {
     block-size: 40px;
     border-radius: 50%;
 }
-.rui-checkbox__native-control { position: absolute; z-index: 2; inset: 0; inline-size: 100%; block-size: 100%; margin: 0; opacity: 0; cursor: inherit; }
-.rui-checkbox__content { position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; pointer-events: none; }
-.rui-checkbox__control:has(.rui-checkbox__native-control:focus-visible) { outline: 2px solid var(--rui-sys-color-primary); outline-offset: -2px; }
+.rui-checkbox__native-control {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: inherit;
+}
+.rui-checkbox__content {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+.rui-checkbox__control:has(.rui-checkbox__native-control:focus-visible) {
+    outline: 2px solid var(--rui-sys-color-primary);
+    outline-offset: -2px;
+}
 .rui-checkbox__fallback,
-.rui-checkbox__lottie { display: block; inline-size: var(--rui-comp-checkbox-visual-size); block-size: var(--rui-comp-checkbox-visual-size); }
-.rui-checkbox__lottie { position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%); opacity: 0; }
-.rui-checkbox--player-ready .rui-checkbox__lottie { opacity: 1; }
-.rui-checkbox--player-ready .rui-checkbox__fallback { opacity: 0; }
+.rui-checkbox__lottie {
+    display: block;
+    inline-size: var(--rui-comp-checkbox-visual-size);
+    block-size: var(--rui-comp-checkbox-visual-size);
+}
+.rui-checkbox__lottie {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+}
+.rui-checkbox--player-ready .rui-checkbox__lottie {
+    opacity: 1;
+}
+.rui-checkbox--player-ready .rui-checkbox__fallback {
+    opacity: 0;
+}
 .rui-checkbox__label {
     @include typography.body2("--rui-comp-checkbox-label");
 
