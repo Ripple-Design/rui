@@ -327,15 +327,10 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped lang="scss">
-@use "@/styles/density";
 @use "@/styles/typography";
 
 .rui-checkbox__touch-target-wrapper {
-    @include density.touchTargetEnabled();
-    @include density.touchTargetPaddingXY(40px, 40px);
-
-    align-items: center;
-    justify-content: center;
+    display: inline-flex;
     vertical-align: middle;
 }
 .rui-checkbox {
@@ -346,6 +341,7 @@ onBeforeUnmount(() => {
     position: relative;
     display: inline-flex;
     align-items: center;
+    min-block-size: var(--rui-comp-checkbox-target-size);
     cursor: pointer;
     color: var(--rui-comp-checkbox-indicator-color);
 }
@@ -373,5 +369,10 @@ onBeforeUnmount(() => {
 .rui-checkbox__lottie { position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%); opacity: 0; }
 .rui-checkbox--player-ready .rui-checkbox__lottie { opacity: 1; }
 .rui-checkbox--player-ready .rui-checkbox__fallback { opacity: 0; }
-.rui-checkbox__label { @include typography.body2("--rui-comp-checkbox-label"); padding-inline-end: 12px; }
+.rui-checkbox__label {
+    @include typography.body2("--rui-comp-checkbox-label");
+
+    margin-inline-start: 4px;
+    color: var(--rui-sys-color-on-surface-high);
+}
 </style>

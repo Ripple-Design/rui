@@ -176,15 +176,10 @@ function handleKeydown(event: KeyboardEvent) {
 </template>
 
 <style scoped lang="scss">
-@use "@/styles/density";
 @use "@/styles/typography";
 
 .rui-radio-button__touch-target-wrapper {
-    @include density.touchTargetEnabled();
-    @include density.touchTargetPaddingXY(40px, 40px);
-
-    align-items: center;
-    justify-content: center;
+    display: inline-flex;
     vertical-align: middle;
 }
 
@@ -201,6 +196,7 @@ function handleKeydown(event: KeyboardEvent) {
     position: relative;
     display: inline-flex;
     align-items: center;
+    min-block-size: var(--rui-comp-radio-button-target-size);
     cursor: pointer;
     color: var(--rui-sys-color-on-surface-high);
 
@@ -281,7 +277,8 @@ function handleKeydown(event: KeyboardEvent) {
 .rui-radio-button__label {
     @include typography.body2("--rui-comp-radio-button-label");
 
-    padding-inline-end: 12px;
+    margin-inline-start: var(--rui-comp-radio-button-label-gap);
+    color: var(--rui-sys-color-on-surface-high);
 }
 
 .rui-radio-button:has(.rui-radio-button__native-control:focus-visible) .rui-radio-button__state-layer {
