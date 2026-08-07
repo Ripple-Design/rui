@@ -4,7 +4,7 @@
  */
 
 import { RICancelFilled, RICancelOutlined, RICancelRounded, RICancelSharp, RICancelTwoTone } from "@ripple-design/icons"
-import { computed, ref, useAttrs, useId, useSlots } from "vue"
+import { computed, ref, useAttrs, useId, useSlots, type Slots } from "vue"
 
 import RIconButton from "@/components/button/RIconButton.vue"
 import { createIconFamily } from "@/components/icon/family"
@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<RTextFieldProps>(), {
 })
 
 const attrs = useAttrs()
-const slots = useSlots()
+const slots: Slots = useSlots()
 const generatedId = useId()
 const inputId = computed(() => (typeof attrs.id === "string" ? attrs.id : generatedId))
 const helperId = computed(() => `${inputId.value}-helper`)
