@@ -1,0 +1,23 @@
+---
+title: Bottom sheet
+docSlug: components/bottom-sheet
+tab: implementation
+locale: en
+designOrder: 93
+developOrder: 93
+api: /en/api/bottom-sheet
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import BottomSheetBasicDemo from "@docs/components/demos/bottomSheet/BottomSheetBasicDemo.vue"
+import bottomSheetBasicDemoSource from "@docs/components/demos/bottomSheet/BottomSheetBasicDemo.vue?raw"
+import BottomSheetScrollingDemo from "@docs/components/demos/bottomSheet/BottomSheetScrollingDemo.vue"
+import bottomSheetScrollingDemoSource from "@docs/components/demos/bottomSheet/BottomSheetScrollingDemo.vue?raw"
+
+<DemoBlock title="Basic bottom sheet" code={bottomSheetBasicDemoSource} language="vue">
+    <BottomSheetBasicDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Scrolling body" code={bottomSheetScrollingDemoSource} language="vue">
+    <BottomSheetScrollingDemo client:load />
+</DemoBlock>

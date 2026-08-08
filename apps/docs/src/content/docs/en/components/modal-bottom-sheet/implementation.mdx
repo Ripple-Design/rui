@@ -1,0 +1,23 @@
+---
+title: Modal bottom sheet
+docSlug: components/modal-bottom-sheet
+tab: implementation
+locale: en
+designOrder: 94
+developOrder: 94
+api: /en/api/modal-bottom-sheet
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import ModalBottomSheetBasicDemo from "@docs/components/demos/bottomSheet/ModalBottomSheetBasicDemo.vue"
+import modalBottomSheetBasicDemoSource from "@docs/components/demos/bottomSheet/ModalBottomSheetBasicDemo.vue?raw"
+import ModalBottomSheetPersistentDemo from "@docs/components/demos/bottomSheet/ModalBottomSheetPersistentDemo.vue"
+import modalBottomSheetPersistentDemoSource from "@docs/components/demos/bottomSheet/ModalBottomSheetPersistentDemo.vue?raw"
+
+<DemoBlock title="Basic modal bottom sheet" code={modalBottomSheetBasicDemoSource} language="vue">
+    <ModalBottomSheetBasicDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Protected modal bottom sheet" code={modalBottomSheetPersistentDemoSource} language="vue">
+    <ModalBottomSheetPersistentDemo client:load />
+</DemoBlock>

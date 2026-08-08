@@ -94,7 +94,7 @@ function handleCancel(event: Event) {
 }
 
 function handleWheel(event: WheelEvent) {
-    if (event.target instanceof Element && event.target.closest(".rui-dialog__content")) {
+    if (event.target instanceof Element && event.target.closest("[data-rui-modal-scrollable], .rui-dialog__content")) {
         return
     }
 

@@ -18,6 +18,10 @@ export { default as RSideSheet } from "./sideSheet/RSideSheet.vue"
 export { default as RModalSideSheet } from "./sideSheet/RModalSideSheet.vue"
 export type * from "./sideSheet/types"
 
+export { default as RBottomSheet } from "./bottomSheet/RBottomSheet.vue"
+export { default as RModalBottomSheet } from "./bottomSheet/RModalBottomSheet.vue"
+export type * from "./bottomSheet/types"
+
 export { default as RDialog } from "./dialog/RDialog.vue"
 export { default as RAlertDialog } from "./dialog/RAlertDialog.vue"
 export { default as RFullscreenDialog } from "./dialog/RFullscreenDialog.vue"

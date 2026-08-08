@@ -23,7 +23,7 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [x] Navigation rail
 - [x] Progress indicators
 - [x] Radio buttons
-- [ ] Sheets: bottom
+- [x] Sheets: bottom
 - [x] Sheets: side
 - [x] Sliders
 - [ ] Snackbars
