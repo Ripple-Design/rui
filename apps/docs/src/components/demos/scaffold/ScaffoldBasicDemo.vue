@@ -9,6 +9,7 @@ import {
 import { computed, ref } from "vue"
 
 import {
+    RAppBarContainer,
     RButton,
     RButtonGroup,
     RCard,
@@ -182,17 +183,20 @@ const previewStyle = computed(() => ({
             </template>
 
             <template #app-bar>
-                <RTopAppBar
+                <RAppBarContainer
                     :content-align="appBarAlign"
                     :collapsing="collapsing"
                     :hide-on-scroll="hideOnScroll"
                     :underlap="underlap"
                     expanded-height="96px"
                 >
-                    <strong>Scaffold preview</strong>
-                    <span class="scaffold-demo__app-bar-spacer" />
-                    <RButton variant="text">Action</RButton>
-                </RTopAppBar>
+                    <RTopAppBar>
+                    <template #title>Scaffold preview</template>
+                    <template #actions>
+                        <RButton variant="text">Action</RButton>
+                    </template>
+                    </RTopAppBar>
+                </RAppBarContainer>
             </template>
 
             <RResponsiveGrid :mode="gridMode" gap="16px">
@@ -263,10 +267,6 @@ const previewStyle = computed(() => ({
     border: 1px solid var(--rui-sys-color-on-surface-outline, #747775);
     border-radius: 16px;
     transition: inline-size 160ms ease;
-}
-
-.scaffold-demo__app-bar-spacer {
-    flex: 1;
 }
 
 .scaffold-demo__navigation {

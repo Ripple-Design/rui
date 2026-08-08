@@ -1,90 +1,106 @@
 <script setup lang="ts">
-import { computed, inject, onUnmounted, watchEffect } from "vue"
-
-import RResponsiveContainer from "@/components/responsive/RResponsiveContainer.vue"
-import { scaffoldContextKey } from "@/components/scaffold/context"
-import RSurface from "@/components/surface/RSurface.vue"
+import RText from "@/components/text/RText.vue"
 
 import type { RAppBarProps } from "./types"
 
 const props = withDefaults(defineProps<RAppBarProps>(), {
-    contentAlign: "full-width",
-    collapsing: false,
-    hideOnScroll: false,
-    underlap: false,
-    collapsedHeight: "64px",
-})
-
-const scaffold = inject(scaffoldContextKey, null)
-const contentMode = computed(() => {
-    if (props.contentAlign === "body") return scaffold?.bodyGridMode.value ?? "centered"
-    return props.contentAlign
-})
-const shouldCollapse = computed(() => props.collapsing && scaffold?.fabPlacement.value !== "app-bar-seam")
-const collapsed = computed(() => shouldCollapse.value && scaffold?.appBarState.value === "collapsed")
-const style = computed(() => ({
-    "--rui-comp-app-bar-expanded-height": props.expandedHeight ?? props.collapsedHeight,
-    "--rui-comp-app-bar-collapsed-height": props.collapsedHeight,
-    "--rui-sys-scaffold-collapse-progress": collapsed.value ? "1" : "0",
-}))
-const classes = computed(() => [
-    "rui-app-bar",
-    {
-        "rui-app-bar--collapsed": collapsed.value,
-        "rui-app-bar--underlap": props.underlap,
-    },
-])
-
-watchEffect(() => {
-    scaffold?.setAppBarExpandedHeight(props.expandedHeight ?? props.collapsedHeight)
-    scaffold?.setAppBarCollapsedHeight(props.collapsedHeight)
-    scaffold?.setAppBarHideOnScroll(props.hideOnScroll)
-    scaffold?.setAppBarCollapsing(shouldCollapse.value)
-})
-
-onUnmounted(() => {
-    scaffold?.setAppBarExpandedHeight("64px")
-    scaffold?.setAppBarCollapsedHeight("64px")
-    scaffold?.setAppBarHideOnScroll(false)
-    scaffold?.setAppBarCollapsing(false)
+    centered: false,
 })
 </script>
 
 <template>
-    <RSurface as="div" :class="classes" :style="style" :elevation="4">
-        <RResponsiveContainer v-if="contentAlign !== 'full-width'" :mode="contentMode">
-            <div class="rui-app-bar__content">
-                <slot />
-            </div>
-        </RResponsiveContainer>
-        <div v-else class="rui-app-bar__content rui-app-bar__content--full-width">
-            <slot />
+    <div
+        class="rui-top-app-bar__toolbar"
+        :class="{
+            'rui-top-app-bar__toolbar--centered': centered,
+            'rui-top-app-bar__toolbar--with-navigation': $slots.navigation,
+        }"
+    >
+        <div v-if="$slots.navigation" class="rui-top-app-bar__navigation">
+            <slot name="navigation" />
         </div>
-    </RSurface>
+
+        <div v-if="$slots.title || $slots.subtitle" class="rui-top-app-bar__text">
+            <RText v-if="$slots.title" as="div" class="rui-top-app-bar__title" variant="headline6" emphasis="high">
+                <slot name="title" />
+            </RText>
+            <RText
+                v-if="$slots.subtitle"
+                as="div"
+                class="rui-top-app-bar__subtitle"
+                variant="subtitle1"
+                emphasis="medium"
+            >
+                <slot name="subtitle" />
+            </RText>
+        </div>
+
+        <div v-if="$slots.actions" class="rui-top-app-bar__actions">
+            <slot name="actions" />
+        </div>
+    </div>
 </template>
 
 <style scoped lang="scss">
-.rui-app-bar {
+.rui-top-app-bar__toolbar {
     position: relative;
-    min-block-size: var(--rui-comp-app-bar-expanded-height);
-    transition: min-block-size 180ms ease;
-    overflow: visible;
-}
-
-.rui-app-bar--collapsed {
-    min-block-size: var(--rui-comp-app-bar-collapsed-height);
-}
-
-.rui-app-bar__content {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     box-sizing: border-box;
-    min-block-size: inherit;
-    gap: 16px;
-    padding-block: 8px;
+    block-size: 100%;
+    min-block-size: 0;
+    padding-inline: 4px;
 }
 
-.rui-app-bar__content--full-width {
-    padding-inline: 24px;
+.rui-top-app-bar__navigation,
+.rui-top-app-bar__actions {
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    min-inline-size: 0;
+}
+
+.rui-top-app-bar__navigation {
+    grid-column: 1;
+    justify-self: start;
+}
+
+.rui-top-app-bar__actions {
+    grid-column: 3;
+    justify-self: end;
+}
+
+.rui-top-app-bar__text {
+    grid-column: 2;
+    grid-row: 1;
+    display: grid;
+    gap: 0;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    margin-inline: 16px;
+    justify-self: stretch;
+    z-index: 0;
+}
+
+.rui-top-app-bar__navigation + .rui-top-app-bar__text {
+    margin-inline-start: 20px;
+}
+
+.rui-top-app-bar__text :deep(.rui-text) {
+    min-inline-size: 0;
+    text-box-trim: trim-both;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.rui-top-app-bar__toolbar--centered .rui-top-app-bar__text {
+    position: absolute;
+    inset-inline: 0;
+    inline-size: auto;
+    max-inline-size: none;
+    text-align: center;
+    pointer-events: none;
 }
 </style>

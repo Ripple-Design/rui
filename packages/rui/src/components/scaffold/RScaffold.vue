@@ -17,8 +17,8 @@ const scrollTop = ref(0)
 const scrollMotionDirection = ref<RScaffoldScrollMotionDirection>("idle")
 const appBarState = ref<RScaffoldAppBarState>("expanded")
 const bodyGridMode = ref<RResponsiveContainerMode | null>(null)
-const appBarExpandedHeight = ref("64px")
-const appBarCollapsedHeight = ref("64px")
+const appBarExpandedHeight = ref<string>()
+const appBarCollapsedHeight = ref<string>()
 const appBarHideOnScroll = ref(false)
 const appBarCollapsing = ref(false)
 const bottomBarHideOnScroll = ref(false)
@@ -37,15 +37,17 @@ const appBarOffset = computed(() => {
         return "0px"
     }
 
-    return appBarState.value === "collapsed" ? appBarCollapsedHeight.value : appBarExpandedHeight.value
+    return appBarState.value === "collapsed"
+        ? "var(--rui-comp-scaffold-app-bar-collapsed-height)"
+        : "var(--rui-comp-scaffold-app-bar-expanded-height)"
 })
 
 const appBarFlowHeight = computed(() => {
     if (appBarState.value === "collapsed" || (appBarState.value === "hidden" && appBarCollapsing.value)) {
-        return appBarCollapsedHeight.value
+        return "var(--rui-comp-scaffold-app-bar-collapsed-height)"
     }
 
-    return appBarExpandedHeight.value
+    return "var(--rui-comp-scaffold-app-bar-expanded-height)"
 })
 
 const classes = computed(() => [
@@ -55,8 +57,9 @@ const classes = computed(() => [
 ])
 
 const style = computed(() => ({
+    ...(appBarExpandedHeight.value !== undefined ? { "--rui-comp-scaffold-app-bar-expanded-height": appBarExpandedHeight.value } : {}),
+    ...(appBarCollapsedHeight.value !== undefined ? { "--rui-comp-scaffold-app-bar-collapsed-height": appBarCollapsedHeight.value } : {}),
     "--rui-comp-scaffold-app-bar-offset": appBarOffset.value,
-    "--rui-comp-scaffold-app-bar-expanded-height": appBarExpandedHeight.value,
     "--rui-comp-scaffold-app-bar-flow-height": appBarFlowHeight.value,
     "--rui-comp-scaffold-app-bar-fab-top": appBarOffset.value,
     "--rui-comp-scaffold-bottom-bar-height": `${bottomBarHeight.value}px`,
@@ -215,9 +218,7 @@ provide(scaffoldContextKey, {
 
         <div class="rui-scaffold__main">
             <main ref="bodyElement" class="rui-scaffold__body" @scroll="handleScroll">
-                <header v-if="$slots['app-bar']" class="rui-scaffold__app-bar">
-                    <slot name="app-bar" />
-                </header>
+                <slot name="app-bar" />
 
                 <div class="rui-scaffold__body-content">
                     <slot />
@@ -254,7 +255,12 @@ provide(scaffoldContextKey, {
 </template>
 
 <style scoped lang="scss">
+@use "@/styles/breakpoints" as breakpoint;
+
 .rui-scaffold {
+    --rui-comp-scaffold-app-bar-expanded-height: 56px;
+    --rui-comp-scaffold-app-bar-collapsed-height: 56px;
+    container-type: inline-size;
     position: relative;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
@@ -264,6 +270,11 @@ provide(scaffoldContextKey, {
     min-block-size: 0;
     overflow: hidden;
     background: var(--rui-sys-color-background, #fff);
+
+    @include breakpoint.c-up(clg) {
+        --rui-comp-scaffold-app-bar-expanded-height: 64px;
+        --rui-comp-scaffold-app-bar-collapsed-height: 64px;
+    }
 }
 
 .rui-scaffold__navigation {
@@ -288,27 +299,6 @@ provide(scaffoldContextKey, {
     min-block-size: 0;
 }
 
-.rui-scaffold__app-bar {
-    position: sticky;
-    z-index: 3;
-    inset-block-start: 0;
-    inline-size: 100%;
-    margin-block-end: calc(-1 * var(--rui-comp-scaffold-app-bar-expanded-height, 64px));
-    overflow-anchor: none;
-    transition: transform 225ms var(--rui-sys-motion-easing-decelerated), margin-block-end 225ms var(--rui-sys-motion-easing-decelerated);
-}
-
-.rui-scaffold--app-bar-hidden .rui-scaffold__app-bar {
-    transform: translateY(-100%);
-    transition-duration: 175ms;
-    transition-timing-function: var(--rui-sys-motion-easing-accelerated);
-}
-
-.rui-scaffold--app-bar-expanded .rui-scaffold__app-bar,
-.rui-scaffold--app-bar-collapsed .rui-scaffold__app-bar {
-    transform: translateY(0);
-}
-
 .rui-scaffold__body {
     min-inline-size: 0;
     min-block-size: 0;
@@ -320,11 +310,16 @@ provide(scaffoldContextKey, {
 
 .rui-scaffold__body-content {
     min-block-size: 100%;
-    padding-block-start: var(--rui-comp-scaffold-app-bar-expanded-height, 64px);
+    padding-block-start: var(--rui-comp-scaffold-app-bar-expanded-height);
 }
 
 .rui-scaffold--app-bar-hidden .rui-scaffold__body-content {
-    padding-block-start: var(--rui-comp-scaffold-app-bar-expanded-height, 64px);
+    padding-block-start: var(--rui-comp-scaffold-app-bar-expanded-height);
+}
+
+.rui-scaffold--scroll-vertical .rui-scaffold__body {
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .rui-scaffold--scroll-none .rui-scaffold__body {

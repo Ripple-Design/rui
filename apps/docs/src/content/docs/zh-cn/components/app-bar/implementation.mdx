@@ -1,0 +1,17 @@
+---
+title: Top App Bar
+docSlug: components/app-bar
+tab: implementation
+locale: zh-cn
+designOrder: 32
+developOrder: 32
+api: /zh-cn/api/app-bar
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import AppBarBasicDemo from "@docs/components/demos/appBar/AppBarBasicDemo.vue"
+import appBarBasicDemoSource from "@docs/components/demos/appBar/AppBarBasicDemo.vue?raw"
+
+<DemoBlock title="Top App Bar" code={appBarBasicDemoSource} language="vue">
+    <AppBarBasicDemo client:load />
+</DemoBlock>

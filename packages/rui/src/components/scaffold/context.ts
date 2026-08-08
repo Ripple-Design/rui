@@ -19,15 +19,15 @@ export type RScaffoldContext = {
     appBarState: Readonly<Ref<RScaffoldAppBarState>>
     bodyGridMode: Readonly<Ref<RResponsiveContainerMode | null>>
     fabPlacement: Readonly<Ref<RScaffoldFabPlacement>>
-    appBarExpandedHeight: Readonly<Ref<string>>
+    appBarExpandedHeight: Readonly<Ref<string | undefined>>
     appBarOffset: Readonly<Ref<string>>
     appBarHideOnScroll: Readonly<Ref<boolean>>
     appBarCollapsing: Readonly<Ref<boolean>>
     bottomBarState: Readonly<Ref<RScaffoldBottomBarState>>
     bottomBarHeight: Readonly<Ref<number>>
     setBodyGridMode: (mode: RResponsiveContainerMode) => void
-    setAppBarExpandedHeight: (height: string) => void
-    setAppBarCollapsedHeight: (height: string) => void
+    setAppBarExpandedHeight: (height: string | undefined) => void
+    setAppBarCollapsedHeight: (height: string | undefined) => void
     setAppBarHideOnScroll: (enabled: boolean) => void
     setAppBarCollapsing: (enabled: boolean) => void
     setBottomBarHideOnScroll: (enabled: boolean) => void
