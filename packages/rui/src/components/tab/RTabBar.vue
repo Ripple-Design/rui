@@ -228,8 +228,7 @@ onBeforeUnmount(() => {
 }
 
 .rui-tab-bar--scrollable .rui-tab-bar__scroller {
-    overflow-x: auto;
-    overflow-y: clip;
+    overflow: hidden clip;
 }
 
 .rui-tab-bar--primary .rui-tab-bar__indicator {

@@ -9,7 +9,7 @@ const secondaryOverflow = ref("details")
 <template>
     <RColumn gap="20px" class="tab-bar-overflow-demo">
         <RColumn gap="12px" class="tab-bar-overflow-demo__narrow">
-            <RTabBar v-model="primaryOverflow" variant="primary" aria-label="Primary overflow tabs">
+            <RTabBar v-model="primaryOverflow" variant="primary" aria-label="Primary overflow tabs" scrollable>
                 <RTab value="overview">Overview</RTab>
                 <RTab value="activity">Activity</RTab>
                 <RTab value="recommendations">Recommendations</RTab>
@@ -21,7 +21,7 @@ const secondaryOverflow = ref("details")
         </RColumn>
 
         <RColumn gap="12px" class="tab-bar-overflow-demo__narrow">
-            <RTabBar v-model="secondaryOverflow" variant="secondary" aria-label="Secondary overflow tabs">
+            <RTabBar v-model="secondaryOverflow" variant="secondary" aria-label="Secondary overflow tabs" scrollable>
                 <RTab value="summary">Summary</RTab>
                 <RTab value="details">Details</RTab>
                 <RTab value="timeline">Timeline</RTab>
