@@ -30,7 +30,7 @@ const classes = computed(() => [
 </script>
 
 <template>
-    <component :is="tagName" v-bind="attrs" :class="classes" :style="style">
+    <component :is="tagName" v-bind="attrs" :class="classes" :style="[attrs.style, style]">
         <slot />
     </component>
 </template>

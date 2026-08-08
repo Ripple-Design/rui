@@ -10,9 +10,11 @@ import { computed, ref } from "vue"
 
 import {
     RAppBarContainer,
+    RAppBarCollapseItem,
     RButton,
     RButtonGroup,
     RCard,
+    RCollapsingAppBar,
     RFab,
     RNavigationRail,
     RNavigationRailItem,
@@ -21,7 +23,6 @@ import {
     RSideSheet,
     RSlider,
     RSwitch,
-    RTopAppBar,
 } from "@ripple-design/rui"
 
 const cards = Array.from({ length: 24 }, (_, index) => index + 1)
@@ -30,6 +31,8 @@ const gridMode = ref<"centered" | "full-width">("centered")
 const fabPlacement = ref<"viewport" | "body" | "app-bar-seam">("app-bar-seam")
 const appBarAlign = ref<"full-width" | "centered" | "body">("body")
 const collapsing = ref(false)
+const showAppBarBackground = ref(true)
+const scrollBehavior = ref<"fixed" | "exit-until-collapsed">("fixed")
 const hideOnScroll = ref(false)
 const underlap = ref(false)
 const sideSheet = ref(false)
@@ -97,9 +100,21 @@ const previewStyle = computed(() => ({
                 </RButtonGroup>
             </div>
 
+            <div class="scaffold-demo-controls__group">
+                <span>Collapse</span>
+                <RButtonGroup v-model="scrollBehavior" selection="single">
+                    <RButton value="fixed">Fixed</RButton>
+                    <RButton value="exit-until-collapsed">Exit until collapsed</RButton>
+                </RButtonGroup>
+            </div>
+
             <label class="scaffold-demo-controls__switch">
                 <span>Collapsing</span>
                 <RSwitch v-model="collapsing" aria-label="Toggle collapsing" />
+            </label>
+            <label class="scaffold-demo-controls__switch">
+                <span>App bar background</span>
+                <RSwitch v-model="showAppBarBackground" aria-label="Toggle app bar background" />
             </label>
             <label class="scaffold-demo-controls__switch">
                 <span>Hide on scroll</span>
@@ -185,17 +200,21 @@ const previewStyle = computed(() => ({
             <template #app-bar>
                 <RAppBarContainer
                     :content-align="appBarAlign"
-                    :collapsing="collapsing"
+                    :scroll-behavior="collapsing ? 'exit-until-collapsed' : scrollBehavior"
                     :hide-on-scroll="hideOnScroll"
                     :underlap="underlap"
-                    expanded-height="96px"
+                    :lift-on-scroll="collapsing"
+                    expanded-height="144px"
+                    collapsed-height="56px"
                 >
-                    <RTopAppBar>
-                    <template #title>Scaffold preview</template>
-                    <template #actions>
-                        <RButton variant="text">Action</RButton>
-                    </template>
-                    </RTopAppBar>
+                    <RCollapsingAppBar title="Scaffold preview">
+                        <template v-if="showAppBarBackground" #background>
+                            <RAppBarCollapseItem mode="off" class="scaffold-demo__app-bar-background" />
+                        </template>
+                        <template #actions>
+                            <RButton variant="text">Action</RButton>
+                        </template>
+                    </RCollapsingAppBar>
                 </RAppBarContainer>
             </template>
 
@@ -267,6 +286,10 @@ const previewStyle = computed(() => ({
     border: 1px solid var(--rui-sys-color-on-surface-outline, #747775);
     border-radius: 16px;
     transition: inline-size 160ms ease;
+}
+
+.scaffold-demo__app-bar-background {
+    background: linear-gradient(135deg, var(--rui-sys-color-primary) 0%, var(--rui-sys-color-secondary) 100%);
 }
 
 .scaffold-demo__navigation {

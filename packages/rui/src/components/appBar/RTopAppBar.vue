@@ -1,20 +1,27 @@
 <script setup lang="ts">
+import { computed, useAttrs } from "vue"
+
 import RText from "@/components/text/RText.vue"
 
-import type { RAppBarProps } from "./types"
+import type { RTopAppBarProps } from "./types"
 
-const props = withDefaults(defineProps<RAppBarProps>(), {
+const props = withDefaults(defineProps<RTopAppBarProps>(), {
     centered: false,
 })
+const attrs = useAttrs()
+const classes = computed(() => ({
+    "rui-top-app-bar__toolbar--centered": props.centered,
+}))
 </script>
 
 <template>
     <div
+        v-bind="attrs"
         class="rui-top-app-bar__toolbar"
-        :class="{
-            'rui-top-app-bar__toolbar--centered': centered,
-            'rui-top-app-bar__toolbar--with-navigation': $slots.navigation,
-        }"
+        :class="classes"
+        role="toolbar"
+        :aria-label="ariaLabel"
+        :aria-labelledby="ariaLabelledby"
     >
         <div v-if="$slots.navigation" class="rui-top-app-bar__navigation">
             <slot name="navigation" />
@@ -43,14 +50,18 @@ const props = withDefaults(defineProps<RAppBarProps>(), {
 
 <style scoped lang="scss">
 .rui-top-app-bar__toolbar {
+    --rui-comp-app-bar-toolbar-padding-inline: 4px;
+    --rui-comp-app-bar-title-margin-inline: 16px;
+    --rui-comp-app-bar-title-navigation-gap: 20px;
     position: relative;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     box-sizing: border-box;
     block-size: 100%;
-    min-block-size: 0;
-    padding-inline: 4px;
+    min-block-size: 56px;
+    padding-inline: var(--rui-comp-app-bar-toolbar-padding-inline);
+    color: var(--rui-comp-app-bar-content-color, inherit);
 }
 
 .rui-top-app-bar__navigation,
@@ -79,18 +90,19 @@ const props = withDefaults(defineProps<RAppBarProps>(), {
     gap: 0;
     min-inline-size: 0;
     max-inline-size: 100%;
-    margin-inline: 16px;
+    margin-inline: var(--rui-comp-app-bar-title-margin-inline);
     justify-self: stretch;
     z-index: 0;
 }
 
 .rui-top-app-bar__navigation + .rui-top-app-bar__text {
-    margin-inline-start: 20px;
+    margin-inline-start: var(--rui-comp-app-bar-title-navigation-gap);
 }
 
 .rui-top-app-bar__text :deep(.rui-text) {
     min-inline-size: 0;
     text-box-trim: trim-both;
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
@@ -100,7 +112,8 @@ const props = withDefaults(defineProps<RAppBarProps>(), {
     grid-column: 1 / -1;
     inset-inline: 0;
     inline-size: auto;
-    max-inline-size: none;
+    max-inline-size: calc(100% - 112px);
+    margin-inline: auto;
     text-align: center;
     pointer-events: none;
 }
