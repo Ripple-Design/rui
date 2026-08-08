@@ -34,7 +34,6 @@ export type RAppBarContainerProps = {
     scrollBehavior?: RAppBarScrollBehavior
     snap?: boolean
     snapMargins?: boolean
-    scrollTarget?: string | HTMLElement
     liftOnScroll?: boolean
     hideOnScroll?: boolean
     underlap?: boolean
@@ -62,17 +61,4 @@ export type RCollapsingAppBarProps = {
 export type RAppBarCollapseItemProps = {
     mode?: RAppBarCollapseItemMode
     parallaxMultiplier?: number
-}
-
-export type RAppBarRegistration = {
-    element: HTMLElement
-    expandedHeight: string
-    collapsedHeight: string
-    topInset?: string
-    scrollBehavior: RAppBarScrollBehavior
-    snap: boolean
-    snapMargins: boolean
-    scrollTarget?: string | HTMLElement
-    liftOnScroll: boolean
-    hideOnScroll: boolean
 }

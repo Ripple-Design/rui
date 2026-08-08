@@ -1,51 +1,37 @@
 import type { InjectionKey, Ref } from "vue"
 
 import type { RResponsiveContainerMode } from "@/components/responsive/types"
-import type { RAppBarRegistration, RAppBarScrollBehavior } from "@/components/appBar/types"
 
 export type RScaffoldScrollDirection = "vertical" | "horizontal" | "none"
 export type RScaffoldFabPlacement = "viewport" | "body" | "app-bar-seam"
 export type RScaffoldScrollMotionDirection = "up" | "down" | "idle"
-export type RScaffoldAppBarPhase = "expanded" | "collapsing" | "collapsed" | "hidden"
-export type RScaffoldAppBarState = RScaffoldAppBarPhase
 export type RScaffoldBottomBarState = "shown" | "hidden"
 
-export type RScaffoldScrollState = {
+export type RScaffoldScrollFacts = {
     top: number
+    maxTop: number
+    delta: number
     direction: RScaffoldScrollMotionDirection
+    atStart: boolean
+    atEnd: boolean
+    timestamp: number
 }
 
-export type RScaffoldAppBarScrollState = {
-    collapseOffset: number
-    collapseDistance: number
-    collapseProgress: number
-    visibleHeight: number
-    hideOffset: number
-    lifted: boolean
-    phase: RScaffoldAppBarPhase
+export type RScaffoldTopInsetHandle = {
+    set: (value: number) => void
+    dispose: () => void
 }
 
 export type RScaffoldContext = {
     scrollDirection: Readonly<Ref<RScaffoldScrollDirection>>
-    scrollState: Readonly<Ref<RScaffoldScrollState>>
-    appBarState: Readonly<Ref<RScaffoldAppBarState>>
-    appBarScrollState: Readonly<Ref<RScaffoldAppBarScrollState>>
+    scrollFacts: Readonly<Ref<RScaffoldScrollFacts>>
     bodyGridMode: Readonly<Ref<RResponsiveContainerMode | null>>
     fabPlacement: Readonly<Ref<RScaffoldFabPlacement>>
-    appBarExpandedHeight: Readonly<Ref<string | undefined>>
-    appBarCollapsedHeight: Readonly<Ref<string | undefined>>
-    appBarOffset: Readonly<Ref<string>>
-    appBarHideOnScroll: Readonly<Ref<boolean>>
-    appBarCollapsing: Readonly<Ref<boolean>>
+    topInset: Readonly<Ref<number>>
     bottomBarState: Readonly<Ref<RScaffoldBottomBarState>>
     bottomBarHeight: Readonly<Ref<number>>
-    registerAppBar: (registration: RAppBarRegistration) => void
-    unregisterAppBar: (element: HTMLElement) => void
+    registerTopInset: () => RScaffoldTopInsetHandle
     setBodyGridMode: (mode: RResponsiveContainerMode) => void
-    setAppBarExpandedHeight: (height: string | undefined) => void
-    setAppBarCollapsedHeight: (height: string | undefined) => void
-    setAppBarHideOnScroll: (enabled: boolean) => void
-    setAppBarCollapsing: (enabled: boolean) => void
     setBottomBarHideOnScroll: (enabled: boolean) => void
     setBottomBarHeight: (height: number) => void
 }

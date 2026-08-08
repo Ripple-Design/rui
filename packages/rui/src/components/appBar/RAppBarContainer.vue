@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed, inject, onMounted, onUnmounted, ref, watchEffect } from "vue"
+import { computed, inject, onMounted, onUnmounted, provide, ref, watchEffect } from "vue"
 
 import RResponsiveContainer from "@/components/responsive/RResponsiveContainer.vue"
 import { scaffoldContextKey } from "@/components/scaffold/context"
 import RSurface from "@/components/surface/RSurface.vue"
 
+import { appBarContextKey } from "./context"
 import type { RAppBarContainerProps } from "./types"
+import { useAppBarScroll } from "./useAppBarScroll"
 
 const props = withDefaults(defineProps<RAppBarContainerProps>(), {
     contentAlign: "full-width",
@@ -20,12 +22,32 @@ const props = withDefaults(defineProps<RAppBarContainerProps>(), {
 
 const scaffold = inject(scaffoldContextKey, null)
 const viewport = ref<HTMLElement | null>(null)
+const topInsetHandle = scaffold?.registerTopInset()
 const contentMode = computed(() => {
     if (props.contentAlign === "body") return scaffold?.bodyGridMode.value ?? "centered"
     return props.contentAlign
 })
-const state = computed(() => scaffold?.appBarState.value ?? "expanded")
-const scrollState = computed(() => scaffold?.appBarScrollState.value)
+const effectiveScrollBehavior = computed(() => props.scrollBehavior)
+const effectiveHideOnScroll = computed(() => scaffold?.fabPlacement.value === "app-bar-seam" ? false : props.hideOnScroll)
+const source = scaffold
+    ? {
+        direction: scaffold.scrollDirection,
+        facts: scaffold.scrollFacts,
+    }
+    : null
+const { state: scrollState, refresh } = useAppBarScroll({
+    root: viewport,
+    source,
+    expandedHeight: computed(() => props.expandedHeight),
+    collapsedHeight: computed(() => props.collapsedHeight),
+    scrollBehavior: effectiveScrollBehavior,
+    hideOnScroll: effectiveHideOnScroll,
+    liftOnScroll: computed(() => props.liftOnScroll),
+})
+
+provide(appBarContextKey, { scrollState })
+
+const state = computed(() => scrollState.value.phase)
 const classes = computed(() => [
     "rui-app-bar-container",
     `rui-app-bar-container--${state.value}`,
@@ -33,7 +55,7 @@ const classes = computed(() => [
         "rui-app-bar-container--underlap": props.underlap,
         "rui-app-bar-container--color-surface": props.color === "surface",
         "rui-app-bar-container--color-primary": props.color === "primary",
-        "rui-app-bar-container--lifted": scrollState.value?.lifted,
+        "rui-app-bar-container--lifted": scrollState.value.lifted,
     },
 ])
 const style = computed(() => ({
@@ -41,38 +63,24 @@ const style = computed(() => ({
     ...(props.collapsedHeight !== undefined ? { "--rui-comp-app-bar-collapsed-height": props.collapsedHeight } : {}),
     "--rui-comp-app-bar-background": props.color === "primary" ? "var(--rui-sys-color-primary)" : "var(--rui-sys-color-surface)",
     "--rui-comp-surface-background": "transparent",
-    "--rui-comp-app-bar-collapse-offset": `${scrollState.value?.collapseOffset ?? 0}px`,
-    "--rui-comp-app-bar-collapse-distance": `${scrollState.value?.collapseDistance ?? 0}px`,
-    "--rui-comp-app-bar-collapse-progress": scrollState.value?.collapseProgress ?? 0,
-    "--rui-comp-app-bar-visible-height": scrollState.value?.visibleHeight
-        ? `${scrollState.value.visibleHeight}px`
-        : "var(--rui-comp-app-bar-expanded-height)",
-    "--rui-sys-scaffold-collapse-progress": scrollState.value?.collapseProgress ?? 0,
+    "--rui-comp-app-bar-collapse-offset": `${scrollState.value.collapseOffset}px`,
+    "--rui-comp-app-bar-collapse-distance": `${scrollState.value.collapseDistance}px`,
+    "--rui-comp-app-bar-collapse-progress": scrollState.value.collapseProgress,
+    "--rui-comp-app-bar-visible-height": `${scrollState.value.visibleHeight}px`,
+    "--rui-sys-scaffold-collapse-progress": scrollState.value.collapseProgress,
 }))
 
-function register() {
-    if (!viewport.value || !scaffold) return
-    scaffold.registerAppBar({
-        element: viewport.value,
-        expandedHeight: props.expandedHeight ?? props.collapsedHeight ?? "56px",
-        collapsedHeight: props.collapsedHeight ?? "56px",
-        topInset: props.topInset,
-        scrollBehavior: props.scrollBehavior,
-        snap: props.snap,
-        snapMargins: props.snapMargins,
-        scrollTarget: props.scrollTarget,
-        liftOnScroll: props.liftOnScroll,
-        hideOnScroll: props.hideOnScroll,
-    })
-}
+watchEffect(() => topInsetHandle?.set(scrollState.value.visibleHeight))
 
-watchEffect(register)
-
-onMounted(register)
-
-onUnmounted(() => {
-    if (viewport.value) scaffold?.unregisterAppBar(viewport.value)
+onMounted(() => {
+    refresh()
+    if (!viewport.value) return
+    if (!props.expandedHeight) {
+        viewport.value.style.setProperty("--rui-comp-app-bar-expanded-height", "var(--rui-comp-app-bar-collapsed-height)")
+    }
 })
+
+onUnmounted(() => topInsetHandle?.dispose())
 </script>
 
 <template>
@@ -81,7 +89,7 @@ onUnmounted(() => {
         :class="classes"
         :style="style"
         :color="color"
-        :elevation="scrollState?.lifted ? 4 : 0"
+        :elevation="scrollState.lifted ? 4 : 0"
         :inert="state === 'hidden' ? '' : undefined"
         :aria-hidden="state === 'hidden' ? 'true' : undefined"
     >
@@ -122,9 +130,7 @@ onUnmounted(() => {
     margin-block-end: calc(-1 * var(--rui-comp-app-bar-expanded-height));
     overflow-anchor: none;
     contain: layout paint;
-    will-change: clip-path;
     box-shadow: none !important;
-    transition: none;
 }
 
 @include breakpoint.c-up(clg) {
@@ -169,10 +175,7 @@ onUnmounted(() => {
     min-block-size: 0;
 }
 
-.rui-app-bar-container__content :deep(.rui-responsive-container) {
-    block-size: 100%;
-}
-
+.rui-app-bar-container__content :deep(.rui-responsive-container),
 .rui-app-bar-container__content :deep(.rui-responsive-container__container),
 .rui-app-bar-container__content :deep(.rui-responsive-container__content) {
     block-size: 100%;

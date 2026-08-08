@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, provide, ref, watch } from "vue"
+import { computed, onBeforeUnmount, provide, ref, watch } from "vue"
 
 import type { RResponsiveContainerMode } from "@/components/responsive/types"
 
+import { scaffoldContextKey, type RScaffoldBottomBarState, type RScaffoldScrollFacts, type RScaffoldScrollMotionDirection } from "./context"
 import type { RScaffoldProps } from "./types"
-
-import { scaffoldContextKey, type RScaffoldAppBarScrollState, type RScaffoldAppBarState, type RScaffoldBottomBarState, type RScaffoldScrollMotionDirection } from "./context"
-import type { RAppBarRegistration } from "@/components/appBar/types"
 
 const props = withDefaults(defineProps<RScaffoldProps>(), {
     scrollDirection: "vertical",
@@ -14,92 +12,70 @@ const props = withDefaults(defineProps<RScaffoldProps>(), {
     bottomBarHideOnScroll: false,
 })
 
-const scrollTop = ref(0)
-const scrollMotionDirection = ref<RScaffoldScrollMotionDirection>("idle")
-const appBarState = ref<RScaffoldAppBarState>("expanded")
-const appBarScrollState = ref<RScaffoldAppBarScrollState>({
-    collapseOffset: 0,
-    collapseDistance: 0,
-    collapseProgress: 0,
-    visibleHeight: 0,
-    hideOffset: 0,
-    lifted: false,
-    phase: "expanded",
+const scrollFacts = ref<RScaffoldScrollFacts>({
+    top: 0,
+    maxTop: 0,
+    delta: 0,
+    direction: "idle",
+    atStart: true,
+    atEnd: true,
+    timestamp: 0,
 })
 const bodyGridMode = ref<RResponsiveContainerMode | null>(null)
-const appBarExpandedHeight = ref<string>()
-const appBarCollapsedHeight = ref<string>()
-const appBarRegistration = ref<RAppBarRegistration | null>(null)
-const appBarHideOnScroll = ref(false)
-const appBarCollapsing = ref(false)
 const bottomBarHideOnScroll = ref(false)
 const bottomBarState = ref<RScaffoldBottomBarState>("shown")
 const bottomBarHeight = ref(0)
 const bottomBarFabOffset = computed(() => (bottomBarState.value === "shown" ? bottomBarHeight.value : 0))
 const scrollbarWidth = ref(0)
+const topInset = ref(0)
 const bodyElement = ref<HTMLElement | null>(null)
 const bottomBarElement = ref<HTMLElement | null>(null)
+const topInsetOwners = new Map<symbol, number>()
 let previousScrollTop = 0
-let frameRequest = 0
-let pendingScrollTarget: HTMLElement | null = null
-let pendingScrollTop = 0
-let snapTimer: ReturnType<typeof setTimeout> | null = null
-let snapFrame = 0
-let snapOffset: number | null = null
-let lastScrollTime = 0
-let lastScrollVelocity = 0
-let isApplyingSnap = false
+let scrollFrame = 0
+let pendingScrollFacts: RScaffoldScrollFacts | null = null
 let bottomBarResizeObserver: ResizeObserver | null = null
 let bodyResizeObserver: ResizeObserver | null = null
 
-const appBarOffset = computed(() => {
-    if (appBarState.value === "hidden") {
-        return "0px"
-    }
-
-    return appBarScrollState.value.visibleHeight > 0
-        ? `${appBarScrollState.value.visibleHeight}px`
-        : "var(--rui-comp-scaffold-app-bar-expanded-height)"
-})
-
-const appBarFlowHeight = computed(() => {
-    if (appBarState.value === "hidden") return "var(--rui-comp-scaffold-app-bar-collapsed-height)"
-    return appBarScrollState.value.visibleHeight > 0
-        ? `${appBarScrollState.value.visibleHeight}px`
-        : "var(--rui-comp-scaffold-app-bar-expanded-height)"
-})
-
-const classes = computed(() => [
-    "rui-scaffold",
-    `rui-scaffold--scroll-${props.scrollDirection}`,
-    `rui-scaffold--app-bar-${appBarState.value}`,
-])
-
+const classes = computed(() => ["rui-scaffold", `rui-scaffold--scroll-${props.scrollDirection}`])
 const style = computed(() => ({
-    ...(appBarExpandedHeight.value !== undefined ? { "--rui-comp-scaffold-app-bar-expanded-height": appBarExpandedHeight.value } : {}),
-    ...(appBarCollapsedHeight.value !== undefined ? { "--rui-comp-scaffold-app-bar-collapsed-height": appBarCollapsedHeight.value } : {}),
-    "--rui-comp-scaffold-app-bar-offset": appBarOffset.value,
-    "--rui-comp-scaffold-app-bar-flow-height": appBarFlowHeight.value,
-    "--rui-comp-scaffold-app-bar-fab-top": `${appBarScrollState.value.visibleHeight || 56}px`,
-    "--rui-comp-scaffold-app-bar-collapse-progress": appBarScrollState.value.collapseProgress,
+    "--rui-comp-scaffold-body-top-inset": `${topInset.value}px`,
     "--rui-comp-scaffold-bottom-bar-height": `${bottomBarHeight.value}px`,
     "--rui-comp-scaffold-fab-bottom-offset": `${bottomBarFabOffset.value}px`,
     "--rui-scaffold-scrollbar-width": `${scrollbarWidth.value}px`,
 }))
 
+function publishTopInset() {
+    const values = Array.from(topInsetOwners.values())
+    topInset.value = values.at(-1) ?? 0
+}
+
+function registerTopInset() {
+    const owner = Symbol("scaffold-top-inset")
+    topInsetOwners.set(owner, 0)
+    publishTopInset()
+    return {
+        set(value: number) {
+            topInsetOwners.set(owner, Math.max(0, value))
+            publishTopInset()
+        },
+        dispose() {
+            if (!topInsetOwners.delete(owner)) return
+            publishTopInset()
+        },
+    }
+}
+
 watch(bodyElement, (element) => {
     bodyResizeObserver?.disconnect()
     bodyResizeObserver = null
-
     if (!element) {
         scrollbarWidth.value = 0
         return
     }
-
     const updateScrollbarWidth = () => {
         scrollbarWidth.value = Math.max(0, element.offsetWidth - element.clientWidth)
     }
-
     updateScrollbarWidth()
     if (typeof ResizeObserver !== "undefined") {
         bodyResizeObserver = new ResizeObserver(updateScrollbarWidth)
@@ -107,19 +83,16 @@ watch(bodyElement, (element) => {
     }
 })
 
-watch(bottomBarElement, (element, previousElement) => {
+watch(bottomBarElement, (element) => {
     bottomBarResizeObserver?.disconnect()
     bottomBarResizeObserver = null
-
     if (!element || typeof ResizeObserver === "undefined") {
         bottomBarHeight.value = 0
         return
     }
-
     const updateHeight = () => {
         bottomBarHeight.value = element.getBoundingClientRect().height
     }
-
     bottomBarResizeObserver = new ResizeObserver(updateHeight)
     bottomBarResizeObserver.observe(element)
     updateHeight()
@@ -129,224 +102,57 @@ watch(
     () => props.bottomBarHideOnScroll,
     (enabled) => {
         bottomBarHideOnScroll.value = enabled
-        if (!enabled) {
-            bottomBarState.value = "shown"
-        }
+        if (!enabled) bottomBarState.value = "shown"
     },
     { immediate: true },
 )
 
-onBeforeUnmount(() => {
-    if (frameRequest) cancelAnimationFrame(frameRequest)
-    if (snapFrame) cancelAnimationFrame(snapFrame)
-    if (snapTimer) clearTimeout(snapTimer)
-    bodyResizeObserver?.disconnect()
-    bottomBarResizeObserver?.disconnect()
-})
-
-function resolveHeight(value: string | undefined, fallback: number) {
-    if (!value || value === "auto") return fallback
-    const probe = document.createElement("div")
-    probe.style.position = "absolute"
-    probe.style.blockSize = value
-    probe.style.visibility = "hidden"
-    document.body.appendChild(probe)
-    const height = probe.getBoundingClientRect().height
-    probe.remove()
-    return height || fallback
-}
-
-function publishAppBarState(target: HTMLElement, nextTop: number) {
-    const registration = appBarRegistration.value
-    const collapsed = resolveHeight(registration?.collapsedHeight, 56)
-    const expanded = Math.max(collapsed, resolveHeight(registration?.expandedHeight, collapsed))
-    const distance = Math.max(0, expanded - collapsed)
-    const behavior = registration?.scrollBehavior ?? "fixed"
-    const collapseOffset = isApplyingSnap
-        ? appBarScrollState.value.collapseOffset
-        : behavior === "fixed" ? 0 : Math.min(distance, Math.max(0, nextTop))
-    const progress = distance ? collapseOffset / distance : 0
-    const lifted = Boolean(registration?.liftOnScroll && nextTop > 0)
-    const hidden = Boolean(registration?.hideOnScroll && nextTop > distance && scrollMotionDirection.value === "down")
-    const phase = hidden ? "hidden" : progress >= 1 ? "collapsed" : progress > 0 ? "collapsing" : "expanded"
-    appBarScrollState.value = {
-        collapseOffset,
-        collapseDistance: distance,
-        collapseProgress: progress,
-        visibleHeight: expanded - collapseOffset,
-        hideOffset: hidden ? expanded : 0,
-        lifted,
-        phase,
-    }
-    appBarState.value = phase
-}
-
-function scheduleScrollFrame(target: HTMLElement, nextTop: number) {
-    pendingScrollTarget = target
-    pendingScrollTop = nextTop
-    if (frameRequest) return
-    frameRequest = requestAnimationFrame(() => {
-        frameRequest = 0
-        if (pendingScrollTarget) publishAppBarState(pendingScrollTarget, pendingScrollTop)
+function scheduleScrollFacts(facts: RScaffoldScrollFacts) {
+    pendingScrollFacts = facts
+    if (scrollFrame) return
+    scrollFrame = requestAnimationFrame(() => {
+        scrollFrame = 0
+        if (pendingScrollFacts) scrollFacts.value = pendingScrollFacts
     })
-}
-
-function decelerate(value: number) {
-    return 1 - Math.pow(1 - value, 2)
-}
-
-function cancelSnap() {
-    if (snapFrame) cancelAnimationFrame(snapFrame)
-    snapFrame = 0
-    snapOffset = null
-    isApplyingSnap = false
-}
-
-function scheduleSnap(target: HTMLElement, delay = 64) {
-    const registration = appBarRegistration.value
-    const state = appBarScrollState.value
-    if (!registration?.snap || registration.scrollBehavior === "fixed" || state.collapseDistance <= 0) return
-    if (snapTimer) clearTimeout(snapTimer)
-    snapTimer = setTimeout(() => {
-        snapTimer = null
-        const current = appBarScrollState.value.collapseOffset
-        const midpoint = state.collapseDistance / 2
-        const velocity = lastScrollVelocity
-        const canExpand = registration.scrollBehavior !== "exit-until-collapsed" || target.scrollTop <= state.collapseDistance
-        const targetOffset = !canExpand
-            ? state.collapseDistance
-            : Math.abs(velocity) > 0.015
-                ? velocity > 0 ? state.collapseDistance : 0
-                : current >= midpoint ? state.collapseDistance : 0
-        if (Math.abs(targetOffset - current) < 1) return
-
-        cancelSnap()
-        isApplyingSnap = true
-        const start = performance.now()
-        const distance = targetOffset - current
-        const duration = Math.min(
-            600,
-            Math.max(
-                1,
-                Math.abs(velocity) > 0.01
-                    ? (3 * Math.abs(distance)) / Math.abs(velocity)
-                    : (Math.abs(distance) / Math.max(1, state.visibleHeight) + 1) * 150,
-            ),
-        )
-        const animate = (now: number) => {
-            const value = Math.min(1, (now - start) / duration)
-            snapOffset = current + distance * decelerate(value)
-            const expanded = resolveHeight(registration.expandedHeight, state.visibleHeight)
-            const collapsed = resolveHeight(registration.collapsedHeight, 56)
-            appBarScrollState.value = {
-                ...appBarScrollState.value,
-                collapseOffset: snapOffset,
-                collapseProgress: collapsed === expanded ? 0 : snapOffset / Math.max(1, expanded - collapsed),
-                visibleHeight: expanded - snapOffset,
-                phase: snapOffset >= expanded - collapsed ? "collapsed" : snapOffset <= 0 ? "expanded" : "collapsing",
-            }
-            appBarState.value = appBarScrollState.value.phase
-            if (value < 1) {
-                snapFrame = requestAnimationFrame(animate)
-            } else {
-                snapFrame = 0
-                snapOffset = null
-                isApplyingSnap = false
-            }
-        }
-        snapFrame = requestAnimationFrame(animate)
-    }, delay)
 }
 
 function handleScroll(event: Event) {
     if (props.scrollDirection !== "vertical") return
-
     const target = event.currentTarget as HTMLElement
-    const nextTop = Math.max(0, target.scrollTop)
-    const delta = nextTop - previousScrollTop
-    const now = performance.now()
-    lastScrollVelocity = delta / Math.max(1, now - lastScrollTime)
-    lastScrollTime = now
-    cancelSnap()
-    const maxScrollTop = Math.max(0, target.scrollHeight - target.clientHeight)
-    const isAtTop = nextTop <= 0
-    const isAtBottom = nextTop >= maxScrollTop - 1
+    const top = Math.max(0, target.scrollTop)
+    const maxTop = Math.max(0, target.scrollHeight - target.clientHeight)
+    const delta = top - previousScrollTop
+    const atStart = top <= 0
+    const atEnd = top >= maxTop - 1
+    const direction: RScaffoldScrollMotionDirection = atStart ? "up" : Math.abs(delta) >= 4 ? delta > 0 ? "down" : "up" : "idle"
 
-    if (isAtTop) {
+    if (atStart) {
         bottomBarState.value = "shown"
-        scrollMotionDirection.value = "up"
-    } else if (Math.abs(delta) >= 4) {
-        scrollMotionDirection.value = delta > 0 ? "down" : "up"
-
-        if (appBarHideOnScroll.value) {
-            if (delta > 0 && !isAtBottom && appBarState.value !== "hidden") {
-                appBarState.value = "hidden"
-            } else if (delta < 0 && !isAtBottom && appBarState.value === "hidden") {
-                appBarState.value = "collapsed"
-            }
-        }
-
-        if (bottomBarHideOnScroll.value) {
-            if (delta > 0 && bottomBarState.value !== "hidden") {
-                bottomBarState.value = "hidden"
-            } else if (delta < 0 && bottomBarState.value === "hidden") {
-                bottomBarState.value = "shown"
-            }
-        }
+    } else if (bottomBarHideOnScroll.value && direction !== "idle") {
+        bottomBarState.value = direction === "down" ? "hidden" : "shown"
     }
 
-    scrollTop.value = nextTop
-    previousScrollTop = nextTop
-    scheduleScrollFrame(target, nextTop)
-    if (appBarRegistration.value?.snap) scheduleSnap(target)
+    previousScrollTop = top
+    scheduleScrollFacts({ top, maxTop, delta, direction, atStart, atEnd, timestamp: performance.now() })
 }
+
+onBeforeUnmount(() => {
+    if (scrollFrame) cancelAnimationFrame(scrollFrame)
+    bodyResizeObserver?.disconnect()
+    bottomBarResizeObserver?.disconnect()
+})
 
 provide(scaffoldContextKey, {
     scrollDirection: computed(() => props.scrollDirection),
-    scrollState: computed(() => ({ top: scrollTop.value, direction: scrollMotionDirection.value })),
-    appBarState: computed(() => appBarState.value),
-    appBarScrollState: computed(() => appBarScrollState.value),
+    scrollFacts: computed(() => scrollFacts.value),
     bodyGridMode: computed(() => bodyGridMode.value),
     fabPlacement: computed(() => props.fabPlacement),
-    appBarExpandedHeight: computed(() => appBarExpandedHeight.value),
-    appBarCollapsedHeight: computed(() => appBarCollapsedHeight.value),
-    appBarOffset,
-    appBarHideOnScroll: computed(() => appBarHideOnScroll.value),
-    appBarCollapsing: computed(() => appBarCollapsing.value),
+    topInset: computed(() => topInset.value),
     bottomBarState: computed(() => bottomBarState.value),
     bottomBarHeight: computed(() => bottomBarHeight.value),
-    registerAppBar(registration) {
-        appBarRegistration.value = registration
-        appBarExpandedHeight.value = registration.expandedHeight
-        appBarCollapsedHeight.value = registration.collapsedHeight
-        appBarHideOnScroll.value = registration.hideOnScroll
-        appBarCollapsing.value = registration.scrollBehavior !== "fixed"
-        nextTick(() => {
-            if (bodyElement.value) publishAppBarState(bodyElement.value, scrollTop.value)
-        })
-    },
-    unregisterAppBar(element) {
-        if (appBarRegistration.value?.element !== element) return
-        appBarRegistration.value = null
-        appBarExpandedHeight.value = undefined
-        appBarCollapsedHeight.value = undefined
-        appBarHideOnScroll.value = false
-        appBarCollapsing.value = false
-    },
+    registerTopInset,
     setBodyGridMode(mode) {
         bodyGridMode.value = mode
-    },
-    setAppBarExpandedHeight(height) {
-        appBarExpandedHeight.value = height
-    },
-    setAppBarCollapsedHeight(height) {
-        appBarCollapsedHeight.value = height
-    },
-    setAppBarHideOnScroll(enabled) {
-        appBarHideOnScroll.value = enabled
-    },
-    setAppBarCollapsing(enabled) {
-        appBarCollapsing.value = enabled
     },
     setBottomBarHideOnScroll(enabled) {
         bottomBarHideOnScroll.value = enabled
@@ -359,13 +165,7 @@ provide(scaffoldContextKey, {
 </script>
 
 <template>
-    <section
-        :class="classes"
-        :style="style"
-        :data-rui-scaffold-axis="scrollDirection"
-        :data-rui-scaffold-bars="scrollMotionDirection === 'down' && scrollTop > 24 ? 'hidden' : 'visible'"
-        :data-rui-scaffold-app-bar="appBarState"
-    >
+    <section :class="classes" :style="style" :data-rui-scaffold-axis="scrollDirection">
         <div v-if="$slots.navigation" class="rui-scaffold__navigation">
             <slot name="navigation" />
         </div>
@@ -373,7 +173,6 @@ provide(scaffoldContextKey, {
         <div class="rui-scaffold__main">
             <main ref="bodyElement" class="rui-scaffold__body" @scroll="handleScroll">
                 <slot name="app-bar" />
-
                 <div class="rui-scaffold__body-content">
                     <slot />
                 </div>
@@ -409,11 +208,7 @@ provide(scaffoldContextKey, {
 </template>
 
 <style scoped lang="scss">
-@use "@/styles/breakpoints" as breakpoint;
-
 .rui-scaffold {
-    --rui-comp-scaffold-app-bar-expanded-height: 56px;
-    --rui-comp-scaffold-app-bar-collapsed-height: 56px;
     container-type: inline-size;
     position: relative;
     display: grid;
@@ -424,11 +219,6 @@ provide(scaffoldContextKey, {
     min-block-size: 0;
     overflow: hidden;
     background: var(--rui-sys-color-background, #fff);
-
-    @include breakpoint.c-up(clg) {
-        --rui-comp-scaffold-app-bar-expanded-height: 64px;
-        --rui-comp-scaffold-app-bar-collapsed-height: 64px;
-    }
 }
 
 .rui-scaffold__navigation {
@@ -464,11 +254,7 @@ provide(scaffoldContextKey, {
 
 .rui-scaffold__body-content {
     min-block-size: 100%;
-    padding-block-start: var(--rui-comp-scaffold-app-bar-flow-height);
-}
-
-.rui-scaffold--app-bar-hidden .rui-scaffold__body-content {
-    padding-block-start: var(--rui-comp-scaffold-app-bar-flow-height);
+    padding-block-start: var(--rui-comp-scaffold-body-top-inset);
 }
 
 .rui-scaffold--scroll-vertical .rui-scaffold__body {
@@ -482,13 +268,6 @@ provide(scaffoldContextKey, {
 
 .rui-scaffold--scroll-horizontal .rui-scaffold__body {
     overflow: hidden;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .rui-scaffold__app-bar,
-    .rui-scaffold__body-content {
-        transition-duration: 0ms !important;
-    }
 }
 
 .rui-scaffold__bottom-bar {
@@ -521,7 +300,7 @@ provide(scaffoldContextKey, {
 }
 
 .rui-scaffold__fab--app-bar-seam {
-    inset-block-start: calc(var(--rui-comp-scaffold-app-bar-fab-top) - 28px);
+    inset-block-start: calc(var(--rui-comp-scaffold-body-top-inset) - 28px);
     inset-block-end: auto;
 }
 </style>

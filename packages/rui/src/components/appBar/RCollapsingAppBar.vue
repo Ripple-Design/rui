@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, nextTick, onMounted, onUnmounted, ref } from "vue"
 
-import { scaffoldContextKey } from "@/components/scaffold/context"
+import { appBarContextKey } from "./context"
 
 import RTopAppBar from "./RTopAppBar.vue"
 import type { RCollapsingAppBarProps } from "./types"
@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<RCollapsingAppBarProps>(), {
     collapsedTitleAppearance: () => ({}),
 })
 
-const scaffold = inject(scaffoldContextKey, null)
+const appBar = inject(appBarContextKey, null)
 const root = ref<HTMLElement | null>(null)
 const expandedAnchor = ref<HTMLElement | null>(null)
 const collapsedAnchor = ref<HTMLElement | null>(null)
@@ -42,8 +42,7 @@ const metrics = ref({
     collapsedFontFamily: "",
 })
 
-const progress = computed(() => scaffold?.appBarScrollState.value.collapseProgress ?? 0)
-const collapseOffset = computed(() => scaffold?.appBarScrollState.value.collapseOffset ?? 0)
+const progress = computed(() => appBar?.scrollState.value.collapseProgress ?? 0)
 
 const titleAppearanceStyle = computed(() => ({
     "--rui-comp-app-bar-expanded-title-margin-start": props.expandedTitleMargin.start ?? "32px",

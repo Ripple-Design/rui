@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, inject, ref } from "vue"
 
-import { scaffoldContextKey } from "@/components/scaffold/context"
-
 import type { RAppBarCollapseItemProps } from "./types"
+
+import { appBarContextKey } from "./context"
 
 const props = withDefaults(defineProps<RAppBarCollapseItemProps>(), {
     mode: "off",
@@ -11,14 +11,10 @@ const props = withDefaults(defineProps<RAppBarCollapseItemProps>(), {
 })
 
 const element = ref<HTMLElement | null>(null)
-const scaffold = inject(scaffoldContextKey, null)
+const appBar = inject(appBarContextKey, null)
 const style = computed(() => {
-    const offset = scaffold?.appBarScrollState.value.collapseOffset ?? 0
-    const value = props.mode === "off"
-        ? -offset
-        : props.mode === "parallax"
-            ? -offset * props.parallaxMultiplier
-            : 0
+    const offset = appBar?.scrollState.value.collapseOffset ?? 0
+    const value = props.mode === "off" ? -offset : props.mode === "parallax" ? -offset * props.parallaxMultiplier : 0
     return value ? { transform: `translateY(${value}px)` } : undefined
 })
 </script>
