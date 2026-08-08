@@ -26,6 +26,9 @@ export type * from "./dialog/types"
 export { default as RSurface } from "./surface/RSurface.vue"
 export type * from "./surface/types"
 
+export { default as RDivider } from "./divider/RDivider.vue"
+export type * from "./divider/types"
+
 export { default as RCard } from "./card/RCard.vue"
 export type * from "./card/types"
 
