@@ -81,4 +81,6 @@ export type * from "./numberField/types"
 
 export { default as RSlider } from "./slider/RSlider.vue"
 export type * from "./slider/types"
+
+export * from "./snackbar"
 export * from "./menu"

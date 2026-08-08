@@ -1,0 +1,17 @@
+---
+title: Snackbar
+docSlug: components/snackbar
+tab: implementation
+locale: en
+designOrder: 999
+developOrder: 999
+api: /en/api/snackbar
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import SnackbarBasicDemo from "@docs/components/demos/snackbar/SnackbarBasicDemo.vue"
+import snackbarBasicDemoSource from "@docs/components/demos/snackbar/SnackbarBasicDemo.vue?raw"
+
+<DemoBlock title="Snackbar" code={snackbarBasicDemoSource} language="vue">
+    <SnackbarBasicDemo client:load />
+</DemoBlock>
