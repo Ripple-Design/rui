@@ -4,8 +4,9 @@ import { computed, onBeforeUnmount, provide, ref, useAttrs, watchEffect } from "
 import { selectionModelKey, useSelectionModel } from "@/foundations/selectionModel"
 import { useResizeObserver } from "@/utils/useResizeObserver"
 
-import { tabBarKey } from "./context"
 import type { RTabBarProps } from "./types"
+
+import { tabBarKey } from "./context"
 
 const props = withDefaults(defineProps<RTabBarProps>(), {
     variant: "secondary",
@@ -13,6 +14,7 @@ const props = withDefaults(defineProps<RTabBarProps>(), {
     iconLayout: "vertical",
     color: "primary",
     divider: true,
+    scrollable: false,
 })
 
 const attrs = useAttrs()
@@ -30,7 +32,10 @@ const classes = computed(() => [
     `rui-tab-bar--${props.variant}`,
     `rui-tab-bar--color-${resolvedColor.value}`,
     `rui-tab-bar--icon-${resolvedIconLayout.value}`,
-    { "rui-tab-bar--full-width": props.fullWidth },
+    {
+        "rui-tab-bar--full-width": props.fullWidth,
+        "rui-tab-bar--scrollable": props.scrollable,
+    },
 ])
 const activeElement = computed(() => selection.selectedItem.value?.state.element ?? null)
 let indicatorReadyFrame: number | null = null
@@ -126,7 +131,7 @@ function syncIndicator() {
         Math.min(scrollMetrics.left + scrollMetrics.width / 2 - scroller.clientWidth / 2, maxScrollLeft),
     )
 
-    if (Math.abs(targetScrollLeft - scroller.scrollLeft) > 1) {
+    if (props.scrollable && Math.abs(targetScrollLeft - scroller.scrollLeft) > 1) {
         scroller.scrollTo({ left: targetScrollLeft, behavior: "smooth" })
     }
 
@@ -157,10 +162,7 @@ onBeforeUnmount(() => {
         <div class="rui-tab-bar__scroller" ref="scrollerRef">
             <div
                 ref="indicatorRef"
-                :class="[
-                    'rui-tab-bar__indicator',
-                    { 'rui-tab-bar__indicator--ready': indicatorReady },
-                ]"
+                :class="['rui-tab-bar__indicator', { 'rui-tab-bar__indicator--ready': indicatorReady }]"
                 aria-hidden="true"
             />
             <div class="rui-tab-bar__content" ref="contentRef">
@@ -217,13 +219,17 @@ onBeforeUnmount(() => {
 
 .rui-tab-bar__scroller {
     position: relative;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: visible clip;
     scrollbar-width: none;
 
     &::-webkit-scrollbar {
         display: none;
     }
+}
+
+.rui-tab-bar--scrollable .rui-tab-bar__scroller {
+    overflow-x: auto;
+    overflow-y: clip;
 }
 
 .rui-tab-bar--primary .rui-tab-bar__indicator {

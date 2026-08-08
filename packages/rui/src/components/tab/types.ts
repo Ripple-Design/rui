@@ -18,6 +18,7 @@ export type RTabBarProps = {
     color?: RTabBarColor
     /** Controls whether the bottom divider is rendered. */
     divider?: boolean
+    scrollable?: boolean
     /** Controls the selected tab value. */
     modelValue?: unknown
 }

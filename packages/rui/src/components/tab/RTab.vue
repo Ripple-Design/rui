@@ -206,7 +206,7 @@ function handleClick() {
 
 .rui-tab__label {
     @include typography.button("--rui-comp-tab-bar-label");
-    overflow: hidden;
+    overflow-x: clip;
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: center;
