@@ -19,6 +19,8 @@ export type RChipProps = {
     type?: RChipType
     /** Renders a leading icon using the shared icon renderer. */
     icon?: RIconResolvableSource
+    /** Renders a trailing icon using the shared icon renderer. */
+    endIcon?: RIconResolvableSource
     /** Shows a separate trailing remove button. */
     removable?: boolean
     /** Overrides the default trailing remove icon. */

@@ -67,6 +67,7 @@ const showLeadingIcon = computed(() => {
     return showSelectedIcon.value || !!props.icon
 })
 const showRemove = computed(() => resolvedType.value === "input" && props.removable)
+const showEndIcon = computed(() => !!props.endIcon && !showRemove.value)
 const resolvedRole = computed(() => {
     if (selectionMode.value === "single" && isSelectableInGroup.value) {
         return "radio"
@@ -114,6 +115,7 @@ const classes = computed(() => [
         "rui-chip--selected": selected.value,
         "rui-chip--disabled": props.disabled,
         "rui-chip--removable": showRemove.value,
+        "rui-chip--with-end-icon": showEndIcon.value,
         "rui-chip--with-leading": showLeadingIcon.value,
         "rui-chip--with-input-check": showSelectedIcon.value && resolvedType.value === "input",
     },
@@ -213,6 +215,10 @@ function handleRemove(event: MouseEvent) {
                     <slot />
                 </span>
             </button>
+
+            <span v-if="showEndIcon" class="rui-chip__end-icon" aria-hidden="true">
+                <RIcon :icon="endIcon" :size="18" decorative />
+            </span>
 
             <button
                 v-if="showRemove"
@@ -397,7 +403,8 @@ function handleRemove(event: MouseEvent) {
     padding-inline-start: 8px;
 }
 
-.rui-chip--removable .rui-chip__primary {
+.rui-chip--removable .rui-chip__primary,
+.rui-chip--with-end-icon .rui-chip__primary {
     padding-inline-end: 0;
 }
 
@@ -429,17 +436,27 @@ function handleRemove(event: MouseEvent) {
 }
 
 .rui-chip--with-leading .rui-chip__label {
-    padding-inline-start: 4px;
+    padding-inline-start: 8px;
 }
 
 .rui-chip--with-input-check .rui-chip__label {
     padding-inline-start: 8px;
 }
 
+.rui-chip__end-icon,
 .rui-chip__remove {
     flex: 0 0 28px;
     justify-content: flex-start;
     padding-inline-start: 2px;
+}
+
+.rui-chip__end-icon {
+    display: inline-flex;
+    align-items: center;
+    color: var(--rui-comp-chip-icon-color);
+}
+
+.rui-chip__remove {
     color: var(--rui-comp-chip-close-icon-color);
 
     &:hover:not(:disabled),
