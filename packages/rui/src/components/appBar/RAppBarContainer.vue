@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, onUnmounted, ref, watchEffect } from "vue"
 
+import RResponsiveContainer from "@/components/responsive/RResponsiveContainer.vue"
 import { scaffoldContextKey } from "@/components/scaffold/context"
 import RSurface from "@/components/surface/RSurface.vue"
 
@@ -86,7 +87,13 @@ onUnmounted(() => {
     >
         <div ref="viewport" class="rui-app-bar-container__viewport">
             <div class="rui-app-bar-container__collapsing-content">
-                <slot />
+                <component
+                    :is="contentAlign === 'full-width' ? 'div' : RResponsiveContainer"
+                    :mode="contentMode"
+                    class="rui-app-bar-container__content"
+                >
+                    <slot />
+                </component>
             </div>
             <div class="rui-app-bar-container__content-scrim" aria-hidden="true" />
         </div>
@@ -155,6 +162,20 @@ onUnmounted(() => {
     position: absolute;
     inset: 0;
     overflow: visible;
+}
+
+.rui-app-bar-container__content {
+    block-size: 100%;
+    min-block-size: 0;
+}
+
+.rui-app-bar-container__content :deep(.rui-responsive-container) {
+    block-size: 100%;
+}
+
+.rui-app-bar-container__content :deep(.rui-responsive-container__container),
+.rui-app-bar-container__content :deep(.rui-responsive-container__content) {
+    block-size: 100%;
 }
 
 .rui-app-bar-container__content-scrim {

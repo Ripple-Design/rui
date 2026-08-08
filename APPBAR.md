@@ -12,7 +12,7 @@
     - RUI: `packages/rui/src/components/appBar/types.ts`, `packages/rui/src/components/appBar/RTopAppBar.vue`
     - M2: `material-components-android/lib/java/com/google/android/material/appbar/res/values/dimens.xml`, `res/values-sw600dp/dimens.xml`
 
-- [ ] **Give collapsing bars a nonzero default collapse distance.**
+- [x] **Give collapsing bars a nonzero default collapse distance.**
     - Current: an omitted `expandedHeight` resolves to `collapsedHeight`, so `collapsing` can have no visible effect.
     - Target: define an expanded geometry for collapsing bars, or require a valid expanded height through the type/API design.
     - RUI: `packages/rui/src/components/appBar/RTopAppBar.vue`
@@ -24,13 +24,13 @@
 
 ## App Bar surface and lift state
 
-- [ ] **Implement M2 liftable and lifted states.**
+- [x] **Implement M2 liftable and lifted states.**
     - Current: `RSurface` is always rendered at elevation 4.
     - Target: use elevation 0 while liftable but not lifted; switch to elevation 4 when the scroll target can scroll upward / has left the top.
     - RUI: `packages/rui/src/components/appBar/RTopAppBar.vue`, `packages/rui/src/components/scaffold/RScaffold.vue`
     - M2: `material-components-android/lib/java/com/google/android/material/appbar/AppBarLayout.java`
 
-- [ ] **Match M2 lift elevation timing.**
+- [x] **Match M2 lift elevation timing.**
     - Current: generic elevation transitions use 280ms.
     - Target: use the M2 app-bar state animator duration of 150ms for lifted elevation changes.
     - RUI: `packages/rui/src/styles/elevations.scss`
@@ -48,13 +48,13 @@
 
 ## Scroll ranges and app-bar behavior
 
-- [ ] **Replace the fixed 48px collapse threshold.**
+- [x] **Replace the fixed 48px collapse threshold.**
     - Current: `scrollTop > 48` flips a binary collapsed state.
     - Target: derive the collapse range from expanded height, collapsed height, and top inset.
     - RUI: `packages/rui/src/components/scaffold/RScaffold.vue`
     - M2: `material-components-android/lib/java/com/google/android/material/appbar/AppBarLayout.java`
 
-- [ ] **Publish continuous collapse progress.**
+- [x] **Publish continuous collapse progress.**
     - Current: `--rui-sys-scaffold-collapse-progress` is only `0` or `1`.
     - Target: publish a clamped continuous progress value based on the actual collapse range, for example `scrollOffset / collapseDistance`.
     - RUI: `packages/rui/src/components/appBar/RTopAppBar.vue`, `packages/rui/src/components/scaffold/RScaffold.vue`
@@ -69,7 +69,7 @@
     - RUI: `packages/rui/src/components/scaffold/RScaffold.vue`
     - M2: `material-components-android/lib/java/com/google/android/material/appbar/AppBarLayout.java`
 
-- [ ] **Sample scrolling once per animation frame.**
+- [x] **Sample scrolling once per animation frame.**
     - Current: scroll state updates directly from every native scroll event.
     - Target: coalesce visual state calculation with `requestAnimationFrame` while preserving the latest scroll position.
     - RUI: `packages/rui/src/components/scaffold/RScaffold.vue`
@@ -81,28 +81,28 @@
 
 ## Collapsing toolbar
 
-- [ ] **Add an explicit collapsing title model.**
+- [x] **Add an explicit collapsing title model.**
     - Target: support title enabled state, expanded and collapsed title bounds, gravity, and margins instead of leaving all title behavior in an opaque default slot.
     - M2: `material-components-android/lib/java/com/google/android/material/appbar/CollapsingToolbarLayout.java`, `res/values/attrs.xml`
 
-- [ ] **Add expanded and collapsed title text appearances.**
+- [x] **Add expanded and collapsed title text appearances.**
     - Target: provide separate typography/style contracts for both title states, including color and RTL-aware positioning.
     - M2: `material-components-android/lib/java/com/google/android/material/appbar/CollapsingToolbarLayout.java`, `res/values/attrs.xml`
 
-- [ ] **Drive title transition from continuous collapse progress.**
+- [x] **Drive title transition from continuous collapse progress.**
     - Current: no consumer reads the binary collapse progress variable.
     - Target: title position, scale/opacity, and bounds update continuously during the scroll-driven collapse.
     - RUI: `packages/rui/src/components/appBar/RTopAppBar.vue`
 
-- [ ] **Add child pin behavior.**
+- [x] **Add child pin behavior.**
     - Target: allow designated app-bar children to remain pinned while the surrounding expanded region collapses.
     - M2: `material-components-android/lib/java/com/google/android/material/appbar/CollapsingToolbarLayout.java`
 
-- [ ] **Add child parallax behavior.**
+- [x] **Add child parallax behavior.**
     - Target: allow designated app-bar children to translate with a configurable parallax multiplier; M2 defaults to 0.5.
     - M2: `material-components-android/lib/java/com/google/android/material/appbar/CollapsingToolbarLayout.java`
 
-- [ ] **Evaluate the M2 compress scroll effect.**
+- [x] **Evaluate the M2 compress scroll effect.**
     - Target: decide whether to expose a web equivalent of M2 `scrollEffect="compress"`; if adopted, include clipping and configurable/default compression behavior.
     - M2: `material-components-android/lib/java/com/google/android/material/appbar/AppBarLayout.java`, `res/values/attrs.xml`
 
@@ -139,7 +139,7 @@
     - Target: disable hide-on-scroll for that arrangement or define one synchronized App Bar/FAB hide policy.
     - RUI: `packages/rui/src/components/appBar/RTopAppBar.vue`, `packages/rui/src/components/scaffold/RScaffold.vue`
 
-- [ ] **Remove hidden App Bar controls from interaction and tab order.**
+- [x] **Remove hidden App Bar controls from interaction and tab order.**
     - Current: hiding only translates the header offscreen.
     - Target: while hidden, disable pointer interaction and remove descendants from sequential focus; restore both when visible.
     - RUI: `packages/rui/src/components/scaffold/RScaffold.vue`
