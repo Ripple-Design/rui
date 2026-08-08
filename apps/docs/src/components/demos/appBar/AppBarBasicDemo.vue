@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RICloseFilled, RIHomeOutlined, RIMoreVertFilled } from "@ripple-design/icons"
-import { RButton, RIconButton, RTopAppBar } from "@ripple-design/rui"
+import { RAppBarContainer, RButton, RIconButton, RTopAppBar } from "@ripple-design/rui"
 import { computed, ref } from "vue"
 
 const viewportWidth = ref(719)
@@ -52,11 +52,11 @@ const previewStyle = computed(() => ({
         </div>
 
         <div class="top-app-bar-demo__viewport" :style="previewStyle">
-            <RTopAppBar
+            <RAppBarContainer
                 :color="color"
-                :centered="centered"
                 :collapsed-height="heightMode === 'custom' ? '72px' : undefined"
             >
+                <RTopAppBar :centered="centered">
                 <template #navigation>
                     <RIconButton :icon="RIHomeOutlined" label="Open navigation" />
                 </template>
@@ -66,7 +66,8 @@ const previewStyle = computed(() => ({
                     <RIconButton :icon="RICloseFilled" label="Dismiss" />
                     <RIconButton :icon="RIMoreVertFilled" label="More options" />
                 </template>
-            </RTopAppBar>
+                </RTopAppBar>
+            </RAppBarContainer>
             <div class="top-app-bar-demo__body">
                 Resize across 720px and toggle title alignment to inspect the App Bar layout.
             </div>

@@ -97,6 +97,7 @@ const props = withDefaults(defineProps<RAppBarProps>(), {
 
 .rui-top-app-bar__toolbar--centered .rui-top-app-bar__text {
     position: absolute;
+    grid-column: 1 / -1;
     inset-inline: 0;
     inline-size: auto;
     max-inline-size: none;

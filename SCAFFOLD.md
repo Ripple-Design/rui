@@ -24,7 +24,7 @@ RScaffold
 ├── RBottomNavigation      可选，底部导航或底部应用栏
 ```
 
-上面的区域通过命名插槽提供，不新增 `RScaffold*` 包装组件。Scaffold 直接复用现有的 `RAppBar`、`RNavigationDrawer`、`RNavigationRail`、`RSideSheet` 和 `RBottomNavigation`。Controller 只发布布局状态，不依赖区域的具体视觉实现。
+上面的区域通过命名插槽提供，不新增 `RScaffold*` 包装组件。Scaffold 直接复用现有的 `RTopAppBar`、`RNavigationDrawer`、`RNavigationRail`、`RSideSheet` 和 `RBottomNavigation`。Controller 只发布布局状态，不依赖区域的具体视觉实现。
 
 Scaffold 根节点额外提供独立的 FAB 定位层。该层不参与普通 Grid/Flex 内容流，允许 `RFab` 处理 Hero 接缝、Collapsing AppBar 接缝、BottomNavigation 避让和跨层叠放。FAB 的 slot 位置属于当前 Scaffold；嵌套 Scaffold 的 FAB 不得穿透或覆盖外层 Scaffold 的定位层。
 
@@ -76,15 +76,15 @@ Scaffold 根节点额外提供独立的 FAB 定位层。该层不参与普通 Gr
 
 ### 2.3 RAppBar 内容对齐
 
-`RAppBar` 的背景、Elevation 和边界保持全宽，但其内部内容可以选择是否与 Body 的网格容器对齐。AppBar 不自行复制 Body 的 Margin、最大宽度或断点计算，而是复用同一个 `RContainer` 契约。
+`RTopAppBar` 的背景、Elevation 和边界保持全宽，但其内部内容可以选择是否与 Body 的网格容器对齐。AppBar 不自行复制 Body 的 Margin、最大宽度或断点计算，而是复用同一个 `RContainer` 契约。
 
 建议的内容对齐模式：
 
-| 模式 | 行为 |
-| --- | --- |
-| `full-width` | 内容使用 AppBar 当前可用的全部宽度 |
-| `centered` | 内容使用 Centered grid 的最大宽度和两侧 Margin |
-| `body` | 继承当前 Scaffold Body 的 Full-width 或 Centered 模式 |
+| 模式         | 行为                                                  |
+| ------------ | ----------------------------------------------------- |
+| `full-width` | 内容使用 AppBar 当前可用的全部宽度                    |
+| `centered`   | 内容使用 Centered grid 的最大宽度和两侧 Margin        |
+| `body`       | 继承当前 Scaffold Body 的 Full-width 或 Centered 模式 |
 
 ```vue
 <RScaffold>
@@ -112,15 +112,15 @@ Body 内容区域支持三种滚动方向配置：
 </RScaffold>
 ```
 
-| `scroll-axis` | 语义 | 当前实现 |
-| --- | --- | --- |
-| `vertical` | Body 建立纵向滚动容器，并作为当前 Scaffold 的滚动状态来源 | 已实现目标 |
-| `horizontal` | Body 建立横向滚动容器，供横向工作区或时间线使用 | 仅提供 API，暂不实现 |
-| `none` | Body 不建立 Scaffold 管理的滚动容器 | 已实现目标 |
+| `scroll-axis` | 语义                                                      | 当前实现             |
+| ------------- | --------------------------------------------------------- | -------------------- |
+| `vertical`    | Body 建立纵向滚动容器，并作为当前 Scaffold 的滚动状态来源 | 已实现目标           |
+| `horizontal`  | Body 建立横向滚动容器，供横向工作区或时间线使用           | 仅提供 API，暂不实现 |
+| `none`        | Body 不建立 Scaffold 管理的滚动容器                       | 已实现目标           |
 
 该配置属于每个 Scaffold 自己的布局边界。嵌套 Scaffold 可以选择不同的 `scroll-axis`：外层可以是 `vertical`，内层可以是 `none`；内层 `horizontal` 只作为预留 API，不得被当前滚动状态机当作可用的横向实现。
 
-当 `scroll-axis="none"` 时，`RAppBar` 的 `hide-on-scroll`、`collapsing` 和依赖滚动进度的 Hero 状态不应由该 Scaffold 自动触发。需要滚动联动时，应用必须通过显式状态控制对应组件。
+当 `scroll-axis="none"` 时，`RTopAppBar` 的 `hide-on-scroll`、`collapsing` 和依赖滚动进度的 Hero 状态不应由该 Scaffold 自动触发。需要滚动联动时，应用必须通过显式状态控制对应组件。
 
 ## 3. 空间布局模型
 
@@ -218,13 +218,13 @@ container-type: inline-size;
 
 Scaffold 的 Body 网格遵循 M2 的窗口、Margin 和 Body 宽度规则。这里的 `Window` 是当前可用的窗口或 Body 容器宽度，`Margin` 是 Body 两侧的外部间距，`Body` 描述内容区域是持续伸缩还是达到最大宽度后固定。设备旋转时，以较小的可用宽度作为响应式判断依据。
 
-| Screen size | Margin | Body | Layout columns |
-| --- | --- | --- | ---: |
-| Extra-small（phone）0–599dp | 16dp | Scaling | 4 |
-| Small（tablet）600–904dp | 32dp | Scaling | 8 |
-| 905–1239dp | Scaling，最大 200dp | 固定 840dp | 12 |
-| Medium（laptop）1240–1439dp | 200dp | Scaling | 12 |
-| Large（desktop）1440dp 及以上 | Scaling | 默认最大 1040dp；可选 Full-width | 12 |
+| Screen size                   | Margin              | Body                             | Layout columns |
+| ----------------------------- | ------------------- | -------------------------------- | -------------: |
+| Extra-small（phone）0–599dp   | 16dp                | Scaling                          |              4 |
+| Small（tablet）600–904dp      | 32dp                | Scaling                          |              8 |
+| 905–1239dp                    | Scaling，最大 200dp | 固定 840dp                       |             12 |
+| Medium（laptop）1240–1439dp   | 200dp               | Scaling                          |             12 |
+| Large（desktop）1440dp 及以上 | Scaling             | 默认最大 1040dp；可选 Full-width |             12 |
 
 响应规则如下：
 
@@ -238,10 +238,10 @@ Scaffold 的 Body 网格遵循 M2 的窗口、Margin 和 Body 宽度规则。这
 
 Scaffold 使用同一套 4/8/12 列网格，但允许 Body 选择不同的宽度策略：
 
-| 模式 | Body 宽度 | Margin | 适用页面 |
-| --- | --- | --- | --- |
+| 模式            | Body 宽度          | Margin       | 适用页面                     |
+| --------------- | ------------------ | ------------ | ---------------------------- |
 | Full-width grid | 随可用容器宽度伸缩 | 固定或受约束 | 工作区、数据表、多栏操作页面 |
-| Centered grid | 达到最大宽度后固定 | 两侧自动增长 | 文章、详情、表单和阅读型页面 |
+| Centered grid   | 达到最大宽度后固定 | 两侧自动增长 | 文章、详情、表单和阅读型页面 |
 
 这两种模式不是两套断点系统，也不是两套列定义。它们共享相同的 Container Query、列数、列间距和内容对齐规则，只改变 Body 的宽度策略。
 
@@ -267,9 +267,9 @@ Full-width grid:
 
 ### 5.1 滚动显示与隐藏
 
-只有 `scroll-axis="vertical"` 的 Scaffold 才能驱动 `RAppBar` 的 `hide-on-scroll` 和 `collapsing`。`horizontal` 当前仅是预留 API，`none` 不提供自动滚动状态来源。
+只有 `scroll-axis="vertical"` 的 Scaffold 才能驱动 `RTopAppBar` 的 `hide-on-scroll` 和 `collapsing`。`horizontal` 当前仅是预留 API，`none` 不提供自动滚动状态来源。
 
-`RAppBar` 支持 `hide-on-scroll`。Controller 只监听当前 Scaffold 的 Body 滚动容器，并将滚动方向发布为 Scaffold 状态；AppBar 通过 CSS Transform 隐藏或显示。TopBar 的布局占位始终由 CSS 保留，隐藏只改变视觉层，不造成 Body 布局跳动。
+`RTopAppBar` 支持 `hide-on-scroll`。Controller 只监听当前 Scaffold 的 Body 滚动容器，并将滚动方向发布为 Scaffold 状态；AppBar 通过 CSS Transform 隐藏或显示。TopBar 的布局占位始终由 CSS 保留，隐藏只改变视觉层，不造成 Body 布局跳动。
 
 Controller 根据当前 Body 滚动拥有者的滚动增量计算滚动方向：
 
@@ -297,7 +297,7 @@ data-rui-scaffold-bars="visible|hidden"
 
 ### 5.2 折叠型 TopBar
 
-`RAppBar` 支持 `collapsing` 模式。展开状态和折叠状态属于同一个 AppBar 的连续视觉状态，布局占位由 CSS Grid 保持稳定；折叠只改变内部标题、导航元素和 Surface 状态，不改变 Body 的滚动起点。
+`RTopAppBar` 支持 `collapsing` 模式。展开状态和折叠状态属于同一个 AppBar 的连续视觉状态，布局占位由 CSS Grid 保持稳定；折叠只改变内部标题、导航元素和 Surface 状态，不改变 Body 的滚动起点。
 
 折叠型 TopBar 提供归一化的滚动进度：
 
@@ -317,14 +317,10 @@ Controller 发布：
 
 ### 5.3 `underlap`：展开态 AppBar 下的内容重叠
 
-`RAppBar` 在 `collapsing` 模式下可以启用 `underlap`，允许 Body 的指定内容初始进入展开态 AppBar 的空间，而不是从 AppBar 下方开始排布。
+`RTopAppBar` 在 `collapsing` 模式下可以启用 `underlap`，允许 Body 的指定内容初始进入展开态 AppBar 的空间，而不是从 AppBar 下方开始排布。
 
 ```vue
-<RAppBar
-  collapsing
-  underlap
-  content-align="body"
-/>
+<RAppBar collapsing underlap content-align="body" />
 ```
 
 该模式的空间关系如下：
@@ -359,10 +355,10 @@ Body 内容向下离开 AppBar 的重叠区域，继续进入可视区域；
 
 两种模式控制不同维度，允许同时启用：
 
-| 能力 | 控制对象 | 状态结果 |
-| --- | --- | --- |
-| `collapsing` | AppBar 内部内容 | 展开、压缩、折叠进度 |
-| `hide-on-scroll` | AppBar 视觉层 | 显示、隐藏、重新显示 |
+| 能力             | 控制对象        | 状态结果             |
+| ---------------- | --------------- | -------------------- |
+| `collapsing`     | AppBar 内部内容 | 展开、压缩、折叠进度 |
+| `hide-on-scroll` | AppBar 视觉层   | 显示、隐藏、重新显示 |
 
 组合时遵循以下规则：
 
@@ -371,16 +367,12 @@ Body 内容向下离开 AppBar 的重叠区域，继续进入可视区域；
 - 显示/隐藏使用整体层的 `translate`，折叠使用内部元素的 `transform`、`opacity` 和 CSS 变量；
 - 两种状态不得重复修改 AppBar 的布局尺寸，不得改变 Body 的滚动范围；
 - `prefers-reduced-motion: reduce` 下仍保留最终状态，但取消连续动画；
-- 嵌套 Scaffold 只响应自己的 Body 滚动，不触发外层 `RAppBar` 的隐藏或折叠。
+- 嵌套 Scaffold 只响应自己的 Body 滚动，不触发外层 `RTopAppBar` 的隐藏或折叠。
 
 建议的组合配置：
 
 ```vue
-<RAppBar
-  content-align="body"
-  collapsing
-  hide-on-scroll
-/>
+<RAppBar content-align="body" collapsing hide-on-scroll />
 ```
 
 ### 5.5 Hero 重叠布局
@@ -405,12 +397,12 @@ Body Surface 负责顶部 Shape。随着滚动推进，其顶部圆角逐渐减�
 
 `#fab` 插槽承载现有的 `RFab`，但 FAB 的摆放方式由当前页面模式决定。FAB 位置不是单一的固定右下角规则，至少需要支持以下模式：
 
-| 模式 | 锚点 | 与 AppBar 的关系 |
-| --- | --- | --- |
-| `viewport` | Scaffold 视口边缘 | 独立于 AppBar |
-| `body` | Body 内容区域 | 随 Body 的显式间距定位 |
+| 模式           | 锚点                             | 与 AppBar 的关系                   |
+| -------------- | -------------------------------- | ---------------------------------- |
+| `viewport`     | Scaffold 视口边缘                | 独立于 AppBar                      |
+| `body`         | Body 内容区域                    | 随 Body 的显式间距定位             |
 | `app-bar-seam` | Collapsing AppBar 与 Body 的接缝 | 固定在接缝层，不随 AppBar 内容折叠 |
-| `hero-seam` | Hero 媒体与 Body Surface 的接缝 | 由 Hero 布局的显式 CSS 变量定位 |
+| `hero-seam`    | Hero 媒体与 Body Surface 的接缝  | 由 Hero 布局的显式 CSS 变量定位    |
 
 ### 5.7 AppBar 接缝 FAB
 
@@ -428,7 +420,7 @@ Body Surface 负责顶部 Shape。随着滚动推进，其顶部圆角逐渐减�
 
 - FAB 位于独立的定位层，视觉层级高于 AppBar 和 Body；
 - FAB 的锚点由显式 CSS 几何变量定义，不通过运行时测量计算；
-- `app-bar-seam` 启用后，所属 `RAppBar` 保持展开，不参与滚动折叠；
+- `app-bar-seam` 启用后，所属 `RTopAppBar` 保持展开，不参与滚动折叠；
 - `collapsing` 与 `app-bar-seam` 不能同时作用于同一个 AppBar；如果同时配置，以 `app-bar-seam` 的“不折叠”约束为准；
 - AppBar 的背景层可以覆盖 Body，但不能覆盖接缝 FAB；
 - `hide-on-scroll` 默认不影响 `app-bar-seam` FAB，也不应因此收起所属 AppBar；如果页面需要同步隐藏，必须通过 FAB 的显式模式或 CSS 状态单独开启；
@@ -629,12 +621,12 @@ Scaffold 样式应复用现有主题中的 Color、Shape、Elevation、Typograph
 
 基于本方案实现的 Scaffold 必须：
 
-- `RAppBar` 可以选择 `full-width`、`centered` 或 `body` 内容对齐模式；
-- `RAppBar` 支持独立的 `collapsing` 和 `hide-on-scroll` 状态，并可同时启用；
+- `RTopAppBar` 可以选择 `full-width`、`centered` 或 `body` 内容对齐模式；
+- `RTopAppBar` 支持独立的 `collapsing` 和 `hide-on-scroll` 状态，并可同时启用；
 - `vertical` 是当前唯一实现的滚动方向；
 - `horizontal` 只提供 API，不实现横向滚动状态机；
 - `none` 不自动驱动 AppBar 的滚动隐藏、折叠或 Hero 进度；
-- `app-bar-seam` FAB 要求所属 `RAppBar` 保持展开，不与 `collapsing` 同时启用；
+- `app-bar-seam` FAB 要求所属 `RTopAppBar` 保持展开，不与 `collapsing` 同时启用；
 - 为 `#fab` 插槽提供独立且稳定的定位层；
 - TopBar、BottomNavigation 和 Side Sheet 隐藏或显示时保持 Body 布局稳定；
 - 通过 Body 的容器宽度，使内容网格能够从 4 列适配到 8 列和 12 列；
