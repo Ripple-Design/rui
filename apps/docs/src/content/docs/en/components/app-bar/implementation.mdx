@@ -11,7 +11,13 @@ api: /en/api/app-bar
 import DemoBlock from "@docs/components/docs/DemoBlock.astro"
 import AppBarBasicDemo from "@docs/components/demos/appBar/AppBarBasicDemo.vue"
 import appBarBasicDemoSource from "@docs/components/demos/appBar/AppBarBasicDemo.vue?raw"
+import CollapsingAppBarDemo from "@docs/components/demos/appBar/CollapsingAppBarDemo.vue"
+import collapsingAppBarDemoSource from "@docs/components/demos/appBar/CollapsingAppBarDemo.vue?raw"
 
 <DemoBlock title="Top App Bar" code={appBarBasicDemoSource} language="vue">
     <AppBarBasicDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Collapsing Toolbar" code={collapsingAppBarDemoSource} language="vue">
+    <CollapsingAppBarDemo client:load />
 </DemoBlock>

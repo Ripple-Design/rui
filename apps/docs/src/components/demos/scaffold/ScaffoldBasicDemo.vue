@@ -31,6 +31,7 @@ const gridMode = ref<"centered" | "full-width">("centered")
 const fabPlacement = ref<"viewport" | "body" | "app-bar-seam">("app-bar-seam")
 const appBarAlign = ref<"full-width" | "centered" | "body">("body")
 const collapsing = ref(false)
+const snap = ref(false)
 const showAppBarBackground = ref(true)
 const scrollBehavior = ref<"fixed" | "exit-until-collapsed">("fixed")
 const hideOnScroll = ref(false)
@@ -111,6 +112,10 @@ const previewStyle = computed(() => ({
             <label class="scaffold-demo-controls__switch">
                 <span>Collapsing</span>
                 <RSwitch v-model="collapsing" aria-label="Toggle collapsing" />
+            </label>
+            <label class="scaffold-demo-controls__switch">
+                <span>Snap</span>
+                <RSwitch v-model="snap" aria-label="Toggle app bar snap" />
             </label>
             <label class="scaffold-demo-controls__switch">
                 <span>App bar background</span>
@@ -204,6 +209,7 @@ const previewStyle = computed(() => ({
                     :hide-on-scroll="hideOnScroll"
                     :underlap="underlap"
                     :lift-on-scroll="collapsing"
+                    :snap="snap"
                     expanded-height="144px"
                     collapsed-height="56px"
                 >

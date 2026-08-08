@@ -14,7 +14,11 @@ const element = ref<HTMLElement | null>(null)
 const scaffold = inject(scaffoldContextKey, null)
 const style = computed(() => {
     const offset = scaffold?.appBarScrollState.value.collapseOffset ?? 0
-    const value = props.mode === "parallax" ? offset * props.parallaxMultiplier : props.mode === "pin" ? offset : 0
+    const value = props.mode === "off"
+        ? -offset
+        : props.mode === "parallax"
+            ? -offset * props.parallaxMultiplier
+            : 0
     return value ? { transform: `translateY(${value}px)` } : undefined
 })
 </script>
@@ -28,7 +32,7 @@ const style = computed(() => {
 <style scoped>
 .rui-app-bar-collapse-item {
     position: relative;
-    block-size: 100%;
+    block-size: var(--rui-comp-app-bar-expanded-height, 100%);
     inline-size: 100%;
 }
 

@@ -43,6 +43,7 @@ const metrics = ref({
 })
 
 const progress = computed(() => scaffold?.appBarScrollState.value.collapseProgress ?? 0)
+const collapseOffset = computed(() => scaffold?.appBarScrollState.value.collapseOffset ?? 0)
 
 const titleAppearanceStyle = computed(() => ({
     "--rui-comp-app-bar-expanded-title-margin-start": props.expandedTitleMargin.start ?? "32px",
@@ -61,6 +62,8 @@ const titleAppearanceStyle = computed(() => ({
     "--rui-comp-app-bar-expanded-title-line-height":
         props.expandedTitleAppearance.lineHeight ?? "var(--rui-sys-typo-headline4-line-height)",
 }))
+
+const toolbarStyle = undefined
 
 const animatedTitleStyle = computed(() => {
     const metricsValue = metrics.value

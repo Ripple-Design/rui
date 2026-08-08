@@ -41,6 +41,7 @@ const style = computed(() => ({
     "--rui-comp-app-bar-background": props.color === "primary" ? "var(--rui-sys-color-primary)" : "var(--rui-sys-color-surface)",
     "--rui-comp-surface-background": "transparent",
     "--rui-comp-app-bar-collapse-offset": `${scrollState.value?.collapseOffset ?? 0}px`,
+    "--rui-comp-app-bar-collapse-distance": `${scrollState.value?.collapseDistance ?? 0}px`,
     "--rui-comp-app-bar-collapse-progress": scrollState.value?.collapseProgress ?? 0,
     "--rui-comp-app-bar-visible-height": scrollState.value?.visibleHeight
         ? `${scrollState.value.visibleHeight}px`
@@ -153,6 +154,7 @@ onUnmounted(() => {
 .rui-app-bar-container__collapsing-content {
     position: absolute;
     inset: 0;
+    overflow: visible;
 }
 
 .rui-app-bar-container__content-scrim {

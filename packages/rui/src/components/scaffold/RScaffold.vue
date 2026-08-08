@@ -43,6 +43,12 @@ let previousScrollTop = 0
 let frameRequest = 0
 let pendingScrollTarget: HTMLElement | null = null
 let pendingScrollTop = 0
+let snapTimer: ReturnType<typeof setTimeout> | null = null
+let snapFrame = 0
+let snapOffset: number | null = null
+let lastScrollTime = 0
+let lastScrollVelocity = 0
+let isApplyingSnap = false
 let bottomBarResizeObserver: ResizeObserver | null = null
 let bodyResizeObserver: ResizeObserver | null = null
 
@@ -132,6 +138,8 @@ watch(
 
 onBeforeUnmount(() => {
     if (frameRequest) cancelAnimationFrame(frameRequest)
+    if (snapFrame) cancelAnimationFrame(snapFrame)
+    if (snapTimer) clearTimeout(snapTimer)
     bodyResizeObserver?.disconnect()
     bottomBarResizeObserver?.disconnect()
 })
@@ -154,7 +162,9 @@ function publishAppBarState(target: HTMLElement, nextTop: number) {
     const expanded = Math.max(collapsed, resolveHeight(registration?.expandedHeight, collapsed))
     const distance = Math.max(0, expanded - collapsed)
     const behavior = registration?.scrollBehavior ?? "fixed"
-    const collapseOffset = behavior === "fixed" ? 0 : Math.min(distance, Math.max(0, nextTop))
+    const collapseOffset = isApplyingSnap
+        ? appBarScrollState.value.collapseOffset
+        : behavior === "fixed" ? 0 : Math.min(distance, Math.max(0, nextTop))
     const progress = distance ? collapseOffset / distance : 0
     const lifted = Boolean(registration?.liftOnScroll && nextTop > 0)
     const hidden = Boolean(registration?.hideOnScroll && nextTop > distance && scrollMotionDirection.value === "down")
@@ -181,12 +191,83 @@ function scheduleScrollFrame(target: HTMLElement, nextTop: number) {
     })
 }
 
+function decelerate(value: number) {
+    return 1 - Math.pow(1 - value, 2)
+}
+
+function cancelSnap() {
+    if (snapFrame) cancelAnimationFrame(snapFrame)
+    snapFrame = 0
+    snapOffset = null
+    isApplyingSnap = false
+}
+
+function scheduleSnap(target: HTMLElement, delay = 64) {
+    const registration = appBarRegistration.value
+    const state = appBarScrollState.value
+    if (!registration?.snap || registration.scrollBehavior === "fixed" || state.collapseDistance <= 0) return
+    if (snapTimer) clearTimeout(snapTimer)
+    snapTimer = setTimeout(() => {
+        snapTimer = null
+        const current = appBarScrollState.value.collapseOffset
+        const midpoint = state.collapseDistance / 2
+        const velocity = lastScrollVelocity
+        const canExpand = registration.scrollBehavior !== "exit-until-collapsed" || target.scrollTop <= state.collapseDistance
+        const targetOffset = !canExpand
+            ? state.collapseDistance
+            : Math.abs(velocity) > 0.015
+                ? velocity > 0 ? state.collapseDistance : 0
+                : current >= midpoint ? state.collapseDistance : 0
+        if (Math.abs(targetOffset - current) < 1) return
+
+        cancelSnap()
+        isApplyingSnap = true
+        const start = performance.now()
+        const distance = targetOffset - current
+        const duration = Math.min(
+            600,
+            Math.max(
+                1,
+                Math.abs(velocity) > 0.01
+                    ? (3 * Math.abs(distance)) / Math.abs(velocity)
+                    : (Math.abs(distance) / Math.max(1, state.visibleHeight) + 1) * 150,
+            ),
+        )
+        const animate = (now: number) => {
+            const value = Math.min(1, (now - start) / duration)
+            snapOffset = current + distance * decelerate(value)
+            const expanded = resolveHeight(registration.expandedHeight, state.visibleHeight)
+            const collapsed = resolveHeight(registration.collapsedHeight, 56)
+            appBarScrollState.value = {
+                ...appBarScrollState.value,
+                collapseOffset: snapOffset,
+                collapseProgress: collapsed === expanded ? 0 : snapOffset / Math.max(1, expanded - collapsed),
+                visibleHeight: expanded - snapOffset,
+                phase: snapOffset >= expanded - collapsed ? "collapsed" : snapOffset <= 0 ? "expanded" : "collapsing",
+            }
+            appBarState.value = appBarScrollState.value.phase
+            if (value < 1) {
+                snapFrame = requestAnimationFrame(animate)
+            } else {
+                snapFrame = 0
+                snapOffset = null
+                isApplyingSnap = false
+            }
+        }
+        snapFrame = requestAnimationFrame(animate)
+    }, delay)
+}
+
 function handleScroll(event: Event) {
     if (props.scrollDirection !== "vertical") return
 
     const target = event.currentTarget as HTMLElement
     const nextTop = Math.max(0, target.scrollTop)
     const delta = nextTop - previousScrollTop
+    const now = performance.now()
+    lastScrollVelocity = delta / Math.max(1, now - lastScrollTime)
+    lastScrollTime = now
+    cancelSnap()
     const maxScrollTop = Math.max(0, target.scrollHeight - target.clientHeight)
     const isAtTop = nextTop <= 0
     const isAtBottom = nextTop >= maxScrollTop - 1
@@ -217,6 +298,7 @@ function handleScroll(event: Event) {
     scrollTop.value = nextTop
     previousScrollTop = nextTop
     scheduleScrollFrame(target, nextTop)
+    if (appBarRegistration.value?.snap) scheduleSnap(target)
 }
 
 provide(scaffoldContextKey, {
@@ -382,11 +464,11 @@ provide(scaffoldContextKey, {
 
 .rui-scaffold__body-content {
     min-block-size: 100%;
-    padding-block-start: var(--rui-comp-scaffold-app-bar-expanded-height);
+    padding-block-start: var(--rui-comp-scaffold-app-bar-flow-height);
 }
 
 .rui-scaffold--app-bar-hidden .rui-scaffold__body-content {
-    padding-block-start: var(--rui-comp-scaffold-app-bar-expanded-height);
+    padding-block-start: var(--rui-comp-scaffold-app-bar-flow-height);
 }
 
 .rui-scaffold--scroll-vertical .rui-scaffold__body {
