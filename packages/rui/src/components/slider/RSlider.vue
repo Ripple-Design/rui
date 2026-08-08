@@ -327,7 +327,7 @@ onBeforeUnmount(() => observer?.disconnect())
                     inlineSize: `${activeSpan.size * 100}%`,
                 }"
             />
-            <span class="rui-slider__ticks">
+            <span v-if="showTicks" class="rui-slider__ticks">
                 <span
                     v-for="percent in tickPercents"
                     :key="percent"

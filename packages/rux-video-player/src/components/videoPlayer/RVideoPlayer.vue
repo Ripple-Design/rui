@@ -8,7 +8,7 @@ import {
     RIVolumeMuteFilled,
     RIVolumeUpFilled,
 } from "@ripple-design/icons"
-import { RIconButton, RMenu, RMenuItem, RRow, RSurface, RText, RThumb } from "@ripple-design/rui"
+import { RIconButton, RMenu, RMenuItem, RRow, RSlider, RSurface, RText } from "@ripple-design/rui"
 import { computed } from "vue"
 
 import type { RVideoPlayerEmits, RVideoPlayerProps } from "./types"
@@ -27,20 +27,8 @@ function normalize(value: number, minimum: number, maximum: number) {
 
 const resolvedDuration = computed(() => Math.max(0, Number.isFinite(props.duration) ? props.duration : 0))
 const resolvedCurrentTime = computed(() => normalize(props.currentTime, 0, resolvedDuration.value))
-const resolvedBufferedTime = computed(() => normalize(props.bufferedTime, 0, resolvedDuration.value))
 const resolvedVolume = computed(() => normalize(props.volume, 0, 1))
 const canSeek = computed(() => resolvedDuration.value > 0 && !props.disabled)
-const currentTimeProgress = computed(() =>
-    resolvedDuration.value > 0 ? (resolvedCurrentTime.value / resolvedDuration.value) * 100 : 0,
-)
-const bufferedProgress = computed(() =>
-    resolvedDuration.value > 0 ? (resolvedBufferedTime.value / resolvedDuration.value) * 100 : 0,
-)
-const seekStyle = computed(() => ({
-    "--rui-comp-video-player-range-progress": `${currentTimeProgress.value}%`,
-    "--rui-comp-video-player-range-buffered": `${bufferedProgress.value}%`,
-    "--rui-comp-video-player-thumb-position": `${currentTimeProgress.value}%`,
-}))
 const volumeStyle = computed(() => ({
     "--rui-comp-video-player-range-progress": `${resolvedVolume.value * 100}%`,
     "--rui-comp-video-player-range-buffered": "0%",
@@ -79,9 +67,8 @@ function requestPlayback() {
     emit("play-request")
 }
 
-function requestSeek(event: Event) {
-    const input = event.currentTarget as HTMLInputElement
-    emit("seek-request", Number(input.value))
+function requestSeek(value: number) {
+    emit("seek-request", value)
 }
 
 function requestVolume(event: Event) {
@@ -127,90 +114,81 @@ function requestSettingsOpen(open: boolean) {
     >
         <div class="rui-video-player__media">
             <slot name="media" />
-        </div>
 
-        <div class="rui-video-player__seek" :style="seekStyle">
-            <input
-                class="rui-video-player__range rui-video-player__range--seek"
-                type="range"
-                min="0"
-                :max="resolvedDuration"
-                step="0.1"
-                :value="resolvedCurrentTime"
-                :disabled="!canSeek"
-                aria-label="Seek"
-                :aria-valuetext="seekValueText"
-                @input="requestSeek"
-            />
-            <RThumb :disabled="disabled" class="rui-video-player__seek-thumb">
-                <template #underlay>
-                    <span class="rui-video-player__ripple-host" />
-                </template>
-            </RThumb>
-        </div>
+            <div class="rui-video-player__overlay" role="group" :aria-label="`${label} controls`">
+                <RSlider
+                    class="rui-video-player__seek"
+                    :model-value="resolvedCurrentTime"
+                    :max="resolvedDuration"
+                    :step="0.1"
+                    :disabled="!canSeek"
+                    :format-value="() => seekValueText"
+                    aria-label="Seek"
+                    @update:model-value="requestSeek"
+                />
 
-        <div class="rui-video-player__controls" role="group" :aria-label="`${label} controls`">
-            <RRow class="rui-video-player__control-row" align="center" justify="space-between" gap="8px">
-                <RRow align="center" gap="4px">
-                    <RIconButton
-                        :model-value="playing"
-                        :icon="RIPlayArrowFilled"
-                        :active-icon="RIPauseFilled"
-                        :label="playLabel"
-                        :disabled="disabled"
-                        @update:model-value="requestPlayback"
-                    />
-                    <RIconButton
-                        :model-value="muted"
-                        :icon="RIVolumeUpFilled"
-                        :active-icon="RIVolumeMuteFilled"
-                        :label="muteLabel"
-                        :disabled="disabled"
-                        @update:model-value="requestMute"
-                    />
-                    <input
-                        class="rui-video-player__range rui-video-player__range--volume"
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.01"
-                        :value="resolvedVolume"
-                        :disabled="disabled"
-                        aria-label="Volume"
-                        :aria-valuetext="volumeValueText"
-                        :style="volumeStyle"
-                        @input="requestVolume"
-                    />
-                    <RText class="rui-video-player__time" as="span" variant="caption" emphasis="high">
-                        {{ timeText }}
-                    </RText>
-                </RRow>
-
-                <RRow align="center" gap="4px">
-                    <RMenu :open="settingsOpen" align="end" :disabled="disabled" @update:open="requestSettingsOpen">
-                        <template #trigger>
-                            <RIconButton :icon="RISettingsFilled" label="Playback speed" :disabled="disabled" />
-                        </template>
-
-                        <RMenuItem
-                            v-for="rate in playbackRates"
-                            :key="rate"
+                <RRow class="rui-video-player__control-row" align="center" justify="space-between" gap="8px">
+                    <RRow align="center" gap="4px">
+                        <RIconButton
+                            :model-value="playing"
+                            :icon="RIPlayArrowFilled"
+                            :active-icon="RIPauseFilled"
+                            :label="playLabel"
                             :disabled="disabled"
-                            @click="requestPlaybackRate(rate)"
-                        >
-                            {{ rate }}×
-                        </RMenuItem>
-                    </RMenu>
-                    <RIconButton
-                        :model-value="fullscreen"
-                        :icon="RIFullscreenFilled"
-                        :active-icon="RIFullscreenExitFilled"
-                        :label="fullscreenLabel"
-                        :disabled="disabled"
-                        @update:model-value="requestFullscreen"
-                    />
+                            @update:model-value="requestPlayback"
+                        />
+                        <RIconButton
+                            :model-value="muted"
+                            :icon="RIVolumeUpFilled"
+                            :active-icon="RIVolumeMuteFilled"
+                            :label="muteLabel"
+                            :disabled="disabled"
+                            @update:model-value="requestMute"
+                        />
+                        <input
+                            class="rui-video-player__range rui-video-player__range--volume"
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            :value="resolvedVolume"
+                            :disabled="disabled"
+                            aria-label="Volume"
+                            :aria-valuetext="volumeValueText"
+                            :style="volumeStyle"
+                            @input="requestVolume"
+                        />
+                        <RText class="rui-video-player__time" as="span" variant="caption" emphasis="high">
+                            {{ timeText }}
+                        </RText>
+                    </RRow>
+
+                    <RRow align="center" gap="4px">
+                        <RMenu :open="settingsOpen" align="end" :disabled="disabled" @update:open="requestSettingsOpen">
+                            <template #trigger>
+                                <RIconButton :icon="RISettingsFilled" label="Playback speed" :disabled="disabled" />
+                            </template>
+
+                            <RMenuItem
+                                v-for="rate in playbackRates"
+                                :key="rate"
+                                :disabled="disabled"
+                                @click="requestPlaybackRate(rate)"
+                            >
+                                {{ rate }}×
+                            </RMenuItem>
+                        </RMenu>
+                        <RIconButton
+                            :model-value="fullscreen"
+                            :icon="RIFullscreenFilled"
+                            :active-icon="RIFullscreenExitFilled"
+                            :label="fullscreenLabel"
+                            :disabled="disabled"
+                            @update:model-value="requestFullscreen"
+                        />
+                    </RRow>
                 </RRow>
-            </RRow>
+            </div>
         </div>
     </RSurface>
 </template>
@@ -235,42 +213,24 @@ function requestSettingsOpen(open: boolean) {
     background: #000;
 }
 
-.rui-video-player__seek {
-    --rui-comp-video-player-range-progress: 0%;
-    --rui-comp-video-player-range-buffered: 0%;
-    --rui-comp-video-player-thumb-position: 0%;
-
-    position: relative;
-    block-size: var(--rui-comp-thumb-size, 20px);
+.rui-video-player__overlay :deep(.rui-icon-button) {
+    --rui-icon-button-color: var(--rui-sys-color-on-primary);
+    --rui-icon-button-disabled-color: var(--rui-sys-color-on-primary);
 }
 
-.rui-video-player__range--seek {
+.rui-video-player__overlay {
+    --rui-icon-button-color: var(--rui-sys-color-on-primary);
+    --rui-comp-text-color: var(--rui-sys-color-on-primary);
+
     position: absolute;
-    inset: 0;
     z-index: 1;
-    inline-size: 100%;
-    block-size: 16px;
-    padding: 0;
-    border: 0;
-    margin: 0;
-    display: block;
-    background: transparent;
-}
-
-.rui-video-player__seek-thumb {
-    position: absolute;
-    z-index: 2;
-    inset-block-start: 50%;
-    inset-inline-start: var(--rui-comp-video-player-thumb-position);
-    pointer-events: none;
-    transform: translate(-50%, -50%);
-}
-
-.rui-video-player__controls {
+    inset-inline: 0;
+    inset-block-end: 0;
     display: grid;
     gap: 8px;
     padding: 12px 16px;
-    background: var(--rui-comp-video-player-controls-background);
+    color: var(--rui-sys-color-on-primary);
+    background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 72%));
     transition: opacity var(--rui-sys-motion-duration-small-out) var(--rui-sys-motion-easing-standard),
         transform var(--rui-sys-motion-duration-small-out) var(--rui-sys-motion-easing-standard),
         display var(--rui-sys-motion-duration-small-out) var(--rui-sys-motion-easing-standard) allow-discrete;
@@ -301,34 +261,8 @@ function requestSettingsOpen(open: boolean) {
     opacity: 0.38;
 }
 
-.rui-video-player__range--seek::-webkit-slider-runnable-track {
-    block-size: 4px;
-    border-radius: 0;
-    background: linear-gradient(
-        to right,
-        var(--rui-comp-video-player-progress) 0 var(--rui-comp-video-player-range-progress),
-        var(--rui-comp-video-player-buffer) var(--rui-comp-video-player-range-progress)
-            var(--rui-comp-video-player-range-buffered),
-        var(--rui-comp-video-player-track) var(--rui-comp-video-player-range-buffered) 100%
-    );
-}
-
-.rui-video-player__range--seek::-webkit-slider-thumb {
-    appearance: none;
-    inline-size: 0;
-    block-size: 0;
-    margin: 0;
-}
-
-.rui-video-player__range--seek::-moz-range-track,
-.rui-video-player__range--seek::-moz-range-progress {
-    border-radius: 0;
-}
-
-.rui-video-player__range--seek::-moz-range-thumb {
-    inline-size: 0;
-    block-size: 0;
-    border: 0;
+.rui-video-player__range--volume {
+    inline-size: 96px;
 }
 
 .rui-video-player__range--volume::-webkit-slider-runnable-track {
@@ -378,16 +312,12 @@ function requestSettingsOpen(open: boolean) {
     outline-offset: 2px;
 }
 
-.rui-video-player__range--volume {
-    inline-size: 96px;
-}
-
-.rui-video-player--disabled .rui-video-player__controls {
+.rui-video-player--disabled .rui-video-player__overlay {
     opacity: 0.7;
 }
 
 @media (max-width: 839px) {
-    .rui-video-player__controls {
+    .rui-video-player__overlay {
         padding: 8px 12px;
     }
 
