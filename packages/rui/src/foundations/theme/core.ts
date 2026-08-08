@@ -168,8 +168,20 @@ export function themeToCSSVars(theme: RTheme) {
         vars["--rui-sys-color-surface-dark"] = colors.surfaceDark
     }
 
+    if (colors?.surfaceInverse) {
+        vars["--rui-sys-color-surface-inverse"] = colors.surfaceInverse
+    }
+
+    if (colors?.primaryInverse) {
+        vars["--rui-sys-color-primary-inverse"] = colors.primaryInverse
+    }
+
     if (colors?.onSurface) {
         vars["--rui-sys-color-on-surface"] = colors.onSurface
+    }
+
+    if (colors?.onSurfaceInverse) {
+        vars["--rui-sys-color-on-surface-inverse"] = colors.onSurfaceInverse
     }
 
     if (colors?.onSurfaceHigh) {

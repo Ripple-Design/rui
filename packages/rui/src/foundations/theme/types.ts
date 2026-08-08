@@ -21,7 +21,10 @@ export type RThemeColors = {
     onBackground?: string
     surface?: string
     surfaceDark?: string
+    surfaceInverse?: string
+    primaryInverse?: string
     onSurface?: string
+    onSurfaceInverse?: string
     onSurfaceHigh?: string
     onSurfaceMedium?: string
     onSurfaceLow?: string

@@ -15,6 +15,28 @@ function showAction() {
     })
 }
 
+function showTwoLine() {
+    RSnackbars.show({
+        message: "Item archived. Undo within the next few seconds to restore it to your collection.",
+        twoLine: true,
+        action: {
+            label: "Undo",
+            onClick: () => {},
+        },
+    })
+}
+
+function showLongAction() {
+    RSnackbars.show({
+        message: "Notifications are paused",
+        longAction: true,
+        action: {
+            label: "Review notification settings",
+            onClick: () => {},
+        },
+    })
+}
+
 function showIndefinite() {
     RSnackbars.show({
         message: "Uploading item…",
@@ -42,6 +64,8 @@ function showSlide() {
         <RRow gap="8px" wrap>
             <RButton @click="showBasic">Show snackbar</RButton>
             <RButton @click="showAction">Show action</RButton>
+            <RButton @click="showTwoLine">Show two-line</RButton>
+            <RButton @click="showLongAction">Show long action</RButton>
             <RButton @click="showIndefinite">Show indefinite</RButton>
             <RButton @click="showSlide">Show slide</RButton>
             <RButton @click="showReplacement">Show replacement</RButton>

@@ -3,11 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
 
 import RButton from "@/components/button/RButton.vue"
 
-import type {
-    RSnackbarCloseDetail,
-    RSnackbarDismissReason,
-    RSnackbarProps,
-} from "./types"
+import type { RSnackbarCloseDetail, RSnackbarDismissReason, RSnackbarProps } from "./types"
 
 const props = withDefaults(defineProps<RSnackbarProps>(), {
     modelValue: false,
@@ -15,6 +11,8 @@ const props = withDefaults(defineProps<RSnackbarProps>(), {
     duration: "short",
     animation: "fade",
     actionLabel: "",
+    twoLine: false,
+    longAction: false,
     dismissReason: "manual",
     swipeDismissible: true,
 })
@@ -136,12 +134,8 @@ function startLeave() {
     if (lifecycleState === "closed") return
     lifecycleState = "leaving"
     visualState.value = "leaving"
-    lifecycleTimer = setTimeout(
-        completeLeave,
-        transitionDuration(props.animation === "slide" ? 300 : 125),
-    )
+    lifecycleTimer = setTimeout(completeLeave, transitionDuration(props.animation === "slide" ? 300 : 125))
 }
-
 
 function requestClose(reason: RSnackbarDismissReason) {
     clearTimer()
@@ -150,12 +144,22 @@ function requestClose(reason: RSnackbarDismissReason) {
 }
 
 function handleAction() {
+    clearTimer()
+    clearLifecycleTimer()
+    lifecycleState = "closed"
+    isOpen.value = false
+    emit("update:modelValue", false)
+    emit("close", { reason: "action" })
     emit("action")
-    requestClose("action")
+    nextTick(() => emit("dismissed", { reason: "action" }))
+}
+
+function isActionTarget(target: EventTarget | null) {
+    return target instanceof Element && !!target.closest(".rui-snackbar__action")
 }
 
 function handlePointerDown(event: PointerEvent) {
-    if (!props.swipeDismissible || !snackbarRef.value) return
+    if (isActionTarget(event.target) || !props.swipeDismissible || !snackbarRef.value) return
 
     clearTimer()
     pointerId.value = event.pointerId
@@ -211,7 +215,7 @@ function updateLayout() {
     isMultiline.value = Number.isFinite(lineHeight)
         ? message.scrollHeight > lineHeight + 1
         : message.scrollHeight > message.clientHeight
-    isStacked.value = window.innerWidth < 600 && isMultiline.value && !!action && action.offsetWidth > 128
+    isStacked.value = window.innerWidth < 600 && !props.twoLine && !props.longAction && isMultiline.value && !!action && action.offsetWidth > 128
 }
 
 watch(
@@ -227,7 +231,7 @@ watch(
 )
 
 watch(
-    () => [props.message, props.actionLabel, props.duration],
+    () => [props.message, props.actionLabel, props.duration, props.twoLine, props.longAction],
     async () => {
         await nextTick()
         updateLayout()
@@ -264,6 +268,8 @@ defineExpose({
             {
                 'rui-snackbar--open': isOpen,
                 'rui-snackbar--stacked': isStacked,
+                'rui-snackbar--two-line': twoLine,
+                'rui-snackbar--long-action': longAction,
                 'rui-snackbar--dragging': dragging,
             },
             `rui-snackbar--${animation}`,
@@ -282,14 +288,14 @@ defineExpose({
         <div class="rui-snackbar__content">
             <span class="rui-snackbar__message">{{ message }}</span>
             <RButton
-            v-if="actionLabel"
-            class="rui-snackbar__action"
-            variant="text"
-            sentence-case
-            @click.stop="handleAction"
-        >
-            {{ actionLabel }}
-        </RButton>
+                v-if="actionLabel"
+                class="rui-snackbar__action"
+                variant="text"
+                sentence-case
+                @click.stop="handleAction"
+            >
+                {{ actionLabel }}
+            </RButton>
         </div>
     </div>
 </template>
@@ -301,14 +307,9 @@ defineExpose({
 @use "@/styles/typography";
 
 .rui-snackbar__motion {
-    --rui-comp-snackbar-background: color-mix(
-        in srgb,
-        #{color.$surface} 20%,
-        #{color.$on-surface} 80%
-    );
-    --rui-comp-snackbar-content-color: #{color.$surface};
-    --rui-comp-snackbar-action-color: #{color.$primary};
-    --rui-comp-snackbar-action-alpha: 0.5;
+    --rui-comp-snackbar-background: #{color.$surface-inverse};
+    --rui-comp-snackbar-content-color: #{color.$on-surface-inverse};
+    --rui-comp-snackbar-action-color: #{color.$primary-inverse};
 
     @include typography.body2("--rui-comp-snackbar-message");
 
@@ -344,26 +345,80 @@ defineExpose({
     flex: 1 1 auto;
     margin-inline: 8px;
     padding-block: 14px;
-    overflow: hidden;
     color: inherit;
 }
 
 .rui-snackbar__action {
-    --rui-button-color: rgb(from var(--rui-comp-snackbar-action-color) r g b / var(--rui-comp-snackbar-action-alpha));
-    --rui-button-padding-inline-start: 8px;
-    --rui-button-padding-inline-end: 8px;
-
     flex: 0 0 auto;
     min-inline-size: 48px;
 }
 
-.rui-snackbar--stacked {
+.rui-snackbar__action :deep(.rui-button) {
+    --rui-button-color: var(--rui-comp-snackbar-action-color);
+    --rui-button-padding-inline-start: 8px;
+    --rui-button-padding-inline-end: 8px;
+}
+
+.rui-snackbar--two-line {
+    block-size: 68px;
+}
+
+.rui-snackbar--two-line .rui-snackbar__message {
+    display: -webkit-box;
+    padding-block: calc(30px - 1cap) 18px;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+}
+
+.rui-snackbar--long-action {
+    --rui-comp-snackbar-action-button-height: calc(36px + 4px * var(--rui-sys-density-scale));
+
+    block-size: calc(56px + var(--rui-comp-snackbar-action-button-height));
+}
+
+.rui-snackbar--long-action.rui-snackbar--two-line {
+    block-size: calc(76px + var(--rui-comp-snackbar-action-button-height));
+}
+
+.rui-snackbar--long-action .rui-snackbar__content {
+    position: relative;
+    display: block;
+    block-size: 100%;
+}
+
+.rui-snackbar--long-action .rui-snackbar__message {
+    display: block;
+    padding-block: calc(30px - 1cap) 0;
+    white-space: normal;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+}
+
+.rui-snackbar--long-action.rui-snackbar--two-line .rui-snackbar__message {
+    display: -webkit-box;
+}
+
+.rui-snackbar--long-action .rui-snackbar__action {
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-end: calc(8px - 6px * var(--rui-touch-target-enabled, 1));
+}
+
+.rui-snackbar--stacked .rui-snackbar__content {
     align-items: stretch;
     flex-direction: column;
 }
 
 .rui-snackbar--stacked .rui-snackbar__message {
     padding-block: 16px 2px;
+}
+
+.rui-snackbar--stacked .rui-snackbar__action {
+    align-self: flex-end;
 }
 
 .rui-snackbar--dragging {
@@ -430,7 +485,10 @@ defineExpose({
 
     .rui-snackbar__message {
         white-space: nowrap;
-        text-overflow: ellipsis;
+    }
+
+    .rui-snackbar--two-line .rui-snackbar__message {
+        white-space: normal;
     }
 }
 

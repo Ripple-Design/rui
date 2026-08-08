@@ -14,6 +14,8 @@ export type RSnackbarOptions = {
     duration?: RSnackbarDuration
     animation?: RSnackbarAnimation
     action?: RSnackbarAction
+    twoLine?: boolean
+    longAction?: boolean
     swipeDismissible?: boolean
     onShown?: () => void
     onDismissed?: (reason: RSnackbarDismissReason) => void
@@ -25,6 +27,8 @@ export type RSnackbarProps = {
     duration?: RSnackbarDuration
     animation?: RSnackbarAnimation
     actionLabel?: string
+    twoLine?: boolean
+    longAction?: boolean
     dismissReason?: RSnackbarDismissReason
     swipeDismissible?: boolean
 }
