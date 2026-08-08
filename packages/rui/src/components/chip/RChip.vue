@@ -253,9 +253,21 @@ function handleRemove(event: MouseEvent) {
 
 .rui-chip {
     --rui-comp-chip-surface-color: #{color.$surface};
-    --rui-comp-chip-container-color: rgb(from #{color.$on-surface} r g b / 0.1);
-    --rui-comp-chip-selected-container-color: rgb(from #{color.$on-surface} r g b / 0.18);
-    --rui-comp-chip-disabled-container-color: rgb(from #{color.$on-surface} r g b / 0.12);
+    --rui-comp-chip-container-color: color-mix(
+        in srgb,
+        #{color.$on-surface} 10%,
+        var(--rui-comp-chip-surface-color)
+    );
+    --rui-comp-chip-selected-container-color: color-mix(
+        in srgb,
+        #{color.$on-surface} 18%,
+        var(--rui-comp-chip-surface-color)
+    );
+    --rui-comp-chip-disabled-container-color: color-mix(
+        in srgb,
+        #{color.$on-surface} 12%,
+        var(--rui-comp-chip-surface-color)
+    );
     --rui-comp-chip-label-color: #{color.$on-surface-high};
     --rui-comp-chip-disabled-label-color: rgb(from #{color.$on-surface} r g b / 0.33);
     --rui-comp-chip-selected-label-color: #{color.$on-surface-high};
@@ -289,8 +301,7 @@ function handleRemove(event: MouseEvent) {
     block-size: var(--rui-comp-chip-height);
     max-inline-size: 100%;
     overflow: visible;
-    background-color: var(--rui-comp-chip-surface-color);
-    background-image: linear-gradient(var(--rui-comp-chip-container-color), var(--rui-comp-chip-container-color));
+    background-color: var(--rui-comp-chip-container-color);
     color: var(--rui-comp-chip-label-color);
     isolation: isolate;
     transition: box-shadow 100ms #{motion.$easing-standard};
@@ -302,19 +313,19 @@ function handleRemove(event: MouseEvent) {
 
     &--outlined:not(.rui-chip--selected):not(.rui-chip--disabled) {
         background-color: transparent;
-        background-image: none;
     }
 
     &--selected {
-        background-image: linear-gradient(
-            var(--rui-comp-chip-selected-container-color),
-            var(--rui-comp-chip-selected-container-color)
-        );
+        background-color: var(--rui-comp-chip-selected-container-color);
         color: var(--rui-comp-chip-selected-label-color);
     }
 
     &--choice {
-        --rui-comp-chip-selected-container-color: rgb(from #{color.$primary} r g b / 0.24);
+        --rui-comp-chip-selected-container-color: color-mix(
+            in srgb,
+            #{color.$primary} 24%,
+            var(--rui-comp-chip-surface-color)
+        );
         --rui-comp-chip-selected-label-color: #{color.$primary};
     }
 
