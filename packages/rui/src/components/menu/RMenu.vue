@@ -33,6 +33,7 @@ const triggerId = useId()
 const generatedMenuId = useId()
 const menuId = computed(() => props.id ?? generatedMenuId)
 const triggerRef = ref<HTMLElement | null>(null)
+const menuLayerRef = ref<InstanceType<typeof RMenuLayer> | null>(null)
 const resolvedReference = computed(() => props.reference ?? triggerRef.value)
 const open = ref(props.open)
 
@@ -131,12 +132,18 @@ onMounted(() => {
         throw new Error("[RMenu] Provide either a trigger slot or a reference element.")
     }
 })
+
+defineExpose({
+    element: computed(() => menuLayerRef.value?.element ?? null),
+    updatePosition: () => menuLayerRef.value?.updatePosition(),
+})
 </script>
 
 <template>
     <TriggerRenderer />
 
     <RMenuLayer
+        ref="menuLayerRef"
         :align="align"
         :disabled="disabled"
         :id="menuId"

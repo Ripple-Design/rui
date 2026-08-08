@@ -106,16 +106,21 @@ const floatingStyles = computed(() => ({
     zIndex: layer.zIndex,
 }))
 
+defineExpose({
+    element: floatingRef,
+    updatePosition: position.update,
+})
+
 let resizeObserver: ResizeObserver | null = null
 
 watch(
-    reference,
-    (element) => {
+    [reference, () => props.matchWidth],
+    ([element, matchWidth]) => {
         resizeObserver?.disconnect()
         resizeObserver = null
 
         if (
-            !props.matchWidth ||
+            !matchWidth ||
             typeof HTMLElement === "undefined" ||
             !(element instanceof HTMLElement) ||
             typeof ResizeObserver === "undefined"
@@ -126,6 +131,7 @@ watch(
         resizeObserver = new ResizeObserver(([entry]) => {
             popupWidth.value = entry?.contentRect.width ?? element.getBoundingClientRect().width
         })
+        popupWidth.value = element.getBoundingClientRect().width
         resizeObserver.observe(element)
     },
     { immediate: true },

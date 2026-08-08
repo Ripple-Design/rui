@@ -17,6 +17,11 @@ const longOptions = Array.from({ length: 32 }, (_, index) => ({
     label: `Long option ${index + 1}`,
     value: `long-${index + 1}`,
 }))
+const sizingSelection = ref<string | null>(null)
+const sizingOptions = [
+    { label: "A noticeably longer option label", value: "long-label" },
+    { label: "Another option", value: "another" },
+]
 const selectedObjectLabel = computed(() => objectSelection.value?.id ?? "None")
 </script>
 
@@ -45,6 +50,15 @@ const selectedObjectLabel = computed(() => objectSelection.value?.id ?? "None")
         <RSelectField v-model="longSelection" label="Long option list">
             <RSelectOption
                 v-for="option in longOptions"
+                :key="option.value"
+                :value="option.value"
+                :label="option.label"
+            />
+        </RSelectField>
+
+        <RSelectField v-model="sizingSelection" label="Menu sizing">
+            <RSelectOption
+                v-for="option in sizingOptions"
                 :key="option.value"
                 :value="option.value"
                 :label="option.label"

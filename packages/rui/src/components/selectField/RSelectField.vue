@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RIArrowDropDownFilled, RIArrowDropUpFilled } from "@ripple-design/icons"
-import { computed, provide, ref, toRaw, useAttrs, useId, watch } from "vue"
+import { computed, nextTick, onBeforeUnmount, provide, ref, toRaw, useAttrs, useId, watch } from "vue"
 
 import type { RippleOptions } from "@/foundations/ripple"
 
@@ -36,6 +36,7 @@ const describedBy = computed(() => {
 const error = computed(() => !!props.errorText?.trim())
 const labelId = `${controlId.value}-label`
 const shellRef = ref<InstanceType<typeof RFieldShell> | null>(null)
+const menuRef = ref<InstanceType<typeof RMenu> | null>(null)
 const triggerRef = ref<HTMLElement | null>(null)
 const options = ref<RSelectOptionRecord[]>([])
 const activeOptionId = ref<string | null>(null)
@@ -44,6 +45,10 @@ const restoreMenuFocus = ref(true)
 const isFocused = ref(false)
 const filterText = ref("")
 const fieldRef = computed(() => shellRef.value?.element ?? null)
+const matchMenuWidth = ref(false)
+const menuWidth = ref<number | null>(null)
+let measureFrame = 0
+let resizeObserver: ResizeObserver | null = null
 
 const optionMatchesModel = (option: RSelectOptionRecord) => Object.is(toRaw(option.value), toRaw(model.value))
 const selectedOption = computed(() => options.value.find(optionMatchesModel))
@@ -90,12 +95,14 @@ provide(selectContextKey, {
         if (open.value && activeOptionId.value == null) {
             setInitialActiveOption()
         }
+        scheduleMenuWidthMeasurement()
     },
     unregister(id) {
         options.value = options.value.filter((option) => option.id !== id)
         if (activeOptionId.value === id) {
             activeOptionId.value = null
         }
+        scheduleMenuWidthMeasurement()
     },
 })
 
@@ -111,7 +118,56 @@ function openSelect() {
 
     restoreMenuFocus.value = true
     setInitialActiveOption()
+    menuWidth.value = null
+    matchMenuWidth.value = false
     open.value = true
+    void measureMenuWidth()
+}
+
+async function measureMenuWidth() {
+    if (!open.value) {
+        return
+    }
+
+    if (matchMenuWidth.value) {
+        matchMenuWidth.value = false
+        await nextTick()
+    }
+
+    await nextTick()
+    if (!open.value) {
+        return
+    }
+
+    await menuRef.value?.updatePosition()
+    const menuElement = menuRef.value?.element
+    const fieldElement = fieldRef.value
+    if (!(menuElement instanceof HTMLElement) || !(fieldElement instanceof HTMLElement)) {
+        return
+    }
+
+    const measuredWidth = menuElement.getBoundingClientRect().width
+    const fieldWidth = fieldElement.getBoundingClientRect().width
+    if (measuredWidth <= fieldWidth + 0.5) {
+        menuWidth.value = null
+    } else {
+        menuWidth.value = Math.ceil(measuredWidth)
+    }
+
+    matchMenuWidth.value = true
+    await nextTick()
+    await menuRef.value?.updatePosition()
+}
+
+function scheduleMenuWidthMeasurement() {
+    if (!open.value || typeof requestAnimationFrame === "undefined") {
+        return
+    }
+
+    cancelAnimationFrame(measureFrame)
+    measureFrame = requestAnimationFrame(() => {
+        void measureMenuWidth()
+    })
 }
 
 function restoreFilterText() {
@@ -120,6 +176,8 @@ function restoreFilterText() {
 
 function close(restoreFocus = true) {
     open.value = false
+    matchMenuWidth.value = false
+    menuWidth.value = null
     activeOptionId.value = null
     if (props.filterable) {
         restoreFilterText()
@@ -199,12 +257,39 @@ watch(
 watch(filteredOptions, () => {
     if (open.value) {
         setInitialActiveOption()
+        scheduleMenuWidthMeasurement()
     }
+})
+
+watch(
+    fieldRef,
+    (element) => {
+        resizeObserver?.disconnect()
+        resizeObserver = null
+
+        if (typeof ResizeObserver === "undefined" || !(element instanceof HTMLElement)) {
+            return
+        }
+
+        resizeObserver = new ResizeObserver(() => {
+            scheduleMenuWidthMeasurement()
+        })
+        resizeObserver.observe(element)
+    },
+    { immediate: true },
+)
+
+onBeforeUnmount(() => {
+    cancelAnimationFrame(measureFrame)
+    resizeObserver?.disconnect()
 })
 </script>
 
 <template>
-    <div class="rui-select-field">
+    <div
+        class="rui-select-field"
+        :style="{ '--rui-comp-select-field-menu-width': menuWidth ? `${menuWidth}px` : undefined }"
+    >
         <RFieldShell
             ref="shellRef"
             :ripple="rippleOptions"
@@ -299,7 +384,7 @@ watch(filteredOptions, () => {
             :id="listboxId"
             :open="open"
             :disabled="disabled"
-            :match-width="true"
+            :match-width="matchMenuWidth"
             :reference="fieldRef"
             :restore-focus="restoreMenuFocus"
             :align="align"
@@ -319,7 +404,7 @@ watch(filteredOptions, () => {
 @use "@/styles/typography";
 
 .rui-select-field {
-    min-inline-size: 0;
+    min-inline-size: max(112px, var(--rui-comp-select-field-menu-width, 0px));
 }
 
 .rui-select-field__trigger {
