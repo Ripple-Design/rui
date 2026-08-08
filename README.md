@@ -10,7 +10,7 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [x] Buttons
 - [x] Buttons: floating action button
 - [x] Cards
-- [ ] Checkboxes
+- [x] Checkboxes
 - [x] Chips
 - [ ] Data tables
 - [ ] Date pickers
