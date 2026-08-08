@@ -26,7 +26,7 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [x] Sheets: bottom
 - [x] Sheets: side
 - [x] Sliders
-- [x] Snackbars
+- [ ] Snackbars
 - [x] Switches
 - [x] Tabs
 - [x] Text fields
