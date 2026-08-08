@@ -1,0 +1,35 @@
+---
+title: 列表
+docSlug: components/list
+tab: implementation
+locale: zh-cn
+designOrder: 147
+developOrder: 147
+api: /zh-cn/api/list
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import ListBasicDemo from "@docs/components/demos/list/ListBasicDemo.vue"
+import listBasicDemoSource from "@docs/components/demos/list/ListBasicDemo.vue?raw"
+import ListStateDemo from "@docs/components/demos/list/ListStateDemo.vue"
+import listStateDemoSource from "@docs/components/demos/list/ListStateDemo.vue?raw"
+import ListGroupDemo from "@docs/components/demos/list/ListGroupDemo.vue"
+import listGroupDemoSource from "@docs/components/demos/list/ListGroupDemo.vue?raw"
+
+## 单行、双行和三行
+
+<DemoBlock title="Material 列表行" code={listBasicDemoSource} language="vue">
+    <ListBasicDemo client:load />
+</DemoBlock>
+
+## 交互与状态层
+
+<DemoBlock title="可交互状态" code={listStateDemoSource} language="vue">
+    <ListStateDemo client:load />
+</DemoBlock>
+
+## 分组与分隔线
+
+<DemoBlock title="列表分组" code={listGroupDemoSource} language="vue">
+    <ListGroupDemo client:load />
+</DemoBlock>

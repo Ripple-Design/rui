@@ -1,0 +1,35 @@
+---
+title: List
+docSlug: components/list
+tab: implementation
+locale: en
+designOrder: 147
+developOrder: 147
+api: /en/api/list
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import ListBasicDemo from "@docs/components/demos/list/ListBasicDemo.vue"
+import listBasicDemoSource from "@docs/components/demos/list/ListBasicDemo.vue?raw"
+import ListStateDemo from "@docs/components/demos/list/ListStateDemo.vue"
+import listStateDemoSource from "@docs/components/demos/list/ListStateDemo.vue?raw"
+import ListGroupDemo from "@docs/components/demos/list/ListGroupDemo.vue"
+import listGroupDemoSource from "@docs/components/demos/list/ListGroupDemo.vue?raw"
+
+## Legacy Material row geometry
+
+<DemoBlock title="One, two, and three lines" code={listBasicDemoSource} language="vue">
+    <ListBasicDemo client:load />
+</DemoBlock>
+
+## Native actions and state layers
+
+<DemoBlock title="Interactive states" code={listStateDemoSource} language="vue">
+    <ListStateDemo client:load />
+</DemoBlock>
+
+## Groups and dividers
+
+<DemoBlock title="List sections" code={listGroupDemoSource} language="vue">
+    <ListGroupDemo client:load />
+</DemoBlock>

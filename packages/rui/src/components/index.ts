@@ -33,6 +33,8 @@ export type * from "./surface/types"
 export { default as RDivider } from "./divider/RDivider.vue"
 export type * from "./divider/types"
 
+export * from "./list"
+
 export { default as RCard } from "./card/RCard.vue"
 export type * from "./card/types"
 
