@@ -17,7 +17,7 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [x] Dialogs
 - [x] Dividers
 - [ ] Image lists
-- [ ] Lists
+- [x] Lists
 - [x] Menus
 - [ ] Navigation drawer
 - [x] Navigation rail
