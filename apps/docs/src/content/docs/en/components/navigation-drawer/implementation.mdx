@@ -1,0 +1,17 @@
+---
+title: Navigation drawer
+docSlug: components/navigation-drawer
+tab: implementation
+locale: en
+designOrder: 150
+developOrder: 150
+api: /en/api/navigation-drawer
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import NavigationDrawerBasicDemo from "@docs/components/demos/navigationDrawer/NavigationDrawerBasicDemo.vue"
+import navigationDrawerBasicDemoSource from "@docs/components/demos/navigationDrawer/NavigationDrawerBasicDemo.vue?raw"
+
+<DemoBlock title="Navigation drawer" code={navigationDrawerBasicDemoSource} language="vue">
+    <NavigationDrawerBasicDemo client:load />
+</DemoBlock>

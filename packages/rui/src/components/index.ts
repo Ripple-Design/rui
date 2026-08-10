@@ -59,6 +59,13 @@ export { default as RChip } from "./chip/RChip.vue"
 export { default as RChipGroup } from "./chip/RChipGroup.vue"
 export type * from "./chip/types"
 
+export { default as RNavigationDrawer } from "./navigationDrawer/RNavigationDrawer.vue"
+export { default as RModalNavigationDrawer } from "./navigationDrawer/RModalNavigationDrawer.vue"
+export { default as RNavigationDrawerItem } from "./navigationDrawer/RNavigationDrawerItem.vue"
+export { default as RNavigationDrawerGroup } from "./navigationDrawer/RNavigationDrawerGroup.vue"
+export { default as RNavigationDrawerDivider } from "./navigationDrawer/RNavigationDrawerDivider.vue"
+export type * from "./navigationDrawer/types"
+
 export { default as RNavigationRail } from "./navigationRail/RNavigationRail.vue"
 export { default as RNavigationRailItem } from "./navigationRail/RNavigationRailItem.vue"
 export type * from "./navigationRail/types"

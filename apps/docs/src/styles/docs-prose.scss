@@ -12,7 +12,7 @@
         @include rui.typo-body1;
     }
 
-    h2:not(.rui-text) {
+    h2:not(.rui-text):not(.rui-dialog__title):not(astro-island *) {
         @include rui.typo-headline2;
 
         margin-block: 2rem 1rem;
