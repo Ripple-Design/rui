@@ -24,6 +24,9 @@ const props = withDefaults(defineProps<RIconButtonProps>(), {
 
 const active = defineModel<boolean>({ default: false })
 const attrs = useAttrs()
+const emit = defineEmits<{
+    (event: "click", value: MouseEvent): void
+}>()
 let warnedMissingLabel = false
 
 const isLink = computed(() => !!props.href)
@@ -58,6 +61,8 @@ function handleClick(event: MouseEvent) {
     if (!isLink.value) {
         active.value = !active.value
     }
+
+    emit("click", event)
 }
 </script>
 
