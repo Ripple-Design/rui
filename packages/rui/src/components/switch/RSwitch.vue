@@ -269,6 +269,7 @@ function resetGesture() {
     overflow: visible;
     cursor: pointer;
     touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
 
     &:dir(rtl) {
         --rui-comp-switch-direction: -1;
