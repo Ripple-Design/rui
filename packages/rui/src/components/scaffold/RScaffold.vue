@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, provide, ref, watch } from "vue"
+import { computed, nextTick, onBeforeUnmount, provide, ref, shallowRef, watch } from "vue"
 
 import type { RResponsiveContainerMode } from "@/components/responsive/types"
 
-import { scaffoldContextKey, type RScaffoldBottomBarState, type RScaffoldScrollFacts, type RScaffoldScrollMotionDirection } from "./context"
+import {
+    scaffoldContextKey,
+    type RScaffoldBottomAppBarFabState,
+    type RScaffoldBottomAppBarRegistration,
+    type RScaffoldBottomBarState,
+    type RScaffoldScrollFacts,
+    type RScaffoldScrollMotionDirection,
+} from "./context"
 import type { RScaffoldProps } from "./types"
 
 const props = withDefaults(defineProps<RScaffoldProps>(), {
@@ -30,14 +37,45 @@ const scrollbarWidth = ref(0)
 const topInset = ref(0)
 const bodyElement = ref<HTMLElement | null>(null)
 const bottomBarElement = ref<HTMLElement | null>(null)
+const fabElement = ref<HTMLElement | null>(null)
+const bottomAppBar = shallowRef<RScaffoldBottomAppBarRegistration | null>(null)
+const dockedFabState = ref<RScaffoldBottomAppBarFabState>({
+    element: null,
+    inlineSize: 0,
+    blockSize: 0,
+    visible: false,
+})
+const dockedFabAlignment = ref<"center" | "end">("center")
+const dockedFabScaleHidden = ref(false)
 const topInsetOwners = new Map<symbol, number>()
 let previousScrollTop = 0
 let scrollFrame = 0
 let pendingScrollFacts: RScaffoldScrollFacts | null = null
 let bottomBarResizeObserver: ResizeObserver | null = null
 let bodyResizeObserver: ResizeObserver | null = null
+let fabResizeObserver: ResizeObserver | null = null
+let fabScaleTimer: ReturnType<typeof setTimeout> | null = null
 
 const classes = computed(() => ["rui-scaffold", `rui-scaffold--scroll-${props.scrollDirection}`])
+const hasDockedFab = computed(() => !!bottomAppBar.value && !!dockedFabState.value.element)
+const fabClasses = computed(() => [
+    `rui-scaffold__fab--${props.fabPlacement}`,
+    {
+        "rui-scaffold__fab--bottom-bar-offset": props.fabPlacement !== "app-bar-seam" && !hasDockedFab.value,
+        "rui-scaffold__fab--docked": hasDockedFab.value,
+        "rui-scaffold__fab--docked-end": hasDockedFab.value && dockedFabAlignment.value === "end",
+        "rui-scaffold__fab--docked-scale-hidden": dockedFabScaleHidden.value,
+    },
+])
+const fabStyle = computed(() => {
+    if (!hasDockedFab.value) return undefined
+
+    const fab = dockedFabState.value
+    return {
+        "--rui-comp-scaffold-docked-fab-inline-size": `${fab.inlineSize}px`,
+        "--rui-comp-scaffold-docked-fab-block-end": `${Math.max(0, bottomBarHeight.value - fab.blockSize / 2 - bottomAppBar.value!.fabCradleVerticalOffset.value)}px`,
+    }
+})
 const style = computed(() => ({
     "--rui-comp-scaffold-body-top-inset": `${topInset.value}px`,
     "--rui-comp-scaffold-bottom-bar-height": `${bottomBarHeight.value}px`,
@@ -98,9 +136,85 @@ watch(bottomBarElement, (element) => {
     updateHeight()
 })
 
+function registerBottomAppBar(registration: RScaffoldBottomAppBarRegistration) {
+    bottomAppBar.value = registration
+    dockedFabAlignment.value = registration.fabAlignmentMode.value
+    syncDockedFab()
+
+    const stopAlignment = watch(registration.fabAlignmentMode, (alignment, previousAlignment) => {
+        if (registration.fabAnimationMode.value === "scale" && previousAlignment !== alignment) {
+            if (fabScaleTimer != null) clearTimeout(fabScaleTimer)
+            dockedFabScaleHidden.value = true
+            fabScaleTimer = setTimeout(() => {
+                dockedFabAlignment.value = alignment
+                dockedFabScaleHidden.value = false
+                fabScaleTimer = null
+            }, 150)
+            return
+        }
+
+        dockedFabAlignment.value = alignment
+    })
+    const stopHideOnScroll = watch(
+        registration.hideOnScroll,
+        (enabled) => {
+            bottomBarHideOnScroll.value = enabled
+            if (!enabled) bottomBarState.value = "shown"
+        },
+        { immediate: true },
+    )
+
+    return () => {
+        stopAlignment()
+        stopHideOnScroll()
+        if (fabScaleTimer != null) clearTimeout(fabScaleTimer)
+        fabScaleTimer = null
+        dockedFabScaleHidden.value = false
+        if (bottomAppBar.value !== registration) return
+        bottomAppBar.value = null
+        dockedFabState.value = { element: null, inlineSize: 0, blockSize: 0, visible: false }
+        bottomBarHideOnScroll.value = props.bottomBarHideOnScroll
+        if (!bottomBarHideOnScroll.value) bottomBarState.value = "shown"
+    }
+}
+
+function syncDockedFab() {
+    fabResizeObserver?.disconnect()
+    fabResizeObserver = null
+    const host = fabElement.value
+    const candidate = host?.firstElementChild as HTMLElement | null
+    const standardFab = candidate?.querySelector<HTMLElement>(".rui-fab.rui-fab--standard.rui-fab--normal")
+    if (!candidate || !standardFab || !bottomAppBar.value) {
+        dockedFabState.value = { element: null, inlineSize: 0, blockSize: 0, visible: false }
+        bottomAppBar.value?.onFabStateChange(dockedFabState.value)
+        return
+    }
+
+    const publish = () => {
+        const rect = standardFab.getBoundingClientRect()
+        const visibility = standardFab.closest<HTMLElement>(".rui-fab__visibility")
+        const visible = visibility == null || visibility.classList.contains("rui-fab__visibility--visible")
+        dockedFabState.value = {
+            element: standardFab,
+            inlineSize: rect.width,
+            blockSize: rect.height,
+            visible,
+        }
+        bottomAppBar.value?.onFabStateChange(dockedFabState.value)
+    }
+    if (typeof ResizeObserver !== "undefined") {
+        fabResizeObserver = new ResizeObserver(publish)
+        fabResizeObserver.observe(standardFab)
+    }
+    publish()
+}
+
+watch(fabElement, () => nextTick(syncDockedFab), { flush: "post" })
+
 watch(
     () => props.bottomBarHideOnScroll,
     (enabled) => {
+        if (bottomAppBar.value) return
         bottomBarHideOnScroll.value = enabled
         if (!enabled) bottomBarState.value = "shown"
     },
@@ -140,6 +254,8 @@ onBeforeUnmount(() => {
     if (scrollFrame) cancelAnimationFrame(scrollFrame)
     bodyResizeObserver?.disconnect()
     bottomBarResizeObserver?.disconnect()
+    fabResizeObserver?.disconnect()
+    if (fabScaleTimer != null) clearTimeout(fabScaleTimer)
 })
 
 provide(scaffoldContextKey, {
@@ -161,6 +277,7 @@ provide(scaffoldContextKey, {
     setBottomBarHeight(height) {
         bottomBarHeight.value = height
     },
+    registerBottomAppBar,
 })
 </script>
 
@@ -195,11 +312,10 @@ provide(scaffoldContextKey, {
             </footer>
             <div
                 v-if="$slots.fab"
+                ref="fabElement"
                 class="rui-scaffold__fab"
-                :class="[
-                    `rui-scaffold__fab--${props.fabPlacement}`,
-                    { 'rui-scaffold__fab--bottom-bar-offset': props.fabPlacement !== 'app-bar-seam' },
-                ]"
+                :class="fabClasses"
+                :style="fabStyle"
             >
                 <slot name="fab" />
             </div>
@@ -361,6 +477,26 @@ provide(scaffoldContextKey, {
 
 .rui-scaffold__fab--bottom-bar-offset {
     pointer-events: auto;
+}
+
+.rui-scaffold__fab--docked {
+    inset-inline-end: auto;
+    inset-block-end: var(--rui-comp-scaffold-docked-fab-block-end);
+    inset-inline-start: calc(50% - var(--rui-comp-scaffold-docked-fab-inline-size) / 2);
+    transition:
+        inset-inline-start 300ms var(--rui-sys-motion-easing-standard),
+        inset-block-end 0ms linear;
+}
+
+.rui-scaffold__fab--docked-end {
+    inset-inline-start: auto;
+    inset-inline-end: calc(60px - var(--rui-comp-scaffold-docked-fab-inline-size) / 2);
+}
+
+.rui-scaffold__fab--docked-scale-hidden {
+    transform: scale(0);
+    opacity: 0;
+    pointer-events: none;
 }
 
 .rui-scaffold__fab--app-bar-seam {

@@ -1,6 +1,8 @@
 export * from "./scaffold"
 export * from "./responsive"
 export * from "./appBar"
+export { default as RBottomAppBar } from "./bottomAppBar/RBottomAppBar.vue"
+export type * from "./bottomAppBar/types"
 
 export { default as RGrid } from "./grid/RGrid.vue"
 export * from "./grid/directives"

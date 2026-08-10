@@ -6,6 +6,24 @@ export type RScaffoldScrollDirection = "vertical" | "horizontal" | "none"
 export type RScaffoldFabPlacement = "viewport" | "body" | "app-bar-seam"
 export type RScaffoldScrollMotionDirection = "up" | "down" | "idle"
 export type RScaffoldBottomBarState = "shown" | "hidden"
+export type RScaffoldFabAlignment = "center" | "end"
+export type RScaffoldFabAnimationMode = "scale" | "slide"
+
+export type RScaffoldBottomAppBarFabState = {
+    element: HTMLElement | null
+    inlineSize: number
+    blockSize: number
+    visible: boolean
+}
+
+export type RScaffoldBottomAppBarRegistration = {
+    fabAlignmentMode: Readonly<Ref<RScaffoldFabAlignment>>
+    fabAnimationMode: Readonly<Ref<RScaffoldFabAnimationMode>>
+    fabAttached: Readonly<Ref<boolean>>
+    fabCradleVerticalOffset: Readonly<Ref<number>>
+    hideOnScroll: Readonly<Ref<boolean>>
+    onFabStateChange: (state: RScaffoldBottomAppBarFabState) => void
+}
 
 export type RScaffoldScrollFacts = {
     top: number
@@ -34,6 +52,7 @@ export type RScaffoldContext = {
     setBodyGridMode: (mode: RResponsiveContainerMode) => void
     setBottomBarHideOnScroll: (enabled: boolean) => void
     setBottomBarHeight: (height: number) => void
+    registerBottomAppBar: (registration: RScaffoldBottomAppBarRegistration) => () => void
 }
 
 export const scaffoldContextKey: InjectionKey<RScaffoldContext> = Symbol("rui-scaffold")
