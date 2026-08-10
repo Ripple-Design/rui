@@ -16,7 +16,7 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [ ] Date pickers
 - [x] Dialogs
 - [x] Dividers
-- [ ] Image lists
+- [x] Image lists
 - [x] Lists
 - [x] Menus
 - [ ] Navigation drawer

@@ -1,0 +1,29 @@
+---
+title: Tile
+docSlug: components/tile
+tab: implementation
+locale: en
+designOrder: 160
+developOrder: 160
+api: /en/api/tile
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import TileOutsideDemo from "@docs/components/demos/tile/TileOutsideDemo.vue"
+import tileOutsideDemoSource from "@docs/components/demos/tile/TileOutsideDemo.vue?raw"
+import TileScrimDemo from "@docs/components/demos/tile/TileScrimDemo.vue"
+import tileScrimDemoSource from "@docs/components/demos/tile/TileScrimDemo.vue?raw"
+import TileGradientDemo from "@docs/components/demos/tile/TileGradientDemo.vue"
+import tileGradientDemoSource from "@docs/components/demos/tile/TileGradientDemo.vue?raw"
+
+<DemoBlock title="Outside content" code={tileOutsideDemoSource} language="vue">
+    <TileOutsideDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Translucent scrim" code={tileScrimDemoSource} language="vue">
+    <TileScrimDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Shadow gradient" code={tileGradientDemoSource} language="vue">
+    <TileGradientDemo client:load />
+</DemoBlock>

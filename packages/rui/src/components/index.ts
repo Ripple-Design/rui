@@ -34,6 +34,7 @@ export { default as RDivider } from "./divider/RDivider.vue"
 export type * from "./divider/types"
 
 export * from "./list"
+export * from "./tile"
 
 export { default as RCard } from "./card/RCard.vue"
 export type * from "./card/types"

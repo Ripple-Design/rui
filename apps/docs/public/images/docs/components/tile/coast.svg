@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Abstract coastal landscape">
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#8cc7df"/><stop offset="1" stop-color="#e9c38d"/></linearGradient>
+    <linearGradient id="sea" x1="0" x2="1"><stop stop-color="#1c7895"/><stop offset="1" stop-color="#4eb0bd"/></linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#sky)"/>
+  <circle cx="610" cy="150" r="74" fill="#fff1bd" opacity=".9"/>
+  <path d="M0 290 150 180l135 112 120-165 135 172 115-112L800 288v312H0Z" fill="#315d64"/>
+  <path d="M0 344c142-44 234 38 357 5 149-40 255-83 443-3v254H0Z" fill="url(#sea)"/>
+  <path d="M0 444c152-43 239 47 399 6 164-42 250-64 401-20v170H0Z" fill="#174c68" opacity=".78"/>
+</svg>
