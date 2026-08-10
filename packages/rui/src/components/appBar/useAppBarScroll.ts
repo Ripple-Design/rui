@@ -55,8 +55,8 @@ export function useAppBarScroll(options: AppBarScrollOptions) {
         frameRequest = 0
         const source = options.source
         const root = options.root.value
-        if (!root || !source || source.direction.value !== "vertical") {
-            state.value = { ...emptyState, visibleHeight: root?.getBoundingClientRect().height ?? 0 }
+        if (!root) {
+            state.value = { ...emptyState }
             return
         }
 
@@ -65,6 +65,12 @@ export function useAppBarScroll(options: AppBarScrollOptions) {
             collapsed,
             resolveHeight(toValue(options.expandedHeight), "--rui-comp-app-bar-expanded-height", collapsed),
         )
+
+        if (!source || source.direction.value !== "vertical") {
+            state.value = { ...emptyState, visibleHeight: expanded }
+            return
+        }
+
         const collapseDistance = expanded - collapsed
         const facts = source.facts.value
         const behavior = toValue(options.scrollBehavior)

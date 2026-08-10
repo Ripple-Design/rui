@@ -72,8 +72,6 @@ const messages = [
     block-size: min(62vh, 480px);
     min-block-size: 360px;
     overflow: hidden;
-    border: 1px solid var(--rui-sys-color-on-surface-outline);
-    border-radius: 12px;
 }
 
 .scaffold-compose-demo__content {
@@ -82,5 +80,10 @@ const messages = [
 
 .scaffold-compose-demo p {
     margin: 0;
+}
+
+:global(.demo-preview:fullscreen .scaffold-compose-demo) {
+    block-size: 100%;
+    min-block-size: 0;
 }
 </style>

@@ -37,7 +37,9 @@ const scrollBehavior = ref<"fixed" | "exit-until-collapsed">("fixed")
 const hideOnScroll = ref(false)
 const underlap = ref(false)
 const sideSheet = ref(false)
+const clippedSideSheet = ref(false)
 const navigationRail = ref(false)
+const clippedNavigation = ref(false)
 const navigationDrawer = ref(false)
 const railActive = ref("home")
 const drawerActive = ref("home")
@@ -134,12 +136,20 @@ const previewStyle = computed(() => ({
                 <RSwitch v-model="navigationRail" aria-label="Toggle navigation rail" />
             </label>
             <label class="scaffold-demo-controls__switch">
+                <span>Clipped navigation</span>
+                <RSwitch v-model="clippedNavigation" aria-label="Toggle clipped navigation" />
+            </label>
+            <label class="scaffold-demo-controls__switch">
                 <span>Navigation drawer</span>
                 <RSwitch v-model="navigationDrawer" aria-label="Toggle navigation drawer" />
             </label>
             <label class="scaffold-demo-controls__switch">
                 <span>Side sheet</span>
                 <RSwitch v-model="sideSheet" aria-label="Toggle side sheet" />
+            </label>
+            <label class="scaffold-demo-controls__switch">
+                <span>Clipped side sheet</span>
+                <RSwitch v-model="clippedSideSheet" aria-label="Toggle clipped side sheet" />
             </label>
             <label class="scaffold-demo-controls__switch">
                 <span>Bottom bar</span>
@@ -158,7 +168,7 @@ const previewStyle = computed(() => ({
             :fab-placement="fabPlacement"
             :bottom-bar-hide-on-scroll="bottomBarHideOnScroll"
         >
-            <template v-if="navigationRail || navigationDrawer" #navigation>
+            <template v-if="(navigationRail || navigationDrawer) && !clippedNavigation" #navigation>
                 <div class="scaffold-demo__navigation">
                     <RNavigationRail v-if="navigationRail" v-model="railActive" aria-label="Primary navigation rail">
                         <template #top>App</template>
@@ -202,6 +212,18 @@ const previewStyle = computed(() => ({
                 </div>
             </template>
 
+            <template v-if="clippedNavigation" #clipped-navigation>
+                <RNavigationRail v-model="railActive" aria-label="Clipped primary navigation rail">
+                    <template #top>App</template>
+                    <RNavigationRailItem value="home" :icon="RIHomeOutlined">Home</RNavigationRailItem>
+                    <RNavigationRailItem value="listen" :icon="RIPlayCircleOutlined">Listen</RNavigationRailItem>
+                    <RNavigationRailItem value="favorites" :icon="RIFavoriteBorderFilled" :selected-icon="RIFavoriteFilled">
+                        Favorites
+                    </RNavigationRailItem>
+                    <RNavigationRailItem value="settings" :icon="RISettingsOutlined">Settings</RNavigationRailItem>
+                </RNavigationRail>
+            </template>
+
             <template #app-bar>
                 <RAppBarContainer
                     :content-align="appBarAlign"
@@ -233,9 +255,15 @@ const previewStyle = computed(() => ({
                 </RCard>
             </RResponsiveGrid>
 
-            <template v-if="sideSheet" #side-sheet>
+            <template v-if="sideSheet && !clippedSideSheet" #side-sheet>
                 <RSideSheet title="Context panel" width="280px">
                     This Standard Side Sheet consumes the available Body width and causes the responsive grid to reflow.
+                </RSideSheet>
+            </template>
+
+            <template v-if="clippedSideSheet" #clipped-side-sheet>
+                <RSideSheet title="Clipped context panel" width="280px">
+                    This Standard Side Sheet begins below the App Bar and consumes the available Body width.
                 </RSideSheet>
             </template>
 
@@ -289,8 +317,6 @@ const previewStyle = computed(() => ({
 .scaffold-demo {
     block-size: min(72vh, 720px);
     min-inline-size: 320px;
-    border: 1px solid var(--rui-sys-color-on-surface-outline, #747775);
-    border-radius: 16px;
     transition: inline-size 160ms ease;
 }
 
@@ -334,5 +360,10 @@ const previewStyle = computed(() => ({
     padding: 16px 24px;
     background: var(--rui-sys-color-surface, #fff);
     border-block-start: 1px solid var(--rui-sys-color-on-surface-outline, #747775);
+}
+
+:global(.demo-preview:fullscreen .scaffold-demo) {
+    block-size: 100%;
+    min-block-size: 0;
 }
 </style>

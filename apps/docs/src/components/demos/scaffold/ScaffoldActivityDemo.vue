@@ -101,8 +101,6 @@ const heading = computed(() => ({ updates: "Latest updates", tasks: "Assigned ta
     block-size: min(62vh, 520px);
     min-block-size: 400px;
     overflow: hidden;
-    border: 1px solid var(--rui-sys-color-on-surface-outline);
-    border-radius: 12px;
 }
 
 .scaffold-activity-demo__content {
@@ -117,5 +115,10 @@ const heading = computed(() => ({ updates: "Latest updates", tasks: "Assigned ta
 .scaffold-activity-demo__bottom-navigation {
     border-block-start: 1px solid var(--rui-sys-color-on-surface-outline);
     background: var(--rui-sys-color-surface);
+}
+
+:global(.demo-preview:fullscreen .scaffold-activity-demo) {
+    block-size: 100%;
+    min-block-size: 0;
 }
 </style>

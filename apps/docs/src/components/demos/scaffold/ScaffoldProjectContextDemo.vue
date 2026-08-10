@@ -119,8 +119,6 @@ const selectedProject = computed(() => projects.find((project) => project.id ===
     block-size: min(62vh, 500px);
     min-block-size: 380px;
     overflow: hidden;
-    border: 1px solid var(--rui-sys-color-on-surface-outline);
-    border-radius: 12px;
 }
 
 .scaffold-project-context-demo__content {
@@ -166,5 +164,10 @@ const selectedProject = computed(() => projects.find((project) => project.id ===
 .scaffold-project-context-demo__details dt,
 .scaffold-project-context-demo__details dd {
     margin: 0;
+}
+
+:global(.demo-preview:fullscreen .scaffold-project-context-demo) {
+    block-size: 100%;
+    min-block-size: 0;
 }
 </style>

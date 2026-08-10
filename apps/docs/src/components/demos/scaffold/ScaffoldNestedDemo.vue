@@ -53,36 +53,33 @@ const messages = [
             </RAppBarContainer>
         </template>
 
-        <div class="scaffold-nested-demo__outer-content">
-            <RScaffold class="scaffold-nested-demo__inner" scroll-direction="vertical" bottom-bar-hide-on-scroll>
-                <template #app-bar>
-                    <RAppBarContainer color="primary">
-                        <RTopAppBar>
-                            <template #title>Inbox triage</template>
-                            <template #subtitle>5 conversations</template>
-                            <template #actions>
-                                <RIconButton :icon="RIHomeOutlined" label="Open inbox home" />
-                            </template>
-                        </RTopAppBar>
-                    </RAppBarContainer>
-                </template>
+        <RScaffold class="scaffold-nested-demo__inner" scroll-direction="vertical" bottom-bar-hide-on-scroll>
+            <template #app-bar>
+                <RAppBarContainer color="primary">
+                    <RTopAppBar>
+                        <template #title>Inbox triage</template>
+                        <template #subtitle>5 conversations</template>
+                        <template #actions>
+                            <RIconButton :icon="RIHomeOutlined" label="Open inbox home" />
+                        </template>
+                    </RTopAppBar>
+                </RAppBarContainer>
+            </template>
 
-                <div class="scaffold-nested-demo__inner-content">
-                    <section class="scaffold-nested-demo__summary">
-                        <strong>Today’s queue</strong>
-                        <span>2 items need a reply before 3:00 PM</span>
-                    </section>
+            <div class="scaffold-nested-demo__inner-content">
+                <section class="scaffold-nested-demo__summary">
+                    <strong>Today’s queue</strong>
+                    <span>2 items need a reply before 3:00 PM</span>
+                </section>
 
-                    <RList divider="inset">
-                        <RListItem v-for="message in messages" :key="message.subject" :icon="RIInboxOutlined" action :lines="2">
-                            {{ message.sender }} · {{ message.subject }}
-                            <template #supporting>{{ message.detail }}</template>
-                        </RListItem>
-                    </RList>
-                </div>
-
-            </RScaffold>
-        </div>
+                <RList divider="inset">
+                    <RListItem v-for="message in messages" :key="message.subject" :icon="RIInboxOutlined" action :lines="2">
+                        {{ message.sender }} · {{ message.subject }}
+                        <template #supporting>{{ message.detail }}</template>
+                    </RListItem>
+                </RList>
+            </div>
+        </RScaffold>
     </RScaffold>
 </template>
 
@@ -91,22 +88,10 @@ const messages = [
     block-size: min(72vh, 660px);
     min-block-size: 520px;
     overflow: hidden;
-    border: 1px solid var(--rui-sys-color-on-surface-outline);
-    border-radius: 12px;
 }
 
 .scaffold-nested-demo__navigation-rail {
     block-size: 100%;
-}
-
-.scaffold-nested-demo__outer-content {
-    block-size: 100%;
-    min-block-size: 0;
-}
-
-.scaffold-nested-demo__inner {
-    block-size: 100%;
-    min-block-size: 0;
 }
 
 .scaffold-nested-demo__inner-content {
@@ -123,9 +108,8 @@ const messages = [
     color: var(--rui-sys-color-on-surface-medium);
 }
 
-@container (max-width: 680px) {
-    .scaffold-nested-demo__outer-content {
-        padding-inline: 8px;
-    }
+:global(.demo-preview:fullscreen .scaffold-nested-demo) {
+    block-size: 100%;
+    min-block-size: 0;
 }
 </style>

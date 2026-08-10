@@ -147,6 +147,7 @@ onUnmounted(() => topInsetHandle?.dispose())
     inset-inline: 0;
     inset-block-start: 0;
     block-size: var(--rui-comp-app-bar-visible-height, var(--rui-comp-app-bar-expanded-height));
+    clip-path: inset(0 0 -24px);
     box-shadow: none;
     content: "";
     pointer-events: none;

@@ -170,9 +170,16 @@ provide(scaffoldContextKey, {
             <slot name="navigation" />
         </div>
 
+        <div v-if="$slots['clipped-navigation']" class="rui-scaffold__clipped-navigation">
+            <slot name="clipped-navigation" />
+        </div>
+
+        <div v-if="$slots['app-bar']" class="rui-scaffold__app-bar">
+            <slot name="app-bar" />
+        </div>
+
         <div class="rui-scaffold__main">
             <main ref="bodyElement" class="rui-scaffold__body" @scroll="handleScroll">
-                <slot name="app-bar" />
                 <div class="rui-scaffold__body-content">
                     <slot />
                 </div>
@@ -186,22 +193,26 @@ provide(scaffoldContextKey, {
             >
                 <slot name="bottom-bar" />
             </footer>
+            <div
+                v-if="$slots.fab"
+                class="rui-scaffold__fab"
+                :class="[
+                    `rui-scaffold__fab--${props.fabPlacement}`,
+                    { 'rui-scaffold__fab--bottom-bar-offset': props.fabPlacement !== 'app-bar-seam' },
+                ]"
+            >
+                <slot name="fab" />
+            </div>
+
         </div>
 
         <aside v-if="$slots['side-sheet']" class="rui-scaffold__side-sheet">
             <slot name="side-sheet" />
         </aside>
 
-        <div
-            v-if="$slots.fab"
-            class="rui-scaffold__fab"
-            :class="[
-                `rui-scaffold__fab--${props.fabPlacement}`,
-                { 'rui-scaffold__fab--bottom-bar-offset': props.fabPlacement !== 'app-bar-seam' },
-            ]"
-        >
-            <slot name="fab" />
-        </div>
+        <aside v-if="$slots['clipped-side-sheet']" class="rui-scaffold__clipped-side-sheet">
+            <slot name="clipped-side-sheet" />
+        </aside>
 
         <slot name="modal" />
     </section>
@@ -213,6 +224,7 @@ provide(scaffoldContextKey, {
     position: relative;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: var(--rui-comp-scaffold-body-top-inset, 0px) minmax(0, 1fr);
     inline-size: 100%;
     block-size: 100%;
     min-inline-size: 0;
@@ -223,27 +235,65 @@ provide(scaffoldContextKey, {
 
 .rui-scaffold__navigation {
     grid-column: 1;
+    grid-row: 1 / -1;
 }
 
 .rui-scaffold__side-sheet {
     grid-column: 3;
+    grid-row: 1 / -1;
+}
+
+.rui-scaffold__clipped-navigation {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.rui-scaffold__clipped-side-sheet {
+    grid-column: 3;
+    grid-row: 2;
 }
 
 .rui-scaffold__navigation,
-.rui-scaffold__side-sheet {
+.rui-scaffold__side-sheet,
+.rui-scaffold__clipped-navigation,
+.rui-scaffold__clipped-side-sheet {
+    display: grid;
     min-inline-size: 0;
     min-block-size: 0;
     overflow: hidden;
 }
 
+.rui-scaffold__navigation :deep(.rui-navigation-rail),
+.rui-scaffold__clipped-navigation :deep(.rui-navigation-rail) {
+    block-size: 100%;
+}
+
+.rui-scaffold__app-bar {
+    z-index: 3;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    min-inline-size: 0;
+    min-block-size: 0;
+}
+
+.rui-scaffold__app-bar :deep(.rui-app-bar-container) {
+    position: relative;
+    inset-block-start: auto;
+    margin-block-end: 0;
+}
+
 .rui-scaffold__main {
     grid-column: 2;
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-rows: var(--rui-comp-scaffold-body-top-inset) minmax(0, 1fr);
     position: relative;
     min-inline-size: 0;
     min-block-size: 0;
 }
 
 .rui-scaffold__body {
+    grid-row: 2;
     min-inline-size: 0;
     min-block-size: 0;
     block-size: 100%;
@@ -253,8 +303,8 @@ provide(scaffoldContextKey, {
 }
 
 .rui-scaffold__body-content {
+    block-size: 100%;
     min-block-size: 100%;
-    padding-block-start: var(--rui-comp-scaffold-body-top-inset);
 }
 
 .rui-scaffold--scroll-vertical .rui-scaffold__body {

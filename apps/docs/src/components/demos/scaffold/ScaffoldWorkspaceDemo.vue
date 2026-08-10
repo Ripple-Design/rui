@@ -91,8 +91,6 @@ const workspace = computed(() => {
     block-size: min(62vh, 480px);
     min-block-size: 360px;
     overflow: hidden;
-    border: 1px solid var(--rui-sys-color-on-surface-outline);
-    border-radius: 12px;
 }
 
 .scaffold-workspace-demo__content {
@@ -136,5 +134,10 @@ const workspace = computed(() => {
 .scaffold-workspace-demo__card p {
     margin-block-start: 8px;
     color: var(--rui-sys-color-on-surface-medium);
+}
+
+:global(.demo-preview:fullscreen .scaffold-workspace-demo) {
+    block-size: 100%;
+    min-block-size: 0;
 }
 </style>
