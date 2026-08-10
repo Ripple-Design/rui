@@ -253,7 +253,7 @@ function handleRemove(event: MouseEvent) {
     position: relative;
     display: inline-flex;
     align-items: center;
-    padding-block: calc(8px * var(--rui-touch-target-enabled, 1));
+    padding-block: calc(4px * var(--rui-touch-target-enabled, 1));
     vertical-align: middle;
 }
 
