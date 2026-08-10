@@ -154,6 +154,10 @@ function handleClick(event: MouseEvent) {
     --rui-comp-tile-text-color: #{color.$on-surface-medium};
     --rui-comp-tile-overlay-content-color: var(--rui-sys-color-on-primary);
     --rui-comp-tile-overlay-text-color: var(--rui-sys-color-on-primary-medium);
+    --rui-comp-surface-content-color: var(--rui-sys-color-on-surface);
+    --rui-comp-surface-content-color-high: var(--rui-sys-color-on-surface-high);
+    --rui-comp-surface-content-color-medium: var(--rui-sys-color-on-surface-medium);
+    --rui-comp-surface-content-color-low: var(--rui-sys-color-on-surface-low);
     --rui-comp-tile-scrim-color: rgb(from var(--rui-sys-color-on-surface) r g b / 30%);
     --rui-comp-tile-gradient-start: transparent;
     --rui-comp-tile-gradient-end: rgb(0 0 0 / 30%);
@@ -287,6 +291,14 @@ function handleClick(event: MouseEvent) {
 .rui-tile--scrim .rui-tile__text,
 .rui-tile--gradient .rui-tile__text {
     --rui-comp-text-color: var(--rui-comp-tile-overlay-text-color);
+}
+
+.rui-tile--scrim,
+.rui-tile--gradient {
+    --rui-comp-surface-content-color: var(--rui-sys-color-on-primary);
+    --rui-comp-surface-content-color-high: var(--rui-sys-color-on-primary-high);
+    --rui-comp-surface-content-color-medium: var(--rui-sys-color-on-primary-medium);
+    --rui-comp-surface-content-color-low: var(--rui-sys-color-on-primary-low);
 }
 
 .rui-tile--scrim .rui-tile__scrim {

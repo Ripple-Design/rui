@@ -1,6 +1,8 @@
 import type { RIIcon } from "@ripple-design/icons"
 import type { Component } from "vue"
 
+import type { RTextEmphasis } from "@/components/text/types"
+
 import type { RIconStyle, RIconStyleMap } from "@/foundations/icon"
 
 export type RIconSource = RIIcon | Component
@@ -15,6 +17,8 @@ export type RIconProps = {
     iconStyle?: RIconStyle
     /** Controls the icon size. Numbers map to pixels, while strings pass through directly. */
     size?: string | number
+    /** Controls the icon foreground emphasis level. */
+    emphasis?: RTextEmphasis
     /** Forces the icon to be decorative and hidden from assistive technology. */
     decorative?: boolean
     /** Sets the accessible name announced for a non-decorative icon. */

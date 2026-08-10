@@ -1,6 +1,7 @@
 import type { RippleOptions } from "@/foundations/ripple"
 
 import type { RIconResolvableSource } from "@/components/icon/types"
+import type { RTextEmphasis } from "@/components/text/types"
 
 export type RButtonVariant = "text" | "outlined" | "contained" | "unelevated"
 export type RButtonGroupVariant = RButtonVariant | "icon"
@@ -52,6 +53,8 @@ export type RIconButtonProps = {
     label: string
     /** Sets the accessible name announced while the button is active. */
     activeLabel?: string
+    /** Controls the icon foreground emphasis level. */
+    emphasis?: RTextEmphasis
     /** Disables the icon button and all interactive feedback. */
     disabled?: boolean
     /** Sets the native button type when rendering a `<button>`. */

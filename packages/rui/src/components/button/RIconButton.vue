@@ -17,6 +17,7 @@ import {
 
 const props = withDefaults(defineProps<RIconButtonProps>(), {
     disabled: false,
+    emphasis: "medium",
     type: "button",
     ripple: true,
 })
@@ -32,6 +33,12 @@ const resolvedTabIndex = computed(() => resolveDisabledLinkTabIndex(isLink.value
 const resolvedIcon = computed(() => (active.value ? (props.activeIcon ?? props.icon) : props.icon))
 const resolvedLabel = computed(() => (active.value ? (props.activeLabel ?? props.label) : props.label))
 const resolvedAriaPressed = computed(() => (active.value ? "true" : "false"))
+const effectiveEmphasis = computed(() => (props.disabled ? "low" : props.emphasis))
+const classes = computed(() => [
+    "rui-icon-button",
+    `rui-icon-button--emphasis-${effectiveEmphasis.value}`,
+    { "rui-icon-button--disabled": props.disabled },
+])
 const rippleOptions = computed(() => resolveButtonRippleOptions("text", props.ripple, props.disabled))
 
 watchEffect(() => {
@@ -61,8 +68,7 @@ function handleClick(event: MouseEvent) {
             v-bind="attrs"
             v-ripple="rippleOptions"
             data-rui-touch-target-anchor
-            class="rui-icon-button"
-            :class="{ 'rui-icon-button--disabled': disabled }"
+            :class="classes"
             :href="resolvedHref"
             :target="target"
             :rel="rel"
@@ -74,7 +80,7 @@ function handleClick(event: MouseEvent) {
         >
             <span class="rui-touch-target rui-touch-target--interactive" aria-hidden="true" />
             <span class="rui-icon-button__content">
-                <RIcon :key="active ? 'active' : 'inactive'" :icon="resolvedIcon" :size="24" decorative />
+                <RIcon :key="active ? 'active' : 'inactive'" :icon="resolvedIcon" :size="24" :emphasis="effectiveEmphasis" decorative />
             </span>
         </a>
 
@@ -83,8 +89,7 @@ function handleClick(event: MouseEvent) {
             v-bind="attrs"
             v-ripple="rippleOptions"
             data-rui-touch-target-anchor
-            class="rui-icon-button"
-            :class="{ 'rui-icon-button--disabled': disabled }"
+            :class="classes"
             :type="nativeType"
             :disabled="disabled"
             :aria-label="resolvedLabel"
@@ -93,7 +98,7 @@ function handleClick(event: MouseEvent) {
         >
             <span class="rui-touch-target rui-touch-target--interactive" aria-hidden="true" />
             <span class="rui-icon-button__content">
-                <RIcon :key="active ? 'active' : 'inactive'" :icon="resolvedIcon" :size="24" decorative />
+                <RIcon :key="active ? 'active' : 'inactive'" :icon="resolvedIcon" :size="24" :emphasis="effectiveEmphasis" decorative />
             </span>
         </button>
     </RTouchTargetWrapper>
@@ -122,8 +127,25 @@ function handleClick(event: MouseEvent) {
     --rui-icon-button-shape-start-end: var(--rui-sys-shape-full-start-end);
     --rui-icon-button-shape-end-end: var(--rui-sys-shape-full-end-end);
     --rui-icon-button-shape-end-start: var(--rui-sys-shape-full-end-start);
-    --rui-icon-button-color: #{color.$on-surface-medium};
-    --rui-icon-button-disabled-color: #{color.$on-surface-low};
+    --rui-comp-icon-button-color: var(
+        --rui-icon-button-color,
+        var(--rui-comp-surface-content-color-medium, #{color.$on-surface-medium})
+    );
+    --rui-comp-icon-button-color-high: var(
+        --rui-icon-button-color,
+        var(--rui-comp-surface-content-color-high, #{color.$on-surface-high})
+    );
+    --rui-comp-icon-button-color-medium: var(
+        --rui-icon-button-color,
+        var(--rui-comp-surface-content-color-medium, #{color.$on-surface-medium})
+    );
+    --rui-comp-icon-button-color-low: var(
+        --rui-icon-button-color,
+        var(--rui-comp-surface-content-color-low, #{color.$on-surface-low})
+    );
+    --rui-icon-color-high: var(--rui-comp-icon-button-color-high);
+    --rui-icon-color-medium: var(--rui-comp-icon-button-color-medium);
+    --rui-icon-color-low: var(--rui-comp-icon-button-color-low);
 
     @include normalize.button;
     @include shape.apply(
@@ -141,11 +163,22 @@ function handleClick(event: MouseEvent) {
     inline-size: var(--rui-icon-button-size);
     block-size: var(--rui-icon-button-size);
     flex-shrink: 0;
-    color: var(--rui-icon-button-color);
+    color: var(--rui-comp-icon-button-color);
+
+    &--emphasis-high {
+        --rui-comp-icon-button-color: var(--rui-comp-icon-button-color-high);
+    }
+
+    &--emphasis-medium {
+        --rui-comp-icon-button-color: var(--rui-comp-icon-button-color-medium);
+    }
+
+    &--emphasis-low {
+        --rui-comp-icon-button-color: var(--rui-comp-icon-button-color-low);
+    }
 
     &--disabled {
         cursor: default;
-        color: var(--rui-icon-button-disabled-color);
         pointer-events: none;
     }
 }

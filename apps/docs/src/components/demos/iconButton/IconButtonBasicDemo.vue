@@ -6,7 +6,7 @@ import {
     RIMoreVertFilled,
     RIOpenInNewFilled,
 } from "@ripple-design/icons"
-import { RColumn, RIconButton, RRow } from "@ripple-design/rui"
+import { RColumn, RIconButton, RRow, RSurface } from "@ripple-design/rui"
 import { ref } from "vue"
 
 const favorite = ref(false)
@@ -17,6 +17,16 @@ const favorite = ref(false)
         <RRow gap="16px" wrap align="center">
             <RIconButton :icon="RICloseFilled" label="Close" />
             <RIconButton :icon="RIMoreVertFilled" label="More actions" />
+        </RRow>
+
+        <RRow gap="16px" wrap align="center">
+            <RSurface color="primary" class="icon-button-demo__surface">
+                <RRow gap="8px" align="center">
+                    <RIconButton :icon="RICloseFilled" label="High emphasis" emphasis="high" />
+                    <RIconButton :icon="RIMoreVertFilled" label="Medium emphasis" />
+                    <RIconButton :icon="RIOpenInNewFilled" label="Low emphasis" emphasis="low" />
+                </RRow>
+            </RSurface>
         </RRow>
 
         <RRow gap="16px" wrap align="center">
@@ -45,5 +55,9 @@ const favorite = ref(false)
 <style scoped lang="scss">
 .icon-button-demo {
     width: 100%;
+}
+
+.icon-button-demo__surface {
+    padding: 4px;
 }
 </style>

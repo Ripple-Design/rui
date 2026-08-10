@@ -9,7 +9,9 @@ import type { RIconProps, RIconSource } from "./types"
 
 import { resolveIconSource } from "./family"
 
-const props = defineProps<RIconProps>()
+const props = withDefaults(defineProps<RIconProps>(), {
+    emphasis: "medium",
+})
 const slots = useSlots()
 const theme = inject(themeKey, null)
 
@@ -27,12 +29,16 @@ const resolvedIconStyle = computed(
 const resolvedIcon = computed<RIconSource | undefined>(() => resolveIconSource(props.icon, resolvedIconStyle.value))
 const isComponentSource = computed(() => !!resolvedIcon.value && typeof resolvedIcon.value !== "string")
 const isStringSource = computed(() => typeof resolvedIcon.value === "string")
+const classes = computed(() => [
+    "rui-icon",
+    `rui-icon--emphasis-${props.emphasis}`,
+])
 </script>
 
 <template>
     <span
         v-if="hasDefaultSlot"
-        class="rui-icon"
+        :class="classes"
         v-bind="$attrs"
         :style="style"
         :aria-hidden="isDecorative ? 'true' : undefined"
@@ -45,7 +51,7 @@ const isStringSource = computed(() => typeof resolvedIcon.value === "string")
     <component
         :is="resolvedIcon"
         v-else-if="isComponentSource"
-        class="rui-icon"
+        :class="classes"
         v-bind="$attrs"
         :style="style"
         :aria-hidden="isDecorative ? 'true' : undefined"
@@ -56,7 +62,7 @@ const isStringSource = computed(() => typeof resolvedIcon.value === "string")
 
     <svg
         v-else-if="isStringSource"
-        class="rui-icon"
+        :class="classes"
         v-bind="$attrs"
         :style="style"
         xmlns="http://www.w3.org/2000/svg"
@@ -71,6 +77,20 @@ const isStringSource = computed(() => typeof resolvedIcon.value === "string")
 
 <style scoped lang="scss">
 .rui-icon {
+    --rui-comp-icon-color: var(--rui-icon-color, inherit);
+    --rui-comp-icon-color-high: var(
+        --rui-icon-color-high,
+        var(--rui-comp-surface-content-color-high, var(--rui-sys-color-on-surface-high))
+    );
+    --rui-comp-icon-color-medium: var(
+        --rui-icon-color-medium,
+        var(--rui-comp-surface-content-color-medium, var(--rui-sys-color-on-surface-medium))
+    );
+    --rui-comp-icon-color-low: var(
+        --rui-icon-color-low,
+        var(--rui-comp-surface-content-color-low, var(--rui-sys-color-on-surface-low))
+    );
+
     display: inline-flex;
     inline-size: var(--rui-icon-size, 1em);
     block-size: var(--rui-icon-size, 1em);
@@ -78,7 +98,20 @@ const isStringSource = computed(() => typeof resolvedIcon.value === "string")
     align-items: center;
     justify-content: center;
     vertical-align: middle;
+    color: var(--rui-comp-icon-color);
     fill: currentColor;
     shape-rendering: geometricPrecision;
+
+    &--emphasis-high {
+        --rui-comp-icon-color: var(--rui-comp-icon-color-high);
+    }
+
+    &--emphasis-medium {
+        --rui-comp-icon-color: var(--rui-comp-icon-color-medium);
+    }
+
+    &--emphasis-low {
+        --rui-comp-icon-color: var(--rui-comp-icon-color-low);
+    }
 }
 </style>
