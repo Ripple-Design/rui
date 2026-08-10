@@ -1,6 +1,16 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, useAttrs, type StyleValue } from "vue"
+import {
+    computed,
+    onBeforeUnmount,
+    onMounted,
+    reactive,
+    ref,
+    useAttrs,
+    type ComponentPublicInstance,
+    type StyleValue,
+} from "vue"
 
+import RSliderValueIndicator from "@/foundations/slider/RSliderValueIndicator.vue"
 import RThumb from "@/foundations/thumb/RThumb.vue"
 
 import type { RSliderModelValue, RSliderRangeValue, RSliderProps } from "./types"
@@ -29,6 +39,11 @@ const emit = defineEmits<{
 const model = defineModel<RSliderModelValue>({ default: 0 })
 const attrs = useAttrs()
 const rootRef = ref<HTMLElement | null>(null)
+const thumbRefs = reactive<Record<SliderThumb, HTMLElement | null>>({
+    end: null,
+    single: null,
+    start: null,
+})
 const singleInputRef = ref<HTMLInputElement | null>(null)
 const startInputRef = ref<HTMLInputElement | null>(null)
 const endInputRef = ref<HTMLInputElement | null>(null)
@@ -74,6 +89,28 @@ const activeSpan = computed(() => {
     return { start: 0, size: valueToPercent(singleValue.value, props.min, props.max) }
 })
 
+const valueIndicatorProperties = [
+    "--rui-comp-slider-value-indicator-color",
+    "--rui-comp-slider-value-indicator-text-color",
+    "--rui-comp-slider-value-indicator-enter-duration",
+    "--rui-comp-slider-value-indicator-exit-duration",
+    "--rui-comp-slider-value-indicator-pointer-size",
+    "--rui-comp-slider-value-indicator-thumb-gap",
+] as const
+
+type ValueIndicatorProperty = (typeof valueIndicatorProperties)[number]
+
+type ValueIndicatorStyles = Record<ValueIndicatorProperty, string>
+
+const valueIndicatorStyles = ref<ValueIndicatorStyles>({
+    "--rui-comp-slider-value-indicator-color": "",
+    "--rui-comp-slider-value-indicator-enter-duration": "",
+    "--rui-comp-slider-value-indicator-exit-duration": "",
+    "--rui-comp-slider-value-indicator-pointer-size": "",
+    "--rui-comp-slider-value-indicator-text-color": "",
+    "--rui-comp-slider-value-indicator-thumb-gap": "",
+})
+
 function thumbPercent(thumb: SliderThumb) {
     const value = thumb === "single" ? singleValue.value : thumb === "start" ? startValue.value : endValue.value
     return valueToPercent(value, props.min, props.max)
@@ -84,6 +121,33 @@ function thumbStyle(thumb: SliderThumb): StyleValue {
         "--rui-comp-slider-thumb-position": thumbPercent(thumb),
         zIndex: activeThumb.value === thumb ? 3 : 2,
     }
+}
+
+function setThumbRef(thumb: SliderThumb, element: Element | ComponentPublicInstance | null) {
+    thumbRefs[thumb] = element instanceof HTMLElement ? element : null
+}
+
+function valueIndicatorPositionRevision(thumb: SliderThumb) {
+    return `${thumbPercent(thumb)}:${trackWidth.value}`
+}
+
+function updateValueIndicatorStyles() {
+    const root = rootRef.value
+    if (!root || typeof getComputedStyle === "undefined") {
+        return
+    }
+
+    const styles = getComputedStyle(root)
+    valueIndicatorStyles.value = Object.fromEntries(
+        valueIndicatorProperties.map((property) => [property, styles.getPropertyValue(property)]),
+    ) as ValueIndicatorStyles
+}
+
+function formattedThumbValue(thumb: SliderThumb) {
+    return formatSliderValue(
+        thumb === "single" ? singleValue.value : thumb === "start" ? startValue.value : endValue.value,
+        props.formatValue,
+    )
 }
 
 function isTickActive(percent: number) {
@@ -190,6 +254,7 @@ function handlePointerDown(event: PointerEvent) {
     const percent = resolvePointerPercent(event)
     const thumb = resolveClosestThumb(percent)
     pointer = { id: event.pointerId, startX: event.clientX, thumb }
+    rootRef.value?.setPointerCapture(event.pointerId)
     activeThumb.value = thumb
 
     if (thumb) {
@@ -220,7 +285,6 @@ function handlePointerMove(event: PointerEvent) {
 
     if (!dragging.value) {
         dragging.value = true
-        rootRef.value?.setPointerCapture(event.pointerId)
     }
 
     updateThumb(pointer.thumb, resolvePointerPercent(event))
@@ -292,6 +356,8 @@ function handleHover(event: PointerEvent) {
 }
 
 onMounted(() => {
+    updateValueIndicatorStyles()
+
     if (!rootRef.value) {
         return
     }
@@ -345,21 +411,26 @@ onBeforeUnmount(() => observer?.disconnect())
         </div>
 
         <template v-for="thumb in (isRange ? ['start', 'end'] : ['single']) as SliderThumb[]" :key="thumb">
-            <span class="rui-slider__thumb" :style="thumbStyle(thumb)" aria-hidden="true">
-                <RThumb>
-                    <span
-                        class="rui-slider__value-indicator"
-                        :class="{ 'rui-slider__value-indicator--visible': isIndicatorVisible(thumb) }"
-                    >
-                        {{
-                            formatSliderValue(
-                                thumb === "single" ? singleValue : thumb === "start" ? startValue : endValue,
-                                formatValue,
-                            )
-                        }}
-                    </span>
-                </RThumb>
+            <span
+                :ref="(element) => setThumbRef(thumb, element)"
+                class="rui-slider__thumb"
+                :style="thumbStyle(thumb)"
+                aria-hidden="true"
+            >
+                <RThumb />
             </span>
+            <RSliderValueIndicator
+                :enter-duration="valueIndicatorStyles['--rui-comp-slider-value-indicator-enter-duration']"
+                :exit-duration="valueIndicatorStyles['--rui-comp-slider-value-indicator-exit-duration']"
+                :open="isIndicatorVisible(thumb)"
+                :pointer-size="valueIndicatorStyles['--rui-comp-slider-value-indicator-pointer-size']"
+                :position-revision="valueIndicatorPositionRevision(thumb)"
+                :reference="thumbRefs[thumb]"
+                :text-color="valueIndicatorStyles['--rui-comp-slider-value-indicator-text-color']"
+                :thumb-gap="valueIndicatorStyles['--rui-comp-slider-value-indicator-thumb-gap']"
+                :value="formattedThumbValue(thumb)"
+                :value-indicator-color="valueIndicatorStyles['--rui-comp-slider-value-indicator-color']"
+            />
         </template>
 
         <input
@@ -573,49 +644,6 @@ onBeforeUnmount(() => observer?.disconnect())
     }
 }
 
-.rui-slider__value-indicator {
-    position: absolute;
-    inset-block-end: calc(
-        100% + var(--rui-comp-slider-value-indicator-pointer-size) + var(--rui-comp-slider-value-indicator-thumb-gap)
-    );
-    inset-inline-start: 50%;
-    z-index: 2;
-    //min-inline-size: 32px;
-    padding: 8px 12px;
-    border-radius: 4px;
-    color: var(--rui-comp-slider-value-indicator-text-color);
-    background: var(--rui-comp-slider-value-indicator-color);
-    font-size: 14px;
-    line-height: 16px;
-    text-align: center;
-    user-select: none;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(-50%) scale(0.8);
-    transform-origin: center bottom;
-    transition:
-        opacity var(--rui-comp-slider-value-indicator-exit-duration) var(--rui-sys-motion-easing-accelerated),
-        transform var(--rui-comp-slider-value-indicator-exit-duration) var(--rui-sys-motion-easing-accelerated);
-
-    &::after {
-        position: absolute;
-        inset-block-start: 100%;
-        inset-inline-start: 50%;
-        border: var(--rui-comp-slider-value-indicator-pointer-size) solid transparent;
-        border-block-start-color: var(--rui-comp-slider-value-indicator-color);
-        content: "";
-        transform: translateX(-50%);
-    }
-
-    &--visible {
-        opacity: 1;
-        transform: translateX(-50%) scale(1);
-        transition-duration: var(--rui-comp-slider-value-indicator-enter-duration);
-        transition-timing-function: var(--rui-sys-motion-easing-decelerated);
-    }
-}
-
 .rui-slider__native-control {
     position: absolute;
     z-index: 4;
@@ -639,8 +667,7 @@ onBeforeUnmount(() => observer?.disconnect())
 
 @media (prefers-reduced-motion: reduce) {
     .rui-slider__active-track,
-    .rui-slider__thumb,
-    .rui-slider__value-indicator {
+    .rui-slider__thumb {
         transition-duration: 0ms !important;
     }
 }
