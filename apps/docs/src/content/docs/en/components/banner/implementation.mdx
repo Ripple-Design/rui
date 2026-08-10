@@ -1,0 +1,17 @@
+---
+title: Banner
+docSlug: components/banner
+tab: implementation
+locale: en
+designOrder: 128
+developOrder: 128
+api: /en/api/banner
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import BannerBasicDemo from "@docs/components/demos/banner/BannerBasicDemo.vue"
+import bannerBasicDemoSource from "@docs/components/demos/banner/BannerBasicDemo.vue?raw"
+
+<DemoBlock title="Banner" code={bannerBasicDemoSource} language="vue">
+    <BannerBasicDemo client:load />
+</DemoBlock>

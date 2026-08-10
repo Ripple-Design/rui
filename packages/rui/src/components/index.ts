@@ -39,6 +39,9 @@ export * from "./tile"
 export { default as RCard } from "./card/RCard.vue"
 export type * from "./card/types"
 
+export { default as RBanner } from "./banner/RBanner.vue"
+export type * from "./banner/types"
+
 export { default as RIcon } from "./icon/RIcon.vue"
 export { createIconFamily, isIconFamily, resolveIconSource } from "./icon/family"
 export type * from "./icon/types"
