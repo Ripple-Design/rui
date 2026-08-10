@@ -14,6 +14,13 @@ import { RTile } from "@ripple-design/rui"
             <template #text>Footer outside the image</template>
             <img alt="" src="/images/docs/components/tile/coast.svg" />
         </RTile>
+        <RTile>
+            <template #title>Single-line title</template>
+            <img alt="" src="/images/docs/components/tile/coast.svg" />
+        </RTile>
+        <RTile @click="() => undefined">
+            <img alt="" src="/images/docs/components/tile/coast.svg" />
+        </RTile>
     </ul>
 </template>
 

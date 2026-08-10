@@ -5,10 +5,10 @@
 
     color: rui.$color-on-surface;
 
-    p:not(.rui-text),
-    li:not(.rui-text),
-    td:not(.rui-text),
-    th:not(.rui-text) {
+    p:not(.rui-text):not(astro-island *),
+    li:not(.rui-text):not(astro-island *),
+    td:not(.rui-text):not(astro-island *),
+    th:not(.rui-text):not(astro-island *) {
         @include rui.typo-body1;
     }
 
@@ -18,53 +18,53 @@
         margin-block: 2rem 1rem;
     }
 
-    h3:not(.rui-text) {
+    h3:not(.rui-text):not(astro-island *) {
         @include rui.typo-headline3;
 
         margin-block: 1.5rem 0.75rem;
     }
 
-    h4:not(.rui-text) {
+    h4:not(.rui-text):not(astro-island *) {
         @include rui.typo-headline4;
 
         margin-block: 1.25rem 0.5rem;
     }
 
-    h5:not(.rui-text) {
+    h5:not(.rui-text):not(astro-island *) {
         @include rui.typo-headline5;
 
         margin-block: 1rem 0.5rem;
     }
 
-    h6:not(.rui-text) {
+    h6:not(.rui-text):not(astro-island *) {
         @include rui.typo-headline6;
 
         margin-block: 1rem 0.5rem;
     }
 
-    p:not(.rui-text) {
+    p:not(.rui-text):not(astro-island *) {
         margin-block: 0 1rem;
     }
 
-    ul,
-    ol {
+    ul:not(astro-island *),
+    ol:not(astro-island *) {
         margin-block: 0 1rem;
         padding-inline-start: 1.5rem;
     }
 
-    li:not(.rui-text) + li:not(.rui-text) {
+    li:not(.rui-text):not(astro-island *) + li:not(.rui-text):not(astro-island *) {
         margin-block-start: 0.5rem;
     }
 
-    a {
+    a:not(astro-island *) {
         color: rui.$color-primary;
     }
 
-    strong {
+    strong:not(astro-island *) {
         font-weight: 500;
     }
 
-    blockquote {
+    blockquote:not(astro-island *) {
         @include rui.typo-body2;
 
         margin: 1rem 0;
@@ -73,18 +73,18 @@
         color: rui.$color-on-surface-medium;
     }
 
-    code,
-    pre {
+    code:not(astro-island *),
+    pre:not(astro-island *) {
         @include rui.typo-body2;
     }
 
-    :not(pre) > code:not(.rui-text) {
+    :not(pre):not(astro-island *) > code:not(.rui-text):not(astro-island *) {
         padding: 0.125rem 0.375rem;
         border-radius: 4px;
         background: rui.$color-on-surface-outline;
     }
 
-    pre {
+    pre:not(astro-island *) {
         overflow-x: auto;
         margin: 0 0 1rem;
         padding: 1rem;
@@ -92,25 +92,25 @@
         background: rui.$color-surface-dark;
     }
 
-    table {
+    table:not(astro-island *) {
         width: 100%;
         margin-block: 1rem;
         border-collapse: collapse;
     }
 
-    th,
-    td {
+    th:not(astro-island *),
+    td:not(astro-island *) {
         padding: 0.75rem;
         border: 1px solid rui.$color-on-surface-outline;
         text-align: start;
         vertical-align: top;
     }
 
-    th {
+    th:not(astro-island *) {
         font-weight: 500;
     }
 
-    hr {
+    hr:not(astro-island *) {
         margin-block: 2rem;
         border: 0;
         border-block-start: 1px solid rui.$color-on-surface-outline;

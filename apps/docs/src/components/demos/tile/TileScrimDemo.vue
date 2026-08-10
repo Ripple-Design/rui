@@ -21,6 +21,13 @@ import { RTile } from "@ripple-design/rui"
             <template #text>Translucent footer scrim</template>
             <img alt="" src="/images/docs/components/tile/coast.svg" />
         </RTile>
+        <RTile mode="scrim">
+            <template #title>Single-line title</template>
+            <img alt="" src="/images/docs/components/tile/coast.svg" />
+        </RTile>
+        <RTile mode="scrim" @click="() => undefined">
+            <img alt="" src="/images/docs/components/tile/coast.svg" />
+        </RTile>
     </ul>
 </template>
 

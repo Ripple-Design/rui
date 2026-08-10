@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs, useId, useSlots } from "vue"
+import { computed, getCurrentInstance, onBeforeUpdate, ref, useAttrs, useId, useSlots } from "vue"
 
 import RIconButton from "@/components/button/RIconButton.vue"
 import RText from "@/components/text/RText.vue"
@@ -19,6 +19,8 @@ const emit = defineEmits<{
     (e: "click", event: MouseEvent): void
 }>()
 const attrs = useAttrs()
+const instance = getCurrentInstance()
+const hasClickListener = ref(instance?.vnode.props?.onClick != null)
 const slots = useSlots() as RTileSlots
 const titleId = useId()
 const textId = useId()
@@ -30,7 +32,12 @@ const hasBuiltInAction = computed(() => !hasCustomAction.value && props.actionIc
 const hasText = computed(() => hasTitle.value || hasSupporting.value)
 const labelledBy = computed(() => [hasTitle.value ? titleId : null, hasSupporting.value ? textId : null].filter(Boolean).join(" "))
 const isLink = computed(() => props.href != null && !props.disabled)
-const isAction = computed(() => (props.action || props.href != null) && !props.disabled)
+const isAction = computed(() => (props.action || props.href != null || hasClickListener.value) && !props.disabled)
+
+onBeforeUpdate(() => {
+    hasClickListener.value = instance?.vnode.props?.onClick != null
+})
+
 const surfaceTag = computed(() => {
     if (isLink.value) {
         return "a"
@@ -117,7 +124,7 @@ function handleClick(event: MouseEvent) {
             @click="handleClick"
         >
             <span class="rui-tile__media"><slot /></span>
-            <span class="rui-tile__scrim" aria-hidden="true" />
+            <span v-if="hasText" class="rui-tile__scrim" aria-hidden="true" />
         </component>
 
         <footer v-if="hasText && position === 'footer'" class="rui-tile__content">
@@ -178,12 +185,14 @@ function handleClick(event: MouseEvent) {
     display: block;
     box-sizing: border-box;
     inline-size: 100%;
+    align-self: start;
     overflow: hidden;
     border: 0;
     border-radius: 0;
     background: transparent;
     box-shadow: none;
     color: var(--rui-comp-tile-content-color);
+    line-height: 0;
     text-align: start;
     text-decoration: none;
 
@@ -211,6 +220,7 @@ function handleClick(event: MouseEvent) {
     z-index: 0;
     display: block;
     min-inline-size: 0;
+    line-height: 0;
 
     :deep(img),
     :deep(picture),

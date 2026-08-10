@@ -14,6 +14,13 @@ import { RTile } from "@ripple-design/rui"
             <template #text>Footer shadow gradient</template>
             <img alt="" src="/images/docs/components/tile/coast.svg" />
         </RTile>
+        <RTile mode="gradient">
+            <template #title>Single-line title</template>
+            <img alt="" src="/images/docs/components/tile/coast.svg" />
+        </RTile>
+        <RTile mode="gradient" @click="() => undefined">
+            <img alt="" src="/images/docs/components/tile/coast.svg" />
+        </RTile>
     </ul>
 </template>
 
