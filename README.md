@@ -6,7 +6,7 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [x] App bars: top
 - [ ] Backdrop
 - [ ] Banners
-- [ ] Bottom navigation
+- [x] Bottom navigation
 - [x] Buttons
 - [x] Buttons: floating action button
 - [x] Cards

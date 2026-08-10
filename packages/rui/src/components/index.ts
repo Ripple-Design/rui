@@ -70,6 +70,10 @@ export { default as RNavigationRail } from "./navigationRail/RNavigationRail.vue
 export { default as RNavigationRailItem } from "./navigationRail/RNavigationRailItem.vue"
 export type * from "./navigationRail/types"
 
+export { default as RBottomNavigation } from "./bottomNavigation/RBottomNavigation.vue"
+export { default as RBottomNavigationItem } from "./bottomNavigation/RBottomNavigationItem.vue"
+export type * from "./bottomNavigation/types"
+
 export { default as RTabBar } from "./tab/RTabBar.vue"
 export { default as RTab } from "./tab/RTab.vue"
 export type * from "./tab/types"

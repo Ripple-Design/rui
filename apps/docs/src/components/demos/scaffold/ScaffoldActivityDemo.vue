@@ -13,8 +13,8 @@ import {
     RList,
     RListItem,
     RScaffold,
-    RTab,
-    RTabBar,
+    RBottomNavigation,
+    RBottomNavigationItem,
     RTopAppBar,
 } from "@ripple-design/rui"
 import { computed, ref } from "vue"
@@ -81,13 +81,11 @@ const heading = computed(() => ({ updates: "Latest updates", tasks: "Assigned ta
         </div>
 
         <template #bottom-bar>
-            <nav class="scaffold-activity-demo__bottom-navigation" aria-label="Activity destinations">
-                <RTabBar v-model="destination" full-width :divider="false" aria-label="Activity destinations">
-                    <RTab value="updates" :icon="RIHomeOutlined">Updates</RTab>
-                    <RTab value="tasks" :icon="RIInboxOutlined">Tasks</RTab>
-                    <RTab value="saved" :icon="RIArchiveOutlined">Saved</RTab>
-                </RTabBar>
-            </nav>
+            <RBottomNavigation v-model="destination" aria-label="Activity destinations">
+                <RBottomNavigationItem value="updates" :icon="RIHomeOutlined">Updates</RBottomNavigationItem>
+                <RBottomNavigationItem value="tasks" :icon="RIInboxOutlined">Tasks</RBottomNavigationItem>
+                <RBottomNavigationItem value="saved" :icon="RIArchiveOutlined">Saved</RBottomNavigationItem>
+            </RBottomNavigation>
         </template>
 
         <template #fab>
@@ -110,11 +108,6 @@ const heading = computed(() => ({ updates: "Latest updates", tasks: "Assigned ta
 .scaffold-activity-demo__content h3 {
     margin: 0;
     padding: 12px 16px;
-}
-
-.scaffold-activity-demo__bottom-navigation {
-    border-block-start: 1px solid var(--rui-sys-color-on-surface-outline);
-    background: var(--rui-sys-color-surface);
 }
 
 :global(.demo-preview:fullscreen .scaffold-activity-demo) {

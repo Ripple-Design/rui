@@ -16,6 +16,8 @@ import {
     RCard,
     RCollapsingAppBar,
     RFab,
+    RBottomNavigation,
+    RBottomNavigationItem,
     RNavigationRail,
     RNavigationRailItem,
     RResponsiveGrid,
@@ -43,6 +45,7 @@ const clippedNavigation = ref(false)
 const navigationDrawer = ref(false)
 const railActive = ref("home")
 const drawerActive = ref("home")
+const bottomNavigationActive = ref("home")
 const bottomBar = ref(false)
 const bottomBarHideOnScroll = ref(false)
 const previewWidth = ref(100)
@@ -268,7 +271,13 @@ const previewStyle = computed(() => ({
             </template>
 
             <template v-if="bottomBar" #bottom-bar>
-                <footer class="scaffold-demo__bottom-bar">Bottom navigation preview</footer>
+                <RBottomNavigation v-model="bottomNavigationActive" aria-label="Bottom navigation preview">
+                    <RBottomNavigationItem value="home" :icon="RIHomeOutlined">Home</RBottomNavigationItem>
+                    <RBottomNavigationItem value="listen" :icon="RIPlayCircleOutlined">Listen</RBottomNavigationItem>
+                    <RBottomNavigationItem value="favorites" :icon="RIFavoriteBorderFilled" :selected-icon="RIFavoriteFilled">
+                        Favorites
+                    </RBottomNavigationItem>
+                </RBottomNavigation>
             </template>
 
             <template #fab>
@@ -354,12 +363,6 @@ const previewStyle = computed(() => ({
 .scaffold-demo__card p {
     margin: 0;
     line-height: 1.5;
-}
-
-.scaffold-demo__bottom-bar {
-    padding: 16px 24px;
-    background: var(--rui-sys-color-surface, #fff);
-    border-block-start: 1px solid var(--rui-sys-color-on-surface-outline, #747775);
 }
 
 :global(.demo-preview:fullscreen .scaffold-demo) {
