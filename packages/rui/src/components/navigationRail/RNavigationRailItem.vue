@@ -83,7 +83,7 @@ function handleClick() {
         @click="handleClick"
     >
         <span class="rui-navigation-rail-item__icon">
-            <RIcon v-if="selectedIconSource" :icon="selectedIconSource" :size="24" decorative />
+            <RIcon v-if="selectedIconSource" :icon="selectedIconSource" :size="24" emphasis="inherit" decorative />
         </span>
         <span class="rui-navigation-rail-item__label" :class="{ 'rui-navigation-rail-item__label--hidden': !showLabel }">
             <slot />

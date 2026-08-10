@@ -107,7 +107,7 @@ function handleSizeTransitionEnd(event: TransitionEvent) {
                 <span class="rui-touch-target rui-touch-target--interactive" aria-hidden="true" />
                 <span class="rui-fab__content">
                     <span v-if="icon" class="rui-fab__icon">
-                        <RIcon :icon="icon" :size="24" decorative />
+                        <RIcon :icon="icon" :size="24" emphasis="inherit" decorative />
                     </span>
                     <span v-if="hasLabel" class="rui-fab__label" :aria-hidden="isCollapsed ? 'true' : undefined">
                         <slot />
@@ -131,7 +131,7 @@ function handleSizeTransitionEnd(event: TransitionEvent) {
                 <span class="rui-touch-target rui-touch-target--interactive" aria-hidden="true" />
                 <span class="rui-fab__content">
                     <span v-if="icon" class="rui-fab__icon">
-                        <RIcon :icon="icon" :size="24" decorative />
+                        <RIcon :icon="icon" :size="24" emphasis="inherit" decorative />
                     </span>
                     <span v-if="hasLabel" class="rui-fab__label" :aria-hidden="isCollapsed ? 'true' : undefined">
                         <slot />

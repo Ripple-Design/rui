@@ -114,7 +114,7 @@ function handleClick() {
         @click="handleClick"
     >
         <span class="rui-tab__content">
-            <span v-if="icon" class="rui-tab__icon"><RIcon :icon="icon" :size="24" decorative /></span>
+            <span v-if="icon" class="rui-tab__icon"><RIcon :icon="icon" :size="24" emphasis="inherit" decorative /></span>
             <span class="rui-tab__label"><slot /></span>
         </span>
     </a>
@@ -129,7 +129,7 @@ function handleClick() {
         @click="handleClick"
     >
         <span class="rui-tab__content">
-            <span v-if="icon" class="rui-tab__icon"><RIcon :icon="icon" :size="24" decorative /></span>
+            <span v-if="icon" class="rui-tab__icon"><RIcon :icon="icon" :size="24" emphasis="inherit" decorative /></span>
             <span class="rui-tab__label"><slot /></span>
         </span>
     </button>

@@ -97,7 +97,7 @@ function handleClick(event: MouseEvent) {
             @click="handleClick"
         >
             <span v-if="hasLeading" class="rui-list-item__leading">
-                <slot name="leading"><RIcon :icon="icon" :size="24" decorative /></slot>
+                <slot name="leading"><RIcon :icon="icon" :size="24" emphasis="inherit" decorative /></slot>
             </span>
             <span class="rui-list-item__content">
                 <span class="rui-list-item__title"><slot /></span>

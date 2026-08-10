@@ -75,7 +75,7 @@ function clear() {
     >
         <template #start-icon>
             <slot name="start-icon">
-                <RIcon v-if="startIcon" :icon="startIcon" :size="24" decorative />
+                <RIcon v-if="startIcon" :icon="startIcon" :size="24" emphasis="inherit" decorative />
             </slot>
         </template>
 
@@ -98,7 +98,7 @@ function clear() {
         <template #end-icon>
             <slot name="end-icon">
                 <RIconButton v-if="showClear" :icon="clearIcon" :label="clearLabel" @click="clear" />
-                <RIcon v-else-if="endIcon" :icon="endIcon" :size="24" decorative />
+                <RIcon v-else-if="endIcon" :icon="endIcon" :size="24" emphasis="inherit" decorative />
             </slot>
         </template>
     </RFieldShell>

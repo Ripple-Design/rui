@@ -31,7 +31,7 @@ const isComponentSource = computed(() => !!resolvedIcon.value && typeof resolved
 const isStringSource = computed(() => typeof resolvedIcon.value === "string")
 const classes = computed(() => [
     "rui-icon",
-    `rui-icon--emphasis-${props.emphasis}`,
+    ...(props.emphasis === "inherit" ? [] : [`rui-icon--emphasis-${props.emphasis}`]),
 ])
 </script>
 

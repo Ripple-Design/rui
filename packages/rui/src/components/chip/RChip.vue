@@ -205,10 +205,10 @@ function handleRemove(event: MouseEvent) {
 
                 <span v-if="showLeadingIcon" class="rui-chip__leading" aria-hidden="true">
                     <span v-if="showSelectedIcon && resolvedType === 'input'" class="rui-chip__input-check">
-                        <RIcon :icon="checkIcon" :size="18" decorative />
+                        <RIcon :icon="checkIcon" :size="18" emphasis="inherit" decorative />
                     </span>
-                    <RIcon v-else-if="showSelectedIcon" :icon="checkIcon" :size="18" decorative />
-                    <RIcon v-else-if="icon" :icon="icon" :size="18" decorative />
+                    <RIcon v-else-if="showSelectedIcon" :icon="checkIcon" :size="18" emphasis="inherit" decorative />
+                    <RIcon v-else-if="icon" :icon="icon" :size="18" emphasis="inherit" decorative />
                 </span>
 
                 <span class="rui-chip__label">
@@ -217,7 +217,7 @@ function handleRemove(event: MouseEvent) {
             </button>
 
             <span v-if="showEndIcon" class="rui-chip__end-icon" aria-hidden="true">
-                <RIcon :icon="endIcon" :size="18" decorative />
+                <RIcon :icon="endIcon" :size="18" emphasis="inherit" decorative />
             </span>
 
             <button
@@ -232,7 +232,7 @@ function handleRemove(event: MouseEvent) {
                     class="rui-touch-target rui-touch-target--vertical rui-touch-target--interactive"
                     aria-hidden="true"
                 />
-                <RIcon :icon="removeIcon ?? cancelIcon" :size="18" decorative />
+                <RIcon :icon="removeIcon ?? cancelIcon" :size="18" emphasis="inherit" decorative />
             </button>
         </span>
     </RTouchTargetWrapper>

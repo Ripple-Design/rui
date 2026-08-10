@@ -225,7 +225,7 @@ function handleClick(event: MouseEvent) {
             <span class="rui-button__content">
                 <span v-if="hasTop" class="rui-button__top">
                     <slot v-if="$slots.top" name="top" />
-                    <RIcon v-else-if="topIcon" :icon="topIcon" :size="24" decorative />
+                    <RIcon v-else-if="topIcon" :icon="topIcon" :size="24" emphasis="inherit" decorative />
                 </span>
 
                 <span class="rui-button__main">
@@ -234,11 +234,12 @@ function handleClick(event: MouseEvent) {
                             v-if="showSelectedCheck || animateSelectedCheckSpacing"
                             :icon="selectedCheckIcon"
                             :size="iconSize"
+                            emphasis="inherit"
                             decorative
                             :class="selectedCheckClasses"
                         />
                         <slot v-else-if="$slots.leading" name="leading" />
-                        <RIcon v-else-if="icon" :icon="icon" :size="iconSize" decorative />
+                        <RIcon v-else-if="icon" :icon="icon" :size="iconSize" emphasis="inherit" decorative />
                     </span>
 
                     <span class="rui-button__label" v-if="hasLabel">
@@ -247,7 +248,7 @@ function handleClick(event: MouseEvent) {
 
                     <span v-if="hasTrailing" class="rui-button__trailing">
                         <slot v-if="$slots.trailing" name="trailing" />
-                        <RIcon v-else-if="endIcon" :icon="endIcon" :size="iconSize" decorative />
+                        <RIcon v-else-if="endIcon" :icon="endIcon" :size="iconSize" emphasis="inherit" decorative />
                     </span>
                 </span>
             </span>
@@ -276,7 +277,7 @@ function handleClick(event: MouseEvent) {
             <span class="rui-button__content">
                 <span v-if="hasTop" class="rui-button__top">
                     <slot v-if="$slots.top" name="top" />
-                    <RIcon v-else-if="topIcon" :icon="topIcon" :size="24" decorative />
+                    <RIcon v-else-if="topIcon" :icon="topIcon" :size="24" emphasis="inherit" decorative />
                 </span>
 
                 <span class="rui-button__main">
@@ -285,11 +286,12 @@ function handleClick(event: MouseEvent) {
                             v-if="showSelectedCheck || animateSelectedCheckSpacing"
                             :icon="selectedCheckIcon"
                             :size="iconSize"
+                            emphasis="inherit"
                             decorative
                             :class="selectedCheckClasses"
                         />
                         <slot v-else-if="$slots.leading" name="leading" />
-                        <RIcon v-else-if="icon" :icon="icon" :size="iconSize" decorative />
+                        <RIcon v-else-if="icon" :icon="icon" :size="iconSize" emphasis="inherit" decorative />
                     </span>
 
                     <span class="rui-button__label" v-if="hasLabel">
@@ -298,7 +300,7 @@ function handleClick(event: MouseEvent) {
 
                     <span v-if="hasTrailing" class="rui-button__trailing">
                         <slot v-if="$slots.trailing" name="trailing" />
-                        <RIcon v-else-if="endIcon" :icon="endIcon" :size="iconSize" decorative />
+                        <RIcon v-else-if="endIcon" :icon="endIcon" :size="iconSize" emphasis="inherit" decorative />
                     </span>
                 </span>
             </span>

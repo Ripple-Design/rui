@@ -21,7 +21,7 @@ import { RIcon, RRow, RSurface, RText } from "@ripple-design/rui"
         <RSurface color="primary" class="icon-demo__surface">
             <RRow gap="16px" align="center">
                 <RIcon :icon="RIAccountBalanceFilled" emphasis="high" decorative />
-                <RIcon :icon="RIAccountBalanceFilled" decorative />
+                <RIcon :icon="RIAccountBalanceFilled" emphasis="medium" decorative />
                 <RIcon :icon="RIAccountBalanceFilled" emphasis="low" decorative />
             </RRow>
         </RSurface>
