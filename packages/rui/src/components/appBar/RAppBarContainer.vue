@@ -56,6 +56,7 @@ const classes = computed(() => [
         "rui-app-bar-container--color-surface": props.color === "surface",
         "rui-app-bar-container--color-primary": props.color === "primary",
         "rui-app-bar-container--lifted": scrollState.value.lifted,
+        "rui-app-bar-container--elevated": !props.liftOnScroll || scrollState.value.lifted,
     },
 ])
 const style = computed(() => ({
@@ -129,7 +130,7 @@ onUnmounted(() => topInsetHandle?.dispose())
     block-size: var(--rui-comp-app-bar-expanded-height);
     margin-block-end: calc(-1 * var(--rui-comp-app-bar-expanded-height));
     overflow-anchor: none;
-    contain: layout paint;
+    contain: layout;
     box-shadow: none !important;
 }
 
@@ -151,8 +152,11 @@ onUnmounted(() => topInsetHandle?.dispose())
     pointer-events: none;
 }
 
-.rui-app-bar-container--lifted::after {
+.rui-app-bar-container--elevated::after {
     box-shadow: elevations.shadow(4);
+}
+
+.rui-app-bar-container--lifted::after {
     transition: box-shadow var(--rui-comp-app-bar-lift-duration) linear;
 }
 

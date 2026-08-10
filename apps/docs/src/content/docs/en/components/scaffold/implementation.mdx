@@ -9,9 +9,39 @@ api: /en/api/scaffold
 ---
 
 import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import ScaffoldActivityDemo from "@docs/components/demos/scaffold/ScaffoldActivityDemo.vue"
+import scaffoldActivityDemoSource from "@docs/components/demos/scaffold/ScaffoldActivityDemo.vue?raw"
 import ScaffoldBasicDemo from "@docs/components/demos/scaffold/ScaffoldBasicDemo.vue"
 import scaffoldBasicDemoSource from "@docs/components/demos/scaffold/ScaffoldBasicDemo.vue?raw"
+import ScaffoldComposeDemo from "@docs/components/demos/scaffold/ScaffoldComposeDemo.vue"
+import scaffoldComposeDemoSource from "@docs/components/demos/scaffold/ScaffoldComposeDemo.vue?raw"
+import ScaffoldNestedDemo from "@docs/components/demos/scaffold/ScaffoldNestedDemo.vue"
+import scaffoldNestedDemoSource from "@docs/components/demos/scaffold/ScaffoldNestedDemo.vue?raw"
+import ScaffoldProjectContextDemo from "@docs/components/demos/scaffold/ScaffoldProjectContextDemo.vue"
+import scaffoldProjectContextDemoSource from "@docs/components/demos/scaffold/ScaffoldProjectContextDemo.vue?raw"
+import ScaffoldWorkspaceDemo from "@docs/components/demos/scaffold/ScaffoldWorkspaceDemo.vue"
+import scaffoldWorkspaceDemoSource from "@docs/components/demos/scaffold/ScaffoldWorkspaceDemo.vue?raw"
 
-<DemoBlock title="Scaffold" code={scaffoldBasicDemoSource} language="vue">
+<DemoBlock title="Layout behavior playground" code={scaffoldBasicDemoSource} language="vue">
     <ScaffoldBasicDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Nested workflow" code={scaffoldNestedDemoSource} language="vue">
+    <ScaffoldNestedDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Workspace navigation" code={scaffoldWorkspaceDemoSource} language="vue">
+    <ScaffoldWorkspaceDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Persistent project context" code={scaffoldProjectContextDemoSource} language="vue">
+    <ScaffoldProjectContextDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Scrolling activity" code={scaffoldActivityDemoSource} language="vue">
+    <ScaffoldActivityDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Compose modal and seam FAB" code={scaffoldComposeDemoSource} language="vue">
+    <ScaffoldComposeDemo client:load />
 </DemoBlock>
