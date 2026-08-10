@@ -52,6 +52,7 @@ const emit = defineEmits<{
     (e: "update:open", value: boolean): void
     (e: "open"): void
     (e: "close"): void
+    (e: "ready", element: HTMLElement): void
 }>()
 
 const menuId = useId()
@@ -113,28 +114,36 @@ defineExpose({
 
 let resizeObserver: ResizeObserver | null = null
 
+function updatePopupWidth(element: HTMLElement) {
+    popupWidth.value = element.getBoundingClientRect().width
+    console.log("[RMenuLayer] update popup width", {
+        matchWidth: props.matchWidth,
+        popupWidth: popupWidth.value,
+        reference: element,
+    })
+}
+
 watch(
     [reference, () => props.matchWidth],
     ([element, matchWidth]) => {
         resizeObserver?.disconnect()
         resizeObserver = null
 
-        if (
-            !matchWidth ||
-            typeof HTMLElement === "undefined" ||
-            !(element instanceof HTMLElement) ||
-            typeof ResizeObserver === "undefined"
-        ) {
+        if (!matchWidth || typeof HTMLElement === "undefined" || !(element instanceof HTMLElement)) {
             return
         }
 
-        resizeObserver = new ResizeObserver(([entry]) => {
-            popupWidth.value = entry?.contentRect.width ?? element.getBoundingClientRect().width
+        updatePopupWidth(element)
+        if (typeof ResizeObserver === "undefined") {
+            return
+        }
+
+        resizeObserver = new ResizeObserver(() => {
+            updatePopupWidth(element)
         })
-        popupWidth.value = element.getBoundingClientRect().width
         resizeObserver.observe(element)
     },
-    { immediate: true },
+    { flush: "post", immediate: true },
 )
 
 watch(open, async (value, previous) => {
@@ -149,7 +158,7 @@ watch(open, async (value, previous) => {
         emit("open")
         await nextTick()
         if (props.matchWidth && typeof HTMLElement !== "undefined" && reference.value instanceof HTMLElement) {
-            popupWidth.value = reference.value.getBoundingClientRect().width
+            updatePopupWidth(reference.value)
         }
         await position.update()
         if (props.mode === "menu") {
@@ -223,6 +232,10 @@ onBeforeUnmount(() => {
         :floating-styles="floatingStyles"
         :open="open"
         :role="mode"
+        @ready="(element) => {
+            console.log('[RMenuLayer] forwarding ready', { element, open: open.value })
+            emit('ready', element)
+        }"
     >
         <RSurface :class="menuClasses" :elevation="8" @keydown="handleMenuKeyDown">
             <slot />

@@ -5,6 +5,7 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
+            "@/*": ["../../packages/rui/src/*"],
             "@docs/*": ["./src/*"],
             "@ripple-design/rui/playground": ["../../packages/rui/src/playground/index.ts"],
             "@ripple-design/rui": ["../../packages/rui/src/index.ts"],

@@ -26,6 +26,7 @@ const emit = defineEmits<{
     (e: "update:open", value: boolean): void
     (e: "open"): void
     (e: "close"): void
+    (e: "ready", element: HTMLElement): void
 }>()
 
 const slots = defineSlots<RMenuSlots>()
@@ -158,6 +159,10 @@ defineExpose({
         @update:open="handleLayerOpenUpdate"
         @open="emit('open')"
         @close="emit('close')"
+        @ready="(element) => {
+            console.log('[RMenu] forwarding ready', { element, open: open.value })
+            emit('ready', element)
+        }"
     >
         <slot />
     </RMenuLayer>

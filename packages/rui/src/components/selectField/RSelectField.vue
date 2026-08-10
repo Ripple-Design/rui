@@ -48,7 +48,7 @@ const fieldRef = computed(() => shellRef.value?.element ?? null)
 const matchMenuWidth = ref(false)
 const menuWidth = ref<number | null>(null)
 let measureFrame = 0
-let resizeObserver: ResizeObserver | null = null
+let measurementGeneration = 0
 
 const optionMatchesModel = (option: RSelectOptionRecord) => Object.is(toRaw(option.value), toRaw(model.value))
 const selectedOption = computed(() => options.value.find(optionMatchesModel))
@@ -112,12 +112,16 @@ function setInitialActiveOption() {
 }
 
 function openSelect() {
+    console.log("[RSelectField] open", { disabled: props.disabled })
     if (props.disabled) {
         return
     }
 
     restoreMenuFocus.value = true
     setInitialActiveOption()
+    ++measurementGeneration
+    cancelAnimationFrame(measureFrame)
+    measureFrame = 0
     menuWidth.value = null
     matchMenuWidth.value = false
     open.value = true
@@ -125,29 +129,43 @@ function openSelect() {
 }
 
 async function measureMenuWidth() {
+    const generation = ++measurementGeneration
+    console.log("[RSelectField] measurement start", { generation, open: open.value })
     if (!open.value) {
         return
     }
 
     if (matchMenuWidth.value) {
         matchMenuWidth.value = false
+        menuWidth.value = null
         await nextTick()
+        if (!open.value || generation !== measurementGeneration) {
+            return
+        }
     }
 
     await nextTick()
-    if (!open.value) {
+    if (!open.value || generation !== measurementGeneration) {
         return
     }
 
     await menuRef.value?.updatePosition()
+    if (!open.value || generation !== measurementGeneration) {
+        return
+    }
+
     const menuElement = menuRef.value?.element
     const fieldElement = fieldRef.value
+    console.log("[RSelectField] measurement elements", { fieldElement, menuElement })
     if (!(menuElement instanceof HTMLElement) || !(fieldElement instanceof HTMLElement)) {
+        console.log("[RSelectField] measurement aborted: missing element")
         return
     }
 
     const measuredWidth = menuElement.getBoundingClientRect().width
     const fieldWidth = fieldElement.getBoundingClientRect().width
+    console.log("[RSelectField] natural widths", { fieldWidth, measuredWidth })
+
     if (measuredWidth <= fieldWidth + 0.5) {
         menuWidth.value = null
     } else {
@@ -156,6 +174,10 @@ async function measureMenuWidth() {
 
     matchMenuWidth.value = true
     await nextTick()
+    if (!open.value || generation !== measurementGeneration) {
+        return
+    }
+
     await menuRef.value?.updatePosition()
 }
 
@@ -166,6 +188,7 @@ function scheduleMenuWidthMeasurement() {
 
     cancelAnimationFrame(measureFrame)
     measureFrame = requestAnimationFrame(() => {
+        measureFrame = 0
         void measureMenuWidth()
     })
 }
@@ -175,6 +198,9 @@ function restoreFilterText() {
 }
 
 function close(restoreFocus = true) {
+    ++measurementGeneration
+    cancelAnimationFrame(measureFrame)
+    measureFrame = 0
     open.value = false
     matchMenuWidth.value = false
     menuWidth.value = null
@@ -186,6 +212,13 @@ function close(restoreFocus = true) {
         triggerRef.value?.focus()
     } else {
         triggerRef.value?.blur()
+    }
+}
+
+function handleMenuReady() {
+    console.log("[RSelectField] menu ready", { open: open.value })
+    if (open.value) {
+        void measureMenuWidth()
     }
 }
 
@@ -261,27 +294,9 @@ watch(filteredOptions, () => {
     }
 })
 
-watch(
-    fieldRef,
-    (element) => {
-        resizeObserver?.disconnect()
-        resizeObserver = null
-
-        if (typeof ResizeObserver === "undefined" || !(element instanceof HTMLElement)) {
-            return
-        }
-
-        resizeObserver = new ResizeObserver(() => {
-            scheduleMenuWidthMeasurement()
-        })
-        resizeObserver.observe(element)
-    },
-    { immediate: true },
-)
-
 onBeforeUnmount(() => {
+    ++measurementGeneration
     cancelAnimationFrame(measureFrame)
-    resizeObserver?.disconnect()
 })
 </script>
 
@@ -388,6 +403,7 @@ onBeforeUnmount(() => {
             :reference="fieldRef"
             :restore-focus="restoreMenuFocus"
             :align="align"
+            @ready="handleMenuReady"
             @update:open="handleMenuOpenUpdate"
         >
             <RMenuGroup>

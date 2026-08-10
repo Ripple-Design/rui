@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { Teleport, computed, onMounted, ref, type StyleValue } from "vue"
+import { Teleport, computed, onMounted, ref, watch, type StyleValue } from "vue"
 
 import { ensureFloatingPortalRoot, useFloatingPortalTarget } from "@/foundations"
 
 import type { RFloatingLayerProps } from "./types"
 
 const props = defineProps<RFloatingLayerProps>()
+const emit = defineEmits<{
+    (e: "ready", element: HTMLElement): void
+}>()
 
 const portalReady = ref(false)
 const fallbackPortalTarget = ref<HTMLElement | null>(null)
@@ -24,6 +27,17 @@ onMounted(() => {
     }
     portalReady.value = true
 })
+
+watch(
+    layerRef,
+    (element) => {
+        if (element) {
+            console.log("[RFloatingLayer] ready", { element, open: props.open })
+            emit("ready", element)
+        }
+    },
+    { flush: "post" },
+)
 
 defineExpose({
     element: layerRef,

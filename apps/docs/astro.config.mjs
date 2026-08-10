@@ -22,6 +22,7 @@ export default defineConfig({
         resolve: {
             dedupe: ["vue"],
             alias: {
+                "@": ruiSrc,
                 "@docs": docsSrc,
                 "@ripple-design/rui/playground": path.join(ruiSrc, "playground/index.ts"),
                 "@ripple-design/rui/styles.css": path.join(ruiSrc, "styles/index.scss"),

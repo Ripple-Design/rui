@@ -102,6 +102,9 @@ function applySpan(el: HTMLElement, binding: DirectiveBinding<GridSpanValue>, pr
 
 function createSpanDirective(property: SpanProperty): Directive<HTMLElement, GridSpanValue> {
     return {
+        created(el, binding) {
+            applySpan(el, binding, property)
+        },
         mounted(el, binding) {
             applySpan(el, binding, property)
         },
