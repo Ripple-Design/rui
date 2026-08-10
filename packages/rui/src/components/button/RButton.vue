@@ -26,6 +26,9 @@ const props = withDefaults(defineProps<RButtonProps>(), {
 })
 
 const attrs = useAttrs()
+const emit = defineEmits<{
+    (event: "click", value: MouseEvent): void
+}>()
 const slots: Slots = useSlots()
 const selectedCheckIcon = createIconFamily(RICheckFilled, RICheckOutlined, RICheckRounded, RICheckSharp, RICheckTwoTone)
 const interactiveRef = ref<HTMLElement | null>(null)
@@ -190,6 +193,8 @@ function handleClick(event: MouseEvent) {
     if (isSelectableInGroup.value) {
         group?.activate(buttonId)
     }
+
+    emit("click", event)
 }
 </script>
 
