@@ -168,9 +168,9 @@ const previewStyle = computed(() => ({
             :fab-placement="fabPlacement"
             :bottom-bar-hide-on-scroll="bottomBarHideOnScroll"
         >
-            <template v-if="(navigationRail || navigationDrawer) && !clippedNavigation" #navigation>
+            <template v-if="navigationDrawer || (navigationRail && !clippedNavigation)" #navigation>
                 <div class="scaffold-demo__navigation">
-                    <RNavigationRail v-if="navigationRail" v-model="railActive" aria-label="Primary navigation rail">
+                    <RNavigationRail v-if="navigationRail && !clippedNavigation" v-model="railActive" aria-label="Primary navigation rail">
                         <template #top>App</template>
                         <RNavigationRailItem value="home" :icon="RIHomeOutlined">Home</RNavigationRailItem>
                         <RNavigationRailItem value="listen" :icon="RIPlayCircleOutlined">Listen</RNavigationRailItem>

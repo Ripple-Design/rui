@@ -236,6 +236,8 @@ provide(scaffoldContextKey, {
 .rui-scaffold__navigation {
     grid-column: 1;
     grid-row: 1 / -1;
+    inline-size: max-content;
+    justify-self: start;
 }
 
 .rui-scaffold__side-sheet {
@@ -280,6 +282,18 @@ provide(scaffoldContextKey, {
     position: relative;
     inset-block-start: auto;
     margin-block-end: 0;
+}
+
+.rui-scaffold:has(> .rui-scaffold__navigation) > .rui-scaffold__app-bar {
+    grid-column: 2 / -1;
+}
+
+.rui-scaffold:has(> .rui-scaffold__side-sheet) > .rui-scaffold__app-bar {
+    grid-column: 1 / 3;
+}
+
+.rui-scaffold:has(> .rui-scaffold__navigation):has(> .rui-scaffold__side-sheet) > .rui-scaffold__app-bar {
+    grid-column: 2 / 3;
 }
 
 .rui-scaffold__main {
