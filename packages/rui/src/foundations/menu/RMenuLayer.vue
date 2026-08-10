@@ -232,10 +232,12 @@ onBeforeUnmount(() => {
         :floating-styles="floatingStyles"
         :open="open"
         :role="mode"
-        @ready="(element) => {
-            console.log('[RMenuLayer] forwarding ready', { element, open: open.value })
-            emit('ready', element)
-        }"
+        @ready="
+            (element) => {
+                console.log('[RMenuLayer] forwarding ready', { element, open: open })
+                emit('ready', element)
+            }
+        "
     >
         <RSurface :class="menuClasses" :elevation="8" @keydown="handleMenuKeyDown">
             <slot />

@@ -1,14 +1,5 @@
 <script setup lang="ts">
-import {
-    cloneVNode,
-    computed,
-    defineComponent,
-    onMounted,
-    ref,
-    useId,
-    watch,
-    type VNode,
-} from "vue"
+import { cloneVNode, computed, defineComponent, onMounted, ref, useId, watch, type VNode } from "vue"
 
 import RMenuLayer from "@/foundations/menu/RMenuLayer.vue"
 
@@ -159,10 +150,12 @@ defineExpose({
         @update:open="handleLayerOpenUpdate"
         @open="emit('open')"
         @close="emit('close')"
-        @ready="(element) => {
-            console.log('[RMenu] forwarding ready', { element, open: open.value })
-            emit('ready', element)
-        }"
+        @ready="
+            (element) => {
+                console.log('[RMenu] forwarding ready', { element, open: open })
+                emit('ready', element)
+            }
+        "
     >
         <slot />
     </RMenuLayer>
