@@ -27,7 +27,8 @@ provide(navigationRailKey, {
 </script>
 
 <template>
-    <RSurface v-bind="attrs" :class="classes" as="nav" :elevation="8">
+    <RSurface v-bind="attrs" :class="classes" as="nav" :elevation="0">
+        <div class="rui-navigation-rail__divider" aria-hidden="true" />
         <div v-if="$slots.top" class="rui-navigation-rail__top">
             <slot name="top" />
         </div>
@@ -39,9 +40,9 @@ provide(navigationRailKey, {
 
 <style scoped lang="scss">
 @use "@/styles/color";
-@use "@/styles/elevations";
 
 .rui-navigation-rail {
+    --rui-comp-navigation-rail-divider-color: #{color.$on-surface-outline};
     display: inline-flex;
     flex-direction: column;
     align-items: center;
@@ -60,6 +61,15 @@ provide(navigationRailKey, {
     &--compact {
         width: 56px;
     }
+}
+
+.rui-navigation-rail__divider {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    inline-size: 1px;
+    background-color: var(--rui-comp-navigation-rail-divider-color);
+    pointer-events: none;
 }
 
 .rui-navigation-rail__top {
