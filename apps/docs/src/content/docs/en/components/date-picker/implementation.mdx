@@ -1,0 +1,23 @@
+---
+title: Date picker
+docSlug: components/date-picker
+tab: implementation
+locale: en
+designOrder: 150
+developOrder: 150
+api: /en/api/date-picker
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import DatePickerBasicDemo from "@docs/components/demos/datePicker/DatePickerBasicDemo.vue"
+import datePickerBasicDemoSource from "@docs/components/demos/datePicker/DatePickerBasicDemo.vue?raw"
+import DateRangePickerBasicDemo from "@docs/components/demos/dateRangePicker/DateRangePickerBasicDemo.vue"
+import dateRangePickerBasicDemoSource from "@docs/components/demos/dateRangePicker/DateRangePickerBasicDemo.vue?raw"
+
+<DemoBlock title="Date picker" code={datePickerBasicDemoSource} language="vue">
+    <DatePickerBasicDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Date range picker" code={dateRangePickerBasicDemoSource} language="vue">
+    <DateRangePickerBasicDemo client:load />
+</DemoBlock>

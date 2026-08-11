@@ -1,7 +1,7 @@
 {
     "name": "@ripple-design/rux-date-time-picker",
     "version": "0.1.0",
-    "description": "Date and time picker UI package for Vue 3",
+    "description": "Material 2 date and date range pickers for Vue 3",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Ripple-Design/rui.git",
@@ -33,6 +33,7 @@
         "lint:fix": "oxlint . --fix"
     },
     "dependencies": {
+        "@ripple-design/icons": "^1.0.7",
         "@ripple-design/rui": "workspace:*"
     },
     "devDependencies": {

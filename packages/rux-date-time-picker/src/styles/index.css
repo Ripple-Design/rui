@@ -1,1 +1,285 @@
 @import "@ripple-design/rui/styles.css";
+
+:root {
+    --rui-comp-date-picker-surface-color: var(--rui-sys-color-surface);
+    --rui-comp-date-picker-header-color: var(--rui-sys-color-primary);
+    --rui-comp-date-picker-on-header-color: var(--rui-sys-color-on-primary);
+    --rui-comp-date-picker-on-surface-color: var(--rui-sys-color-on-surface);
+    --rui-comp-date-picker-disabled-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0.38);
+    --rui-comp-date-picker-range-color: rgb(from var(--rui-sys-color-primary) r g b / 0.12);
+    --rui-comp-date-picker-content-padding: 12px;
+    --rui-comp-date-picker-day-width: 36px;
+    --rui-comp-date-picker-day-height: 32px;
+    --rui-comp-date-picker-day-corner: 15px;
+    --rui-comp-date-picker-navigation-height: 48px;
+    --rui-comp-date-picker-header-height: 120px;
+    --rui-comp-date-picker-action-height: 52px;
+}
+
+.rui-date-picker-dialog .rui-dialog {
+    width: fit-content;
+    max-width: calc(100vw - 32px);
+    max-height: min(560px, calc(100vh - 96px));
+    background: var(--rui-comp-date-picker-surface-color);
+}
+
+.rui-date-picker-dialog .rui-dialog__content {
+    overflow: hidden;
+}
+
+.rui-date-picker-dialog .rui-dialog__content-body {
+    padding: 0;
+}
+
+.rui-date-picker-dialog .rui-dialog__footer {
+    min-height: var(--rui-comp-date-picker-action-height);
+}
+
+.rui-date-picker__header {
+    position: relative;
+    box-sizing: border-box;
+    min-height: var(--rui-comp-date-picker-header-height);
+    padding: 24px var(--rui-comp-date-picker-content-padding) 16px;
+    color: var(--rui-comp-date-picker-on-header-color);
+    background: var(--rui-comp-date-picker-header-color);
+}
+
+.rui-date-picker__title {
+    margin: 0;
+    font-family: var(--rui-sys-typo-font-family);
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.rui-date-picker__selection {
+    max-width: calc(100% - 52px);
+    margin: 8px 0 0;
+    font-family: var(--rui-sys-typo-font-family);
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 40px;
+    letter-spacing: 0.25px;
+}
+
+.rui-date-picker__mode-toggle {
+    position: absolute;
+    inset-block-start: 20px;
+    inset-inline-end: 8px;
+    --rui-icon-button-color: var(--rui-comp-date-picker-on-header-color);
+}
+
+.rui-date-picker__fullscreen-actions {
+    position: absolute;
+    inset-block-start: 8px;
+    inset-inline-end: 56px;
+    display: flex;
+    gap: 4px;
+    --rui-button-color: var(--rui-comp-date-picker-on-header-color);
+}
+
+.rui-date-picker__content {
+    min-width: calc((var(--rui-comp-date-picker-day-width) * 7) + (var(--rui-comp-date-picker-content-padding) * 2));
+}
+
+.rui-date-picker__live-message {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.rui-date-picker__calendar {
+    padding: 0 var(--rui-comp-date-picker-content-padding) var(--rui-comp-date-picker-content-padding);
+}
+
+.rui-date-picker__navigation {
+    display: grid;
+    grid-template-columns: 48px 1fr 48px;
+    align-items: center;
+    min-height: var(--rui-comp-date-picker-navigation-height);
+}
+
+.rui-date-picker__month-toggle,
+.rui-date-picker__year {
+    border: 0;
+    color: var(--rui-comp-date-picker-on-surface-color);
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+}
+
+.rui-date-picker__month-toggle {
+    justify-self: center;
+    font-family: var(--rui-sys-typo-font-family);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 22px;
+    letter-spacing: 0.1px;
+}
+
+.rui-date-picker__weekdays,
+.rui-date-picker__week {
+    display: grid;
+    grid-template-columns: repeat(7, var(--rui-comp-date-picker-day-width));
+}
+
+.rui-date-picker__weekdays {
+    height: 24px;
+    color: rgb(from var(--rui-comp-date-picker-on-surface-color) r g b / 0.6);
+    font: var(--rui-sys-typescale-caption-font, 400 12px / 16px sans-serif);
+    text-align: center;
+}
+
+.rui-date-picker__day-wrap {
+    position: relative;
+    display: grid;
+    place-items: center;
+    inline-size: var(--rui-comp-date-picker-day-width);
+    block-size: var(--rui-comp-date-picker-day-height);
+}
+
+.rui-date-picker__day {
+    z-index: 1;
+    box-sizing: border-box;
+    inline-size: var(--rui-comp-date-picker-day-width);
+    block-size: var(--rui-comp-date-picker-day-height);
+    border: 1px solid transparent;
+    border-radius: var(--rui-comp-date-picker-day-corner);
+    color: var(--rui-comp-date-picker-on-surface-color);
+    background: transparent;
+    font: var(--rui-sys-typescale-body-2-font, 400 14px / 20px sans-serif);
+    cursor: pointer;
+}
+
+.rui-date-picker__day::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    content: "";
+}
+
+.rui-date-picker__day:hover:not(:disabled)::after {
+    background: rgb(from var(--rui-comp-date-picker-on-surface-color) r g b / 0.08);
+}
+
+.rui-date-picker__day:focus-visible {
+    outline: 2px solid var(--rui-sys-color-secondary);
+    outline-offset: 2px;
+}
+
+.rui-date-picker__day--selected,
+.rui-date-picker__year--selected {
+    color: var(--rui-comp-date-picker-on-header-color);
+    background: var(--rui-comp-date-picker-header-color);
+}
+
+.rui-date-picker__day--today:not(.rui-date-picker__day--selected) {
+    border-color: var(--rui-comp-date-picker-header-color);
+}
+
+.rui-date-picker__day--disabled {
+    color: var(--rui-comp-date-picker-disabled-color);
+    cursor: default;
+}
+
+.rui-date-picker__range-fill {
+    position: absolute;
+    inset-block: 0;
+    inset-inline: 0;
+    background: var(--rui-comp-date-picker-range-color);
+}
+
+.rui-date-picker__year-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 88px);
+    gap: 8px;
+    max-height: 336px;
+    overflow: auto;
+    padding: 24px 12px;
+}
+
+.rui-date-picker__year {
+    min-height: 52px;
+    border-radius: 18px;
+    font: var(--rui-sys-typescale-body-1-font, 400 16px / 24px sans-serif);
+}
+
+.rui-date-picker__year:focus-visible {
+    outline: 2px solid var(--rui-sys-color-secondary);
+    outline-offset: 2px;
+}
+
+.rui-date-picker__text-inputs {
+    display: grid;
+    gap: 8px;
+    padding: 16px var(--rui-comp-date-picker-content-padding);
+}
+
+@media (min-width: 481px) and (min-height: 481px) {
+    :root {
+        --rui-comp-date-picker-day-width: 48px;
+        --rui-comp-date-picker-day-height: 48px;
+        --rui-comp-date-picker-day-corner: 22px;
+    }
+}
+
+@media (max-width: 480px), (max-height: 480px) {
+    .rui-date-picker-dialog .rui-dialog__content {
+        overflow: hidden;
+    }
+
+    .rui-date-picker-dialog .rui-dialog__footer {
+        display: none;
+    }
+
+    .rui-date-picker__header {
+        min-height: 128px;
+        padding-inline: 16px;
+    }
+
+    .rui-date-picker__content {
+        min-width: 0;
+    }
+
+    .rui-date-picker__calendar--fullscreen {
+        padding-block-end: 24px;
+    }
+
+    .rui-date-picker__fullscreen-month {
+        margin: 20px 0 12px;
+        color: var(--rui-comp-date-picker-on-surface-color);
+        font: var(--rui-sys-typescale-subtitle-1-font, 500 16px / 24px sans-serif);
+    }
+
+    .rui-date-picker__weekdays,
+    .rui-date-picker__week {
+        grid-template-columns: repeat(7, minmax(40px, 1fr));
+    }
+
+    .rui-date-picker__day-wrap,
+    .rui-date-picker__day {
+        inline-size: 100%;
+        min-inline-size: 40px;
+    }
+
+    .rui-date-picker__day-wrap,
+    .rui-date-picker__day {
+        block-size: 48px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rui-date-picker-dialog *,
+    .rui-date-picker-dialog *::before,
+    .rui-date-picker-dialog *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0ms !important;
+        animation-duration: 0ms !important;
+    }
+}

@@ -25,7 +25,7 @@ export default defineConfig({
             fileName: (_format, entryName) => `es/${entryName}.js`,
         },
         rolldownOptions: {
-            external: ["vue", "@ripple-design/rui"],
+            external: ["vue", "@ripple-design/rui", "@ripple-design/icons"],
             output: {
                 assetFileNames: (info) => (info.name === "styles.css" ? "rux-date-time-picker.css" : "[name][extname]"),
             },
