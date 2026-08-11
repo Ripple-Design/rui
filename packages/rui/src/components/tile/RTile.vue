@@ -353,6 +353,16 @@ function handleClick(event: MouseEvent) {
     color: var(--rui-comp-tile-overlay-content-color);
 }
 
+.rui-tile--action.rui-tile--scrim .rui-tile__content,
+.rui-tile--action.rui-tile--gradient .rui-tile__content {
+    pointer-events: none;
+}
+
+.rui-tile--action.rui-tile--scrim .rui-tile__action,
+.rui-tile--action.rui-tile--gradient .rui-tile__action {
+    pointer-events: auto;
+}
+
 .rui-tile--scrim .rui-tile__text,
 .rui-tile--gradient .rui-tile__text {
     color: var(--rui-comp-tile-overlay-text-color);
