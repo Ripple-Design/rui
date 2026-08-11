@@ -14,10 +14,11 @@ const drawer = inject(navigationDrawerKey, null)
 const group = inject(navigationDrawerGroupKey, null)
 const itemId = Symbol("navigationDrawerItem")
 const iconId = Symbol("navigationDrawerItemIcon")
-const interactiveRef = ref<HTMLButtonElement | null>(null)
+const interactiveRef = ref<HTMLElement | null>(null)
 const indicatorRef = ref<HTMLElement | null>(null)
 const selected = computed(() => drawer?.isSelected(props.value) ?? false)
 const selectedIcon = computed(() => (selected.value && props.selectedIcon ? props.selectedIcon : props.icon))
+const isLink = computed(() => props.href != null)
 const hasIcon = computed(() => !!props.icon || !!props.selectedIcon)
 const rippleOptions = computed<RippleOptions>(() => {
     if (props.ripple === false) return { disabled: true, getSurfaceTarget: () => indicatorRef.value }
@@ -47,19 +48,30 @@ onBeforeUnmount(() => {
 })
 
 function handleClick() {
+    if (isLink.value) return
     drawer?.activate(itemId)
 }
 </script>
 
 <template>
-    <button ref="interactiveRef" v-bind="attrs" v-ripple="rippleOptions" :class="classes" type="button" :aria-current="selected ? 'page' : undefined" @click="handleClick">
+    <component
+        :is="isLink ? 'a' : 'button'"
+        ref="interactiveRef"
+        v-bind="attrs"
+        v-ripple="rippleOptions"
+        :class="classes"
+        :href="props.href"
+        :type="isLink ? undefined : 'button'"
+        :aria-current="selected ? 'page' : undefined"
+        @click="handleClick"
+    >
         <span ref="indicatorRef" class="rui-navigation-drawer-item__indicator">
             <span v-if="hasIcon || group?.hasIcon.value" class="rui-navigation-drawer-item__icon" :class="{ 'rui-navigation-drawer-item__icon--empty': !selectedIcon }">
                 <RIcon v-if="selectedIcon" :icon="selectedIcon" :size="24" decorative />
             </span>
             <span class="rui-navigation-drawer-item__label"><slot /></span>
         </span>
-    </button>
+    </component>
 </template>
 
 <style scoped lang="scss">
@@ -86,13 +98,14 @@ function handleClick() {
 
     position: relative;
     box-sizing: border-box;
-    display: block;
+    display: flow-root;
     inline-size: 100%;
     min-block-size: 48px;
     padding: 0;
     color: var(--rui-comp-navigation-drawer-item-text-color);
     background-color: transparent;
     text-align: start;
+    text-decoration: none;
 
     &:disabled {
         color: #{color.$on-surface-low};
