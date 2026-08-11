@@ -51,14 +51,14 @@ defineExpose({
         variant="elevated"
         :elevation="16"
     >
-        <header v-if="hasHeader" class="rui-navigation-drawer__header">
-            <slot name="header">
-                <h2 :id="titleId" class="rui-navigation-drawer__title">
-                    <slot name="title">{{ title }}</slot>
-                </h2>
-            </slot>
-        </header>
         <div class="rui-navigation-drawer__content" :class="{ 'rui-navigation-drawer__content--headerless': !hasHeader }" data-rui-modal-scrollable>
+            <header v-if="hasHeader" class="rui-navigation-drawer__header">
+                <slot name="header">
+                    <h2 :id="titleId" class="rui-navigation-drawer__title">
+                        <slot name="title">{{ title }}</slot>
+                    </h2>
+                </slot>
+            </header>
             <slot />
         </div>
     </RSurface>
@@ -66,6 +66,7 @@ defineExpose({
 
 <style scoped lang="scss">
 @use "@/styles/color";
+@use "@/styles/scrollbar";
 @use "@/styles/typography";
 
 .rui-navigation-drawer {
@@ -74,8 +75,7 @@ defineExpose({
     block-size: 100%;
     min-block-size: 0;
     overflow: hidden;
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
+    display: block;
     --rui-surface-shape-start-start: 0;
     --rui-surface-shape-start-end: 0;
     --rui-surface-shape-end-start: 0;
@@ -97,6 +97,10 @@ defineExpose({
 }
 
 .rui-navigation-drawer__content {
+    @include scrollbar.scrollbar;
+
+    box-sizing: border-box;
+    block-size: 100%;
     min-block-size: 0;
     overflow: auto;
     overscroll-behavior: contain;
