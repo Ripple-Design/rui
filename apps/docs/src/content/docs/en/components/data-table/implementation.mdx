@@ -1,0 +1,59 @@
+---
+title: Data tables
+docSlug: components/data-table
+tab: implementation
+locale: en
+designOrder: 152
+developOrder: 152
+api: /en/api/data-table
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import DataTableBasicDemo from "@docs/components/demos/dataTable/DataTableBasicDemo.vue"
+import dataTableBasicDemoSource from "@docs/components/demos/dataTable/DataTableBasicDemo.vue?raw"
+import DataTableSelectionDemo from "@docs/components/demos/dataTable/DataTableSelectionDemo.vue"
+import dataTableSelectionDemoSource from "@docs/components/demos/dataTable/DataTableSelectionDemo.vue?raw"
+import DataTableExpansionDemo from "@docs/components/demos/dataTable/DataTableExpansionDemo.vue"
+import dataTableExpansionDemoSource from "@docs/components/demos/dataTable/DataTableExpansionDemo.vue?raw"
+import DataTableGroupingDemo from "@docs/components/demos/dataTable/DataTableGroupingDemo.vue"
+import dataTableGroupingDemoSource from "@docs/components/demos/dataTable/DataTableGroupingDemo.vue?raw"
+import DataTableLayoutDemo from "@docs/components/demos/dataTable/DataTableLayoutDemo.vue"
+import dataTableLayoutDemoSource from "@docs/components/demos/dataTable/DataTableLayoutDemo.vue?raw"
+import DataTableStatesDemo from "@docs/components/demos/dataTable/DataTableStatesDemo.vue"
+import dataTableStatesDemoSource from "@docs/components/demos/dataTable/DataTableStatesDemo.vue?raw"
+import DataTableServerDemo from "@docs/components/demos/dataTable/DataTableServerDemo.vue"
+import dataTableServerDemoSource from "@docs/components/demos/dataTable/DataTableServerDemo.vue?raw"
+import DataTableVirtualDemo from "@docs/components/demos/dataTable/DataTableVirtualDemo.vue"
+import dataTableVirtualDemoSource from "@docs/components/demos/dataTable/DataTableVirtualDemo.vue?raw"
+
+<DemoBlock title="Client table" code={dataTableBasicDemoSource} language="vue">
+    <DataTableBasicDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Selection" code={dataTableSelectionDemoSource} language="vue">
+    <DataTableSelectionDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Expansion" code={dataTableExpansionDemoSource} language="vue">
+    <DataTableExpansionDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Grouping" code={dataTableGroupingDemoSource} language="vue">
+    <DataTableGroupingDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Layout" code={dataTableLayoutDemoSource} language="vue">
+    <DataTableLayoutDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="States and structural slots" code={dataTableStatesDemoSource} language="vue">
+    <DataTableStatesDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Server table" code={dataTableServerDemoSource} language="vue">
+    <DataTableServerDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Virtual table" code={dataTableVirtualDemoSource} language="vue">
+    <DataTableVirtualDemo client:load />
+</DemoBlock>
