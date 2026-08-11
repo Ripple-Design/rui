@@ -12,8 +12,10 @@
         "docs": "pnpm --filter docs dev",
         "generate:api-docs": "node scripts/generate-api-docs.mjs",
         "build:video-player": "pnpm --filter rux-video-player build",
+        "build:date-time-picker": "pnpm --filter rux-date-time-picker build",
         "lint:rui": "pnpm --filter rui lint",
         "lint:video-player": "pnpm --filter rux-video-player lint",
+        "lint:date-time-picker": "pnpm --filter rux-date-time-picker lint",
         "lint:rui:fix": "pnpm --filter rui lint:fix"
     },
     "dependencies": {
