@@ -6,22 +6,14 @@ import type { RippleOptions } from "@/foundations/ripple"
 export type RTileMode = "outside" | "scrim" | "gradient"
 export type RTilePosition = "header" | "footer"
 
-type RTileBuiltInActionProps =
-    | {
-          actionIcon?: never
-          actionLabel?: never
-      }
-    | {
-          /** Renders a built-in trailing icon action. */
-          actionIcon: RIconResolvableSource
-          /** Sets the accessible name for the built-in trailing action. */
-          actionLabel: string
-      }
-
 /** Props for the {@link RTile} component. */
-export type RTileProps = RTileBuiltInActionProps & {
+export type RTileProps = {
     /** Makes the tile a native button when no href is supplied. */
     action?: boolean
+    /** Renders a built-in trailing icon action. */
+    actionIcon?: RIconResolvableSource
+    /** Sets the accessible name for the built-in trailing action. */
+    actionLabel?: string
     /** Disables an interactive tile. */
     disabled?: boolean
     /** Renders the tile as a native link. */
