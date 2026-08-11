@@ -39,7 +39,8 @@ let warnedHref = false
 
 const isLink = computed(() => !!props.href)
 const nativeType = computed<RButtonType>(() => props.type ?? "button")
-const resolvedHref = computed(() => resolveButtonHref(props.href, props.disabled))
+const resolvedDisabled = computed(() => props.disabled || group?.disabled.value || false)
+const resolvedHref = computed(() => resolveButtonHref(props.href, resolvedDisabled.value))
 const selectionMode = computed(() => group?.selection.value)
 const isIconGroup = computed(() => group?.icon.value ?? false)
 const hasSelectionValue = computed(() => props.value !== undefined)
@@ -47,7 +48,7 @@ const isSelectableInGroup = computed(() => selectionMode.value != null && !isLin
 const selected = computed(() => (isSelectableInGroup.value ? (group?.isSelected(props.value) ?? false) : false))
 const resolvedVariant = computed<RButtonVariant>(() => props.variant ?? group?.variant.value ?? "contained")
 const iconSize = computed(() => (isIconGroup.value ? 24 : 18))
-const rippleOptions = computed(() => resolveButtonRippleOptions(resolvedVariant.value, props.ripple, props.disabled))
+const rippleOptions = computed(() => resolveButtonRippleOptions(resolvedVariant.value, props.ripple, resolvedDisabled.value))
 const resolvedFullWidth = computed(() => props.fullWidth || group?.fullWidth.value || false)
 const hasLabel = computed<boolean>(() => !isIconGroup.value && !!slots.default)
 const hasTop = computed<boolean>(() => !isIconGroup.value && (!!props.topIcon || !!slots.top))
@@ -77,7 +78,7 @@ const classes = computed(() => {
         {
             "rui-button--full-width": resolvedFullWidth.value,
             "rui-button--full-height": props.fullHeight,
-            "rui-button--disabled": props.disabled,
+            "rui-button--disabled": resolvedDisabled.value,
             "rui-button--selectable": isSelectableInGroup.value,
             "rui-button--icon-group": isIconGroup.value,
             "rui-button--sentence-case": props.sentenceCase,
@@ -130,7 +131,7 @@ const resolvedAriaPressed = computed(() => {
 })
 
 const resolvedTabIndex = computed(() => {
-    const disabledLinkTabIndex = resolveDisabledLinkTabIndex(isLink.value, props.disabled)
+    const disabledLinkTabIndex = resolveDisabledLinkTabIndex(isLink.value, resolvedDisabled.value)
     if (disabledLinkTabIndex !== undefined) {
         return disabledLinkTabIndex
     }
@@ -159,7 +160,7 @@ watchEffect(() => {
 })
 
 watch(
-    [() => props.disabled, () => props.href, () => props.value, hasSelectionValue, interactiveRef, () => group],
+    [() => resolvedDisabled.value, () => props.href, () => props.value, hasSelectionValue, interactiveRef, () => group],
     ([disabled, href, value, hasValue, element, nextGroup]) => {
         if (!nextGroup) {
             return
@@ -181,7 +182,7 @@ onBeforeUnmount(() => {
 })
 
 function handleClick(event: MouseEvent) {
-    if (consumeDisabledLinkClick(event, isLink.value, props.disabled)) {
+    if (consumeDisabledLinkClick(event, isLink.value, resolvedDisabled.value)) {
         return
     }
 
@@ -212,7 +213,7 @@ function handleClick(event: MouseEvent) {
             :rel="rel"
             :role="resolvedRole"
             :aria-checked="resolvedAriaChecked"
-            :aria-disabled="disabled ? 'true' : undefined"
+            :aria-disabled="resolvedDisabled ? 'true' : undefined"
             :aria-pressed="resolvedAriaPressed"
             :tabindex="resolvedTabIndex"
             @click="handleClick"
@@ -262,7 +263,7 @@ function handleClick(event: MouseEvent) {
             data-rui-touch-target-anchor
             :class="classes"
             :type="nativeType"
-            :disabled="disabled"
+            :disabled="resolvedDisabled"
             :role="resolvedRole"
             :aria-checked="resolvedAriaChecked"
             :aria-pressed="resolvedAriaPressed"

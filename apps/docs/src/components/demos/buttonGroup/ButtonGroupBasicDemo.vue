@@ -37,6 +37,15 @@ const category = ref("images")
         </RRow>
 
         <RRow gap="16px" wrap align="center">
+            <RButtonGroup disabled aria-label="Disabled actions">
+                <RButton>Back</RButton>
+                <RButton>Next</RButton>
+                <RButton>Finish</RButton>
+            </RButtonGroup>
+            <RText>Disabled</RText>
+        </RRow>
+
+        <RRow gap="16px" wrap align="center">
             <RButtonGroup v-model="category" selection="single" aria-label="Content category">
                 <RButton value="files" :icon="RIInsertDriveFileOutlined">Files</RButton>
                 <RButton value="images" :icon="RIImageOutlined">Images</RButton>

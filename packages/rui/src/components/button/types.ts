@@ -103,6 +103,8 @@ export type RButtonGroupProps = {
     variant?: RButtonGroupVariant
     /** Expands the group to fill the available inline size and evenly distribute child buttons. */
     fullWidth?: boolean
+    /** Disables every button in the group. */
+    disabled?: boolean
     /** Enables single or multiple selection behavior for grouped buttons. */
     selection?: RButtonGroupSelection
     /** Prevents the selection from becoming empty while selection mode is enabled. */

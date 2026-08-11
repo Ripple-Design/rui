@@ -14,6 +14,7 @@ export type RButtonGroupContext = {
     variant: Readonly<Ref<RButtonVariant | undefined>>
     icon: Readonly<Ref<boolean>>
     fullWidth: Readonly<Ref<boolean>>
+    disabled: Readonly<Ref<boolean>>
     selection: Readonly<Ref<RButtonGroupSelection | undefined>>
     required: Readonly<Ref<boolean>>
     registerItem: (id: symbol, state: RButtonGroupItemState) => void

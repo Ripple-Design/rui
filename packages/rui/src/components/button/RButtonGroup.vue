@@ -8,6 +8,7 @@ import { buttonGroupKey, type RButtonGroupItemState } from "./groupContext"
 const props = withDefaults(defineProps<RButtonGroupProps>(), {
     variant: "outlined",
     fullWidth: false,
+    disabled: false,
 })
 
 const isIconGroup = computed(() => props.variant === "icon")
@@ -193,6 +194,7 @@ provide(buttonGroupKey, {
     variant: computed(() => inheritedVariant.value),
     icon: computed(() => isIconGroup.value),
     fullWidth: computed(() => props.fullWidth),
+    disabled: computed(() => props.disabled),
     selection: computed(() => props.selection),
     required: computed(() => requiredSelection.value),
     registerItem,
