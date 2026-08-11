@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { RIHomeOutlined, RIMoreVertFilled } from "@ripple-design/icons"
 import {
-    RAppBarContainer,
     RCard,
     RChip,
     RIconButton,
@@ -57,9 +56,8 @@ const selectedProject = computed(() => projects.find((project) => project.id ===
 </script>
 
 <template>
-    <RScaffold class="scaffold-project-context-demo">
+    <RScaffold class="scaffold-project-context-demo" :app-bar="{ contentAlign: 'body' }">
         <template #app-bar>
-            <RAppBarContainer content-align="body">
                 <RTopAppBar>
                     <template #navigation>
                         <RIconButton :icon="RIHomeOutlined" label="Open workspace" />
@@ -70,7 +68,6 @@ const selectedProject = computed(() => projects.find((project) => project.id ===
                         <RIconButton :icon="RIMoreVertFilled" label="Project actions" />
                     </template>
                 </RTopAppBar>
-            </RAppBarContainer>
         </template>
 
         <div class="scaffold-project-context-demo__content">

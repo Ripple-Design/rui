@@ -2,7 +2,6 @@
 import { RIArrowBackOutlined, RIMoreVertFilled, RISearchOutlined } from "@ripple-design/icons"
 import {
     RAppBarCollapseItem,
-    RAppBarContainer,
     RButton,
     RButtonGroup,
     RCard,
@@ -35,14 +34,13 @@ const cards = Array.from({ length: 16 }, (_, index) => index + 1)
             </label>
         </div>
 
-        <RScaffold class="collapsing-app-bar-demo__preview" scroll-direction="vertical">
+        <RScaffold class="collapsing-app-bar-demo__preview" scroll-direction="vertical" :app-bar="{
+            expandedHeight: '160px',
+            collapsedHeight: '56px',
+            scrollBehavior: 'exit-until-collapsed',
+            liftOnScroll: true,
+        }">
             <template #app-bar>
-                <RAppBarContainer
-                    expanded-height="160px"
-                    collapsed-height="56px"
-                    scroll-behavior="exit-until-collapsed"
-                    lift-on-scroll
-                >
                     <RCollapsingAppBar title="Your library">
                         <template v-if="showBackground" #background>
                             <RAppBarCollapseItem :mode="collapseMode" class="collapsing-app-bar-demo__background" />
@@ -55,7 +53,6 @@ const cards = Array.from({ length: 16 }, (_, index) => index + 1)
                             <RIconButton :icon="RIMoreVertFilled" label="More options" />
                         </template>
                     </RCollapsingAppBar>
-                </RAppBarContainer>
             </template>
 
             <div class="collapsing-app-bar-demo__content">

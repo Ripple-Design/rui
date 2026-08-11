@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { RIAddFilled, RIEmailOutlined, RIMoreVertFilled, RISearchOutlined } from "@ripple-design/icons"
 import {
-    RAppBarContainer,
     RButton,
     RDialog,
     RFab,
@@ -26,9 +25,8 @@ const messages = [
 </script>
 
 <template>
-    <RScaffold class="scaffold-compose-demo" scroll-direction="vertical" fab-placement="app-bar-seam">
+    <RScaffold class="scaffold-compose-demo" scroll-direction="vertical" fab-placement="app-bar-seam" :app-bar="{}">
         <template #app-bar>
-            <RAppBarContainer>
                 <RTopAppBar>
                     <template #title>Inbox</template>
                     <template #subtitle>6 unread messages</template>
@@ -37,7 +35,6 @@ const messages = [
                         <RIconButton :icon="RIMoreVertFilled" label="More inbox options" />
                     </template>
                 </RTopAppBar>
-            </RAppBarContainer>
         </template>
 
         <div class="scaffold-compose-demo__content">

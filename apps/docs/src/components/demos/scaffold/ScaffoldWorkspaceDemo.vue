@@ -6,7 +6,6 @@ import {
     RISettingsOutlined,
 } from "@ripple-design/icons"
 import {
-    RAppBarContainer,
     RCard,
     RIconButton,
     RNavigationRail,
@@ -47,7 +46,7 @@ const workspace = computed(() => {
 </script>
 
 <template>
-    <RScaffold class="scaffold-workspace-demo">
+    <RScaffold class="scaffold-workspace-demo" :app-bar="{ contentAlign: 'body' }">
         <template #navigation>
             <RNavigationRail v-model="destination" aria-label="Workspace navigation">
                 <template #top>Studio</template>
@@ -59,7 +58,6 @@ const workspace = computed(() => {
         </template>
 
         <template #app-bar>
-            <RAppBarContainer content-align="body">
                 <RTopAppBar>
                     <template #title>{{ workspace.title }}</template>
                     <template #subtitle>{{ workspace.subtitle }}</template>
@@ -67,7 +65,6 @@ const workspace = computed(() => {
                         <RIconButton :icon="RISettingsOutlined" label="Workspace settings" />
                     </template>
                 </RTopAppBar>
-            </RAppBarContainer>
         </template>
 
         <div class="scaffold-workspace-demo__content">

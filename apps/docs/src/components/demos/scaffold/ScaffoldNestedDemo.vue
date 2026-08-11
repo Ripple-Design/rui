@@ -8,7 +8,6 @@ import {
     RISettingsOutlined,
 } from "@ripple-design/icons"
 import {
-    RAppBarContainer,
     RIconButton,
     RList,
     RListItem,
@@ -31,7 +30,7 @@ const messages = [
 </script>
 
 <template>
-    <RScaffold class="scaffold-nested-demo" scroll-direction="none">
+    <RScaffold class="scaffold-nested-demo" scroll-direction="none" :app-bar="{}">
         <template #navigation>
             <RNavigationRail v-model="primaryDestination" class="scaffold-nested-demo__navigation-rail" aria-label="Application navigation">
                 <template #top>Mail</template>
@@ -42,7 +41,6 @@ const messages = [
         </template>
 
         <template #app-bar>
-            <RAppBarContainer>
                 <RTopAppBar>
                     <template #title>Mail workspace</template>
                     <template #actions>
@@ -50,12 +48,10 @@ const messages = [
                         <RIconButton :icon="RIMoreVertFilled" label="More workspace options" />
                     </template>
                 </RTopAppBar>
-            </RAppBarContainer>
         </template>
 
-        <RScaffold class="scaffold-nested-demo__inner" scroll-direction="vertical" bottom-bar-hide-on-scroll>
+        <RScaffold class="scaffold-nested-demo__inner" scroll-direction="vertical" bottom-bar-hide-on-scroll :app-bar="{ color: 'primary' }">
             <template #app-bar>
-                <RAppBarContainer color="primary">
                     <RTopAppBar>
                         <template #title>Inbox triage</template>
                         <template #subtitle>5 conversations</template>
@@ -63,8 +59,7 @@ const messages = [
                             <RIconButton :icon="RIHomeOutlined" label="Open inbox home" />
                         </template>
                     </RTopAppBar>
-                </RAppBarContainer>
-            </template>
+                </template>
 
             <div class="scaffold-nested-demo__inner-content">
                 <section class="scaffold-nested-demo__summary">

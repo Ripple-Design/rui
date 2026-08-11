@@ -7,7 +7,6 @@ import {
     RINotificationsOutlined,
 } from "@ripple-design/icons"
 import {
-    RAppBarContainer,
     RFab,
     RIconButton,
     RList,
@@ -50,9 +49,9 @@ const heading = computed(() => ({ updates: "Latest updates", tasks: "Assigned ta
         scroll-direction="vertical"
         fab-placement="viewport"
         bottom-bar-hide-on-scroll
+        :app-bar="{}"
     >
         <template #app-bar>
-            <RAppBarContainer>
                 <RTopAppBar>
                     <template #title>Activity</template>
                     <template #subtitle>{{ heading }}</template>
@@ -60,7 +59,6 @@ const heading = computed(() => ({ updates: "Latest updates", tasks: "Assigned ta
                         <RIconButton :icon="RINotificationsOutlined" label="Notifications" />
                     </template>
                 </RTopAppBar>
-            </RAppBarContainer>
         </template>
 
         <div class="scaffold-activity-demo__content">

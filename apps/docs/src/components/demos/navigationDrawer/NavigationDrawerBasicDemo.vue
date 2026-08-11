@@ -6,7 +6,7 @@ import {
     RNavigationDrawer,
     RNavigationDrawerGroup,
     RNavigationDrawerItem,
-    RScaffold,
+    RScaffoldLayout,
 } from "@ripple-design/rui"
 import { ref } from "vue"
 
@@ -17,7 +17,7 @@ const modalSelected = ref("home")
 
 <template>
     <div class="navigation-drawer-demo">
-        <RScaffold class="navigation-drawer-demo__scaffold">
+        <RScaffoldLayout class="navigation-drawer-demo__scaffold">
             <template #navigation>
                 <RNavigationDrawer v-model="selected" title="Mail" aria-label="Primary navigation">
                     <RNavigationDrawerGroup title="Destinations">
@@ -43,7 +43,7 @@ const modalSelected = ref("home")
                     </RNavigationDrawerGroup>
                 </RModalNavigationDrawer>
             </template>
-        </RScaffold>
+        </RScaffoldLayout>
     </div>
 </template>
 

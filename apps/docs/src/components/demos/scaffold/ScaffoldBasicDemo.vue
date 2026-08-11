@@ -9,7 +9,6 @@ import {
 import { computed, ref } from "vue"
 
 import {
-    RAppBarContainer,
     RAppBarCollapseItem,
     RButton,
     RButtonGroup,
@@ -170,6 +169,16 @@ const previewStyle = computed(() => ({
             :scroll-direction="scrollDirection"
             :fab-placement="fabPlacement"
             :bottom-bar-hide-on-scroll="bottomBarHideOnScroll"
+            :app-bar="{
+                contentAlign: appBarAlign,
+                scrollBehavior: collapsing ? 'exit-until-collapsed' : scrollBehavior,
+                hideOnScroll,
+                underlap,
+                liftOnScroll: collapsing,
+                snap,
+                expandedHeight: '144px',
+                collapsedHeight: '56px',
+            }"
         >
             <template v-if="navigationDrawer || (navigationRail && !clippedNavigation)" #navigation>
                 <div class="scaffold-demo__navigation">
@@ -228,16 +237,6 @@ const previewStyle = computed(() => ({
             </template>
 
             <template #app-bar>
-                <RAppBarContainer
-                    :content-align="appBarAlign"
-                    :scroll-behavior="collapsing ? 'exit-until-collapsed' : scrollBehavior"
-                    :hide-on-scroll="hideOnScroll"
-                    :underlap="underlap"
-                    :lift-on-scroll="collapsing"
-                    :snap="snap"
-                    expanded-height="144px"
-                    collapsed-height="56px"
-                >
                     <RCollapsingAppBar title="Scaffold preview">
                         <template v-if="showAppBarBackground" #background>
                             <RAppBarCollapseItem mode="off" class="scaffold-demo__app-bar-background" />
@@ -246,7 +245,6 @@ const previewStyle = computed(() => ({
                             <RButton variant="text">Action</RButton>
                         </template>
                     </RCollapsingAppBar>
-                </RAppBarContainer>
             </template>
 
             <RResponsiveGrid :mode="gridMode" gap="16px">
