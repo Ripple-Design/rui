@@ -43,6 +43,8 @@ export type RAppBarContainerProps = {
 }
 
 export type RTopAppBarProps = {
+    title?: string
+    subtitle?: string
     centered?: boolean
     ariaLabel?: string
     ariaLabelledby?: string

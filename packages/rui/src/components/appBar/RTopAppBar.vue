@@ -27,18 +27,18 @@ const classes = computed(() => ({
             <slot name="navigation" />
         </div>
 
-        <div v-if="$slots.title || $slots.subtitle" class="rui-top-app-bar__text">
-            <RText v-if="$slots.title" as="div" class="rui-top-app-bar__title" variant="headline6" emphasis="high">
-                <slot name="title" />
+        <div v-if="$slots.title || title || $slots.subtitle || subtitle" class="rui-top-app-bar__text">
+            <RText v-if="$slots.title || title" as="div" class="rui-top-app-bar__title" variant="headline6" emphasis="high">
+                <slot name="title">{{ title }}</slot>
             </RText>
             <RText
-                v-if="$slots.subtitle"
+                v-if="$slots.subtitle || subtitle"
                 as="div"
                 class="rui-top-app-bar__subtitle"
                 variant="subtitle1"
                 emphasis="medium"
             >
-                <slot name="subtitle" />
+                <slot name="subtitle">{{ subtitle }}</slot>
             </RText>
         </div>
 
