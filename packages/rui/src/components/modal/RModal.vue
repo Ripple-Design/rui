@@ -161,7 +161,7 @@ onMounted(() => {
         @cancel="handleCancel"
         @click="handleClick"
         @close="handleClose"
-        @wheel.prevent="handleWheel"
+        @wheel="handleWheel"
     >
         <slot />
     </dialog>

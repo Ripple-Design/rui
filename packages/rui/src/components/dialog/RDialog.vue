@@ -222,10 +222,6 @@ defineExpose({
     }
 }
 
-.rui-dialog__header {
-    padding-inline: 24px;
-}
-
 .rui-dialog__content {
     overflow: auto;
     overscroll-behavior: contain;
@@ -249,6 +245,7 @@ defineExpose({
 .rui-dialog__title {
     @include typography.headline6("--rui-comp-dialog-title");
     margin: 0;
+    padding-inline: 24px;
     padding-block-start: calc(40px - 1cap);
     color: color.$on-surface;
     text-box-trim: trim-both;
