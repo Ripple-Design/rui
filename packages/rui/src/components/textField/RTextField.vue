@@ -4,13 +4,14 @@
  */
 
 import { RICancelFilled, RICancelOutlined, RICancelRounded, RICancelSharp, RICancelTwoTone } from "@ripple-design/icons"
-import { computed, ref, useAttrs, useId, useSlots, type Slots } from "vue"
+import { computed, ref, toRef, unref, useAttrs, useId, useSlots, type Slots } from "vue"
 
 import RIconButton from "@/components/button/RIconButton.vue"
 import { createIconFamily } from "@/components/icon/family"
 import RIcon from "@/components/icon/RIcon.vue"
 import RFieldInput from "@/components/input/RFieldInput.vue"
 import RFieldShell from "@/components/input/RFieldShell.vue"
+import { useFormField } from "@/components/form/useFormField"
 
 import type { RTextFieldProps } from "./types"
 
@@ -22,19 +23,29 @@ const props = withDefaults(defineProps<RTextFieldProps>(), {
 const attrs = useAttrs()
 const slots: Slots = useSlots()
 const generatedId = useId()
+const name = computed(() => (typeof attrs.name === "string" ? attrs.name : undefined))
+const localModel = defineModel<string>()
+const formField = useFormField({
+    defaultValue: "",
+    model: localModel,
+    name,
+    required: toRef(props, "required"),
+})
+const model = formField.model
+const externalErrorText = computed(() => unref(props.errorText))
+const errorText = computed(() => externalErrorText.value ?? formField.errorText.value)
+const error = computed(() => !!errorText.value?.trim())
+const required = formField.required
 const inputId = computed(() => (typeof attrs.id === "string" ? attrs.id : generatedId))
 const helperId = computed(() => `${inputId.value}-helper`)
-const error = computed(() => !!props.errorText?.trim())
 const describedBy = computed(() => {
     const external = typeof attrs["aria-describedby"] === "string" ? attrs["aria-describedby"] : ""
-    const ids = [external, props.errorText?.trim() || props.helperText?.trim() ? helperId.value : ""]
+    const ids = [external, errorText.value?.trim() || props.helperText?.trim() || formField.helperIndicator.value ? helperId.value : ""]
         .flatMap((value) => value.split(/\s+/))
         .filter(Boolean)
     return [...new Set(ids)].join(" ") || undefined
 })
 const inputRef = ref<InstanceType<typeof RFieldInput> | null>(null)
-
-const model = defineModel<string>()
 
 const isFocused = ref(false)
 const hasValue = computed(() => model.value != null && model.value !== "")
@@ -44,6 +55,14 @@ const hasStartIcon = computed(() => !!props.startIcon || !!slots["start-icon"])
 const showClear = computed(() => props.clearable && hasValue.value)
 const hasEndIcon = computed(() => !!props.endIcon || !!slots["end-icon"] || showClear.value)
 const clearIcon = createIconFamily(RICancelFilled, RICancelOutlined, RICancelRounded, RICancelSharp, RICancelTwoTone)
+
+function handleFocusStateChange(focused: boolean) {
+    isFocused.value = focused
+
+    if (!focused) {
+        formField.onBlur()
+    }
+}
 
 function focus() {
     inputRef.value?.focus()
@@ -65,13 +84,15 @@ function clear() {
         :input-id="inputId"
         :helper-id="helperId"
         :helper-text="helperText"
+        :helper-indicator="formField.helperIndicator.value"
         :error-text="errorText"
         :error="error"
         :required="required"
+        :label-suffix="formField.labelSuffix.value"
         :has-start-icon="hasStartIcon"
         :has-end-icon="hasEndIcon"
         @focus-request="focus"
-        @focus-state-change="isFocused = $event"
+        @focus-state-change="handleFocusStateChange"
     >
         <template #start-icon>
             <slot name="start-icon">

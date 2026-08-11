@@ -50,6 +50,8 @@ export type RFloatingLabelProps = {
     textArea?: boolean
     /** Sets the visible field label. */
     label?: string
+    /** Appends a visual suffix to the field label. */
+    labelSuffix?: string
     /** Associates the visible label with the native input. */
     inputId?: string
     /** Sets the ID used to reference the visible label. */
@@ -71,6 +73,10 @@ export type RFieldShellProps = RFloatingLabelProps &
         ripple?: RippleOptions
         /** Sets the ID used by the helper text description. */
         helperId?: string
+        /** Appends generated helper text after caller-supplied helper text. */
+        helperIndicator?: string
+        /** Appends a visual suffix to the field label. */
+        labelSuffix?: string
         /** Reserves the logical inline-start adornment region. */
         hasStartIcon?: boolean
         /** Reserves the logical inline-end adornment region. */

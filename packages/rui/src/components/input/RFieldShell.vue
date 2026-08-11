@@ -17,8 +17,16 @@ const props = withDefaults(defineProps<RFieldShellProps>(), {
 const isHovered = ref(false)
 const shellRef = ref<HTMLElement | null>(null)
 const hasError = computed(() => !!props.errorText?.trim())
-const captionText = computed(() => (hasError.value ? props.errorText : props.helperText))
+const generatedHelperText = computed(() => {
+    if (!props.helperIndicator) {
+        return props.helperText
+    }
+
+    return props.helperText ? `${props.helperText} ${props.helperIndicator}` : props.helperIndicator
+})
+const captionText = computed(() => (hasError.value ? props.errorText : generatedHelperText.value))
 const captionKind = computed(() => (hasError.value ? "error" : "helper"))
+const resolvedLabelSuffix = computed(() => props.labelSuffix ?? (props.required ? "*" : undefined))
 const helperId = computed(() => props.helperId ?? `${props.inputId ?? "field"}-helper`)
 
 defineExpose({
@@ -83,6 +91,7 @@ function handleClick(event: MouseEvent) {
                 :text-area="textArea"
                 :hovered="isHovered && !focused"
                 :label="label"
+                :label-suffix="resolvedLabelSuffix"
                 :required="required"
                 :input-id="inputId"
                 :label-id="labelId"

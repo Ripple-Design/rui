@@ -3,7 +3,9 @@
  * Switches let users toggle a setting on or off.
  */
 
-import { computed, nextTick, onMounted, ref, watch } from "vue"
+import { computed, nextTick, onMounted, ref, useAttrs, watch } from "vue"
+
+import { useFormField } from "@/components/form/useFormField"
 
 import { vRipple, type RippleOptions } from "@/foundations/ripple"
 import RThumb from "@/foundations/thumb/RThumb.vue"
@@ -16,7 +18,16 @@ const props = withDefaults(defineProps<RSwitchProps>(), {
     ripple: true,
 })
 
-const model = defineModel<boolean>({ default: false })
+const localModel = defineModel<boolean>({ default: false })
+const attrs = useAttrs()
+const name = computed(() => (typeof attrs.name === "string" ? attrs.name : undefined))
+const formField = useFormField({
+    defaultValue: false,
+    ignoreRequired: true,
+    model: localModel,
+    name,
+})
+const model = formField.model
 const root = ref<HTMLElement>()
 const rippleHost = ref<HTMLElement>()
 const mounted = ref(false)
@@ -83,10 +94,6 @@ function isRtl() {
 
 function clamp(value: number) {
     return Math.min(1, Math.max(0, value))
-}
-
-function handleInputChange(event: Event) {
-    model.value = (event.currentTarget as HTMLInputElement).checked
 }
 
 function handlePointerDown(event: PointerEvent) {
@@ -210,7 +217,8 @@ function resetGesture() {
             role="switch"
             :checked="model"
             :disabled="disabled"
-            @change="handleInputChange"
+            @blur="formField.onBlur"
+            @change="formField.setValue(($event.currentTarget as HTMLInputElement).checked, 'change')"
         />
         <span class="rui-switch__visual" aria-hidden="true">
             <span class="rui-switch__track" />

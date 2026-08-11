@@ -39,6 +39,8 @@ export type RChipGroupProps = {
     type?: RChipType
     /** Enables single or multiple selection behavior for child chips. */
     selection?: RChipGroupSelection
+    /** Binds this selection group to an RForm field path. */
+    name?: string
     /** Prevents a selectable group from becoming empty. */
     required?: boolean
     /** Allows chips to wrap onto additional rows. */

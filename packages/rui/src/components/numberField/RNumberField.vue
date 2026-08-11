@@ -2,10 +2,11 @@
 /**
  * Number fields let users enter and edit numeric values.
  */
-import { computed, ref, useAttrs, useId, watch } from "vue"
+import { computed, ref, toRef, unref, useAttrs, useId, watch } from "vue"
 
 import RFieldInput from "@/components/input/RFieldInput.vue"
 import RFieldShell from "@/components/input/RFieldShell.vue"
+import { useFormField } from "@/components/form/useFormField"
 
 import type { RNumberFieldProps } from "./types"
 
@@ -13,19 +14,30 @@ const props = defineProps<RNumberFieldProps>()
 
 const attrs = useAttrs()
 const generatedId = useId()
+const name = computed(() => (typeof attrs.name === "string" ? attrs.name : undefined))
+const localModel = defineModel<number | null>()
+const formField = useFormField({
+    defaultValue: null,
+    model: localModel,
+    name,
+    required: toRef(props, "required"),
+})
+const model = formField.model
+const externalErrorText = computed(() => unref(props.errorText))
+const errorText = computed(() => externalErrorText.value ?? formField.errorText.value)
+const error = computed(() => !!errorText.value?.trim())
+const required = formField.required
 const inputId = computed(() => (typeof attrs.id === "string" ? attrs.id : generatedId))
 const helperId = computed(() => `${inputId.value}-helper`)
-const error = computed(() => !!props.errorText?.trim())
 const describedBy = computed(() => {
     const external = typeof attrs["aria-describedby"] === "string" ? attrs["aria-describedby"] : ""
-    const ids = [external, props.errorText?.trim() || props.helperText?.trim() ? helperId.value : ""]
+    const ids = [external, errorText.value?.trim() || props.helperText?.trim() || formField.helperIndicator.value ? helperId.value : ""]
         .flatMap((value) => value.split(/\s+/))
         .filter(Boolean)
     return [...new Set(ids)].join(" ") || undefined
 })
 const inputRef = ref<InstanceType<typeof RFieldInput> | null>(null)
 
-const model = defineModel<number | null>()
 const inputValue = ref(model.value == null ? "" : String(model.value))
 const isFocused = ref(false)
 const allowNegative = computed(() => props.min == null || props.min < 0)
@@ -88,6 +100,14 @@ const hasValue = computed(() => inputValue.value.trim() !== "")
 const isFloating = computed(() => isFocused.value || hasValue.value)
 const showPlaceholder = computed(() => !props.label || isFloating.value)
 
+function handleFocusStateChange(focused: boolean) {
+    isFocused.value = focused
+
+    if (!focused) {
+        formField.onBlur()
+    }
+}
+
 function focus() {
     inputRef.value?.focus()
 }
@@ -102,11 +122,13 @@ function focus() {
         :input-id="inputId"
         :helper-id="helperId"
         :helper-text="helperText"
+        :helper-indicator="formField.helperIndicator.value"
         :error-text="errorText"
         :error="error"
         :required="required"
+        :label-suffix="formField.labelSuffix.value"
         @focus-request="focus"
-        @focus-state-change="isFocused = $event"
+        @focus-state-change="handleFocusStateChange"
     >
         <RFieldInput
             ref="inputRef"

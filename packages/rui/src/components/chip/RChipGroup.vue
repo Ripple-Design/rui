@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, provide, ref, useAttrs, watchEffect } from "vue"
 
+import { useFormField } from "@/components/form/useFormField"
+
 import type { RChipGroupModelValue, RChipGroupProps } from "./types"
 
 import { chipGroupKey, type RChipGroupItemState } from "./groupContext"
@@ -9,7 +11,7 @@ const props = withDefaults(defineProps<RChipGroupProps>(), {
     wrap: true,
 })
 
-const model = defineModel<RChipGroupModelValue>()
+const localModel = defineModel<RChipGroupModelValue>()
 const attrs = useAttrs()
 const items = ref<Array<{ id: symbol; state: RChipGroupItemState }>>([])
 
@@ -20,6 +22,29 @@ const requiredSelection = computed(() => {
 
     return props.required ?? false
 })
+
+const enabledSelectableItems = computed(() => {
+    return items.value.filter((item) => item.state.hasValue && !item.state.disabled)
+})
+
+const formField = useFormField<RChipGroupModelValue>({
+    defaultValue: () => {
+        if (props.selection === "multiple") {
+            return []
+        }
+
+        if (props.selection === "single" && requiredSelection.value) {
+            return enabledSelectableItems.value[0]?.state.value ?? null
+        }
+
+        return null
+    },
+    ignoreRequired: true,
+    model: localModel,
+    name: computed(() => props.name),
+    replaceNullish: props.selection === "single" && requiredSelection.value,
+})
+const model = formField.model
 
 const role = computed(() => {
     if (typeof attrs.role === "string") {
@@ -37,18 +62,19 @@ const multipleValue = computed(() => {
     return model.value
 })
 
-const enabledSelectableItems = computed(() => {
-    return items.value.filter((item) => item.state.hasValue && !item.state.disabled)
-})
-
 const hasInitializedSingleSelection = ref(false)
 
 watchEffect(() => {
+    if (formField.bound.value && !formField.registered.value) {
+        return
+    }
+
     if (props.selection !== "single" || !requiredSelection.value) {
         return
     }
 
-    if (model.value != null) {
+    const currentValue = formField.bound.value ? model.value : localModel.value
+    if (currentValue != null) {
         hasInitializedSingleSelection.value = true
         return
     }
@@ -129,7 +155,7 @@ function activate(id: symbol) {
             return
         }
 
-        model.value = value
+        formField.setValue(value, "change")
         return
     }
 
@@ -139,11 +165,11 @@ function activate(id: symbol) {
                 return
             }
 
-            model.value = multipleValue.value.filter((entry) => !Object.is(entry, value))
+            formField.setValue(multipleValue.value.filter((entry) => !Object.is(entry, value)), "change")
             return
         }
 
-        model.value = [...multipleValue.value, value]
+        formField.setValue([...multipleValue.value, value], "change")
     }
 }
 
@@ -165,6 +191,8 @@ provide(chipGroupKey, {
         :aria-required="selection === 'single' && requiredSelection ? 'true' : undefined"
         :class="['rui-chip-group', { 'rui-chip-group--nowrap': !wrap }]"
         :role="role"
+        :aria-invalid="formField.errorText.value ? 'true' : undefined"
+        @focusout="formField.onFocusout"
     >
         <slot />
     </div>

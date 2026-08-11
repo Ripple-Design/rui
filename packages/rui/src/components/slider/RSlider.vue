@@ -10,6 +10,7 @@ import {
     type StyleValue,
 } from "vue"
 
+import { useFormField } from "@/components/form/useFormField"
 import RSliderValueIndicator from "@/foundations/slider/RSliderValueIndicator.vue"
 import RThumb from "@/foundations/thumb/RThumb.vue"
 
@@ -26,6 +27,8 @@ import {
 
 type SliderThumb = "single" | "start" | "end"
 
+defineOptions({ inheritAttrs: false })
+
 const props = withDefaults(defineProps<RSliderProps>(), {
     disabled: false,
     max: 100,
@@ -36,8 +39,15 @@ const props = withDefaults(defineProps<RSliderProps>(), {
 const emit = defineEmits<{
     change: [value: RSliderModelValue]
 }>()
-const model = defineModel<RSliderModelValue>({ default: 0 })
+const localModel = defineModel<RSliderModelValue>({ default: 0 })
 const attrs = useAttrs()
+const name = computed(() => (typeof attrs.name === "string" ? attrs.name : undefined))
+const formField = useFormField<RSliderModelValue>({
+    defaultValue: () => localModel.value,
+    model: localModel,
+    name,
+})
+const model = formField.model
 const rootRef = ref<HTMLElement | null>(null)
 const thumbRefs = reactive<Record<SliderThumb, HTMLElement | null>>({
     end: null,
@@ -75,6 +85,7 @@ const rootAttrs = computed(() => {
         "aria-describedby": _ariaDescribedby,
         "aria-label": _ariaLabel,
         "aria-labelledby": _ariaLabelledby,
+        name: _name,
         ...rest
     } = attrs
     return rest
@@ -242,6 +253,7 @@ function updateThumb(thumb: SliderThumb, percent: number) {
 }
 
 function commit() {
+    formField.setValue(model.value, "change")
     emit("change", model.value)
 }
 
@@ -335,6 +347,7 @@ function handleKeydown(thumb: SliderThumb, event: KeyboardEvent) {
 
     event.preventDefault()
     updateThumb(thumb, valueToPercent(current + (forward ? increment : -increment), props.min, props.max))
+    commit()
 }
 
 function handleFocus(thumb: SliderThumb) {
@@ -383,6 +396,7 @@ onBeforeUnmount(() => observer?.disconnect())
         @lostpointercapture="handlePointerCancel"
         @pointerenter="handleHover"
         @pointerleave="hoveredThumb = null"
+        @focusout="formField.onFocusout"
     >
         <div class="rui-slider__track" aria-hidden="true">
             <span class="rui-slider__inactive-track" />
@@ -447,6 +461,8 @@ onBeforeUnmount(() => observer?.disconnect())
             :aria-labelledby="ariaLabelledby"
             :aria-describedby="ariaDescribedby"
             :aria-valuetext="formatSliderValue(singleValue, formatValue)"
+            :aria-required="formField.required.value ? 'true' : undefined"
+            :aria-invalid="formField.errorText.value ? 'true' : undefined"
             @input="handleInput('single', $event)"
             @change="handleInputChange"
             @keydown="handleKeydown('single', $event)"
@@ -467,6 +483,8 @@ onBeforeUnmount(() => observer?.disconnect())
                 :aria-labelledby="ariaLabelledby"
                 :aria-describedby="ariaDescribedby"
                 :aria-valuetext="formatSliderValue(startValue, formatValue)"
+                :aria-required="formField.required.value ? 'true' : undefined"
+                :aria-invalid="formField.errorText.value ? 'true' : undefined"
                 @input="handleInput('start', $event)"
                 @change="handleInputChange"
                 @keydown="handleKeydown('start', $event)"
@@ -486,6 +504,8 @@ onBeforeUnmount(() => observer?.disconnect())
                 :aria-labelledby="ariaLabelledby"
                 :aria-describedby="ariaDescribedby"
                 :aria-valuetext="formatSliderValue(endValue, formatValue)"
+                :aria-required="formField.required.value ? 'true' : undefined"
+                :aria-invalid="formField.errorText.value ? 'true' : undefined"
                 @input="handleInput('end', $event)"
                 @change="handleInputChange"
                 @keydown="handleKeydown('end', $event)"

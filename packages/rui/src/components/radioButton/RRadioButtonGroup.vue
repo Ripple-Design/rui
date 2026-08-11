@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, provide, ref, useAttrs, useId, watchEffect } from "vue"
 
+import { useFormField } from "@/components/form/useFormField"
+
 import { radioButtonGroupKey, type RRadioButtonGroupItemState } from "./groupContext"
 import type { RRadioButtonGroupModelValue, RRadioButtonGroupProps } from "./types"
 
@@ -10,17 +12,29 @@ const props = withDefaults(defineProps<RRadioButtonGroupProps>(), {
     gap: "8px",
 })
 
-const model = defineModel<RRadioButtonGroupModelValue>()
+const localModel = defineModel<RRadioButtonGroupModelValue>()
 const attrs = useAttrs()
 const items = ref<Array<{ id: symbol; state: RRadioButtonGroupItemState }>>([])
 const generatedName = `rui-radio-button-group-${useId()}`
 const name = computed(() => props.name ?? generatedName)
 const enabledItems = computed(() => items.value.filter((item) => item.state.hasValue && !item.state.disabled))
+const formField = useFormField<RRadioButtonGroupModelValue>({
+    defaultValue: () => (props.required ? (enabledItems.value[0]?.state.value as RRadioButtonGroupModelValue | undefined) ?? null : null),
+    ignoreRequired: true,
+    model: localModel,
+    name: computed(() => props.name),
+    replaceNullish: props.required,
+})
+const model = formField.model
 const selectedItem = computed(() => enabledItems.value.find((item) => Object.is(item.state.value, model.value ?? null)) ?? null)
 const activeItem = computed(() => selectedItem.value ?? enabledItems.value[0] ?? null)
 
 watchEffect(() => {
-    if (!props.required || model.value != null) {
+    if (
+        !props.required ||
+        (formField.bound.value ? model.value != null : localModel.value != null) ||
+        (formField.bound.value && !formField.registered.value)
+    ) {
         return
     }
 
@@ -77,7 +91,7 @@ function activate(id: symbol) {
         return
     }
 
-    model.value = item.state.value
+    formField.setValue(item.state.value as RRadioButtonGroupModelValue, "change")
 }
 
 function focusItem(item: { id: symbol; state: RRadioButtonGroupItemState }) {
@@ -135,6 +149,8 @@ provide(radioButtonGroupKey, {
         :style="{ '--rui-comp-radio-button-group-gap': gap }"
         role="radiogroup"
         :aria-required="required ? 'true' : undefined"
+        :aria-invalid="formField.errorText.value ? 'true' : undefined"
+        @focusout="formField.onFocusout"
     >
         <slot />
     </div>

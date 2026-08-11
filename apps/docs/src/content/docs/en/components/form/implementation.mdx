@@ -1,0 +1,17 @@
+---
+title: Form
+docSlug: components/form
+tab: implementation
+locale: en
+designOrder: 154
+developOrder: 154
+api: /en/api/form
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import FormBasicDemo from "@docs/components/demos/form/FormBasicDemo.vue"
+import formBasicDemoSource from "@docs/components/demos/form/FormBasicDemo.vue?raw"
+
+<DemoBlock title="Form" code={formBasicDemoSource} language="vue">
+    <FormBasicDemo client:load />
+</DemoBlock>

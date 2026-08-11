@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, useAttrs, watch } from "vue"
 
+import { useFormField } from "@/components/form/useFormField"
+
 import { vRipple, type RippleOptions } from "@/foundations/ripple"
 import { RTouchTargetWrapper } from "@/foundations/touchTarget"
 
@@ -12,8 +14,16 @@ const props = withDefaults(defineProps<RCheckboxProps>(), {
     ripple: true,
 })
 
-const model = defineModel<boolean>({ default: false })
+const localModel = defineModel<boolean>({ default: false })
 const attrs = useAttrs()
+const name = computed(() => (typeof attrs.name === "string" ? attrs.name : undefined))
+const formField = useFormField({
+    defaultValue: false,
+    ignoreRequired: true,
+    model: localModel,
+    name,
+})
+const model = formField.model
 const root = ref<HTMLElement | null>(null)
 const input = ref<HTMLInputElement | null>(null)
 const dotLottie = shallowRef<any>(null)
@@ -317,7 +327,8 @@ onBeforeUnmount(() => {
                     :checked="model"
                     :disabled="disabled"
                     :aria-checked="indeterminate ? 'mixed' : undefined"
-                    @change="model = ($event.currentTarget as HTMLInputElement).checked"
+                    @blur="formField.onBlur"
+                    @change="formField.setValue(($event.currentTarget as HTMLInputElement).checked, 'change')"
                 />
                 <span class="rui-checkbox__content" aria-hidden="true">
                     <svg class="rui-checkbox__fallback" viewBox="-9 -9 18 18">

@@ -18,7 +18,7 @@ defineProps<RFloatingLabelProps>()
             'rui-floating-label--text-area': textArea,
         }"
     >
-        {{ label }}<span v-if="required" aria-hidden="true">*</span>
+        {{ label }}{{ labelSuffix }}
     </label>
 </template>
 

@@ -25,7 +25,7 @@ const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
     >
         <span class="rui-notched-outline__leading" />
         <span v-if="hasLabel" class="rui-notched-outline__label-space">
-            <span class="rui-notched-outline__label-space__sizer">{{ label }}<span v-if="required">*</span></span>
+            <span class="rui-notched-outline__label-space__sizer">{{ label }}{{ labelSuffix }}</span>
             <span class="rui-notched-outline__label-space__track">
                 <span class="rui-notched-outline__label-space__leading" />
                 <span class="rui-notched-outline__label-space__notch" :style="{ width: notchWidthPx }" />
@@ -41,6 +41,7 @@ const notchWidthPx = computed(() => (props.floating ? "100%" : "0px"))
             :text-area="textArea"
             :has-value="hasValue"
             :label="label"
+            :label-suffix="labelSuffix"
             :required="required"
             :input-id="inputId"
             :label-id="labelId"

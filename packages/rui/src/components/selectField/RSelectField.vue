@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { RIArrowDropDownFilled, RIArrowDropUpFilled } from "@ripple-design/icons"
-import { computed, nextTick, onBeforeUnmount, provide, ref, toRaw, useAttrs, useId, watch } from "vue"
+import { computed, nextTick, onBeforeUnmount, provide, ref, toRef, toRaw, unref, useAttrs, useId, watch } from "vue"
 
 import type { RippleOptions } from "@/foundations/ripple"
 
+import { useFormField } from "@/components/form/useFormField"
 import { RIconButton } from "@/components"
 import RFieldShell from "@/components/input/RFieldShell.vue"
 import RMenu from "@/components/menu/RMenu.vue"
@@ -14,6 +15,8 @@ import type { RSelectFieldProps } from "./types"
 
 import { selectContextKey } from "./context"
 
+defineOptions({ inheritAttrs: false })
+
 const props = withDefaults(defineProps<RSelectFieldProps>(), {
     align: "start",
     disabled: false,
@@ -21,19 +24,31 @@ const props = withDefaults(defineProps<RSelectFieldProps>(), {
 })
 
 const attrs = useAttrs()
-const model = defineModel<unknown>()
+const localModel = defineModel<unknown>()
+const name = computed(() => (typeof attrs.name === "string" ? attrs.name : undefined))
+const formField = useFormField({
+    defaultValue: null,
+    model: localModel,
+    name,
+    required: toRef(props, "required"),
+})
+const model = formField.model
+const triggerAttrs = computed(() => Object.fromEntries(Object.entries(attrs).filter(([key]) => key !== "name")))
 const listboxId = useId()
 const generatedId = useId()
 const controlId = computed(() => (typeof attrs.id === "string" ? attrs.id : generatedId))
 const helperId = computed(() => `${controlId.value}-helper`)
+const externalErrorText = computed(() => unref(props.errorText))
+const errorText = computed(() => externalErrorText.value ?? formField.errorText.value)
+const error = computed(() => !!errorText.value?.trim())
+const required = formField.required
 const describedBy = computed(() => {
     const external = typeof attrs["aria-describedby"] === "string" ? attrs["aria-describedby"] : ""
-    const ids = [external, props.helperText?.trim() ? helperId.value : ""]
+    const ids = [external, errorText.value?.trim() || props.helperText?.trim() || formField.helperIndicator.value ? helperId.value : ""]
         .flatMap((value) => value.split(/\s+/))
         .filter(Boolean)
     return [...new Set(ids)].join(" ") || undefined
 })
-const error = computed(() => !!props.errorText?.trim())
 const labelId = `${controlId.value}-label`
 const shellRef = ref<InstanceType<typeof RFieldShell> | null>(null)
 const menuRef = ref<InstanceType<typeof RMenu> | null>(null)
@@ -222,6 +237,14 @@ function handleMenuReady() {
     }
 }
 
+function handleFocusStateChange(focused: boolean) {
+    isFocused.value = focused
+
+    if (!focused) {
+        formField.onBlur()
+    }
+}
+
 function handleTriggerClick() {
     handleMenuOpenUpdate(!open.value)
 }
@@ -239,7 +262,7 @@ function commit(option: RSelectOptionRecord) {
         return
     }
 
-    model.value = option.value
+    formField.setValue(option.value, "change")
     if (props.filterable) {
         filterText.value = option.label
     }
@@ -316,17 +339,19 @@ onBeforeUnmount(() => {
             :label-id="labelId"
             :helper-id="helperId"
             :helper-text="helperText"
+            :helper-indicator="formField.helperIndicator.value"
             :error-text="errorText"
             :error="error"
             :required="required"
+            :label-suffix="formField.labelSuffix.value"
             :has-end-icon="true"
-            @focus-state-change="isFocused = $event"
+            @focus-state-change="handleFocusStateChange"
         >
             <input
                 v-if="filterable"
                 :id="controlId"
                 ref="triggerRef"
-                v-bind="attrs"
+                v-bind="triggerAttrs"
                 v-model="filterText"
                 class="rui-select-field__trigger rui-select-field__trigger--filterable"
                 type="text"
@@ -339,6 +364,7 @@ onBeforeUnmount(() => {
                 :aria-labelledby="hasLabel ? labelId : undefined"
                 :aria-describedby="describedBy"
                 :aria-invalid="error ? 'true' : undefined"
+                :aria-required="required ? 'true' : undefined"
                 :aria-activedescendant="open && activeOptionId ? activeOptionId : undefined"
                 :placeholder="placeholder"
                 @click="openSelect"
@@ -351,7 +377,7 @@ onBeforeUnmount(() => {
                 v-else
                 :id="controlId"
                 ref="triggerRef"
-                v-bind="attrs"
+                v-bind="triggerAttrs"
                 class="rui-select-field__trigger"
                 type="button"
                 role="combobox"
@@ -362,7 +388,7 @@ onBeforeUnmount(() => {
                 :aria-labelledby="hasLabel ? labelId : undefined"
                 :aria-describedby="describedBy"
                 :aria-invalid="error ? 'true' : undefined"
-                :required="required"
+                :aria-required="required ? 'true' : undefined"
                 :aria-activedescendant="open && activeOptionId ? activeOptionId : undefined"
                 @click="handleTriggerClick"
                 @focus="isFocused = true"
