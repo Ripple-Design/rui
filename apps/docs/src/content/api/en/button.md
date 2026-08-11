@@ -22,6 +22,7 @@ import { RButton } from "@ripple-design/rui"
 | `variant` | `RButtonVariant` | no | Controls the button’s visual treatment. |
 | `disabled` | `boolean` | no | Disables the button and all interactive feedback. |
 | `fullWidth` | `boolean` | no | Expands the button to fill the available inline size. |
+| `fullHeight` | `boolean` | no | Expands the button to fill the available block size. |
 | `sentenceCase` | `boolean` | no | Allows the label to remain in sentence case instead of uppercase. |
 | `type` | `RButtonType` | no | Sets the native button type when rendering a `<button>`. |
 | `href` | `string` | no | Renders the button as a link when provided. |

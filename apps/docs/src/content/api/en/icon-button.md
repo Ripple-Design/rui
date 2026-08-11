@@ -20,14 +20,16 @@ import { RIconButton } from "@ripple-design/rui"
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `icon` | `RIconResolvableSource` | yes | Renders the icon-only button glyph using the shared icon renderer. |
+| `activeIcon` | `RIconResolvableSource` | no | Renders the icon-only button glyph while the button is active. |
 | `label` | `string` | yes | Sets the accessible name announced for the icon-only button. |
+| `activeLabel` | `string` | no | Sets the accessible name announced while the button is active. |
+| `emphasis` | `RTextEmphasis` | no | Controls the icon foreground emphasis level. |
 | `disabled` | `boolean` | no | Disables the icon button and all interactive feedback. |
 | `type` | `RButtonType` | no | Sets the native button type when rendering a `<button>`. |
 | `href` | `string` | no | Renders the icon button as a link when provided. |
 | `target` | `string` | no | Sets the link target when rendering an anchor. |
 | `rel` | `string` | no | Sets the link relationship when rendering an anchor. |
 | `ripple` | `boolean \| RippleOptions` | no | Controls ripple behavior or disables it entirely. |
-| `pressed` | `boolean` | no | Exposes a toggle state for icon-only buttons that stay pressed. |
 
 Generated from `packages/rui/src/components/button/types.ts`.
 

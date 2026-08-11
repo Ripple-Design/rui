@@ -19,6 +19,8 @@ import { RChipGroup } from "@ripple-design/rui"
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `variant` | `RChipVariant` | no | Controls the visual treatment for child chips. |
+| `type` | `RChipType` | no | Controls the chip family and interaction behavior for child chips. |
 | `selection` | `RChipGroupSelection` | no | Enables single or multiple selection behavior for child chips. |
 | `required` | `boolean` | no | Prevents a selectable group from becoming empty. |
 | `wrap` | `boolean` | no | Allows chips to wrap onto additional rows. |

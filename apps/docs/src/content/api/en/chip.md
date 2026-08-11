@@ -24,6 +24,7 @@ import { RChip } from "@ripple-design/rui"
 | `disabled` | `boolean` | no | Disables the primary and remove actions. |
 | `type` | `RChipType` | no | Controls the Material chip family and its interaction behavior. |
 | `icon` | `RIconResolvableSource` | no | Renders a leading icon using the shared icon renderer. |
+| `endIcon` | `RIconResolvableSource` | no | Renders a trailing icon using the shared icon renderer. |
 | `removable` | `boolean` | no | Shows a separate trailing remove button. |
 | `removeIcon` | `RIconResolvableSource` | no | Overrides the default trailing remove icon. |
 | `removeLabel` | `string` | no | Sets the accessible name announced for the remove button. |
