@@ -10,4 +10,5 @@
 - [ ] Investigate M2 Collapsing App Bar collapsed-title customization: decide whether `collapsedTitleGravity` and `collapsedTitleAppearance` should remain public APIs. Current M2-style composition delegates the visible collapsed title to the internal `RTopAppBar`, so custom collapsed gravity/appearance need a measured title-anchor and typography interpolation design rather than a second visual title layer. Reference `packages/rui/src/components/appBar/RCollapsingAppBar.vue`, `RTopAppBar.vue`, and `material-components-android/lib/java/com/google/android/material/appbar/CollapsingToolbarLayout.java`.
 - [x] Won't implement expanded-title top-bound customization for the current single-line, bottom-aligned M2 title; revisit only if safe-area or multiline title support is introduced.
 - [x] Improve Checkbox DotLottie visual sharpness: explicitly configure the renderer with the client DPR after mount, so its canvas buffer matches the CSS display size without SSR hydration mismatches.
+- [ ] Check whether the Data table implementation is correct
 
