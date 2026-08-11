@@ -45,13 +45,22 @@ const surfaceTag = computed(() => {
 
     return isAction.value ? "button" : "span"
 })
+
+function getTileRippleSurfaceTarget(host: HTMLElement) {
+    if (props.mode === "outside") {
+        return host.parentElement
+    }
+
+    return typeof props.ripple === "object" ? (props.ripple.getSurfaceTarget?.(host) ?? host) : host
+}
+
 const rippleOptions = computed<RippleOptions>(() => {
     if (!isAction.value || props.ripple === false) {
-        return { disabled: true }
+        return { disabled: true, getSurfaceTarget: getTileRippleSurfaceTarget }
     }
 
     if (props.ripple === true || props.ripple == null) {
-        return { contrast: "low" }
+        return { contrast: "low", getSurfaceTarget: getTileRippleSurfaceTarget }
     }
 
     return {
@@ -59,6 +68,7 @@ const rippleOptions = computed<RippleOptions>(() => {
         contrast: props.ripple.contrast ?? "low",
         disabled: !!props.ripple.disabled,
         unbounded: props.ripple.unbounded ?? false,
+        getSurfaceTarget: getTileRippleSurfaceTarget,
     }
 })
 const classes = computed(() => [
@@ -173,6 +183,7 @@ function handleClick(event: MouseEvent) {
 
     position: relative;
     display: grid;
+    align-self: start;
     box-sizing: border-box;
     list-style: none;
     border: 0;
