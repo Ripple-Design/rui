@@ -258,21 +258,21 @@ function handleRemove(event: MouseEvent) {
 }
 
 .rui-chip {
-    --rui-comp-chip-surface-color: #{color.$surface};
-    --rui-comp-chip-container-color: color-mix(
+    --rui-comp-chip-surface-color-default: #{color.$surface};
+    --rui-comp-chip-container-color-default: color-mix(
         in srgb,
         #{color.$on-surface} 10%,
-        var(--rui-comp-chip-surface-color)
+        var(--rui-comp-chip-surface-color, var(--rui-comp-chip-surface-color-default))
     );
-    --rui-comp-chip-selected-container-color: color-mix(
+    --rui-comp-chip-selected-container-color-default: color-mix(
         in srgb,
         #{color.$on-surface} 18%,
-        var(--rui-comp-chip-surface-color)
+        var(--rui-comp-chip-surface-color, var(--rui-comp-chip-surface-color-default))
     );
-    --rui-comp-chip-disabled-container-color: color-mix(
+    --rui-comp-chip-disabled-container-color-default: color-mix(
         in srgb,
         #{color.$on-surface} 12%,
-        var(--rui-comp-chip-surface-color)
+        var(--rui-comp-chip-surface-color, var(--rui-comp-chip-surface-color-default))
     );
     --rui-comp-chip-label-color: #{color.$on-surface-high};
     --rui-comp-chip-disabled-label-color: rgb(from #{color.$on-surface} r g b / 0.33);
@@ -307,7 +307,10 @@ function handleRemove(event: MouseEvent) {
     block-size: var(--rui-comp-chip-height);
     max-inline-size: 100%;
     overflow: visible;
-    background-color: var(--rui-comp-chip-container-color);
+    background-color: var(
+        --rui-comp-chip-container-color,
+        var(--rui-comp-chip-container-color-default)
+    );
     color: var(--rui-comp-chip-label-color);
     isolation: isolate;
     transition: box-shadow 100ms #{motion.$easing-standard};
@@ -322,15 +325,18 @@ function handleRemove(event: MouseEvent) {
     }
 
     &--selected {
-        background-color: var(--rui-comp-chip-selected-container-color);
+        background-color: var(
+            --rui-comp-chip-selected-container-color,
+            var(--rui-comp-chip-selected-container-color-default)
+        );
         color: var(--rui-comp-chip-selected-label-color);
     }
 
     &--choice {
-        --rui-comp-chip-selected-container-color: color-mix(
+        --rui-comp-chip-selected-container-color-default: color-mix(
             in srgb,
             #{color.$primary} 24%,
-            var(--rui-comp-chip-surface-color)
+            var(--rui-comp-chip-surface-color, var(--rui-comp-chip-surface-color-default))
         );
         --rui-comp-chip-selected-label-color: #{color.$primary};
     }
@@ -344,8 +350,10 @@ function handleRemove(event: MouseEvent) {
     }
 
     &--disabled {
-        --rui-comp-chip-container-color: var(--rui-comp-chip-disabled-container-color);
-        --rui-comp-chip-selected-container-color: var(--rui-comp-chip-disabled-container-color);
+        background-color: var(
+            --rui-comp-chip-disabled-container-color,
+            var(--rui-comp-chip-disabled-container-color-default)
+        );
         --rui-comp-chip-label-color: var(--rui-comp-chip-disabled-label-color);
         --rui-comp-chip-selected-label-color: var(--rui-comp-chip-disabled-label-color);
         --rui-comp-chip-icon-color: var(--rui-comp-chip-disabled-icon-color);
