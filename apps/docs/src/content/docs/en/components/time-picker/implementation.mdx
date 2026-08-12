@@ -1,0 +1,17 @@
+---
+title: Time picker
+docSlug: components/time-picker
+tab: implementation
+locale: en
+designOrder: 160
+developOrder: 160
+api: /en/api/time-picker
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import TimePickerBasicDemo from "@docs/components/demos/timePicker/TimePickerBasicDemo.vue"
+import timePickerBasicDemoSource from "@docs/components/demos/timePicker/TimePickerBasicDemo.vue?raw"
+
+<DemoBlock title="Time picker" code={timePickerBasicDemoSource} language="vue">
+    <TimePickerBasicDemo client:load />
+</DemoBlock>

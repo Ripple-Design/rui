@@ -12,4 +12,5 @@
 - [x] Improve Checkbox DotLottie visual sharpness: explicitly configure the renderer with the client DPR after mount, so its canvas buffer matches the CSS display size without SSR hydration mismatches.
 - [ ] Research and improve the infinite scroll API
 - [ ] Check whether the Data table implementation is correct
+- [ ] Refine time picker appearance
 

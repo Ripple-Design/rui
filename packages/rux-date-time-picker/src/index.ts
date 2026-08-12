@@ -1,3 +1,5 @@
 export * from "./components/datePicker"
+export * from "./components/timePicker"
 export * from "./date/constraints"
 export type * from "./date/types"
+export type * from "./time/types"

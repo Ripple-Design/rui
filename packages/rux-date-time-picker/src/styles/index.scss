@@ -1,4 +1,5 @@
 @use "@ripple-design/rui/typography";
+@use "../../../rui/src/styles/normalize";
 
 @import "@ripple-design/rui/styles.css";
 
@@ -486,11 +487,316 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .rui-date-picker-dialog *,
-    .rui-date-picker-dialog *::before,
-    .rui-date-picker-dialog *::after {
-        scroll-behavior: auto !important;
-        transition-duration: 0ms !important;
-        animation-duration: 0ms !important;
+    .rui-time-picker__clock-hand { transition-duration: 0ms; }
+}
+
+.rui-time-picker-dialog .rui-dialog {
+    --rui-comp-time-picker-surface-color: var(--rui-sys-color-surface);
+    --rui-comp-time-picker-on-surface-color: var(--rui-sys-color-on-surface);
+    --rui-comp-time-picker-clock-face-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0.08);
+    --rui-comp-time-picker-hand-color: var(--rui-sys-color-primary);
+    --rui-comp-time-picker-on-hand-color: var(--rui-sys-color-on-primary);
+    --rui-comp-time-picker-display-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0.10);
+    --rui-comp-time-picker-display-active-color: rgb(from var(--rui-sys-color-primary) r g b / 0.24);
+    --rui-comp-time-picker-display-active-text-color: var(--rui-sys-color-primary);
+    --rui-comp-time-picker-chip-width: 96px;
+    --rui-comp-time-picker-chip-height: 80px;
+    --rui-comp-time-picker-divider-width: 24px;
+    --rui-comp-time-picker-display-width: calc((var(--rui-comp-time-picker-chip-width) * 2) + var(--rui-comp-time-picker-divider-width));
+    --rui-comp-time-picker-period-width: 52px;
+    --rui-comp-time-picker-period-height: 96px;
+    --rui-comp-time-picker-selector-size: 48px;
+    --rui-comp-time-picker-selector-radius: 24px;
+    --rui-comp-time-picker-clock-padding: 4px;
+    --rui-comp-time-picker-clock-radius: calc((var(--rui-comp-time-picker-clock-size) / 2) - var(--rui-comp-time-picker-selector-radius) - var(--rui-comp-time-picker-clock-padding));
+    --rui-comp-time-picker-clock-size: min(256px, calc(100dvh * 256 / 560), calc(100dvw * 256 / 340));
+    --rui-comp-time-picker-clock-body-margin-top: 44px;
+    --rui-comp-time-picker-clock-display-margin-top: 8px;
+    --rui-comp-time-picker-clock-face-margin-top: 36px;
+    --rui-comp-time-picker-clock-face-margin-start: 64px;
+    --rui-comp-time-picker-action-margin-top: 24px;
+
+    position: relative;
+    width: fit-content;
+    min-width: 0;
+    max-width: calc(100vw - 32px);
+    max-height: calc(100vh - 32px);
+    background: var(--rui-comp-time-picker-surface-color);
+}
+
+.rui-time-picker-dialog .rui-dialog { display: block; }
+.rui-time-picker-dialog .rui-dialog__content { overflow: visible; }
+.rui-time-picker-dialog .rui-dialog__content-body { padding: 0; }
+
+.rui-time-picker__dialog-content {
+    display: grid;
+    grid-template-rows: 44px auto;
+    padding: 0 24px 2px;
+}
+
+.rui-time-picker__title {
+    @include typography.overline("--rui-comp-time-picker-title");
+
+    box-sizing: border-box;
+    block-size: 44px;
+    margin: 0;
+    padding-block-start: calc(28px - 1cap);
+    color: rgb(from var(--rui-comp-time-picker-on-surface-color) r g b / 0.6);
+    font-size: 10px;
+    letter-spacing: 0.166666667em;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+    text-transform: uppercase;
+}
+
+.rui-time-picker__body {
+    display: grid;
+    grid-template-columns: max-content;
+    inline-size: max-content;
+    justify-content: center;
+    margin: 0;
+    padding-block-start: var(--rui-comp-time-picker-clock-body-margin-top);
+}
+
+.rui-time-picker__body--12h { grid-template-columns: var(--rui-comp-time-picker-display-width) var(--rui-comp-time-picker-period-width); column-gap: 12px; }
+
+.rui-time-picker__field {
+    justify-self: center;
+    display: grid;
+    grid-template-columns: var(--rui-comp-time-picker-chip-width) var(--rui-comp-time-picker-divider-width) var(--rui-comp-time-picker-chip-width);
+    grid-template-rows: var(--rui-comp-time-picker-chip-height) auto;
+    column-gap: 0;
+    row-gap: 4px;
+    align-items: center;
+    inline-size: var(--rui-comp-time-picker-display-width);
+    padding-block-start: var(--rui-comp-time-picker-clock-display-margin-top);
+}
+
+.rui-time-picker__field--clock { block-size: calc(var(--rui-comp-time-picker-chip-height) + var(--rui-comp-time-picker-clock-display-margin-top)); }
+.rui-time-picker__body--12h .rui-time-picker__field--clock { block-size: var(--rui-comp-time-picker-period-height); }
+
+.rui-time-picker__field-segment {
+    display: grid;
+    grid-row: 1;
+    place-items: center;
+    box-sizing: border-box;
+    inline-size: var(--rui-comp-time-picker-chip-width);
+    block-size: var(--rui-comp-time-picker-chip-height);
+    border: 0;
+    border-radius: 4px;
+    color: var(--rui-comp-time-picker-on-surface-color);
+    background: var(--rui-comp-time-picker-display-color);
+    font-size: 56px;
+    line-height: 1;
+}
+
+.rui-time-picker__field-segment--button {
+    @include normalize.button;
+
+    border-radius: 4px;
+    color: var(--rui-comp-time-picker-on-surface-color);
+    background: var(--rui-comp-time-picker-display-color);
+    cursor: pointer;
+}
+
+.rui-time-picker__field-segment--input {
+    border: 1px solid rgb(from var(--rui-comp-time-picker-on-surface-color) r g b / 0.38);
+    background: transparent;
+}
+
+.rui-time-picker__field-segment--input:focus-within { border-color: var(--rui-sys-color-primary); border-width: 2px; }
+.rui-time-picker__field-segment--button.rui-time-picker__field-segment--active { color: var(--rui-comp-time-picker-display-active-text-color); background: var(--rui-comp-time-picker-display-active-color); }
+.rui-time-picker__field-segment--input.rui-time-picker__field-segment--active { color: var(--rui-comp-time-picker-on-surface-color); background: transparent; }
+
+.rui-time-picker__field-segment input {
+    @include normalize.input;
+    @include typography.headline3("--rui-comp-time-picker-field-value");
+
+    inline-size: 100%;
+    min-inline-size: 0;
+    color: var(--rui-comp-time-picker-on-surface-color);
+    font-size: 56px;
+    line-height: 1;
+    text-align: center;
+}
+
+.rui-time-picker__field-divider {
+    grid-column: 2;
+    grid-row: 1;
+    color: var(--rui-sys-color-on-surface);
+    font-size: 56px;
+    line-height: 1;
+    text-align: center;
+}
+
+.rui-time-picker__field-label {
+    @include typography.caption("--rui-comp-time-picker-field-label");
+
+    color: rgb(from var(--rui-comp-time-picker-on-surface-color) r g b / 0.6);
+}
+
+.rui-time-picker__field-label:nth-of-type(1) { grid-column: 1; grid-row: 2; }
+.rui-time-picker__field-label:nth-of-type(2) { grid-column: 3; grid-row: 2; }
+
+.rui-time-picker__period {
+    display: grid;
+    grid-template-rows: repeat(2, 48px);
+    inline-size: var(--rui-comp-time-picker-period-width);
+    block-size: var(--rui-comp-time-picker-period-height);
+    overflow: hidden;
+    border: 1px solid rgb(from var(--rui-comp-time-picker-on-surface-color) r g b / 0.33);
+    border-radius: 4px;
+}
+
+.rui-time-picker__period button {
+    @include normalize.button;
+    @include typography.subtitle2("--rui-comp-time-picker-period");
+
+    block-size: 48px;
+    color: var(--rui-comp-time-picker-on-surface-color);
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.rui-time-picker__period button.rui-time-picker__period-value--selected { color: var(--rui-comp-time-picker-on-hand-color); background: rgb(from var(--rui-comp-time-picker-hand-color) r g b / 0.24); }
+
+.rui-time-picker__body > .rui-time-picker__clock {
+    grid-column: 1;
+    justify-self: center;
+    margin-block-start: var(--rui-comp-time-picker-clock-face-margin-top);
+    margin-inline: 12px;
+}
+
+.rui-time-picker__body > .rui-time-picker__field { grid-column: 1; justify-self: center; }
+
+.rui-time-picker__clock {
+    position: relative;
+    inline-size: var(--rui-comp-time-picker-clock-size);
+    block-size: var(--rui-comp-time-picker-clock-size);
+    margin-inline: auto;
+    border-radius: 50%;
+    background: var(--rui-comp-time-picker-clock-face-color);
+    touch-action: none;
+    user-select: none;
+}
+
+.rui-time-picker__clock-hand {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    z-index: 0;
+    inline-size: calc(var(--rui-comp-time-picker-clock-size) / 2 - var(--rui-comp-time-picker-selector-radius) - var(--rui-comp-time-picker-clock-padding));
+    block-size: 2px;
+    transform: rotate(calc(var(--rui-comp-time-picker-hand-angle) - 90deg));
+    transform-origin: left center;
+    background: var(--rui-comp-time-picker-hand-color);
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rui-time-picker__clock--dragging .rui-time-picker__clock-hand { transition: none; }
+
+.rui-time-picker__clock-hand::before {
+    position: absolute;
+    inset: 50% auto auto -4px;
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    background: var(--rui-comp-time-picker-hand-color);
+    content: "";
+}
+
+.rui-time-picker__clock-selector {
+    position: absolute;
+    inset: 50% calc(-1 * var(--rui-comp-time-picker-selector-radius)) auto auto;
+    inline-size: var(--rui-comp-time-picker-selector-size);
+    block-size: var(--rui-comp-time-picker-selector-size);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    background: var(--rui-comp-time-picker-hand-color);
+}
+
+.rui-time-picker__clock-value {
+    @include typography.caption("--rui-comp-time-picker-clock-value");
+
+    position: absolute;
+    inset: 50% auto auto 50%;
+    z-index: 1;
+    inline-size: 48px;
+    block-size: 48px;
+    padding: 16px;
+    border: 0;
+    border-radius: 50%;
+    box-sizing: border-box;
+    color: var(--rui-comp-time-picker-on-surface-color);
+    background: transparent;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 16px;
+    transform: translate(calc(-50% + var(--rui-comp-time-picker-clock-value-x)), calc(-50% + var(--rui-comp-time-picker-clock-value-y)));
+}
+
+.rui-time-picker__clock-value--selected { color: var(--rui-comp-time-picker-on-hand-color); }
+.rui-time-picker__clock-value:focus-visible { outline: 2px solid var(--rui-sys-color-primary); outline-offset: 2px; }
+
+.rui-time-picker__actions {
+    display: flex;
+    align-items: flex-start;
+    padding-block-start: var(--rui-comp-time-picker-action-margin-top);
+    margin-inline: -12px -16px;
+    padding-block-end: 0;
+}
+
+.rui-time-picker__mode-button { margin-inline-end: auto; }
+.rui-time-picker__cancel-button { min-inline-size: 72px; margin-block-start: 2px; margin-inline-end: 8px; }
+.rui-time-picker__confirm-button { min-inline-size: 64px; margin-block-start: 2px; margin-inline-end: 8px; }
+
+@media (orientation: landscape) {
+    .rui-time-picker-dialog .rui-dialog {
+        --rui-comp-time-picker-clock-size: min(256px, calc(100dvh * 256 / 450), calc(100dvw * 256 / 600));
+        --rui-comp-time-picker-clock-body-margin-top: 0px;
+        --rui-comp-time-picker-clock-face-margin-top: 0px;
+        --rui-comp-time-picker-action-margin-top: 24px;
+
+        min-width: 0;
     }
+
+    .rui-time-picker__title { padding-block-start: calc(28px - 1cap); }
+
+    .rui-time-picker__body {
+        grid-template-columns: var(--rui-comp-time-picker-display-width) var(--rui-comp-time-picker-clock-size);
+        inline-size: auto;
+        grid-template-rows: auto;
+        column-gap: var(--rui-comp-time-picker-clock-face-margin-start);
+        align-items: start;
+        margin: 0 24px 24px;
+        padding-block-start: 16px;
+    }
+
+    .rui-time-picker__body--12h { grid-template-columns: var(--rui-comp-time-picker-display-width) var(--rui-comp-time-picker-clock-size); }
+    .rui-time-picker__field { grid-column: 1; grid-row: 1; padding-block-start: 4px; }
+    .rui-time-picker__period { grid-column: 1; grid-row: 1; align-self: end; justify-self: stretch; inline-size: var(--rui-comp-time-picker-display-width); block-size: 48px; grid-template-columns: repeat(2, 1fr); grid-template-rows: 48px; margin-block-start: 12px; }
+    .rui-time-picker__body > .rui-time-picker__clock {
+        margin-inline: 0;
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        margin-block-start: 0;
+    }
+
+    .rui-time-picker__body > .rui-time-picker__field {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        margin-block-start: 0;
+    }
+}
+
+@media (min-width: 600px) and (orientation: landscape) {
+    .rui-time-picker-dialog .rui-dialog { --rui-comp-time-picker-clock-face-margin-start: 24px; }
+}
+
+@media (min-width: 320px) and (orientation: landscape) and (max-width: 599px) {
+    .rui-time-picker-dialog .rui-dialog { --rui-comp-time-picker-clock-face-margin-start: 64px; }
+}
+
+@media (min-height: 320px) and (max-height: 549px) and (orientation: portrait) {
+    .rui-time-picker-dialog .rui-dialog { --rui-comp-time-picker-action-margin-top: 8px; }
 }
