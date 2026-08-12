@@ -1,0 +1,82 @@
+import { createApp, defineComponent, h } from "vue"
+import { describe, expect, it } from "vitest"
+
+import {
+    createInternationalizationController,
+    internationalizationKey,
+    provideInternationalization,
+    useInternationalization,
+} from "../controller"
+
+describe("internationalization controller", () => {
+    it("updates message resolution when the locale changes", () => {
+        const controller = createInternationalizationController(
+            {
+                en: { marker: "english" },
+                fr: { marker: "french" },
+            },
+            {},
+            "en",
+        )
+
+        expect(controller.locale.value).toBe("en")
+        expect(controller.resolveMessage("marker")).toBe("english")
+
+        controller.setLocale("fr")
+
+        expect(controller.locale.value).toBe("fr")
+        expect(controller.resolveMessage("marker")).toBe("french")
+    })
+
+    it("provides the controller to nested component setup", () => {
+        const controller = createInternationalizationController({}, {}, "en")
+        let resolvedController: ReturnType<typeof useInternationalization> | undefined
+        const root = document.createElement("div")
+
+        const Consumer = defineComponent({
+            setup() {
+                resolvedController = useInternationalization()
+                return () => h("div")
+            },
+        })
+        const Provider = defineComponent({
+            setup() {
+                provideInternationalization(controller)
+                return () => h(Consumer)
+            },
+        })
+
+        const app = createApp(Provider)
+        app.mount(root)
+
+        expect(resolvedController).toBe(controller)
+
+        app.unmount()
+    })
+
+    it("throws without an internationalization controller", () => {
+        const root = document.createElement("div")
+        let error: unknown
+        const Consumer = defineComponent({
+            setup() {
+                try {
+                    useInternationalization()
+                } catch (nextError) {
+                    error = nextError
+                }
+                return () => h("div")
+            },
+        })
+
+        const app = createApp(Consumer)
+        app.mount(root)
+
+        expect(error).toEqual(new Error("[RUI] useInternationalization must be used after providing an internationalization controller"))
+
+        app.unmount()
+    })
+
+    it("uses the injection key internally", () => {
+        expect(internationalizationKey).toBeTypeOf("symbol")
+    })
+})

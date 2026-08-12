@@ -13,7 +13,8 @@ import {
     RTabBar,
     RTopAppBar,
 } from "@ripple-design/rui"
-import { computed, onMounted, ref } from "vue"
+import { createInternationalizationController, provideInternationalization } from "@/foundations/internationalization"
+import { computed, onMounted, ref, watch } from "vue"
 
 import type { ComponentsNavigation } from "../../lib/docs"
 
@@ -42,7 +43,13 @@ const props = defineProps<{
 }>()
 
 const direction = ref<DocsDirection>(props.direction)
+const internationalization = createInternationalizationController({}, {}, props.locale)
+provideInternationalization(internationalization)
 const storedDirection = ref<DocsDirection | null>(null)
+
+watch(() => props.locale, (locale) => {
+    internationalization.setLocale(locale)
+})
 const resolvedLocaleLinks = computed(() =>
     props.localeLinks.map((item) => {
         const href = new URL(item.href, "http://localhost")
