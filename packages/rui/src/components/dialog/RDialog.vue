@@ -166,7 +166,7 @@ defineExpose({
 @use "@/styles/typography";
 @use "@/styles/motion";
 
-.rui-dialog-modal {
+:global(.rui-dialog-modal) {
     margin: auto;
     padding: 48px;
     transition:
@@ -175,7 +175,7 @@ defineExpose({
     transition-behavior: allow-discrete;
 }
 
-.rui-dialog-modal::backdrop {
+:global(.rui-dialog-modal::backdrop) {
     background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0);
     transition:
         background-color 75ms #{motion.$easing-accelerated},
@@ -184,7 +184,7 @@ defineExpose({
     transition-behavior: allow-discrete;
 }
 
-.rui-dialog-modal[open]::backdrop {
+:global(.rui-dialog-modal[open]::backdrop) {
     background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0.32);
     transition:
         background-color 150ms #{motion.$easing-decelerated},
@@ -193,12 +193,20 @@ defineExpose({
     transition-behavior: allow-discrete;
 }
 
-.rui-dialog {
+:global(.rui-dialog) {
     width: min(560px, calc(100vw - 32px));
     max-height: min(560px, calc(100vh - 96px));
     overflow: hidden;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
+    transform: scale(0.8);
+    opacity: 0;
+    transition:
+        opacity 75ms #{motion.$easing-accelerated},
+        transform 150ms #{motion.$easing-accelerated};
+}
+
+:global(.rui-dialog-modal[open] .rui-dialog) {
     transform: scale(1);
     opacity: 1;
     transition:
@@ -206,18 +214,13 @@ defineExpose({
         transform 150ms #{motion.$easing-decelerated};
 }
 
-.rui-dialog-modal[open] .rui-dialog {
-    transform: scale(1);
-    opacity: 1;
-}
-
 @starting-style {
-    .rui-dialog-modal[open] .rui-dialog {
+    :global(.rui-dialog-modal[open] .rui-dialog) {
         opacity: 0;
         transform: scale(0.8);
     }
 
-    .rui-dialog-modal[open]::backdrop {
+    :global(.rui-dialog-modal[open]::backdrop) {
         background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0);
     }
 }

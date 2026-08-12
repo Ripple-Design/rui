@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { offset, flip, shift } from "@floating-ui/dom"
-import { Teleport, computed, onBeforeUnmount, onMounted, ref, useId, watch } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref, useId, watch } from "vue"
 
 import {
-    ensureFloatingPortalRoot,
-    RUI_FLOATING_PORTAL_ID,
+    RTeleport,
     useDismissableLayer,
     useFloatingPosition,
     useOverlayStack,
@@ -22,11 +21,9 @@ const open = ref(false)
 const hasHover = ref(false)
 const hasFocus = ref(false)
 const suppressFocus = ref(false)
-const portalReady = ref(false)
 
 const overlayStack = useOverlayStack()
 const layer = overlayStack.register()
-const portalSelector = `#${RUI_FLOATING_PORTAL_ID}`
 
 const position = useFloatingPosition(
     computed(() => props.target ?? null),
@@ -40,7 +37,7 @@ const position = useFloatingPosition(
 )
 
 const floatingStyles = computed(() => position.floatingStyles.value)
-const shouldMount = computed(() => portalReady.value && !!props.text.trim())
+const shouldMount = computed(() => !!props.text.trim())
 
 watch(
     [hasHover, hasFocus, suppressFocus, () => props.disabled],
@@ -148,8 +145,6 @@ watch(
 )
 
 onMounted(() => {
-    ensureFloatingPortalRoot()
-    portalReady.value = true
     document.addEventListener("keydown", handleDocumentKeyDown, true)
 })
 
@@ -164,7 +159,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <Teleport v-if="portalReady" :to="portalSelector">
+    <RTeleport portal="docked">
         <div
             v-if="shouldMount"
             :id="tooltipId"
@@ -178,7 +173,7 @@ onBeforeUnmount(() => {
                 {{ text }}
             </div>
         </div>
-    </Teleport>
+    </RTeleport>
 </template>
 
 <style scoped lang="scss">

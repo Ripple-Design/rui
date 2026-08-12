@@ -2,7 +2,7 @@
 import { computed, nextTick, onMounted, provide, ref, useAttrs } from "vue"
 
 import { RUI_MODAL_ACTION_ATTRIBUTE } from "@/components/modal/constants.ts"
-import { floatingPortalTargetKey } from "@/foundations/floating"
+import { floatingPortalTargetKey, RTeleport } from "@/foundations/floating"
 import { useModal } from "@/components/modal/useModal.ts"
 import { getActionTarget, getActionValue, isBackdropClick } from "@/components/modal/useModalDismiss.ts"
 import { useReturnFocus } from "@/components/modal/useReturnFocus.ts"
@@ -151,33 +151,36 @@ onMounted(() => {
 </script>
 
 <template>
-    <dialog
-        ref="dialogRef"
-        v-bind="attrs"
-        :aria-label="ariaLabel"
-        :aria-labelledby="ariaLabelledby"
-        :aria-describedby="ariaDescribedby"
-        :role="role"
-        @cancel="handleCancel"
-        @click="handleClick"
-        @close="handleClose"
-        @wheel="handleWheel"
-    >
-        <slot />
-    </dialog>
+    <RTeleport portal="modal">
+        <dialog
+            ref="dialogRef"
+            class="rui-modal"
+            v-bind="attrs"
+            :aria-label="ariaLabel"
+            :aria-labelledby="ariaLabelledby"
+            :aria-describedby="ariaDescribedby"
+            :role="role"
+            @cancel="handleCancel"
+            @click="handleClick"
+            @close="handleClose"
+            @wheel="handleWheel"
+        >
+            <slot />
+        </dialog>
+    </RTeleport>
 </template>
 
 <style scoped lang="scss">
 @use "@/styles/motion";
 
-dialog {
+:global(.rui-modal) {
     border: 0;
     padding: 0;
     margin: 0;
     background: transparent;
 }
 
-dialog::backdrop {
+:global(.rui-modal::backdrop) {
     background-color: rgba(0 0 0 / 0.32);
 }
 </style>

@@ -76,7 +76,7 @@ defineExpose({
 <style scoped lang="scss">
 @use "@/styles/motion";
 
-.rui-modal-bottom-sheet-modal {
+:global(.rui-modal-bottom-sheet-modal) {
     position: fixed;
     inset: 0;
     inline-size: 100%;
@@ -91,7 +91,7 @@ defineExpose({
         overlay 150ms #{motion.$easing-accelerated} allow-discrete;
 }
 
-.rui-modal-bottom-sheet-modal[open] {
+:global(.rui-modal-bottom-sheet-modal)[open] {
     transition:
         display 150ms #{motion.$easing-standard} allow-discrete,
         overlay 150ms #{motion.$easing-standard} allow-discrete;
@@ -117,7 +117,7 @@ defineExpose({
     --rui-surface-shape-end-start: 0px;
 }
 
-.rui-modal-bottom-sheet-modal[open] .rui-modal-bottom-sheet__panel {
+:global(.rui-modal-bottom-sheet-modal[open] .rui-modal-bottom-sheet__panel) {
     transform: translateY(0);
     opacity: 1;
     transition:
@@ -126,35 +126,35 @@ defineExpose({
 }
 
 @starting-style {
-    .rui-modal-bottom-sheet-modal[open] .rui-modal-bottom-sheet__panel {
+    :global(.rui-modal-bottom-sheet-modal[open] .rui-modal-bottom-sheet__panel) {
         transform: translateY(20%);
         opacity: 0;
     }
 }
 
-.rui-modal-bottom-sheet-modal::backdrop {
+:global(.rui-modal-bottom-sheet-modal::backdrop) {
     background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0);
     transition: background-color 150ms #{motion.$easing-accelerated};
 }
 
-.rui-modal-bottom-sheet-modal[open]::backdrop {
+:global(.rui-modal-bottom-sheet-modal[open]::backdrop) {
     background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0.32);
     transition: background-color 150ms #{motion.$easing-standard};
 }
 
 @starting-style {
-    .rui-modal-bottom-sheet-modal[open]::backdrop {
+    :global(.rui-modal-bottom-sheet-modal[open]::backdrop) {
         background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0);
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .rui-modal-bottom-sheet-modal,
-    .rui-modal-bottom-sheet-modal[open],
+    :global(.rui-modal-bottom-sheet-modal),
+    :global(.rui-modal-bottom-sheet-modal)[open],
     .rui-modal-bottom-sheet__panel,
-    .rui-modal-bottom-sheet-modal[open] .rui-modal-bottom-sheet__panel,
-    .rui-modal-bottom-sheet-modal::backdrop,
-    .rui-modal-bottom-sheet-modal[open]::backdrop {
+    :global(.rui-modal-bottom-sheet-modal[open] .rui-modal-bottom-sheet__panel),
+    :global(.rui-modal-bottom-sheet-modal::backdrop),
+    :global(.rui-modal-bottom-sheet-modal[open]::backdrop) {
         transition: none;
     }
 }

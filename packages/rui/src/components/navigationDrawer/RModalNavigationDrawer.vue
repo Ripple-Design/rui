@@ -105,7 +105,7 @@ function handleSelect() {
 <style scoped lang="scss">
 @use "@/styles/motion";
 
-.rui-modal-navigation-drawer {
+:global(.rui-modal-navigation-drawer) {
     --rui-comp-navigation-drawer-progress: 0;
     position: fixed;
     inset: 0;
@@ -121,7 +121,7 @@ function handleSelect() {
         overlay #{motion.$duration-medium-out} #{motion.$easing-accelerated} allow-discrete;
 }
 
-.rui-modal-navigation-drawer[open] {
+:global(.rui-modal-navigation-drawer)[open] {
     --rui-comp-navigation-drawer-progress: 1;
     transition:
         display #{motion.$duration-medium-in} #{motion.$easing-decelerated} allow-discrete,
@@ -147,47 +147,47 @@ function handleSelect() {
     transform: translateX(calc((1 - var(--rui-comp-navigation-drawer-progress)) * 100%));
 }
 
-.rui-modal-navigation-drawer[open] .rui-modal-navigation-drawer__panel {
+:global(.rui-modal-navigation-drawer[open] .rui-modal-navigation-drawer__panel) {
     transition: transform #{motion.$duration-medium-in} #{motion.$easing-decelerated};
 }
 
-.rui-modal-navigation-drawer--dragging .rui-modal-navigation-drawer__panel {
+:global(.rui-modal-navigation-drawer--dragging) .rui-modal-navigation-drawer__panel {
     transition: none;
 }
 
 @starting-style {
-    .rui-modal-navigation-drawer[open] .rui-modal-navigation-drawer__panel--start {
+    :global(.rui-modal-navigation-drawer[open] .rui-modal-navigation-drawer__panel--start) {
         transform: translateX(-100%);
     }
 
-    .rui-modal-navigation-drawer[open] .rui-modal-navigation-drawer__panel--end {
+    :global(.rui-modal-navigation-drawer[open] .rui-modal-navigation-drawer__panel--end) {
         transform: translateX(100%);
     }
 }
 
-.rui-modal-navigation-drawer::backdrop {
+:global(.rui-modal-navigation-drawer::backdrop) {
     background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0);
     transition: background-color #{motion.$duration-medium-out} #{motion.$easing-accelerated};
 }
 
-.rui-modal-navigation-drawer[open]::backdrop {
+:global(.rui-modal-navigation-drawer[open]::backdrop) {
     background-color: rgb(from var(--rui-sys-color-on-surface) r g b / calc(0.6 * var(--rui-comp-navigation-drawer-progress)));
     transition: background-color #{motion.$duration-medium-in} #{motion.$easing-decelerated};
 }
 
 @starting-style {
-    .rui-modal-navigation-drawer[open]::backdrop {
+    :global(.rui-modal-navigation-drawer[open]::backdrop) {
         background-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0);
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .rui-modal-navigation-drawer,
-    .rui-modal-navigation-drawer[open],
+    :global(.rui-modal-navigation-drawer),
+    :global(.rui-modal-navigation-drawer)[open],
     .rui-modal-navigation-drawer__panel,
-    .rui-modal-navigation-drawer[open] .rui-modal-navigation-drawer__panel,
-    .rui-modal-navigation-drawer::backdrop,
-    .rui-modal-navigation-drawer[open]::backdrop {
+    :global(.rui-modal-navigation-drawer[open] .rui-modal-navigation-drawer__panel),
+    :global(.rui-modal-navigation-drawer::backdrop),
+    :global(.rui-modal-navigation-drawer[open]::backdrop) {
         transition: none;
     }
 }

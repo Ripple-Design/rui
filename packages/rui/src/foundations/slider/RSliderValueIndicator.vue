@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { arrow, flip, offset, shift, type Middleware } from "@floating-ui/dom"
-import { Teleport, computed, nextTick, onMounted, ref, watch } from "vue"
+import { computed, nextTick, onMounted, ref, watch } from "vue"
 
-import { ensureFloatingPortalRoot, RUI_FLOATING_PORTAL_ID, useFloatingPosition } from "@/foundations/floating"
+import { RTeleport, useFloatingPosition } from "@/foundations/floating"
 
 type RSliderValueIndicatorProps = {
     enterDuration: string
@@ -33,8 +33,6 @@ const indicatorMiddleware = computed<Middleware[]>(() => [
     ...(arrowRef.value ? [arrow({ element: arrowRef.value })] : []),
 ])
 const floatingRef = ref<HTMLElement | null>(null)
-const portalReady = ref(false)
-const portalSelector = `#${RUI_FLOATING_PORTAL_ID}`
 
 const position = useFloatingPosition(
     computed(() => props.reference),
@@ -75,14 +73,12 @@ watch(
 )
 
 onMounted(() => {
-    ensureFloatingPortalRoot()
-    portalReady.value = true
     void nextTick(() => position.update())
 })
 </script>
 
 <template>
-    <Teleport v-if="portalReady" :to="portalSelector">
+    <RTeleport portal="docked">
         <span
             ref="floatingRef"
             class="rui-slider-value-indicator"
@@ -96,7 +92,7 @@ onMounted(() => {
             {{ value }}
             <span ref="arrowRef" class="rui-slider-value-indicator__arrow" :style="arrowStyles" />
         </span>
-    </Teleport>
+    </RTeleport>
 </template>
 
 <style scoped lang="scss">

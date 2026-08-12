@@ -86,7 +86,7 @@ defineExpose({
 <style scoped lang="scss">
 @use "@/styles/motion";
 
-.rui-modal-side-sheet-modal {
+:global(.rui-modal-side-sheet-modal) {
     position: fixed;
     inset: 0;
     width: 100%;
@@ -102,7 +102,7 @@ defineExpose({
         overlay #{motion.$duration-medium-out} #{motion.$easing-accelerated} allow-discrete;
 }
 
-.rui-modal-side-sheet-modal[open] {
+:global(.rui-modal-side-sheet-modal)[open] {
     transition:
         display #{motion.$duration-medium-in} #{motion.$easing-decelerated} allow-discrete,
         overlay #{motion.$duration-medium-in} #{motion.$easing-decelerated} allow-discrete;
@@ -127,32 +127,32 @@ defineExpose({
     transform: translateX(100%);
 }
 
-.rui-modal-side-sheet-modal[open] .rui-modal-side-sheet__panel--start,
-.rui-modal-side-sheet-modal[open] .rui-modal-side-sheet__panel--end {
+:global(.rui-modal-side-sheet-modal[open] .rui-modal-side-sheet__panel--start),
+:global(.rui-modal-side-sheet-modal[open] .rui-modal-side-sheet__panel--end) {
     transform: translateX(0);
     transition: transform #{motion.$duration-medium-in} #{motion.$easing-decelerated};
 }
 
 @starting-style {
-    .rui-modal-side-sheet-modal[open] .rui-modal-side-sheet__panel--start {
+    :global(.rui-modal-side-sheet-modal[open] .rui-modal-side-sheet__panel--start) {
         transform: translateX(-100%);
     }
-    .rui-modal-side-sheet-modal[open] .rui-modal-side-sheet__panel--end {
+    :global(.rui-modal-side-sheet-modal[open] .rui-modal-side-sheet__panel--end) {
         transform: translateX(100%);
     }
 }
 
-.rui-modal-side-sheet-modal::backdrop {
+:global(.rui-modal-side-sheet-modal::backdrop) {
     background-color: transparent;
     transition: background-color #{motion.$duration-medium-out} #{motion.$easing-accelerated};
 }
 
-.rui-modal-side-sheet-modal[open]::backdrop {
+:global(.rui-modal-side-sheet-modal[open]::backdrop) {
     background-color: rgba(0 0 0 / 0.32);
     transition: background-color #{motion.$duration-medium-in} #{motion.$easing-decelerated};
 }
 @starting-style {
-    .rui-modal-side-sheet-modal[open]::backdrop {
+    :global(.rui-modal-side-sheet-modal[open]::backdrop) {
         background-color: rgba(0, 0, 0, 0);
     }
 }

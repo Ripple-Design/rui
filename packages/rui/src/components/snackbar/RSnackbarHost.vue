@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, Teleport } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref } from "vue"
 
-import { ensureFloatingPortalRoot } from "@/foundations/floating"
+import { RTeleport } from "@/foundations/floating"
 
 import RSnackbar from "./RSnackbar.vue"
 import { useRSnackbarStore, type SnackbarSnapshot } from "./RSnackbars"
 import type { RSnackbarDismissReason } from "./types"
 
 const store = useRSnackbarStore()
-const portalReady = ref(false)
 const snapshot = ref<SnackbarSnapshot>(store.getState())
 let unsubscribe: (() => void) | undefined
 
@@ -32,7 +31,6 @@ function handleDismissed(id: string, reason: RSnackbarDismissReason) {
 
 onMounted(() => {
     unsubscribe = store.subscribe(handleSnapshot)
-    portalReady.value = !!ensureFloatingPortalRoot()
 })
 
 onBeforeUnmount(() => {
@@ -41,7 +39,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <Teleport v-if="portalReady" to="#rui-floating-root">
+    <RTeleport portal="docked">
         <div class="rui-snackbar-host">
             <div v-if="current" class="rui-snackbar-host__positioner">
                 <RSnackbar
@@ -62,7 +60,7 @@ onBeforeUnmount(() => {
                 />
             </div>
         </div>
-    </Teleport>
+    </RTeleport>
 </template>
 
 <style scoped lang="scss">

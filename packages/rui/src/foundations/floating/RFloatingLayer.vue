@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { Teleport, computed, onMounted, ref, watch, type StyleValue } from "vue"
+import { computed, ref, watch, type StyleValue } from "vue"
 
-import { ensureFloatingPortalRoot, useFloatingPortalTarget } from "@/foundations"
+import { useFloatingPortalTarget } from "./usePortalTarget"
+import RTeleport from "./RTeleport.vue"
 
 import type { RFloatingLayerProps } from "./types"
 
@@ -10,23 +11,13 @@ const emit = defineEmits<{
     (e: "ready", element: HTMLElement): void
 }>()
 
-const portalReady = ref(false)
-const fallbackPortalTarget = ref<HTMLElement | null>(null)
 const portalTarget = useFloatingPortalTarget(props.portalTarget)
-const resolvedPortalTarget = computed(() => portalTarget.value ?? fallbackPortalTarget.value)
 const layerRef = ref<HTMLElement | null>(null)
 
 const layerStyles = computed<StyleValue>(() => ({
     ...props.floatingStyles,
     pointerEvents: props.open ? "auto" : "none",
 }))
-
-onMounted(() => {
-    if (!portalTarget.value) {
-        fallbackPortalTarget.value = ensureFloatingPortalRoot()
-    }
-    portalReady.value = true
-})
 
 watch(
     layerRef,
@@ -45,7 +36,7 @@ defineExpose({
 </script>
 
 <template>
-    <Teleport v-if="portalReady && resolvedPortalTarget" :to="resolvedPortalTarget">
+    <RTeleport portal="docked" :target="portalTarget">
         <div
             ref="layerRef"
             :id="id"
@@ -56,7 +47,7 @@ defineExpose({
         >
             <slot />
         </div>
-    </Teleport>
+    </RTeleport>
 </template>
 
 <style scoped lang="scss">

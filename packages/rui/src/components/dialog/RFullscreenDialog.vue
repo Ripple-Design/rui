@@ -50,7 +50,7 @@ const emit = defineEmits<{
 </template>
 
 <style scoped>
-.rui-fullscreen-dialog.rui-dialog-modal {
+:global(.rui-fullscreen-dialog.rui-dialog-modal) {
     width: 100vw;
     max-width: 100vw;
     height: 100vh;

@@ -15,6 +15,8 @@ export type * from "./stack/types"
 
 export { default as RModal } from "./modal/RModal.vue"
 export type * from "./modal/types"
+export { default as RTeleport } from "@/foundations/floating/RTeleport.vue"
+export type * from "@/foundations/floating/teleportTypes"
 
 export { default as RSideSheet } from "./sideSheet/RSideSheet.vue"
 export { default as RModalSideSheet } from "./sideSheet/RModalSideSheet.vue"
