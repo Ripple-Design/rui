@@ -1,0 +1,12 @@
+// TSConfig for Node-executed tooling/config files.
+{
+    "extends": "@tsconfig/node24/tsconfig.json",
+    "include": ["vite.config.*"],
+    "compilerOptions": {
+        "module": "preserve",
+        "moduleResolution": "bundler",
+        "types": ["node"],
+        "noEmit": true,
+        "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo"
+    }
+}

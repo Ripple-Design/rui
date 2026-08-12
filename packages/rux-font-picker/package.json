@@ -1,0 +1,39 @@
+{
+    "name": "@ripple-design/rux-font-picker",
+    "version": "0.1.0",
+    "description": "Font picker package for Vue 3",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Ripple-Design/rui.git",
+        "directory": "packages/rux-font-picker"
+    },
+    "files": [
+        "dist"
+    ],
+    "type": "module",
+    "main": "dist/es/index.js",
+    "module": "dist/es/index.js",
+    "types": "dist/types/src/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/types/src/index.d.ts",
+            "import": "./dist/es/index.js"
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "vue-tsc -b --noEmit tsconfig.json && vite build",
+        "lint": "oxlint .",
+        "lint:fix": "oxlint . --fix"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "catalog:",
+        "vite": "catalog:",
+        "vite-plugin-dts": "catalog:"
+    },
+    "peerDependencies": {
+        "vue": "^3.5.0"
+    }
+}
