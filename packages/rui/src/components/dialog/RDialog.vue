@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<RDialogProps>(), {
     closeOnBackdrop: true,
     returnFocus: true,
     role: "dialog",
+    width: "560px",
 })
 
 const emit = defineEmits<{
@@ -39,6 +40,9 @@ const labelledby = computed(() => (hasHeader.value ? titleId : props.ariaLabelle
 const describedby = computed(() => (hasContent.value ? descriptionId : props.ariaDescribedBy))
 const showHeaderDivider = computed(() => hasHeader.value && hasOverflow.value && !atTop.value)
 const showFooterDivider = computed(() => hasFooter.value && hasOverflow.value && !atBottom.value)
+const style = computed(() => ({
+    "--rui-comp-dialog-width": props.width,
+}))
 const classes = computed(() => [
     "rui-dialog",
     {
@@ -129,7 +133,7 @@ defineExpose({
         @before-close="emit('before-close', $event)"
         @close="emit('close', $event)"
     >
-        <RSurface :class="classes" :elevation="24">
+        <RSurface :class="classes" :style="style" :elevation="24">
             <header v-if="hasHeader" class="rui-dialog__header">
                 <slot name="header">
                     <h2 :id="titleId" class="rui-dialog__title">
@@ -194,7 +198,7 @@ defineExpose({
 }
 
 :global(.rui-dialog) {
-    width: min(560px, calc(100vw - 32px));
+    width: min(var(--rui-comp-dialog-width), calc(100vw - 96px));
     max-height: min(560px, calc(100vh - 96px));
     overflow: hidden;
     display: grid;

@@ -26,6 +26,7 @@ const emit = defineEmits<{
         :aria-labelledby="ariaLabelledBy"
         :aria-describedby="ariaDescribedBy"
         :title="title"
+        :width="width"
         class="rui-fullscreen-dialog"
         @update:model-value="emit('update:modelValue', $event)"
         @before-open="emit('before-open')"

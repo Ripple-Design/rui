@@ -30,6 +30,7 @@ const emit = defineEmits<{
         :aria-labelledby="ariaLabelledBy"
         :aria-describedby="ariaDescribedBy"
         :title="title"
+        :width="width"
         @update:model-value="emit('update:modelValue', $event)"
         @before-open="emit('before-open')"
         @open="emit('open')"
