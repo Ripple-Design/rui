@@ -1,0 +1,17 @@
+---
+title: Infinite Scroll
+docSlug: components/infinite-scroll
+tab: implementation
+locale: en
+designOrder: 150
+developOrder: 150
+api: /en/api/infinite-scroll
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import InfiniteScrollBasicDemo from "@docs/components/demos/scroll/InfiniteScrollBasicDemo.vue"
+import infiniteScrollBasicDemoSource from "@docs/components/demos/scroll/InfiniteScrollBasicDemo.vue?raw"
+
+<DemoBlock title="Basic usage" code={infiniteScrollBasicDemoSource} language="vue">
+    <InfiniteScrollBasicDemo client:load />
+</DemoBlock>
