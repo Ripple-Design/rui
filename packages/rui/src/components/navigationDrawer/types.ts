@@ -38,6 +38,8 @@ export type RModalNavigationDrawerProps = RModalProps & {
 export type RNavigationDrawerItemProps = {
     /** Identifies the destination inside the parent RNavigationDrawer. */
     value: unknown
+    /** Renders the destination as an anchor when provided. */
+    href?: string
     /** Renders the leading icon using the shared icon renderer. */
     icon?: RIconResolvableSource
     /** Uses this icon when the item is selected. */

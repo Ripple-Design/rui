@@ -67,7 +67,7 @@ const style = computed(() => ({
     "--rui-comp-app-bar-collapse-offset": `${scrollState.value.collapseOffset}px`,
     "--rui-comp-app-bar-collapse-distance": `${scrollState.value.collapseDistance}px`,
     "--rui-comp-app-bar-collapse-progress": scrollState.value.collapseProgress,
-    "--rui-comp-app-bar-visible-height": `${scrollState.value.visibleHeight}px`,
+    ...(scrollState.value.visibleHeight > 0 ? { "--rui-comp-app-bar-visible-height": `${scrollState.value.visibleHeight}px` } : {}),
     "--rui-sys-scaffold-collapse-progress": scrollState.value.collapseProgress,
 }))
 

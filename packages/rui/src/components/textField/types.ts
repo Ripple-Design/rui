@@ -1,8 +1,12 @@
+import type { MaybeRef } from "vue"
+
 import type { RIconResolvableSource } from "@/components/icon/types"
 import type { RFieldHelperProps } from "@/components/input/types"
 
 /** Props for the {@link RTextField} component. */
-export type RTextFieldProps = RFieldHelperProps & {
+export type RTextFieldProps = Omit<RFieldHelperProps, "errorText"> & {
+    /** Displays an error message below the field control. */
+    errorText?: MaybeRef<string | null>
     /** Sets the visible field label. */
     label?: string
     /** Renders a multiline textarea instead of a single-line input. */

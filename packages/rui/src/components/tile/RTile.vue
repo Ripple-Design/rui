@@ -30,7 +30,9 @@ const hasSupporting = computed(() => slots.text != null)
 const hasCustomAction = computed(() => slots.action != null)
 const hasBuiltInAction = computed(() => !hasCustomAction.value && props.actionIcon != null)
 const hasText = computed(() => hasTitle.value || hasSupporting.value)
-const labelledBy = computed(() => [hasTitle.value ? titleId : null, hasSupporting.value ? textId : null].filter(Boolean).join(" "))
+const labelledBy = computed(() =>
+    [hasTitle.value ? titleId : null, hasSupporting.value ? textId : null].filter(Boolean).join(" "),
+)
 const isLink = computed(() => props.href != null && !props.disabled)
 const isAction = computed(() => (props.action || props.href != null || hasClickListener.value) && !props.disabled)
 
