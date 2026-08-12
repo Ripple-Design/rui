@@ -12,8 +12,8 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [x] Cards
 - [x] Checkboxes
 - [x] Chips
-- [ ] Data tables
-- [ ] Date pickers
+- [x] Data tables
+- [x] Date pickers
 - [x] Dialogs
 - [x] Dividers
 - [x] Font pickers
@@ -23,6 +23,7 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [x] Menus
 - [x] Navigation drawer
 - [x] Navigation rail
+- [x] Number pickers
 - [x] Progress indicators
 - [x] Radio buttons
 - [x] Sheets: bottom
@@ -32,5 +33,6 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [x] Switches
 - [x] Tabs
 - [x] Text fields
-- [ ] Time pickers
+- [x] Time pickers
 - [x] Tooltips
+- [x] Teleport
