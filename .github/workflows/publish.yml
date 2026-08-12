@@ -11,11 +11,15 @@ on:
                 options:
                     - rui
                     - rux-video-player
+                    - rux-data-table
+                    - rux-date-time-picker
                     - rux-font-picker
     push:
         tags:
             - "v*"
             - "rux-video-player-v*"
+            - "rux-data-table-v*"
+            - "rux-date-time-picker-v*"
             - "rux-font-picker-v*"
 
 jobs:
@@ -59,6 +63,10 @@ jobs:
                   package="${SELECTED_PACKAGE:-rui}"
                   if [[ "$REF_NAME" == rux-video-player-v* ]]; then
                       package="rux-video-player"
+                  elif [[ "$REF_NAME" == rux-data-table-v* ]]; then
+                      package="rux-data-table"
+                  elif [[ "$REF_NAME" == rux-date-time-picker-v* ]]; then
+                      package="rux-date-time-picker"
                   elif [[ "$REF_NAME" == rux-font-picker-v* ]]; then
                       package="rux-font-picker"
                   fi
