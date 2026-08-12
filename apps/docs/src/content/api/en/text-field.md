@@ -19,6 +19,7 @@ import { RTextField } from "@ripple-design/rui"
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `errorText` | `MaybeRef<string \| null>` | no | Displays an error message below the field control. |
 | `label` | `string` | no | Sets the visible field label. |
 | `textArea` | `boolean` | no | Renders a multiline textarea instead of a single-line input. |
 | `placeholder` | `string` | no | Sets the placeholder text shown when the field is empty. |

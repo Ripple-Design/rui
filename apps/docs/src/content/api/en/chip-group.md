@@ -22,6 +22,7 @@ import { RChipGroup } from "@ripple-design/rui"
 | `variant` | `RChipVariant` | no | Controls the visual treatment for child chips. |
 | `type` | `RChipType` | no | Controls the chip family and interaction behavior for child chips. |
 | `selection` | `RChipGroupSelection` | no | Enables single or multiple selection behavior for child chips. |
+| `name` | `string` | no | Binds this selection group to an RForm field path. |
 | `required` | `boolean` | no | Prevents a selectable group from becoming empty. |
 | `wrap` | `boolean` | no | Allows chips to wrap onto additional rows. |
 | `modelValue` | `RChipGroupModelValue` | no | Controls the selected value or values when selection is enabled. |

@@ -9,6 +9,22 @@ export type OutlineItem = {
     text: string
     depth: number
 }
+export type ComponentsNavigationItem = {
+    href: string
+    label: string
+    value: string
+}
+
+export type ComponentsNavigationGroup = {
+    group: string
+    items: ComponentsNavigationItem[]
+}
+
+export type ComponentsNavigation = {
+    activeValue: string
+    groups: ComponentsNavigationGroup[]
+}
+
 export type DirectionMode = "ltr" | "rtl"
 
 type OrderedEntry = {
@@ -89,7 +105,14 @@ export function groupDocs(entries: CollectionEntry<"docs">[], locale: string, mo
         grouped.set(group, bucket)
     }
 
-    return [...grouped.entries()].map(([group, items]) => ({ group, items }))
+    const collator = new Intl.Collator(locale, { numeric: true, sensitivity: "base" })
+
+    return [...grouped.entries()].map(([group, items]) => ({
+        group,
+        items: group === "Components"
+            ? [...items].sort((left, right) => collator.compare(left.data.title, right.data.title) || left.data.docSlug.localeCompare(right.data.docSlug))
+            : items,
+    }))
 }
 
 export function groupApi(entries: CollectionEntry<"api">[], locale: string, mode: ReadingMode) {

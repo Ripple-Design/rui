@@ -1,19 +1,35 @@
 ---
 import "@ripple-design/rui/styles.css"
-import ThemeControlSheet from "@docs/components/docs/ThemeControlSheet.vue"
+import DocsScaffoldShell from "../components/docs/DocsScaffoldShell.vue"
 import { createDocsThemeBootstrapScript } from "@docs/lib/theme"
 import { getDirectionMode, getLocaleUrl, locales } from "../lib/docs"
+import type { ComponentsNavigation } from "../lib/docs"
 
 export interface Props {
     title: string
     locale: string
     currentUrl?: URL
     sectionLabel?: string
+    componentsNavigation?: ComponentsNavigation
 }
 
-const { title, locale, currentUrl = Astro.url, sectionLabel = "Components" } = Astro.props
+const { title, locale, currentUrl = Astro.url, sectionLabel = "Components", componentsNavigation } = Astro.props
 const direction = getDirectionMode(currentUrl)
 const docsThemeBootstrapScript = createDocsThemeBootstrapScript()
+const navigation = [
+    { label: sectionLabel, href: `/${locale}/getting-started/spec`, value: "components" },
+    { label: "Icons", href: `/${locale}/icons`, value: "icons" },
+    { label: "API", href: `/${locale}/api/text-field`, value: "api" },
+]
+const activeNavigation = currentUrl.pathname.startsWith(`/${locale}/icons`)
+    ? "icons"
+    : currentUrl.pathname.startsWith(`/${locale}/api`)
+        ? "api"
+        : "components"
+const localeLinks = locales.map((item) => ({
+    code: item,
+    href: getLocaleUrl(currentUrl, item),
+}))
 ---
 
 <!doctype html>
@@ -36,10 +52,17 @@ const docsThemeBootstrapScript = createDocsThemeBootstrapScript()
                 font-family: var(--rui-sys-typo-font-family);
             }
 
+            html,
+            body {
+                block-size: 100%;
+            }
+
             body {
                 @include rui.typo-body1;
 
+                min-block-size: 100%;
                 margin: 0;
+                overflow: hidden;
                 background: var(--rui-sys-color-background);
                 color: rui.$color-on-surface;
             }
@@ -51,138 +74,20 @@ const docsThemeBootstrapScript = createDocsThemeBootstrapScript()
                 font: inherit;
             }
 
-            .site-header {
-                border-bottom: 1px solid rui.$color-on-surface-outline;
-                padding: 1rem;
-            }
-
-            .site-header__inner {
-                display: grid;
-                gap: 1rem;
-                align-items: start;
-            }
-
-            .site-title {
-                @include rui.typo-headline6;
-
-                margin: 0;
-                color: rui.$color-on-surface;
-            }
-
-            .header-nav,
-            .header-tools,
-            .header-direction,
-            .header-theme {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-
-            .header-nav ul,
-            .header-tools ul,
-            .header-direction ul,
-            .header-theme ul {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.75rem;
-                list-style: none;
-                padding: 0;
-                margin: 0;
-            }
-
-            .header-nav a,
-            .header-tools a,
-            .header-direction button {
-                @include rui.typo-subtitle2;
-            }
-
-            .page-shell {
-                width: min(1440px, 100% - 2rem);
-                margin: 0 auto;
-                padding: 1rem 0 2rem;
-            }
-
-            @media (min-width: 900px) {
-                .site-header__inner {
-                    grid-template-columns: 1fr auto auto auto auto;
-                }
-            }
         </style>
         <script is:inline set:html={docsThemeBootstrapScript}></script>
     </head>
     <body>
-        <header class="site-header">
-            <div class="site-header__inner">
-                <p class="site-title">Ripple Design</p>
-                <nav class="header-nav" aria-label="Primary">
-                    <ul>
-                        <li><a href={`/${locale}/getting-started/spec`}>{sectionLabel}</a></li>
-                        <li><a href={`/${locale}/icons`}>Icons</a></li>
-                        <li><a href={`/${locale}/api/text-field`}>API</a></li>
-                    </ul>
-                </nav>
-                <nav class="header-tools" aria-label="Language switcher">
-                    <ul>
-                        {locales.map((item) => (
-                            <li>
-                                <a href={getLocaleUrl(currentUrl, item)} data-locale-link={item} aria-current={item === locale ? "true" : undefined}>
-                                    {item}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
-                <nav class="header-direction" aria-label="Direction switcher">
-                    <ul>
-                        <li>
-                            <button type="button" data-dir-toggle="ltr" aria-pressed={direction === "ltr" ? "true" : "false"}>LTR</button>
-                        </li>
-                        <li>
-                            <button type="button" data-dir-toggle="rtl" aria-pressed={direction === "rtl" ? "true" : "false"}>RTL</button>
-                        </li>
-                    </ul>
-                </nav>
-                <nav class="header-theme" aria-label="Theme controls">
-                    <ThemeControlSheet client:load />
-                </nav>
-            </div>
-        </header>
-        <main class="page-shell">
+        <DocsScaffoldShell
+            client:load
+            activeNavigation={activeNavigation}
+            componentsNavigation={componentsNavigation}
+            direction={direction}
+            locale={locale}
+            localeLinks={localeLinks}
+            navigation={navigation}
+        >
             <slot />
-        </main>
-        <script is:inline>
-            const url = new URL(window.location.href)
-            const activeDir = document.documentElement.getAttribute("dir") === "rtl" ? "rtl" : "ltr"
-
-            document.querySelectorAll("[data-dir-toggle]").forEach((node) => {
-                node.setAttribute("aria-pressed", node.getAttribute("data-dir-toggle") === activeDir ? "true" : "false")
-                node.addEventListener("click", () => {
-                    const dir = node.getAttribute("data-dir-toggle")
-                    if (!dir) return
-                    url.searchParams.set("dir", dir)
-                    localStorage.setItem("rui-docs-dir", dir)
-                    document.documentElement.setAttribute("dir", dir)
-                    document.querySelectorAll("[data-dir-toggle]").forEach((button) => {
-                        button.setAttribute("aria-pressed", button.getAttribute("data-dir-toggle") === dir ? "true" : "false")
-                    })
-                    history.replaceState({}, "", `${url.pathname}${url.search}`)
-                })
-            })
-
-            document.querySelectorAll("[data-locale-link]").forEach((node) => {
-                const href = node.getAttribute("href")
-                if (!href) return
-                const next = new URL(href, window.location.origin)
-                if (url.searchParams.has("mode")) {
-                    next.searchParams.set("mode", url.searchParams.get("mode") ?? "")
-                }
-                if (url.searchParams.has("dir")) {
-                    next.searchParams.set("dir", url.searchParams.get("dir") ?? "")
-                } else if (localStorage.getItem("rui-docs-dir") === "rtl") {
-                    next.searchParams.set("dir", "rtl")
-                }
-                node.setAttribute("href", `${next.pathname}${next.search}`)
-            })
-        </script>
+        </DocsScaffoldShell>
     </body>
 </html>
