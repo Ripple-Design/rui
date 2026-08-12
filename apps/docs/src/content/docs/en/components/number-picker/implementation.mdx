@@ -1,0 +1,17 @@
+---
+title: Number Picker
+docSlug: components/number-picker
+tab: implementation
+locale: en
+designOrder: 149
+developOrder: 149
+api: /en/api/number-picker
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import NumberPickerBasicDemo from "@docs/components/demos/number-picker/NumberPickerBasicDemo.vue"
+import numberPickerBasicDemoSource from "@docs/components/demos/number-picker/NumberPickerBasicDemo.vue?raw"
+
+<DemoBlock title="Basic usage" code={numberPickerBasicDemoSource} language="vue">
+    <NumberPickerBasicDemo client:load />
+</DemoBlock>
