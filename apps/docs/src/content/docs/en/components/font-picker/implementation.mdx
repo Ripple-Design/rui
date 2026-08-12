@@ -1,0 +1,17 @@
+---
+title: Font picker
+docSlug: components/font-picker
+tab: implementation
+locale: en
+designOrder: 150
+developOrder: 150
+api: /en/api/font-picker
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import FontPickerBasicDemo from "@docs/components/demos/fontPicker/FontPickerBasicDemo.vue"
+import fontPickerBasicDemoSource from "@docs/components/demos/fontPicker/FontPickerBasicDemo.vue?raw"
+
+<DemoBlock title="Basic usage" code={fontPickerBasicDemoSource} language="vue">
+    <FontPickerBasicDemo client:load />
+</DemoBlock>

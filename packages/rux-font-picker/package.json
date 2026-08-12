@@ -11,6 +11,9 @@
         "dist"
     ],
     "type": "module",
+    "sideEffects": [
+        "**/*.css"
+    ],
     "main": "dist/es/index.js",
     "module": "dist/es/index.js",
     "types": "dist/types/src/index.d.ts",
@@ -18,7 +21,8 @@
         ".": {
             "types": "./dist/types/src/index.d.ts",
             "import": "./dist/es/index.js"
-        }
+        },
+        "./styles.css": "./dist/rux-font-picker.css"
     },
     "publishConfig": {
         "access": "public"
@@ -27,6 +31,9 @@
         "build": "vue-tsc -b --noEmit tsconfig.json && vite build",
         "lint": "oxlint .",
         "lint:fix": "oxlint . --fix"
+    },
+    "dependencies": {
+        "@ripple-design/rui": "workspace:*"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "catalog:",

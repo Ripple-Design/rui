@@ -16,7 +16,7 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [ ] Date pickers
 - [x] Dialogs
 - [x] Dividers
-- [ ] Font pickers
+- [x] Font pickers
 - [x] Forms
 - [x] Tiles
 - [x] Lists

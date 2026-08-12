@@ -78,6 +78,9 @@ importers:
       '@ripple-design/rux-date-time-picker':
         specifier: workspace:*
         version: link:../../packages/rux-date-time-picker
+      '@ripple-design/rux-font-picker':
+        specifier: workspace:*
+        version: link:../../packages/rux-font-picker
       '@ripple-design/rux-video-player':
         specifier: workspace:*
         version: link:../../packages/rux-video-player
@@ -175,6 +178,9 @@ importers:
 
   packages/rux-font-picker:
     dependencies:
+      '@ripple-design/rui':
+        specifier: workspace:*
+        version: link:../rui
       vue:
         specifier: ^3.5.0
         version: 3.5.39(typescript@6.0.3)

@@ -14,11 +14,21 @@ export default defineConfig({
         }),
     ],
     build: {
+        cssCodeSplit: true,
         lib: {
             name: "RuxFontPicker",
-            entry: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
+            entry: {
+                index: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
+                styles: fileURLToPath(new URL("./src/styles.ts", import.meta.url)),
+            },
             formats: ["es"],
-            fileName: () => "es/index.js",
+            fileName: (_format, entryName) => `es/${entryName}.js`,
+        },
+        rolldownOptions: {
+            external: ["vue", "@ripple-design/rui"],
+            output: {
+                assetFileNames: (info) => (info.name === "styles.css" ? "rux-font-picker.css" : "[name][extname]"),
+            },
         },
     },
 })
