@@ -2,6 +2,7 @@ import type { InjectionKey } from "vue"
 
 import { inject, provide, ref } from "vue"
 
+import { resolveBuiltInInternationalizationMessage } from "./messages"
 import { normalizeInternationalizationMessageCatalog, resolveInternationalizationMessage } from "./resolve"
 
 import type {
@@ -10,7 +11,7 @@ import type {
     RInternationalizationMessages,
 } from "./types"
 
-export const internationalizationKey: InjectionKey<RInternationalizationController> = Symbol("ruiInternationalization")
+export const internationalizationKey: InjectionKey<RInternationalizationController> = Symbol.for("@ripple-design/rui/internationalization")
 
 export function createInternationalizationController(
     messageCatalog: RInternationalizationMessageCatalog,
@@ -26,7 +27,8 @@ export function createInternationalizationController(
             locale.value = nextLocale
         },
         resolveMessage(key) {
-            return resolveInternationalizationMessage(locale.value, key, normalizedMessageCatalog, baseMessages)
+            return resolveBuiltInInternationalizationMessage(locale.value, key)
+                ?? resolveInternationalizationMessage(locale.value, key, normalizedMessageCatalog, baseMessages)
         },
     }
 }

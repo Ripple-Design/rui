@@ -2,6 +2,9 @@ import { h, nextTick } from "vue"
 import { mount } from "@vue/test-utils"
 import { describe, expect, it } from "vitest"
 
+import { createInternationalizationController } from "@/foundations/internationalization"
+import { internationalizationKey } from "@/foundations/internationalization/controller"
+
 import RForm from "../RForm.vue"
 import { useForm } from "../useForm"
 import RChip from "@/components/chip/RChip.vue"
@@ -30,6 +33,60 @@ async function clickMenuItem(label: string) {
 }
 
 describe("RForm field bindings", () => {
+    it("localizes generated required and optional indicators", async () => {
+        const requiredForm = useForm<{ required: string }>({
+            required: [{ required: true, message: "Required" }],
+        }).form
+        const optionalForm = useForm<{ optional: string }>({
+            optional: [],
+        }).form
+        const internationalization = createInternationalizationController({}, {}, "en")
+        const requiredWrapper = mount(RForm, {
+            props: { form: requiredForm, requiredIndicator: "helper-required" },
+            global: {
+                provide: {
+                    [internationalizationKey as symbol]: internationalization,
+                },
+            },
+            slots: {
+                default: () => h(RTextField, { label: "Required field", name: "required" }),
+            },
+        })
+        const optionalWrapper = mount(RForm, {
+            props: { form: optionalForm, requiredIndicator: "label-optional" },
+            global: {
+                provide: {
+                    [internationalizationKey as symbol]: internationalization,
+                },
+            },
+            slots: {
+                default: () => h(RTextField, { label: "Optional field", name: "optional" }),
+            },
+        })
+
+        await nextTick()
+
+        expect(requiredWrapper.text()).toContain("* Required")
+        expect(optionalWrapper.text()).toContain("Optional field (Optional)")
+
+        internationalization.setLocale("zh-CN")
+        await nextTick()
+
+        expect(requiredWrapper.text()).toContain("*必填")
+        expect(optionalWrapper.text()).toContain("Optional field（选填）")
+    })
+
+    it("keeps unbound required fields independent of internationalization", () => {
+        const wrapper = mount(RTextField, {
+            props: {
+                label: "Standalone",
+                required: true,
+            },
+        })
+
+        expect(wrapper.text()).toContain("Standalone*")
+    })
+
     it("binds a named text field to its nested form value", async () => {
         const { form, value } = useForm<{
             account: {

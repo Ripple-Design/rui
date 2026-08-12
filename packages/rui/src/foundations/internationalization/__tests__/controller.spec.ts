@@ -28,6 +28,23 @@ describe("internationalization controller", () => {
         expect(controller.resolveMessage("marker")).toBe("french")
     })
 
+    it("resolves built-in component messages before supplied catalogs", () => {
+        const controller = createInternationalizationController(
+            {
+                "zh-CN": {
+                    "form.required": "overridden",
+                },
+            },
+            {
+                "form.optional": "overridden",
+            },
+            "zh-CN",
+        )
+
+        expect(controller.resolveMessage("form.required")).toBe("必填")
+        expect(controller.resolveMessage("form.optional")).toBe("选填")
+    })
+
     it("provides the controller to nested component setup", () => {
         const controller = createInternationalizationController({}, {}, "en")
         let resolvedController: ReturnType<typeof useInternationalization> | undefined

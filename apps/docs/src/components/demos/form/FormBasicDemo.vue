@@ -1,10 +1,19 @@
 <script setup lang="ts">
 import { RButton, RForm, RSelectField, RSelectOption, RTextField, useForm } from "@ripple-design/rui"
-import { ref } from "vue"
+import { createInternationalizationController, provideInternationalization } from "@/foundations/internationalization"
+import { onMounted, ref } from "vue"
+
+const internationalization = createInternationalizationController({}, {}, "en")
+provideInternationalization(internationalization)
+
+onMounted(() => {
+    internationalization.setLocale(document.documentElement.lang)
+})
 
 const { form, value } = useForm<{
     account: {
         email: string
+        nickname: string
         password: string
         confirmPassword: string
         country: string
@@ -15,6 +24,7 @@ const { form, value } = useForm<{
             { required: true, message: "Email is required" },
             { type: "email", message: "Enter a valid email address" },
         ],
+        nickname: [],
         password: [
             { required: true, message: "Password is required" },
             { min: 8, message: "Use at least 8 characters", trigger: ["input", "blur"] },
@@ -28,6 +38,7 @@ const { form, value } = useForm<{
 })
 
 const submittedEmail = ref<string>()
+const requiredIndicator = ref<"helper-required" | "label-asterisk" | "label-optional">("helper-required")
 
 function handleSubmit() {
     submittedEmail.value = value.account.email
@@ -35,13 +46,29 @@ function handleSubmit() {
 </script>
 
 <template>
-    <RForm :form class="form-demo" @submit="handleSubmit">
+    <RForm :form :required-indicator="requiredIndicator" class="form-demo" @submit="handleSubmit">
+        <div class="form-demo__required-indicator">
+            <label>
+                Required indicator
+                <select v-model="requiredIndicator">
+                    <option value="helper-required">Helper text</option>
+                    <option value="label-asterisk">Label asterisk</option>
+                    <option value="label-optional">Optional label</option>
+                </select>
+            </label>
+        </div>
+
         <div class="form-demo__fields">
             <RTextField
                 name="account.email"
                 label="Email"
                 autocomplete="email"
                 helper-text="Use an address you can access."
+            />
+            <RTextField
+                name="account.nickname"
+                label="Nickname"
+                autocomplete="nickname"
             />
             <RTextField
                 name="account.password"
@@ -76,6 +103,15 @@ function handleSubmit() {
     display: grid;
     gap: 24px;
     width: 100%;
+}
+
+.form-demo__required-indicator label {
+    display: grid;
+    gap: 8px;
+}
+
+.form-demo__required-indicator select {
+    max-width: 240px;
 }
 
 .form-demo__fields {

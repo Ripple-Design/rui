@@ -105,7 +105,7 @@ const headerSelection = computed(() => {
 })
 const headerSelectionLabel = computed(() => `Current selection: ${headerSelection.value}`)
 const dialogTitle = computed(() => props.title ?? (props.mode === "single" ? "Select date" : "Select range"))
-const confirmationLabel = computed(() => (narrowViewport.value ? props.labels.save : props.labels.confirm))
+const confirmationLabel = computed(() => props.labels.confirm)
 const placeholder = computed(() => getDateFormatParts(props.locale).placeholder)
 const editIcon = createIconFamily(RIEditFilled, RIEditOutlined, RIEditRounded, RIEditSharp, RIEditTwoTone)
 const calendarIcon = createIconFamily(RICalendarTodayFilled, RICalendarTodayOutlined, RICalendarTodayRounded, RICalendarTodaySharp, RICalendarTodayTwoTone)

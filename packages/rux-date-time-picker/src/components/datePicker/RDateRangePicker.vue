@@ -6,6 +6,7 @@ import { computed } from "vue"
 import { formatInputDate } from "../../date/formatting"
 
 import type { DateRangeValue } from "../../date/types"
+import { useDatePickerLabels } from "./localization"
 import type { RDateRangePickerProps } from "./types"
 import RDatePickerDialog from "./RDatePickerDialog.vue"
 
@@ -28,16 +29,7 @@ const emit = defineEmits<{
     (event: "close", detail: { reason: "cancel" | "backdrop" | "action" | "programmatic"; action?: string }): void
 }>()
 
-const labels = computed(() => ({
-    cancel: "Cancel",
-    confirm: "OK",
-    save: "Save",
-    switchToCalendar: "Switch to calendar input mode",
-    switchToText: "Switch to text input mode",
-    previousMonth: "Change to previous month",
-    nextMonth: "Change to next month",
-    ...props.labels,
-}))
+const labels = useDatePickerLabels(() => props.locale)
 const displayValue = computed(() => {
     const { start, end } = props.modelValue
     if (!start) return ""

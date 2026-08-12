@@ -9,6 +9,7 @@ import {
 } from "vue"
 
 import { formContextKey } from "./context"
+import { internationalizationKey } from "@/foundations/internationalization/controller"
 import type { RFormRequiredIndicator, RFormValidateTrigger } from "./types"
 
 type UseFormFieldOptions<TValue> = {
@@ -23,6 +24,7 @@ type UseFormFieldOptions<TValue> = {
 /** Internal adapter shared by form-aware input components. */
 export function useFormField<TValue>(options: UseFormFieldOptions<TValue>) {
     const context = inject(formContextKey, null)
+    const internationalization = inject(internationalizationKey, null)
     const registered = ref(false)
     const name = computed(() => {
         const candidate = toValue(options.name)?.trim()
@@ -94,7 +96,11 @@ export function useFormField<TValue>(options: UseFormFieldOptions<TValue>) {
         return bound.value ? context!.requiredIndicator.value : undefined
     })
     const helperIndicator = computed(() => {
-        return requiredIndicator.value === "helper-required" && required.value ? "* Required" : undefined
+        if (requiredIndicator.value !== "helper-required" || !required.value) {
+            return undefined
+        }
+
+        return `*${internationalization?.resolveMessage("form.required") ?? " Required"}`
     })
     const labelSuffix = computed(() => {
         if (!bound.value) {
@@ -106,7 +112,7 @@ export function useFormField<TValue>(options: UseFormFieldOptions<TValue>) {
         }
 
         if (requiredIndicator.value === "label-optional" && !required.value) {
-            return " (Optional)"
+            return internationalization?.resolveMessage("form.optional") ?? " (Optional)"
         }
 
         return ""

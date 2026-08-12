@@ -5,7 +5,6 @@ export type DatePickerSelectionMode = "single" | "range"
 export type DatePickerDialogLabels = {
     cancel: string
     confirm: string
-    save: string
     switchToCalendar: string
     switchToText: string
     previousMonth: string
@@ -20,7 +19,6 @@ export type DatePickerSharedProps = DatePickerConstraints & {
     disabled?: boolean
     closeOnEscape?: boolean
     closeOnBackdrop?: boolean
-    labels?: Partial<DatePickerDialogLabels>
 }
 
 export type RDatePickerProps = DatePickerSharedProps & {
