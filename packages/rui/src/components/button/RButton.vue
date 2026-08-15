@@ -336,6 +336,8 @@ function handleClick(event: MouseEvent) {
 
     &--full-height {
         height: 100%;
+        padding-top: 0;
+        padding-bottom: 0;
     }
 
     &--with-top {
