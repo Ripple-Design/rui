@@ -2,7 +2,6 @@
     "name": "rui-workspace",
     "version": "1.0.0",
     "private": true,
-    "packageManager": "pnpm@10.2.0",
     "description": "",
     "keywords": [],
     "license": "MIT",
@@ -31,7 +30,8 @@
         "@vue/tsconfig": "^0.9.1",
         "oxfmt": "^0.54.0",
         "oxlint": "~1.69.0",
+        "reka-ui": "2.10.3",
         "typescript": "~6.0.0",
-        "vue-tsc": "^2.2.10"
+        "vue-tsc": "^3.3.10"
     }
 }
