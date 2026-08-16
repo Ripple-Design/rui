@@ -1,6 +1,6 @@
 {
     "name": "@ripple-design/rui",
-    "version": "1.7.3",
+    "version": "1.7.4",
     "description": "Modular and customizable Ripple Design UI components for Vue 3",
     "repository": {
         "type": "git",
@@ -10,8 +10,7 @@
     "files": [
         "dist",
         "src/styles",
-        "src/foundations",
-        "rui.scss"
+        "src/foundations"
     ],
     "type": "module",
     "sideEffects": [
@@ -20,23 +19,23 @@
     ],
     "main": "dist/es/index.js",
     "module": "dist/es/index.js",
-    "types": "dist/index.d.ts",
+    "types": "dist/types/index.d.ts",
     "exports": {
         ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/es/index.js"
+            "types": "./dist/types/index.d.ts",
+            "import": "./dist/es/index.js",
+            "sass": "./src/styles/index.scss"
         },
         "./playground": {
-            "types": "./dist/index.d.ts",
+            "types": "./dist/types/playground/index.d.ts",
             "import": "./dist/es/playground/index.js"
         },
-        "./styles.css": "./dist/rui.css",
-        "./rui": "./rui.scss",
-        "./rui.scss": "./rui.scss",
-        "./typography": "./typography.scss",
-        "./typography.scss": "./typography.scss",
-        "./foundations/ripple": "./src/foundations/ripple/index.ts",
-        "./foundations/touchTarget": "./src/foundations/touchTarget/index.ts"
+        "./foundations/*": {
+            "types": "./dist/types/foundations/*.d.ts",
+            "import": "./dist/es/foundations/*.js"
+        },
+        "./styles.css": "./dist/assets/styles.css",
+        "./styles/*": "./src/styles/*.scss"
     },
     "publishConfig": {
         "access": "public"
@@ -65,6 +64,5 @@
     },
     "optionalDependencies": {
         "@lottiefiles/dotlottie-vue": "^0.11.24"
-    },
-    "sass": "./rui.scss"
+    }
 }
