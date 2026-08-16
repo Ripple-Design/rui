@@ -11,7 +11,7 @@ import {
 } from "vue"
 
 import { useFormField } from "@/components/form/useFormField"
-import RSliderValueIndicator from "@/foundations/slider/RSliderValueIndicator.vue"
+import RSliderValueIndicator from "@/components/slider/RSliderValueIndicator.vue"
 import RThumb from "@/foundations/thumb/RThumb.vue"
 
 import type { RSliderModelValue, RSliderRangeValue, RSliderProps } from "./types"
