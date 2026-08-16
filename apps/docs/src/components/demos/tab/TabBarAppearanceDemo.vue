@@ -43,7 +43,7 @@ const onSecondary = ref("listen")
 </template>
 
 <style scoped lang="scss">
-@use "@ripple-design/rui/rui" as rui;
+@use "@ripple-design/rui/styles/index" as rui;
 
 .tab-bar-appearance-demo {
     width: 100%;

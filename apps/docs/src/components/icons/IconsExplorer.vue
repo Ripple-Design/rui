@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { RIcon, RTextField, vRipple } from "@ripple-design/rui"
 import { computed, onBeforeUnmount, ref } from "vue"
 
-import { RIcon, RTextField, vRipple } from "@ripple-design/rui"
+import type { IconRecord } from "../../lib/icons"
 
 import {
     getIconCount,
@@ -11,7 +12,6 @@ import {
     ICON_STYLES,
     type IconVariant,
 } from "../../lib/icons"
-import type { IconRecord } from "../../lib/icons"
 
 type Props = {
     locale: string
@@ -97,10 +97,7 @@ onBeforeUnmount(() => {
                     <span>Style:</span>
                     <ul>
                         <li v-for="style in ICON_STYLES" :key="style">
-                            <a
-                                :href="getStyleHref(style)"
-                                :aria-current="style === currentStyle ? 'page' : undefined"
-                            >
+                            <a :href="getStyleHref(style)" :aria-current="style === currentStyle ? 'page' : undefined">
                                 {{ style }}
                             </a>
                         </li>
@@ -139,7 +136,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped lang="scss">
-@use "@ripple-design/rui/rui" as rui;
+@use "@ripple-design/rui/styles/index" as rui;
 
 .icons-page {
     display: grid;

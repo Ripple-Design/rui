@@ -29,7 +29,7 @@ import { RColumn } from "@ripple-design/rui"
 </template>
 
 <style scoped lang="scss">
-@use "@ripple-design/rui/rui" as rui;
+@use "@ripple-design/rui/styles/index" as rui;
 
 .touch-target-demo {
     width: 100%;

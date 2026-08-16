@@ -40,15 +40,15 @@ const highlightedCode = codeToHtml(code.trimEnd(), {
 
             document.addEventListener("fullscreenchange", () => {
                 const isFullscreen = document.fullscreenElement === preview
-                fullscreenButton.textContent = isFullscreen ? "Exit fullscreen" : "Fullscreen"
-                fullscreenButton.setAttribute("aria-pressed", String(isFullscreen))
+                fullscreenButton!.textContent = isFullscreen ? "Exit fullscreen" : "Fullscreen"
+                fullscreenButton!.setAttribute("aria-pressed", String(isFullscreen))
             })
         })
     </script>
 </section>
 
 <style lang="scss">
-    @use "@ripple-design/rui/rui";
+    @use "@ripple-design/rui/styles/index" as rui;
 
     .demo-block {
         display: grid;

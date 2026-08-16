@@ -5,23 +5,17 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@/*": ["../../packages/rui/src/*"],
             "@docs/*": ["./src/*"],
-            "@ripple-design/rui/playground": ["../../packages/rui/src/playground/index.ts"],
+
             "@ripple-design/rui": ["../../packages/rui/src/index.ts"],
-            "@ripple-design/rui/rui": ["../../packages/rui/rui.scss"],
-            "@ripple-design/rui/rui.scss": ["../../packages/rui/rui.scss"],
-            "@ripple-design/rui/typography": ["../../packages/rui/typography.scss"],
-            "@ripple-design/rui/typography.scss": ["../../packages/rui/typography.scss"],
-            "@ripple-design/rui/foundations/ripple": ["../../packages/rui/src/foundations/ripple/index.ts"],
-            "@ripple-design/rui/foundations/touchTarget": ["../../packages/rui/src/foundations/touchTarget/index.ts"],
+            "@ripple-design/rui/*": ["../../packages/rui/src/*"],
+            "@ripple-design/rui/playground": ["../../packages/rui/src/playground/index.ts"],
+
             "@ripple-design/rux-video-player": ["../../packages/rux-video-player/src/index.ts"],
-            "@ripple-design/rux-video-player/styles.css": ["../../packages/rux-video-player/src/styles.ts"],
             "@ripple-design/rux-data-table": ["../../packages/rux-data-table/src/index.ts"],
-            "@ripple-design/rux-data-table/styles.css": ["../../packages/rux-data-table/src/styles.ts"],
-            "@ripple-design/rux-date-time-picker": ["../../packages/rux-date-time-picker/src/index.ts"],
-            "@ripple-design/rux-date-time-picker/styles.css": ["../../packages/rux-date-time-picker/src/styles.ts"],
-            "@ripple-design/rui/*": ["../../packages/rui/src/*"]
+            "@ripple-design/rux-date-time-picker": [
+                "../../packages/rux-date-time-picker/src/index.ts"
+            ]
         },
         "plugins": [
             {

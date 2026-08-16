@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { RButton, RForm, RSelectField, RSelectOption, RTextField, useForm } from "@ripple-design/rui"
-import { createInternationalizationController, provideInternationalization } from "@/foundations/internationalization"
+import {
+    createInternationalizationController,
+    provideInternationalization,
+} from "@ripple-design/rui/foundations/internationalization"
 import { onMounted, ref } from "vue"
 
 const internationalization = createInternationalizationController({}, {}, "en")
@@ -65,17 +68,8 @@ function handleSubmit() {
                 autocomplete="email"
                 helper-text="Use an address you can access."
             />
-            <RTextField
-                name="account.nickname"
-                label="Nickname"
-                autocomplete="nickname"
-            />
-            <RTextField
-                name="account.password"
-                label="Password"
-                type="password"
-                autocomplete="new-password"
-            />
+            <RTextField name="account.nickname" label="Nickname" autocomplete="nickname" />
+            <RTextField name="account.password" label="Password" type="password" autocomplete="new-password" />
             <RTextField
                 name="account.confirmPassword"
                 label="Confirm password"
@@ -91,9 +85,7 @@ function handleSubmit() {
 
         <div class="form-demo__actions">
             <RButton type="submit">Create account</RButton>
-            <output v-if="submittedEmail" class="form-demo__result">
-                Account created for {{ submittedEmail }}.
-            </output>
+            <output v-if="submittedEmail" class="form-demo__result"> Account created for {{ submittedEmail }}. </output>
         </div>
     </RForm>
 </template>

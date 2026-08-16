@@ -1,4 +1,4 @@
-@use "@ripple-design/rui/rui" as rui;
+@use "@ripple-design/rui/styles/index" as rui;
 
 .docs-body {
     @include rui.typo-body1;
