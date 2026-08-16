@@ -2,10 +2,11 @@
 import { computed, provide, ref, useAttrs, useId, useSlots } from "vue"
 
 import RSurface from "@/components/surface/RSurface.vue"
-import { selectionModelKey, useSelectionModel } from "@/foundations/selectionModel"
+import { selectionModelKey, useSelectionModel } from "@/foundations/selection"
+
+import type { RNavigationDrawerProps } from "./types"
 
 import { navigationDrawerKey } from "./context"
-import type { RNavigationDrawerProps } from "./types"
 
 const props = withDefaults(defineProps<RNavigationDrawerProps>(), {
     side: "start",
@@ -51,7 +52,11 @@ defineExpose({
         variant="elevated"
         :elevation="16"
     >
-        <div class="rui-navigation-drawer__content" :class="{ 'rui-navigation-drawer__content--headerless': !hasHeader }" data-rui-modal-scrollable>
+        <div
+            class="rui-navigation-drawer__content"
+            :class="{ 'rui-navigation-drawer__content--headerless': !hasHeader }"
+            data-rui-modal-scrollable
+        >
             <header v-if="hasHeader" class="rui-navigation-drawer__header">
                 <slot name="header">
                     <h2 :id="titleId" class="rui-navigation-drawer__title">

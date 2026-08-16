@@ -2,11 +2,12 @@
 import { computed, nextTick, onBeforeUnmount, provide, ref, useAttrs, watch } from "vue"
 
 import { RSurface } from "@/components"
-import { selectionModelKey, useSelectionModel } from "@/foundations/selectionModel"
+import { selectionModelKey, useSelectionModel } from "@/foundations/selection"
 import { useResizeObserver } from "@/utils/useResizeObserver"
 
-import { bottomNavigationKey } from "./context"
 import type { RBottomNavigationProps } from "./types"
+
+import { bottomNavigationKey } from "./context"
 
 const props = withDefaults(defineProps<RBottomNavigationProps>(), {
     color: "surface",
@@ -36,7 +37,8 @@ const classes = computed(() => [
     `rui-bottom-navigation--color-${props.color}`,
     `rui-bottom-navigation--${labelVisibility.value}`,
     {
-        "rui-bottom-navigation--horizontal-translation": props.horizontalTranslation && labelVisibility.value === "selected",
+        "rui-bottom-navigation--horizontal-translation":
+            props.horizontalTranslation && labelVisibility.value === "selected",
         "rui-bottom-navigation--transitions-enabled": transitionsEnabled.value,
     },
 ])
@@ -84,7 +86,10 @@ function syncItemWidths() {
         widths = items.map(() => itemWidth)
         remainder = layoutWidth - itemWidth * count
     } else {
-        const selectedIndex = Math.max(0, items.findIndex((item) => item.id === selectedId))
+        const selectedIndex = Math.max(
+            0,
+            items.findIndex((item) => item.id === selectedId),
+        )
         const inactiveCount = count - 1
         const shiftingLayoutWidth = Math.min(layoutWidth, 168 + inactiveCount * 96)
 
@@ -93,7 +98,10 @@ function syncItemWidths() {
         } else {
             const activeAvailable = Math.max(0, shiftingLayoutWidth - inactiveCount * 56)
             const activeWidth = Math.min(Math.max(96, activeAvailable), 168)
-            const inactiveWidth = Math.min(Math.max(56, Math.floor((shiftingLayoutWidth - activeWidth) / inactiveCount)), 96)
+            const inactiveWidth = Math.min(
+                Math.max(56, Math.floor((shiftingLayoutWidth - activeWidth) / inactiveCount)),
+                96,
+            )
             widths = items.map((_, index) => (index === selectedIndex ? activeWidth : inactiveWidth))
             remainder = shiftingLayoutWidth - activeWidth - inactiveWidth * inactiveCount
         }

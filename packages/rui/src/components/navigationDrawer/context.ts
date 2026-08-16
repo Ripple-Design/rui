@@ -1,6 +1,6 @@
 import type { ComputedRef, InjectionKey, Ref } from "vue"
 
-import type { RSelectionModelContext } from "@/foundations/selectionModel"
+import type { RSelectionModelContext } from "@/foundations/selection"
 
 export type RNavigationDrawerContext = RSelectionModelContext & {
     hasHeader: Readonly<ComputedRef<boolean>>

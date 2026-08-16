@@ -1,4 +1,4 @@
-export * from "./selectionModel"
+export * from "./selection"
 export * from "./ripple"
 export * from "./touchTarget"
 export * from "./icon"

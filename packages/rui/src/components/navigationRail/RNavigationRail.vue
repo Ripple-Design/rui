@@ -2,7 +2,7 @@
 import { computed, provide, useAttrs } from "vue"
 
 import { RSurface } from "@/components"
-import { selectionModelKey, useSelectionModel } from "@/foundations/selectionModel"
+import { selectionModelKey, useSelectionModel } from "@/foundations/selection"
 
 import type { RNavigationRailProps } from "./types"
 

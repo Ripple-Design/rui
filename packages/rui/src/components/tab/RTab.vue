@@ -3,7 +3,7 @@ import { computed, inject, onBeforeUnmount, ref, useAttrs, watch } from "vue"
 
 import RIcon from "@/components/icon/RIcon.vue"
 import { vRipple, type RippleOptions } from "@/foundations/ripple"
-import { selectionModelKey } from "@/foundations/selectionModel"
+import { selectionModelKey } from "@/foundations/selection"
 
 import type { RTabProps } from "./types"
 
@@ -114,7 +114,9 @@ function handleClick() {
         @click="handleClick"
     >
         <span class="rui-tab__content">
-            <span v-if="icon" class="rui-tab__icon"><RIcon :icon="icon" :size="24" emphasis="inherit" decorative /></span>
+            <span v-if="icon" class="rui-tab__icon"
+                ><RIcon :icon="icon" :size="24" emphasis="inherit" decorative
+            /></span>
             <span class="rui-tab__label"><slot /></span>
         </span>
     </a>
@@ -129,7 +131,9 @@ function handleClick() {
         @click="handleClick"
     >
         <span class="rui-tab__content">
-            <span v-if="icon" class="rui-tab__icon"><RIcon :icon="icon" :size="24" emphasis="inherit" decorative /></span>
+            <span v-if="icon" class="rui-tab__icon"
+                ><RIcon :icon="icon" :size="24" emphasis="inherit" decorative
+            /></span>
             <span class="rui-tab__label"><slot /></span>
         </span>
     </button>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, provide, ref, useAttrs, watchEffect } from "vue"
 
-import { selectionModelKey, useSelectionModel } from "@/foundations/selectionModel"
+import { selectionModelKey, useSelectionModel } from "@/foundations/selection"
 import { useResizeObserver } from "@/utils/useResizeObserver"
 
 import type { RTabBarProps } from "./types"

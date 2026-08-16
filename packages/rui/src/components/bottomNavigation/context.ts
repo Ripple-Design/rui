@@ -1,6 +1,6 @@
 import type { ComputedRef, InjectionKey } from "vue"
 
-import type { RSelectionModelContext } from "@/foundations/selectionModel"
+import type { RSelectionModelContext } from "@/foundations/selection"
 
 import type { RBottomNavigationColor, RBottomNavigationLabelVisibility } from "./types"
 
