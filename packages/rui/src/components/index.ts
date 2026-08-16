@@ -27,7 +27,6 @@ export { default as RModalBottomSheet } from "./bottomSheet/RModalBottomSheet.vu
 export type * from "./bottomSheet/types"
 
 export { default as RDialog } from "./dialog/RDialog.vue"
-export { default as RAlertDialog } from "./dialog/RAlertDialog.vue"
 export { default as RFullscreenDialog } from "./dialog/RFullscreenDialog.vue"
 export type * from "./dialog/types"
 

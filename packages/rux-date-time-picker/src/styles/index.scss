@@ -25,8 +25,8 @@
 
 .rui-date-picker-dialog .rui-dialog {
     width: fit-content;
-    max-width: calc(100vw - 32px);
-    max-height: min(560px, calc(100vh - 96px));
+    max-width: calc(100vw - (var(--rui-comp-dialog-viewport-margin) * 2));
+    max-height: min(560px, calc(100vh - (var(--rui-comp-dialog-viewport-margin) * 2)));
     background: var(--rui-comp-date-picker-surface-color);
 }
 
@@ -519,8 +519,8 @@
     position: relative;
     width: fit-content;
     min-width: 0;
-    max-width: calc(100vw - 32px);
-    max-height: calc(100vh - 32px);
+    max-width: calc(100vw - (var(--rui-comp-dialog-viewport-margin) * 2));
+    max-height: calc(100vh - (var(--rui-comp-dialog-viewport-margin) * 2));
     background: var(--rui-comp-time-picker-surface-color);
 }
 

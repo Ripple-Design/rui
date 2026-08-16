@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, useId, useSlots } from "vue"
+import { computed, onMounted, onUpdated, ref, useId, useSlots, watch } from "vue"
 
 import RModal from "@/components/modal/RModal.vue"
 import RSurface from "@/components/surface/RSurface.vue"
@@ -13,7 +13,8 @@ const props = withDefaults(defineProps<RDialogProps>(), {
     closeOnBackdrop: true,
     returnFocus: true,
     role: "dialog",
-    width: "560px",
+    width: "auto",
+    height: "auto",
 })
 
 const emit = defineEmits<{
@@ -26,8 +27,9 @@ const emit = defineEmits<{
 
 const slots = useSlots()
 const modalRef = ref<InstanceType<typeof RModal> | null>(null)
+const surfaceRef = ref<InstanceType<typeof RSurface> | null>(null)
 const contentRef = ref<HTMLElement | null>(null)
-const contentBodyRef = ref<HTMLElement | null>(null)
+const autoWidth = ref<number | null>(null)
 const titleId = useId()
 const descriptionId = useId()
 const hasOverflow = ref(false)
@@ -35,19 +37,25 @@ const atTop = ref(true)
 const atBottom = ref(true)
 const hasHeader = computed(() => !!slots.header || !!slots.title || !!props.title)
 const hasFooter = computed(() => !!slots.footer || !!slots.actions)
-const hasContent = computed(() => !!slots.default)
+const hasMessage = computed(() => !!slots.message || props.message !== undefined)
+const hasContent = computed(() => !hasMessage.value && !!slots.default)
+const hasDescription = computed(() => hasContent.value || hasMessage.value)
 const labelledby = computed(() => (hasHeader.value ? titleId : props.ariaLabelledBy))
-const describedby = computed(() => (hasContent.value ? descriptionId : props.ariaDescribedBy))
+const describedby = computed(() => (hasDescription.value ? descriptionId : props.ariaDescribedBy))
 const showHeaderDivider = computed(() => hasHeader.value && hasOverflow.value && !atTop.value)
 const showFooterDivider = computed(() => hasFooter.value && hasOverflow.value && !atBottom.value)
 const style = computed(() => ({
-    "--rui-comp-dialog-width": props.width,
+    ...(props.width === "auto"
+        ? autoWidth.value === null ? {} : { "--rui-comp-dialog-width": `${autoWidth.value}px` }
+        : { "--rui-comp-dialog-width": `${props.width * 56}px` }),
+    ...(props.height === "auto" ? {} : { "--rui-comp-dialog-height": `${props.height * 56}px` }),
 }))
 const classes = computed(() => [
     "rui-dialog",
     {
         "rui-dialog--with-header": hasHeader.value,
         "rui-dialog--with-footer": hasFooter.value,
+        "rui-dialog--measuring-auto-width": props.width === "auto" && autoWidth.value === null,
         "rui-dialog--show-header-divider": showHeaderDivider.value,
         "rui-dialog--show-footer-divider": showFooterDivider.value,
     },
@@ -59,7 +67,7 @@ function closeWithAction(action: string) {
 
 function updateScrollState() {
     const content = contentRef.value
-    if (!content || !hasContent.value) {
+    if (!content || !hasDescription.value) {
         hasOverflow.value = false
         atTop.value = true
         atBottom.value = true
@@ -87,7 +95,21 @@ function scheduleScrollStateUpdate() {
     })
 }
 
+function updateAutoWidth() {
+    if (props.width !== "auto") return
+
+    const surface = surfaceRef.value?.$el
+    if (!(surface instanceof HTMLElement) || !surface.offsetWidth) return
+
+    autoWidth.value = Math.min(560, Math.max(280, Math.ceil(surface.offsetWidth / 56) * 56))
+}
+
+function scheduleAutoWidthUpdate() {
+    requestAnimationFrame(updateAutoWidth)
+}
+
 function handleOpen() {
+    scheduleAutoWidthUpdate()
     scheduleScrollStateUpdate()
     emit("open")
 }
@@ -96,11 +118,24 @@ useResizeObserver(contentRef, () => {
     scheduleScrollStateUpdate()
 })
 
-useResizeObserver(contentBodyRef, () => {
+watch(() => props.width, () => {
+    autoWidth.value = null
+    scheduleAutoWidthUpdate()
+})
+
+watch(() => props.message, () => {
+    if (props.width !== "auto") return
+
+    autoWidth.value = null
+    scheduleAutoWidthUpdate()
+})
+
+onUpdated(() => {
     scheduleScrollStateUpdate()
 })
 
 onMounted(() => {
+    scheduleAutoWidthUpdate()
     scheduleScrollStateUpdate()
 })
 
@@ -133,7 +168,7 @@ defineExpose({
         @before-close="emit('before-close', $event)"
         @close="emit('close', $event)"
     >
-        <RSurface :class="classes" :style="style" :elevation="24">
+        <RSurface ref="surfaceRef" :class="classes" :style="style" :elevation="24">
             <header v-if="hasHeader" class="rui-dialog__header">
                 <slot name="header">
                     <h2 :id="titleId" class="rui-dialog__title">
@@ -143,15 +178,16 @@ defineExpose({
             </header>
 
             <div
-                v-if="hasContent"
+                v-if="hasDescription"
                 :id="descriptionId"
                 ref="contentRef"
                 class="rui-dialog__content"
                 @scroll="updateScrollState"
             >
-                <div ref="contentBodyRef" class="rui-dialog__content-body">
-                    <slot />
-                </div>
+                <p v-if="hasMessage" class="rui-dialog__message">
+                    <slot name="message">{{ message }}</slot>
+                </p>
+                <slot v-else />
             </div>
 
             <footer v-if="hasFooter" class="rui-dialog__footer">
@@ -169,14 +205,24 @@ defineExpose({
 @use "@/styles/color";
 @use "@/styles/typography";
 @use "@/styles/motion";
+@use "@/styles/breakpoints" as breakpoint;
 
 :global(.rui-dialog-modal) {
+    --rui-comp-dialog-viewport-margin: 16px;
+
     margin: auto;
-    padding: 48px;
+    padding: var(--rui-comp-dialog-viewport-margin);
+    overflow: visible;
     transition:
         overlay 150ms #{motion.$easing-decelerated},
         display 150ms #{motion.$easing-decelerated};
     transition-behavior: allow-discrete;
+}
+
+@include breakpoint.up(md) {
+    :global(.rui-dialog-modal) {
+        --rui-comp-dialog-viewport-margin: 24px;
+    }
 }
 
 :global(.rui-dialog-modal::backdrop) {
@@ -197,9 +243,19 @@ defineExpose({
     transition-behavior: allow-discrete;
 }
 
-:global(.rui-dialog) {
-    width: min(var(--rui-comp-dialog-width), calc(100vw - 96px));
-    max-height: min(560px, calc(100vh - 96px));
+:global(.rui-dialog.rui-surface) {
+    --rui-comp-dialog-available-width: calc(100vw - (var(--rui-comp-dialog-viewport-margin) * 2));
+    --rui-comp-dialog-available-height: calc(100vh - (var(--rui-comp-dialog-viewport-margin) * 2));
+    --rui-comp-dialog-auto-width: min(
+        var(--rui-comp-dialog-available-width),
+        560px,
+        max(280px, round(down, var(--rui-comp-dialog-available-width), 56px))
+    );
+
+    width: min(var(--rui-comp-dialog-width, var(--rui-comp-dialog-auto-width)), var(--rui-comp-dialog-available-width));
+    height: var(--rui-comp-dialog-height, auto);
+    max-height: min(var(--rui-comp-dialog-height, 560px), var(--rui-comp-dialog-available-height));
+    min-height: 0;
     overflow: hidden;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
@@ -208,6 +264,12 @@ defineExpose({
     transition:
         opacity 75ms #{motion.$easing-accelerated},
         transform 150ms #{motion.$easing-accelerated};
+}
+
+:global(.rui-dialog.rui-surface.rui-dialog--measuring-auto-width) {
+    width: fit-content;
+    min-width: min(280px, var(--rui-comp-dialog-available-width));
+    max-width: min(560px, var(--rui-comp-dialog-available-width));
 }
 
 :global(.rui-dialog-modal[open] .rui-dialog) {
@@ -230,15 +292,15 @@ defineExpose({
 }
 
 .rui-dialog__content {
+    min-height: 0;
     overflow: auto;
     overscroll-behavior: contain;
 }
 
-.rui-dialog__content-body {
-    @include typography.body1("--rui-comp-dialog-content");
+.rui-dialog__message {
+    @include typography.body1("--rui-comp-dialog-message");
     margin: 0;
     padding-inline: 24px;
-    padding-block-start: calc(36px - 1cap);
     padding-block-end: 28px;
     color: color.$on-surface-medium;
     text-box-trim: trim-both;
@@ -254,6 +316,7 @@ defineExpose({
     margin: 0;
     padding-inline: 24px;
     padding-block-start: calc(40px - 1cap);
+    padding-block-end: 24px;
     color: color.$on-surface;
     text-box-trim: trim-both;
     text-box-edge: cap alphabetic;

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import RDialog from "./RDialog.vue"
 
-import type { RDialogProps } from "./types"
+import type { RFullscreenDialogProps } from "./types"
 
-const props = defineProps<RDialogProps>()
+const props = defineProps<RFullscreenDialogProps>()
 
 const emit = defineEmits<{
     (e: "update:modelValue", value: boolean): void
@@ -25,8 +25,8 @@ const emit = defineEmits<{
         :aria-label="ariaLabel"
         :aria-labelledby="ariaLabelledBy"
         :aria-describedby="ariaDescribedBy"
-        :title="title"
         :width="width"
+        :height="height"
         class="rui-fullscreen-dialog"
         @update:model-value="emit('update:modelValue', $event)"
         @before-open="emit('before-open')"
@@ -34,9 +34,6 @@ const emit = defineEmits<{
         @before-close="emit('before-close', $event)"
         @close="emit('close', $event)"
     >
-        <template v-if="$slots.title" #title>
-            <slot name="title" />
-        </template>
         <template v-if="$slots.header" #header>
             <slot name="header" />
         </template>
@@ -61,8 +58,9 @@ const emit = defineEmits<{
     border: 0;
 }
 
-.rui-fullscreen-dialog :deep(.rui-dialog) {
+:global(.rui-fullscreen-dialog.rui-dialog-modal .rui-dialog.rui-surface) {
     width: 100vw;
+    height: 100vh;
     max-height: 100vh;
     min-height: 100vh;
     border: 0;

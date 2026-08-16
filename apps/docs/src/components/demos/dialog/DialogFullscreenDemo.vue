@@ -3,16 +3,21 @@ import { RButton, RFullscreenDialog } from "@ripple-design/rui"
 import { ref } from "vue"
 
 const open = ref(false)
+const scrollContent = Array.from(
+    { length: 96 },
+    (_, index) => `Generated fullscreen dialog content sentence ${index + 1}.`,
+).join(" ")
 </script>
 
 <template>
     <div class="dialog-demo">
         <RButton variant="outlined" @click="open = true">Open fullscreen dialog</RButton>
 
-        <RFullscreenDialog v-model="open" title="Edit event">
-            <div class="dialog-demo__long-content">
-                <p v-for="item in 12" :key="item">Fullscreen dialog content row {{ item }}.</p>
-            </div>
+        <RFullscreenDialog v-model="open" aria-label="Edit event">
+            <section class="dialog-demo__content">
+                <h2>Edit event</h2>
+                <p>{{ scrollContent }}</p>
+            </section>
 
             <template #actions="{ close }">
                 <RButton variant="text" @click="close('cancel')">Cancel</RButton>
@@ -28,12 +33,16 @@ const open = ref(false)
     gap: 1rem;
 }
 
-.dialog-demo__long-content {
-    display: grid;
-    gap: 0.75rem;
+.dialog-demo__content {
+    padding: 24px;
 }
 
-.dialog-demo__long-content p {
+.dialog-demo__content h2,
+.dialog-demo__content p {
     margin: 0;
+}
+
+.dialog-demo__content p {
+    margin-block-start: 1rem;
 }
 </style>
