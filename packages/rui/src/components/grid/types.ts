@@ -1,6 +1,6 @@
 import type { CSSProperties } from "vue"
 
-import type { RResponsiveObjectValue, RResponsiveValue } from "@/components/shared/responsive"
+import type { RResponsiveObjectValue, RResponsiveValue } from "@/foundations/responsive/responsive.ts"
 
 export type RGridColumnsValue = number | string
 
