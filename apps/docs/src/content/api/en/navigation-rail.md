@@ -17,12 +17,18 @@ import { RNavigationRail } from "@ripple-design/rui"
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `unknown` | no | Controls the selected destination value. |
-| `compact` | `boolean` | no | Controls whether the rail uses compact 56px cells. |
-| `labelVisibility` | `RNavigationRailLabelVisibility` | no | Controls when destination labels are shown. |
+| Name | Type | Default | Required | Description |
+| --- | --- | --- | --- | --- |
+| `modelValue` | `unknown` | — | no | Controls the selected destination value. |
+| `compact` | `boolean` | `false` | no | Controls whether the rail uses compact 56px cells. |
+| `labelVisibility` | `RNavigationRailLabelVisibility` | `"always"` | no | Controls when destination labels are shown. |
 
-Generated from `packages/rui/src/components/navigationRail/types.ts`.
+## Events
+
+| Name | Parameters | Description |
+| --- | --- | --- |
+| `update:modelValue` | `value: unknown` | Emitted when the model value changes. |
+
+Generated from `packages/rui/src/components/navigationRail/types.ts` and `packages/rui/src/components/navigationRail/RNavigationRail.vue`.
 
 <!-- AUTO-GENERATED:END -->

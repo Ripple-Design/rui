@@ -59,6 +59,7 @@ const classes = computed(() => [
 @use "@/styles/motion";
 
 .rui-card {
+    /* @cssvar Shadow used while the card is hovered or dragged. */
     --rui-comp-card-hover-shadow: #{elevations.shadow(8)};
 
     outline: 2px solid transparent;

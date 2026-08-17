@@ -17,12 +17,12 @@ import { RBottomSheet } from "@ripple-design/rui"
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `title` | `string` | no | Sets a plain-text title when the title slot is not used. |
-| `maxWidth` | `string` | no | Limits the sheet width using any valid CSS max-inline-size value. |
-| `maxHeight` | `string` | no | Limits the sheet height using any valid CSS max-block-size value. |
-| `elevation` | `number` | no | Controls the surface elevation. |
+| Name | Type | Default | Required | Description |
+| --- | --- | --- | --- | --- |
+| `title` | `string` | — | no | Sets a plain-text title when the title slot is not used. |
+| `maxWidth` | `string` | `"640px"` | no | Limits the sheet width using any valid CSS max-inline-size value. |
+| `maxHeight` | `string` | `"100dvh"` | no | Limits the sheet height using any valid CSS max-block-size value. |
+| `elevation` | `number` | `8` | no | Controls the surface elevation. |
 
 Generated from `packages/rui/src/components/bottomSheet/types.ts`.
 

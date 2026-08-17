@@ -17,9 +17,9 @@ import { RDivider } from "@ripple-design/rui"
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `variant` | `RDividerVariant` | no | Controls the divider's placement within its layout. |
+| Name | Type | Default | Required | Description |
+| --- | --- | --- | --- | --- |
+| `variant` | `RDividerVariant` | `"full-bleed"` | no | Controls the divider's placement within its layout. |
 
 Generated from `packages/rui/src/components/divider/types.ts`.
 

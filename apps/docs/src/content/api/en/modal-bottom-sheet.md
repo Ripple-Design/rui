@@ -19,6 +19,16 @@ import { RModalBottomSheet } from "@ripple-design/rui"
 
 This component has no public props.
 
-Generated from `packages/rui/src/components/bottomSheet/types.ts`.
+## Events
+
+| Name | Parameters | Description |
+| --- | --- | --- |
+| `update:modelValue` | `value: boolean` | — |
+| `before-open` | — | — |
+| `open` | — | — |
+| `before-close` | `detail: RModalCloseDetail` | — |
+| `close` | `detail: RModalCloseDetail` | — |
+
+Generated from `packages/rui/src/components/bottomSheet/types.ts` and `packages/rui/src/components/bottomSheet/RModalBottomSheet.vue`.
 
 <!-- AUTO-GENERATED:END -->

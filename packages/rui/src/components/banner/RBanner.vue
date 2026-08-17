@@ -289,9 +289,13 @@ defineExpose({ show, dismiss })
 
 .rui-banner__motion {
     --rui-comp-banner-height: 0px;
+    /* @cssvar Banner surface background color. */
     --rui-comp-banner-background: var(--rui-sys-color-surface);
+    /* @cssvar Banner message text color. */
     --rui-comp-banner-message-color: var(--rui-sys-color-on-surface-high);
+    /* @cssvar Banner action text color. */
     --rui-comp-banner-action-color: var(--rui-sys-color-primary);
+    /* @cssvar Banner divider color. */
     --rui-comp-banner-divider-color: var(--rui-sys-color-on-surface);
     --rui-comp-banner-enter-duration: 180ms;
     --rui-comp-banner-leave-duration: 160ms;

@@ -45,11 +45,17 @@ const classes = computed(() => [
     --rui-surface-shape-start-end: var(--rui-sys-shape-medium-start-end);
     --rui-surface-shape-end-end: var(--rui-sys-shape-medium-end-end);
     --rui-surface-shape-end-start: var(--rui-sys-shape-medium-end-start);
+    /* @cssvar Surface background color. */
     --rui-comp-surface-background: var(--rui-sys-color-surface);
+    /* @cssvar Default content color. The contentColor prop overrides this value. */
     --rui-comp-surface-content-color: var(--rui-sys-color-on-surface);
+    /* @cssvar High-emphasis content color. */
     --rui-comp-surface-content-color-high: var(--rui-sys-color-on-surface-high);
+    /* @cssvar Medium-emphasis content color. */
     --rui-comp-surface-content-color-medium: var(--rui-sys-color-on-surface-medium);
+    /* @cssvar Low-emphasis content color. */
     --rui-comp-surface-content-color-low: var(--rui-sys-color-on-surface-low);
+    /* @cssvar Outline color used by the outlined variant. */
     --rui-comp-surface-outline-color: var(--rui-sys-color-on-surface-outline);
 
     display: block;

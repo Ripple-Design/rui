@@ -17,11 +17,12 @@ import { RSideSheet } from "@ripple-design/rui"
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `title` | `string` | no | Sets a plain-text title when the title slot is not used. |
-| `side` | `RSideSheetSide` | no | Attaches the sheet to the inline start or end edge. |
-| `width` | `string` | no | Controls the sheet width using any valid CSS inline-size value. |
+| Name | Type | Default | Required | Description |
+| --- | --- | --- | --- | --- |
+| `title` | `string` | — | no | Sets a plain-text title when the title slot is not used. |
+| `side` | `RSideSheetSide` | `"end"` | no | Attaches the sheet to the inline start or end edge. |
+| `elevation` | `number` | `0` | no | Controls the surface elevation. |
+| `width` | `string` | `"320px"` | no | Controls the sheet width using any valid CSS inline-size value. |
 
 Generated from `packages/rui/src/components/sideSheet/types.ts`.
 

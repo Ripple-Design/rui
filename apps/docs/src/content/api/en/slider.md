@@ -17,20 +17,27 @@ import { RSlider } from "@ripple-design/rui"
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `min` | `number` | no | — |
-| `max` | `number` | no | — |
-| `step` | `number` | no | — |
-| `disabled` | `boolean` | no | — |
-| `showTicks` | `boolean` | no | — |
-| `formatValue` | `(value: number) => string` | no | — |
-| `ariaLabel` | `string` | no | — |
-| `ariaLabelledby` | `string` | no | — |
-| `ariaDescribedby` | `string` | no | — |
-| `startAriaLabel` | `string` | no | — |
-| `endAriaLabel` | `string` | no | — |
+| Name | Type | Default | Required | Description |
+| --- | --- | --- | --- | --- |
+| `min` | `number` | `0` | no | — |
+| `max` | `number` | `100` | no | — |
+| `step` | `number` | `0` | no | — |
+| `disabled` | `boolean` | `false` | no | — |
+| `showTicks` | `boolean` | `false` | no | — |
+| `formatValue` | `(value: number) => string` | — | no | — |
+| `ariaLabel` | `string` | — | no | — |
+| `ariaLabelledby` | `string` | — | no | — |
+| `ariaDescribedby` | `string` | — | no | — |
+| `startAriaLabel` | `string` | — | no | — |
+| `endAriaLabel` | `string` | — | no | — |
 
-Generated from `packages/rui/src/components/slider/types.ts`.
+## Events
+
+| Name | Parameters | Description |
+| --- | --- | --- |
+| `change` | `value: RSliderModelValue` | — |
+| `update:modelValue` | `value: RSliderModelValue` | Emitted when the model value changes. |
+
+Generated from `packages/rui/src/components/slider/types.ts` and `packages/rui/src/components/slider/RSlider.vue`.
 
 <!-- AUTO-GENERATED:END -->
