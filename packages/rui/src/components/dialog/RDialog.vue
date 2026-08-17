@@ -302,12 +302,13 @@ defineExpose({
     min-height: 0;
     overflow: auto;
     overscroll-behavior: contain;
+    padding-inline: var(--rui-comp-dialog-content-padding-inline, 24px);
 }
 
 .rui-dialog__message {
     @include typography.body1("--rui-comp-dialog-message");
     margin: 0;
-    padding-inline: 24px;
+    padding-inline: 0;
     padding-block-end: 28px;
     color: color.$on-surface-medium;
     text-box-trim: trim-both;
