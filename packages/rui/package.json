@@ -1,6 +1,6 @@
 {
     "name": "@ripple-design/rui",
-    "version": "1.7.5",
+    "version": "1.7.6",
     "description": "Modular and customizable Ripple Design UI components for Vue 3",
     "repository": {
         "type": "git",
@@ -34,6 +34,8 @@
             "types": "./dist/types/foundations/*.d.ts",
             "import": "./dist/es/foundations/*.js"
         },
+        "./rui": "./src/styles/index.scss",
+        "./rui.scss": "./src/styles/index.scss",
         "./styles.css": "./dist/assets/styles.css",
         "./styles/*": "./src/styles/*.scss"
     },
@@ -64,6 +66,5 @@
     },
     "optionalDependencies": {
         "@lottiefiles/dotlottie-vue": "^0.11.24"
-    },
-    "sass": "src/styles/index.scss"
+    }
 }
