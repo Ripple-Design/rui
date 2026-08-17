@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUpdated, ref, useId, useSlots, watch } from "vue"
 
+import RButtonRow from "@/components/button/RButtonRow.vue"
 import RModal from "@/components/modal/RModal.vue"
 import RSurface from "@/components/surface/RSurface.vue"
 import { useResizeObserver } from "@/utils/useResizeObserver"
@@ -192,9 +193,9 @@ defineExpose({
 
             <footer v-if="hasFooter" class="rui-dialog__footer">
                 <slot name="footer">
-                    <div v-if="$slots.actions" class="rui-dialog__actions">
+                    <RButtonRow v-if="$slots.actions" class="rui-dialog__actions" justify="flex-end">
                         <slot name="actions" :close="closeWithAction" />
-                    </div>
+                    </RButtonRow>
                 </slot>
             </footer>
         </RSurface>
@@ -315,7 +316,6 @@ defineExpose({
 
 .rui-dialog__footer {
     margin-block-start: auto;
-    padding: 0 8px 2px;
 }
 
 .rui-dialog__title {
@@ -329,18 +329,12 @@ defineExpose({
     text-box-edge: cap alphabetic;
 }
 
-.rui-dialog__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
+.rui-dialog__actions.rui-button-row {
+    row-gap: 8px;
 }
 
 .rui-dialog--show-header-divider .rui-dialog__header {
     border-bottom: 1px solid color.$on-surface-outline;
-}
-
-.rui-dialog--with-footer .rui-dialog__footer {
-    padding-top: 2px;
 }
 
 .rui-dialog--show-footer-divider .rui-dialog__footer {

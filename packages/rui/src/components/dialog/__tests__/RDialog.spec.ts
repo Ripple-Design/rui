@@ -2,6 +2,8 @@ import { nextTick } from "vue"
 import { mount } from "@vue/test-utils"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
+import RButton from "@/components/button/RButton.vue"
+
 import RDialog from "../RDialog.vue"
 
 function getDialogSurface() {
@@ -66,6 +68,49 @@ describe("RDialog", () => {
         const surface = getDialogSurface()
         expect(surface.querySelector(".rui-dialog__message [data-test=message-slot]")?.textContent).toBe("Custom message")
         expect(surface.querySelector(".rui-dialog__message")?.textContent).toBe("Custom message")
+
+        wrapper.unmount()
+    })
+
+    it("renders actions in an end-aligned button row", async () => {
+        const wrapper = mount(RDialog, {
+            slots: {
+                actions: '<RButton>Cancel</RButton><RButton variant="contained">Save</RButton>',
+            },
+            global: { components: { RButton } },
+        })
+        await nextTick()
+        await nextTick()
+
+        const actions = getDialogSurface().querySelector<HTMLElement>(".rui-dialog__actions")
+        const buttons = actions?.querySelectorAll("button.rui-button")
+
+        expect(actions).not.toBeNull()
+        expect(actions?.classList.contains("rui-button-row")).toBe(true)
+        expect(actions?.style.getPropertyValue("--rui-stack-justify")).toBe("flex-end")
+        expect(actions?.style.getPropertyValue("--rui-stack-gap")).toBe("8px")
+        expect(actions?.style.getPropertyValue("--rui-stack-wrap")).toBe("wrap")
+        expect(buttons?.[0]?.classList.contains("rui-button--text")).toBe(true)
+        expect(buttons?.[1]?.classList.contains("rui-button--contained")).toBe(true)
+
+        wrapper.unmount()
+    })
+
+    it("keeps a custom footer independent from actions", async () => {
+        const wrapper = mount(RDialog, {
+            slots: {
+                actions: '<button data-test="action">Action</button>',
+                footer: '<div data-test="footer">Custom footer</div>',
+            },
+        })
+        await nextTick()
+        await nextTick()
+
+        const surface = getDialogSurface()
+
+        expect(surface.querySelector(".rui-dialog__actions")).toBeNull()
+        expect(surface.querySelector("[data-test=footer]")?.textContent).toBe("Custom footer")
+        expect(surface.querySelector("[data-test=action]")).toBeNull()
 
         wrapper.unmount()
     })
