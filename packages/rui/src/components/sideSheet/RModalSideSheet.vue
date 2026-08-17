@@ -67,6 +67,7 @@ defineExpose({
             :title="title"
             :side="side"
             :width="width"
+            :elevation="16"
             :class="['rui-modal-side-sheet__panel', `rui-modal-side-sheet__panel--${side}`]"
         >
             <template v-if="$slots.title" #title>

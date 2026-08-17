@@ -8,6 +8,8 @@ export type RSideSheetProps = {
     title?: string
     /** Attaches the sheet to the inline start or end edge. */
     side?: RSideSheetSide
+    /** Controls the surface elevation. */
+    elevation?: number
     /** Controls the sheet width using any valid CSS inline-size value. */
     width?: string
 }

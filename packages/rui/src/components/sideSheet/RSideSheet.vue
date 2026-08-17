@@ -8,6 +8,7 @@ import type { RSideSheetProps } from "./types"
 const props = withDefaults(defineProps<RSideSheetProps>(), {
     side: "end",
     width: "320px",
+    elevation: 0,
 })
 
 const slots = useSlots()
@@ -22,7 +23,7 @@ const style = computed(() => ({
 </script>
 
 <template>
-    <RSurface :class="classes" :style="style" :aria-labelledby="labelledby" variant="elevated" :elevation="16">
+    <RSurface :class="classes" :style="style" :aria-labelledby="labelledby" variant="elevated" :elevation="elevation">
         <header v-if="hasHeader" class="rui-side-sheet__header">
             <slot name="header">
                 <h2 :id="titleId" class="rui-side-sheet__title">
