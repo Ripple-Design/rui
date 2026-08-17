@@ -257,8 +257,8 @@ defineExpose({
     max-height: min(var(--rui-comp-dialog-height, 560px), var(--rui-comp-dialog-available-height));
     min-height: 0;
     overflow: hidden;
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    display: flex;
+    flex-direction: column;
     transform: scale(0.8);
     opacity: 0;
     transition:
@@ -291,7 +291,13 @@ defineExpose({
     }
 }
 
+.rui-dialog__header,
+.rui-dialog__footer {
+    flex: 0 0 auto;
+}
+
 .rui-dialog__content {
+    flex: 1;
     min-height: 0;
     overflow: auto;
     overscroll-behavior: contain;
@@ -308,6 +314,7 @@ defineExpose({
 }
 
 .rui-dialog__footer {
+    margin-block-start: auto;
     padding: 0 8px 2px;
 }
 

@@ -3,6 +3,7 @@ import { RButton, RDialog } from "@ripple-design/rui"
 import { ref } from "vue"
 
 const open = ref(false)
+const headerlessOpen = ref(false)
 const width = ref<number | "auto">("auto")
 const height = ref<number | "auto">("auto")
 const message = ref<string | undefined>()
@@ -30,6 +31,7 @@ function openMessageDialog(nextWidth: number | "auto", nextHeight: number | "aut
             </RButton>
             <RButton variant="outlined" @click="openMessageDialog(5, 5, scrollMessage)">Open 5 × 5 message (scroll)</RButton>
             <RButton variant="outlined" @click="openMessageDialog(12, 7, scrollMessage)">Open 12 × 7 message</RButton>
+            <RButton variant="outlined" @click="headerlessOpen = true">Open headerless 12 × 7 dialog</RButton>
         </div>
 
         <RDialog
@@ -39,6 +41,15 @@ function openMessageDialog(nextWidth: number | "auto", nextHeight: number | "aut
             :message="message"
             title="Dialog examples"
         >
+            <template #actions="{ close }">
+                <RButton variant="text" @click="close('cancel')">Cancel</RButton>
+                <RButton variant="text" @click="close('confirm')">Confirm</RButton>
+            </template>
+        </RDialog>
+
+        <RDialog v-model="headerlessOpen" :width="12" :height="7" aria-label="Headerless dialog example">
+            <p class="dialog-demo__short-content">Short content should occupy the available dialog body height.</p>
+
             <template #actions="{ close }">
                 <RButton variant="text" @click="close('cancel')">Cancel</RButton>
                 <RButton variant="text" @click="close('confirm')">Confirm</RButton>
@@ -57,5 +68,10 @@ function openMessageDialog(nextWidth: number | "auto", nextHeight: number | "aut
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+}
+
+.dialog-demo__short-content {
+    margin: 0;
+    padding: 24px;
 }
 </style>
