@@ -5,66 +5,66 @@
 
     color: rui.$color-on-surface;
 
-    p:not(.rui-text):not(.docs-body > astro-island *),
-    li:not(.rui-text):not(.docs-body > astro-island *),
-    td:not(.rui-text):not(.docs-body > astro-island *),
-    th:not(.rui-text):not(.docs-body > astro-island *) {
+    p:not(.rui-text):not(.demo-block *):not(.docs-body > astro-island *),
+    li:not(.rui-text):not(.demo-block *):not(.docs-body > astro-island *),
+    td:not(.rui-text):not(.demo-block *):not(.docs-body > astro-island *),
+    th:not(.rui-text):not(.demo-block *):not(.docs-body > astro-island *) {
         @include rui.typo-body1;
     }
 
-    h2:not(.rui-text):not(.rui-dialog__title):not(.docs-body > astro-island *) {
+    h2:not(.rui-text):not(.rui-dialog__title):not(.demo-block *):not(.docs-body > astro-island *) {
         @include rui.typo-headline2;
 
         margin-block: 2rem 1rem;
     }
 
-    h3:not(.rui-text):not(.docs-body > astro-island *) {
+    h3:not(.rui-text):not(.demo-block *):not(.docs-body > astro-island *) {
         @include rui.typo-headline3;
 
         margin-block: 1.5rem 0.75rem;
     }
 
-    h4:not(.rui-text):not(.docs-body > astro-island *) {
+    h4:not(.rui-text):not(.demo-block *):not(.docs-body > astro-island *) {
         @include rui.typo-headline4;
 
         margin-block: 1.25rem 0.5rem;
     }
 
-    h5:not(.rui-text):not(.docs-body > astro-island *) {
+    h5:not(.rui-text):not(.demo-block *):not(.docs-body > astro-island *) {
         @include rui.typo-headline5;
 
         margin-block: 1rem 0.5rem;
     }
 
-    h6:not(.rui-text):not(.docs-body > astro-island *) {
+    h6:not(.rui-text):not(.demo-block *):not(.docs-body > astro-island *) {
         @include rui.typo-headline6;
 
         margin-block: 1rem 0.5rem;
     }
 
-    p:not(.rui-text):not(.docs-body > astro-island *) {
+    p:not(.rui-text):not(.demo-block *):not(.docs-body > astro-island *) {
         margin-block: 0 1rem;
     }
 
-    ul:not(.docs-body > astro-island *),
-    ol:not(.docs-body > astro-island *) {
+    ul:not(.demo-block *):not(.docs-body > astro-island *),
+    ol:not(.demo-block *):not(.docs-body > astro-island *) {
         margin-block: 0 1rem;
         padding-inline-start: 1.5rem;
     }
 
-    li:not(.rui-text):not(.docs-body > astro-island *) + li:not(.rui-text):not(.docs-body > astro-island *) {
+    li:not(.rui-text):not(.demo-block *):not(.docs-body > astro-island *) + li:not(.rui-text):not(.demo-block *):not(.docs-body > astro-island *) {
         margin-block-start: 0.5rem;
     }
 
-    a:not(.docs-body > astro-island *) {
+    a:not(.demo-block *):not(.docs-body > astro-island *) {
         color: rui.$color-primary;
     }
 
-    strong:not(.docs-body > astro-island *) {
+    strong:not(.demo-block *):not(.docs-body > astro-island *) {
         font-weight: 500;
     }
 
-    blockquote:not(.docs-body > astro-island *) {
+    blockquote:not(.demo-block *):not(.docs-body > astro-island *) {
         @include rui.typo-body2;
 
         margin: 1rem 0;
@@ -73,18 +73,18 @@
         color: rui.$color-on-surface-medium;
     }
 
-    code:not(.docs-body > astro-island *),
-    pre:not(.docs-body > astro-island *) {
+    code:not(.demo-block *):not(.docs-body > astro-island *),
+    pre:not(.demo-block *):not(.docs-body > astro-island *) {
         @include rui.typo-body2;
     }
 
-    :not(pre):not(.docs-body > astro-island *) > code:not(.rui-text):not(.docs-body > astro-island *) {
+    :not(pre):not(.demo-block *):not(.docs-body > astro-island *) > code:not(.rui-text):not(.demo-block *):not(.docs-body > astro-island *) {
         padding: 0.125rem 0.375rem;
         border-radius: 4px;
         background: rui.$color-on-surface-outline;
     }
 
-    pre:not(.docs-body > astro-island *) {
+    pre:not(.demo-block *):not(.docs-body > astro-island *) {
         overflow-x: auto;
         margin: 0 0 1rem;
         padding: 1rem;
@@ -92,25 +92,25 @@
         background: rui.$color-surface-dark;
     }
 
-    table:not(.docs-body > astro-island *) {
+    table:not(.demo-block *):not(.docs-body > astro-island *) {
         width: 100%;
         margin-block: 1rem;
         border-collapse: collapse;
     }
 
-    th:not(.docs-body > astro-island *),
-    td:not(.docs-body > astro-island *) {
+    th:not(.demo-block *):not(.docs-body > astro-island *),
+    td:not(.demo-block *):not(.docs-body > astro-island *) {
         padding: 0.75rem;
         border: 1px solid rui.$color-on-surface-outline;
         text-align: start;
         vertical-align: top;
     }
 
-    th:not(.docs-body > astro-island *) {
+    th:not(.demo-block *):not(.docs-body > astro-island *) {
         font-weight: 500;
     }
 
-    hr:not(.docs-body > astro-island *) {
+    hr:not(.demo-block *):not(.docs-body > astro-island *) {
         margin-block: 2rem;
         border: 0;
         border-block-start: 1px solid rui.$color-on-surface-outline;
