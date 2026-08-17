@@ -20,13 +20,21 @@ export type RMenuSlots = {
 }
 
 export type RMenuProps = {
+    /** Aligns the menu to the logical inline start or end of its reference element. */
     align?: RMenuAlign
+    /** Prevents the trigger from opening the menu. */
     disabled?: boolean
+    /** Sets the id of the menu element. */
     id?: string
+    /** Controls whether the menu is open. */
     open?: boolean
+    /** Sets the semantic behavior and ARIA role of the menu. */
     mode?: RMenuMode
+    /** Matches the menu width to its reference element. */
     matchWidth?: boolean
+    /** Sets an external element used to position the menu. */
     reference?: HTMLElement | null
+    /** Restores focus to the trigger or reference element when the menu closes. */
     restoreFocus?: boolean
 }
 

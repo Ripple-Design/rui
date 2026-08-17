@@ -9,6 +9,7 @@ export type RSelectFieldProps = RFieldHelperProps & {
     placeholder?: string
     /** Prevents opening and selecting options. */
     disabled?: boolean
+    /** Allows users to filter options by typing in the field. */
     filterable?: boolean
     /** Aligns the popup to the logical inline start or end. */
     align?: "start" | "end"

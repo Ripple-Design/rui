@@ -18,6 +18,7 @@ export type RTabBarProps = {
     color?: RTabBarColor
     /** Controls whether the bottom divider is rendered. */
     divider?: boolean
+    /** Enables horizontal scrolling and keeps the selected tab in view. */
     scrollable?: boolean
     /** Controls the selected tab value. */
     modelValue?: unknown

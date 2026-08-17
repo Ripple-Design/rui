@@ -22,7 +22,7 @@ import { RSelectField } from "@ripple-design/rui"
 | `label` | `string` | — | no | Sets the visible field label. |
 | `placeholder` | `string` | — | no | Sets the text shown when no option is selected. |
 | `disabled` | `boolean` | `false` | no | Prevents opening and selecting options. |
-| `filterable` | `boolean` | `false` | no | — |
+| `filterable` | `boolean` | `false` | no | Allows users to filter options by typing in the field. |
 | `align` | `"start" \| "end"` | `"start"` | no | Aligns the popup to the logical inline start or end. |
 
 ## Events

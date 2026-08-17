@@ -3,7 +3,9 @@ import type { RAppBarContainerProps } from "../appBar/types"
 import type { RScaffoldFabPlacement, RScaffoldScrollDirection } from "./context"
 
 export type RScaffoldLayoutProps = {
+    /** Sets the scroll axis used by scaffold scroll behavior. */
     scrollDirection?: RScaffoldScrollDirection
+    /** Sets where the floating action button is placed within the scaffold. */
     fabPlacement?: RScaffoldFabPlacement
     /** Reserves the server-rendered app-bar height until a registered app bar reports its measured inset. */
     initialTopInset?: string

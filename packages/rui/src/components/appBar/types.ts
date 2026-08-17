@@ -43,10 +43,15 @@ export type RAppBarContainerProps = {
 }
 
 export type RTopAppBarProps = {
+    /** Sets the visible app-bar title when no title slot is provided. */
     title?: string
+    /** Sets the visible app-bar subtitle when no subtitle slot is provided. */
     subtitle?: string
+    /** Centers the title and subtitle between the navigation and action areas. */
     centered?: boolean
+    /** Sets the accessible label of the app-bar toolbar. */
     ariaLabel?: string
+    /** References the element that labels the app-bar toolbar. */
     ariaLabelledby?: string
 }
 

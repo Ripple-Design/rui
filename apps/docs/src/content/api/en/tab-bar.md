@@ -24,7 +24,7 @@ import { RTabBar } from "@ripple-design/rui"
 | `iconLayout` | `RTabIconLayout` | `"vertical"` | no | Controls the default icon and label layout inherited by child `RTab` items. |
 | `color` | `RTabBarColor` | `"primary"` | no | Controls the semantic tab-bar color treatment. |
 | `divider` | `boolean` | `true` | no | Controls whether the bottom divider is rendered. |
-| `scrollable` | `boolean` | `false` | no | — |
+| `scrollable` | `boolean` | `false` | no | Enables horizontal scrolling and keeps the selected tab in view. |
 | `modelValue` | `unknown` | — | no | Controls the selected tab value. |
 
 ## Events
