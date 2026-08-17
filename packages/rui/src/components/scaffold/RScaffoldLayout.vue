@@ -392,6 +392,7 @@ provide(scaffoldContextKey, {
     grid-row: 1;
     min-inline-size: 0;
     min-block-size: 0;
+    margin-inline-end: var(--rui-scaffold-scrollbar-width, 0px);
 }
 
 .rui-scaffold__app-bar :deep(.rui-app-bar-container) {
@@ -423,10 +424,14 @@ provide(scaffoldContextKey, {
 }
 
 .rui-scaffold__body {
-    grid-row: 2;
+    z-index: 0;
+    grid-row: 1 / -1;
+    position: relative;
+    box-sizing: border-box;
     min-inline-size: 0;
     min-block-size: 0;
     block-size: 100%;
+    padding-block-start: var(--rui-comp-scaffold-body-top-inset);
     overflow: auto;
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
