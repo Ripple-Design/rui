@@ -330,10 +330,6 @@ defineExpose({
     text-box-edge: cap alphabetic;
 }
 
-.rui-dialog__actions.rui-button-row {
-    row-gap: 8px;
-}
-
 .rui-dialog--show-header-divider .rui-dialog__header {
     border-bottom: 1px solid color.$on-surface-outline;
 }

@@ -26,9 +26,12 @@ provide(buttonRowVariantKey, computed(() => props.variant))
 
 <style scoped>
 .rui-button-row {
+    --rui-comp-button-row-touch-target-enabled: clamp(0, calc(var(--rui-sys-density-scale) + 1), 1);
+
     margin-inline: 8px;
+    padding-block: calc(8px - (6px * var(--rui-comp-button-row-touch-target-enabled)));
     column-gap: 8px;
-    row-gap: 0;
+    row-gap: calc(12px - (12px * var(--rui-comp-button-row-touch-target-enabled)));
 }
 
 .rui-button-row:has(> .rui-button-row__end) {
