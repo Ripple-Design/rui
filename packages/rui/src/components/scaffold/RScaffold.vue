@@ -3,8 +3,9 @@ import { useAttrs } from "vue"
 
 import RAppBarContainer from "@/components/appBar/RAppBarContainer.vue"
 
-import RScaffoldLayout from "./RScaffoldLayout.vue"
 import type { RScaffoldProps } from "./types"
+
+import RScaffoldLayout from "./RScaffoldLayout.vue"
 
 defineOptions({ inheritAttrs: false })
 
@@ -29,10 +30,9 @@ const attrs = useAttrs()
         </template>
 
         <template v-if="$slots['app-bar']" #app-bar>
-            <RAppBarContainer v-if="appBar" v-bind="appBar">
+            <RAppBarContainer v-bind="appBar">
                 <slot name="app-bar" />
             </RAppBarContainer>
-            <slot v-else name="app-bar" />
         </template>
 
         <slot />
