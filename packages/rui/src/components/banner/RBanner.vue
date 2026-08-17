@@ -2,6 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue"
 
 import RButton from "@/components/button/RButton.vue"
+import RButtonRow from "@/components/button/RButtonRow.vue"
 import RIcon from "@/components/icon/RIcon.vue"
 
 import type { RBannerProps } from "./types"
@@ -26,11 +27,10 @@ const emit = defineEmits<{
 const motionRef = ref<HTMLElement | null>(null)
 const bannerRef = ref<HTMLElement | null>(null)
 const messageRef = ref<HTMLElement | null>(null)
-const actionsRef = ref<HTMLElement | null>(null)
+const actionsRef = ref<InstanceType<typeof RButtonRow> | null>(null)
 const isRendered = ref(false)
 const isOpen = ref(false)
 const layout = ref<BannerLayout>("multiline-below")
-const actionsStacked = ref(false)
 const bannerHeight = ref(0)
 let lifecycle: LifecycleState = "closed"
 let delayTimer: ReturnType<typeof setTimeout> | undefined
@@ -47,7 +47,6 @@ const classes = computed(() => [
     {
         "rui-banner--with-icon": hasIcon.value,
         "rui-banner--open": isOpen.value,
-        "rui-banner--stacked": actionsStacked.value,
     },
 ])
 const style = computed(() => ({
@@ -96,7 +95,7 @@ function queueFrame(callback: () => void) {
 function updateLayout() {
     const banner = bannerRef.value
     const message = messageRef.value
-    const actions = actionsRef.value
+    const actions = actionsRef.value?.$el as HTMLElement | undefined
     if (!banner || !message) return
 
     const width = banner.clientWidth
@@ -115,24 +114,14 @@ function updateLayout() {
 
     if (props.lines === 1 && availableForSingle >= messageWidth + messageStart + messageEndSingle) {
         layout.value = "single-line"
-        actionsStacked.value = false
     } else if (wide && actionsWidth <= width / 2) {
         layout.value = "multiline-side"
-        actionsStacked.value = false
     } else {
         layout.value = "multiline-side"
-        actionsStacked.value = false
     }
 
     nextTick(() => {
-        const actionElements = actions?.querySelectorAll<HTMLElement>(".rui-banner__action")
-        const leftWidth = props.leftAction ? (actionElements?.[0]?.offsetWidth ?? 0) : 0
-        const rightWidth = props.rightAction ? (actionElements?.[actionElements.length - 1]?.offsetWidth ?? 0) : 0
-        const availableActionsWidth = Math.max(0, actions?.clientWidth ?? 0)
-        actionsStacked.value = !!props.leftAction && !!props.rightAction && leftWidth + rightWidth + 16 > availableActionsWidth
-        nextTick(() => {
-            bannerHeight.value = banner.offsetHeight
-        })
+        bannerHeight.value = banner.offsetHeight
     })
 }
 
@@ -266,15 +255,12 @@ defineExpose({ show, dismiss })
 
                 <span ref="messageRef" class="rui-banner__message">{{ message }}</span>
 
-                <div v-if="hasActions" ref="actionsRef" class="rui-banner__actions">
-                    <RButton
-                        v-if="rightAction && actionsStacked"
-                        class="rui-banner__action rui-banner__action--right"
-                        variant="text"
-                        @click="emit('right-action', $event)"
-                    >
-                        {{ rightAction }}
-                    </RButton>
+                <RButtonRow
+                    v-if="hasActions"
+                    ref="actionsRef"
+                    class="rui-banner__actions"
+                    justify="flex-end"
+                >
                     <RButton
                         v-if="leftAction"
                         class="rui-banner__action rui-banner__action--left"
@@ -284,14 +270,14 @@ defineExpose({ show, dismiss })
                         {{ leftAction }}
                     </RButton>
                     <RButton
-                        v-if="rightAction && !actionsStacked"
+                        v-if="rightAction"
                         class="rui-banner__action rui-banner__action--right"
                         variant="text"
                         @click="emit('right-action', $event)"
                     >
                         {{ rightAction }}
                     </RButton>
-                </div>
+                </RButtonRow>
             </div>
             <div class="rui-banner__divider" />
         </section>
@@ -379,24 +365,14 @@ defineExpose({ show, dismiss })
     line-clamp: var(--rui-comp-banner-message-lines);
 }
 
-.rui-banner__actions {
-    display: flex;
+.rui-banner__actions.rui-button-row {
     grid-column: 3;
     grid-row: 1;
-    justify-content: end;
     align-self: end;
-    align-items: center;
-    margin-block-start: 0;
-    padding-inline-end: 0;
 }
 
 .rui-banner__action {
-    --rui-comp-banner-touch-target-offset: calc(6px * var(--rui-touch-target-enabled, 1));
-
     flex: 0 0 auto;
-    margin-inline-end: 8px;
-    margin-block-start: calc(-1 * var(--rui-comp-banner-touch-target-offset));
-    margin-block-end: calc(8px - var(--rui-comp-banner-touch-target-offset));
 }
 
 .rui-banner__action :deep(.rui-button) {
@@ -465,11 +441,6 @@ defineExpose({ show, dismiss })
     grid-row: 1;
     align-self: end;
     margin-block-start: 0;
-}
-
-.rui-banner--stacked .rui-banner__actions {
-    flex-direction: column;
-    align-items: end;
 }
 
 @media (min-width: 720px) {
