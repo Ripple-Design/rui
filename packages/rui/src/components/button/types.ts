@@ -43,6 +43,12 @@ export type RButtonProps = {
     ripple?: boolean | RippleOptions
 }
 
+/** Props for the {@link RButtonRow} component. */
+export type RButtonRowProps = {
+    /** Applies a default visual treatment to child `RButton` components that do not set their own variant. */
+    variant?: RButtonVariant
+}
+
 /** Props for the {@link RIconButton} component. */
 export type RIconButtonProps = {
     /** Renders the icon-only button glyph using the shared icon renderer. */

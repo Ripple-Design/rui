@@ -9,7 +9,7 @@ import { RTouchTargetWrapper } from "@/foundations/touchTarget"
 
 import type { RButtonProps, RButtonType, RButtonVariant } from "./types"
 
-import { buttonGroupKey } from "./groupContext"
+import { buttonGroupKey, buttonRowVariantKey } from "./groupContext"
 import {
     consumeDisabledLinkClick,
     resolveButtonHref,
@@ -33,6 +33,7 @@ const slots: Slots = useSlots()
 const selectedCheckIcon = createIconFamily(RICheckFilled, RICheckOutlined, RICheckRounded, RICheckSharp, RICheckTwoTone)
 const interactiveRef = ref<HTMLElement | null>(null)
 const group = inject(buttonGroupKey, null)
+const rowVariant = inject(buttonRowVariantKey, null)
 const buttonId = Symbol("rButton")
 let warnedMissingValue = false
 let warnedHref = false
@@ -46,7 +47,7 @@ const isIconGroup = computed(() => group?.icon.value ?? false)
 const hasSelectionValue = computed(() => props.value !== undefined)
 const isSelectableInGroup = computed(() => selectionMode.value != null && !isLink.value && hasSelectionValue.value)
 const selected = computed(() => (isSelectableInGroup.value ? (group?.isSelected(props.value) ?? false) : false))
-const resolvedVariant = computed<RButtonVariant>(() => props.variant ?? group?.variant.value ?? "contained")
+const resolvedVariant = computed<RButtonVariant>(() => props.variant ?? group?.variant.value ?? rowVariant?.value ?? "contained")
 const iconSize = computed(() => (isIconGroup.value ? 24 : 18))
 const rippleOptions = computed(() => resolveButtonRippleOptions(resolvedVariant.value, props.ripple, resolvedDisabled.value))
 const resolvedFullWidth = computed(() => props.fullWidth || group?.fullWidth.value || false)

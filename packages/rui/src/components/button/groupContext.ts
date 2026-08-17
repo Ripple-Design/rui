@@ -25,3 +25,4 @@ export type RButtonGroupContext = {
 }
 
 export const buttonGroupKey: InjectionKey<RButtonGroupContext> = Symbol("buttonGroup")
+export const buttonRowVariantKey: InjectionKey<Readonly<Ref<RButtonVariant>>> = Symbol("buttonRowVariant")

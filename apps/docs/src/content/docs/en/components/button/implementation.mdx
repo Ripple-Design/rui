@@ -11,11 +11,17 @@ api: /en/api/button
 import DemoBlock from "@docs/components/docs/DemoBlock.astro"
 import ButtonBasicDemo from "@docs/components/demos/button/ButtonBasicDemo.vue"
 import buttonBasicDemoSource from "@docs/components/demos/button/ButtonBasicDemo.vue?raw"
+import ButtonRowBasicDemo from "@docs/components/demos/buttonRow/ButtonRowBasicDemo.vue"
+import buttonRowBasicDemoSource from "@docs/components/demos/buttonRow/ButtonRowBasicDemo.vue?raw"
 
 ## Basic usage
 
 <DemoBlock title="Button variants" code={buttonBasicDemoSource} language="vue">
     <ButtonBasicDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Button row" code={buttonRowBasicDemoSource} language="vue">
+    <ButtonRowBasicDemo client:load />
 </DemoBlock>
 
 `RButton` supports direct `icon` and `endIcon` props for common cases, but the `leading` and `trailing` slots remain available for arbitrary custom content. When both a slot and a prop are supplied on the same side, the slot content wins.
