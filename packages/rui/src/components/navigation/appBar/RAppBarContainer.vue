@@ -158,6 +158,7 @@ onUnmounted(() => {
     box-sizing: border-box;
     // Static app bars stay in normal flow; collapsing layouts opt into overlay geometry below.
     block-size: auto;
+    min-block-size: var(--rui-comp-app-bar-expanded-height);
     margin-block-end: 0;
     overflow-anchor: none;
     contain: none;
@@ -201,6 +202,7 @@ onUnmounted(() => {
 .rui-app-bar-container__viewport {
     position: relative;
     block-size: auto;
+    min-block-size: var(--rui-comp-app-bar-expanded-height);
     overflow: visible;
     background: var(--rui-comp-app-bar-background);
     will-change: auto;
@@ -220,6 +222,7 @@ onUnmounted(() => {
 .rui-app-bar-container--layout-collapsing .rui-app-bar-container__viewport,
 .rui-app-bar-container:has(:deep(.rui-collapsing-app-bar)) .rui-app-bar-container__viewport {
     block-size: var(--rui-comp-app-bar-visible-height, var(--rui-comp-app-bar-expanded-height));
+    min-block-size: 0;
     overflow: hidden;
     will-change: block-size;
 }
