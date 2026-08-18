@@ -65,7 +65,7 @@ const classes = computed(() => ({
     align-items: center;
     box-sizing: border-box;
     block-size: 100%;
-    min-block-size: 56px;
+    min-block-size: var(--rui-comp-app-bar-collapsed-height, 56px);
     padding-inline: var(--rui-comp-app-bar-toolbar-padding-inline);
     color: var(--rui-comp-app-bar-content-color, inherit);
 }
