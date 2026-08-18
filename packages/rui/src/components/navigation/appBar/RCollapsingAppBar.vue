@@ -103,6 +103,8 @@ const animatedTitleStyle = computed(() => {
     }
 })
 
+let resizeObserver: ResizeObserver | null = null
+
 function updateTitleMetrics() {
     const rootElement = root.value
     const expandedElement = expandedAnchor.value
@@ -154,9 +156,17 @@ function updateTitleMetrics() {
 onMounted(() => {
     nextTick(updateTitleMetrics)
     window.addEventListener("resize", updateTitleMetrics)
+    // Container changes can happen without a window resize, so observe the actual layout bounds.
+    if (!root.value || typeof ResizeObserver === "undefined") return
+    resizeObserver = new ResizeObserver(updateTitleMetrics)
+    resizeObserver.observe(root.value)
 })
 
-onUnmounted(() => window.removeEventListener("resize", updateTitleMetrics))
+onUnmounted(() => {
+    resizeObserver?.disconnect()
+    resizeObserver = null
+    window.removeEventListener("resize", updateTitleMetrics)
+})
 </script>
 
 <template>

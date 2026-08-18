@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, onMounted, onUnmounted, provide, ref, watchEffect } from "vue"
+import { computed, inject, nextTick, onMounted, onUnmounted, provide, ref, watchEffect } from "vue"
 
 import { scaffoldContextKey } from "@/components/layout/scaffold/context.ts"
 
@@ -23,6 +23,14 @@ const props = withDefaults(defineProps<RAppBarContainerProps>(), {
 
 const scaffold = inject(scaffoldContextKey, null)
 const viewport = ref<HTMLElement | null>(null)
+const isCollapsingLayout = ref(false)
+let layoutObserver: MutationObserver | null = null
+// Slot components keep their owner's injection scope, so the DOM marker is the reliable parent signal.
+function updateLayoutMode() {
+    const next = Boolean(viewport.value?.querySelector(".rui-collapsing-app-bar"))
+    if (next === isCollapsingLayout.value) return
+    isCollapsingLayout.value = next
+}
 const topInsetHandle = scaffold?.registerTopInset()
 const contentMode = computed(() => {
     if (props.contentAlign === "body") return scaffold?.bodyGridMode.value ?? "centered"
@@ -46,6 +54,7 @@ const { state: scrollState, refresh } = useAppBarScroll({
     scrollBehavior: effectiveScrollBehavior,
     hideOnScroll: effectiveHideOnScroll,
     liftOnScroll: computed(() => props.liftOnScroll),
+    collapsing: isCollapsingLayout,
 })
 
 provide(appBarContextKey, { scrollState })
@@ -55,6 +64,8 @@ const classes = computed(() => [
     "rui-app-bar-container",
     `rui-app-bar-container--${state.value}`,
     {
+        "rui-app-bar-container--layout-static": !isCollapsingLayout.value,
+        "rui-app-bar-container--layout-collapsing": isCollapsingLayout.value,
         "rui-app-bar-container--underlap": props.underlap,
         "rui-app-bar-container--color-surface": props.color === "surface",
         "rui-app-bar-container--color-primary": props.color === "primary",
@@ -63,7 +74,11 @@ const classes = computed(() => [
     },
 ])
 const style = computed(() => ({
-    ...(props.expandedHeight !== undefined ? { "--rui-comp-app-bar-expanded-height": props.expandedHeight } : {}),
+    ...(props.expandedHeight !== undefined
+        ? { "--rui-comp-app-bar-expanded-height": props.expandedHeight }
+        : isCollapsingLayout.value && props.collapsedHeight !== undefined
+          ? { "--rui-comp-app-bar-expanded-height": "var(--rui-comp-app-bar-collapsed-height)" }
+          : {}),
     ...(props.collapsedHeight !== undefined ? { "--rui-comp-app-bar-collapsed-height": props.collapsedHeight } : {}),
     "--rui-comp-app-bar-background":
         props.color === "primary" ? "var(--rui-sys-color-primary)" : "var(--rui-sys-color-surface)",
@@ -80,17 +95,22 @@ const style = computed(() => ({
 watchEffect(() => topInsetHandle?.set(scrollState.value.visibleHeight))
 
 onMounted(() => {
-    refresh()
-    if (!viewport.value) return
-    if (!props.expandedHeight) {
-        viewport.value.style.setProperty(
-            "--rui-comp-app-bar-expanded-height",
-            "var(--rui-comp-app-bar-collapsed-height)",
-        )
+    updateLayoutMode()
+    if (viewport.value && typeof MutationObserver !== "undefined") {
+        layoutObserver = new MutationObserver(updateLayoutMode)
+        layoutObserver.observe(viewport.value, { childList: true, subtree: true })
     }
+    void nextTick(() => {
+        updateLayoutMode()
+        refresh()
+    })
 })
 
-onUnmounted(() => topInsetHandle?.dispose())
+onUnmounted(() => {
+    layoutObserver?.disconnect()
+    layoutObserver = null
+    topInsetHandle?.dispose()
+})
 </script>
 
 <template>
@@ -136,10 +156,11 @@ onUnmounted(() => topInsetHandle?.dispose())
     inset-block-start: 0;
     inline-size: 100%;
     box-sizing: border-box;
-    block-size: var(--rui-comp-app-bar-expanded-height);
-    margin-block-end: calc(-1 * var(--rui-comp-app-bar-expanded-height));
+    // Static app bars stay in normal flow; collapsing layouts opt into overlay geometry below.
+    block-size: auto;
+    margin-block-end: 0;
     overflow-anchor: none;
-    contain: layout;
+    contain: none;
     box-shadow: none !important;
 }
 
@@ -148,6 +169,13 @@ onUnmounted(() => topInsetHandle?.dispose())
         --rui-comp-app-bar-expanded-height: 64px;
         --rui-comp-app-bar-collapsed-height: 64px;
     }
+}
+
+.rui-app-bar-container--layout-collapsing,
+.rui-app-bar-container:has(:deep(.rui-collapsing-app-bar)) {
+    block-size: var(--rui-comp-app-bar-expanded-height);
+    margin-block-end: calc(-1 * var(--rui-comp-app-bar-expanded-height));
+    contain: layout;
 }
 
 .rui-app-bar-container::after {
@@ -172,26 +200,61 @@ onUnmounted(() => topInsetHandle?.dispose())
 
 .rui-app-bar-container__viewport {
     position: relative;
-    block-size: var(--rui-comp-app-bar-visible-height, var(--rui-comp-app-bar-expanded-height));
-    overflow: hidden;
+    block-size: auto;
+    overflow: visible;
     background: var(--rui-comp-app-bar-background);
-    will-change: block-size;
+    will-change: auto;
 }
 
 .rui-app-bar-container__collapsing-content {
+    position: static;
+    inset: auto;
+    overflow: visible;
+}
+
+.rui-app-bar-container__content {
+    block-size: auto;
+    min-block-size: auto;
+}
+
+.rui-app-bar-container--layout-collapsing .rui-app-bar-container__viewport,
+.rui-app-bar-container:has(:deep(.rui-collapsing-app-bar)) .rui-app-bar-container__viewport {
+    block-size: var(--rui-comp-app-bar-visible-height, var(--rui-comp-app-bar-expanded-height));
+    overflow: hidden;
+    will-change: block-size;
+}
+
+.rui-app-bar-container--layout-collapsing .rui-app-bar-container__collapsing-content,
+.rui-app-bar-container:has(:deep(.rui-collapsing-app-bar)) .rui-app-bar-container__collapsing-content {
     position: absolute;
     inset: 0;
     overflow: visible;
 }
 
-.rui-app-bar-container__content {
+.rui-app-bar-container--layout-collapsing .rui-app-bar-container__content,
+.rui-app-bar-container:has(:deep(.rui-collapsing-app-bar)) .rui-app-bar-container__content {
     block-size: 100%;
     min-block-size: 0;
 }
 
-.rui-app-bar-container__content :deep(.rui-responsive-container),
-.rui-app-bar-container__content :deep(.rui-responsive-container__container),
-.rui-app-bar-container__content :deep(.rui-responsive-container__content) {
+.rui-app-bar-container--layout-collapsing
+    .rui-app-bar-container__content
+    :deep(.rui-responsive-container),
+.rui-app-bar-container:has(:deep(.rui-collapsing-app-bar))
+    .rui-app-bar-container__content
+    :deep(.rui-responsive-container),
+.rui-app-bar-container--layout-collapsing
+    .rui-app-bar-container__content
+    :deep(.rui-responsive-container__container),
+.rui-app-bar-container:has(:deep(.rui-collapsing-app-bar))
+    .rui-app-bar-container__content
+    :deep(.rui-responsive-container__container),
+.rui-app-bar-container--layout-collapsing
+    .rui-app-bar-container__content
+    :deep(.rui-responsive-container__content),
+.rui-app-bar-container:has(:deep(.rui-collapsing-app-bar))
+    .rui-app-bar-container__content
+    :deep(.rui-responsive-container__content) {
     block-size: 100%;
 }
 

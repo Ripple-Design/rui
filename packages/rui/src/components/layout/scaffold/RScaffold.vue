@@ -29,10 +29,14 @@ const attrs = useAttrs()
             <slot name="clipped-navigation" />
         </template>
 
-        <template v-if="$slots['app-bar']" #app-bar>
+        <template v-if="$slots['app-bar'] && appBar" #app-bar>
             <RAppBarContainer v-bind="appBar">
                 <slot name="app-bar" />
             </RAppBarContainer>
+        </template>
+
+        <template v-else-if="$slots['app-bar']" #app-bar>
+            <slot name="app-bar" />
         </template>
 
         <slot />

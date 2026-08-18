@@ -1,8 +1,9 @@
 import { mount } from "@vue/test-utils"
 import { describe, expect, it } from "vitest"
-import { h } from "vue"
+import { h, nextTick } from "vue"
 
 import RAppBarContainer from "../../../navigation/appBar/RAppBarContainer.vue"
+import RCollapsingAppBar from "../../../navigation/appBar/RCollapsingAppBar.vue"
 import RScaffold from "../RScaffold.vue"
 import RScaffoldLayout from "../RScaffoldLayout.vue"
 
@@ -18,8 +19,23 @@ describe("RScaffold", () => {
         })
 
         expect(wrapper.findAll(".rui-app-bar-container")).toHaveLength(1)
+        expect(wrapper.find(".rui-app-bar-container").classes()).toContain("rui-app-bar-container--layout-static")
         expect(wrapper.find(".rui-app-bar-container").classes()).toContain("rui-app-bar-container--color-primary")
         expect(wrapper.get("[data-test=app-bar-content]").text()).toBe("Header")
+    })
+
+    it("selects collapsing layout for a collapsing app-bar slot", async () => {
+        const wrapper = mount(RScaffold, {
+            props: {
+                appBar: { expandedHeight: "160px", collapsedHeight: "56px", scrollBehavior: "exit-until-collapsed" },
+            },
+            slots: {
+                "app-bar": () => h(RCollapsingAppBar, { title: "Collapsing header" }),
+            },
+        })
+        await nextTick()
+
+        expect(wrapper.find(".rui-app-bar-container").classes()).toContain("rui-app-bar-container--layout-collapsing")
     })
 
     it("forwards raw app-bar slot content when no app bar configuration is supplied", () => {

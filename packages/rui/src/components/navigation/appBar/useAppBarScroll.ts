@@ -18,6 +18,7 @@ type AppBarScrollOptions = {
     scrollBehavior: MaybeRefOrGetter<RAppBarScrollBehavior>
     hideOnScroll: MaybeRefOrGetter<boolean>
     liftOnScroll: MaybeRefOrGetter<boolean>
+    collapsing: MaybeRefOrGetter<boolean>
 }
 
 const emptyState: RAppBarScrollState = {
@@ -57,6 +58,23 @@ export function useAppBarScroll(options: AppBarScrollOptions) {
         const root = options.root.value
         if (!root) {
             state.value = { ...emptyState }
+            return
+        }
+
+        const naturalHeight = root.getBoundingClientRect().height
+        // Static app bars report their measured in-flow height; collapse metrics apply only to overlays.
+        if (!toValue(options.collapsing)) {
+            const facts = source?.facts.value
+            const hidden = Boolean(
+                toValue(options.hideOnScroll) && facts?.direction === "down" && (facts.top ?? 0) > 0,
+            )
+            state.value = {
+                ...emptyState,
+                visibleHeight: naturalHeight,
+                hideOffset: hidden ? naturalHeight : 0,
+                lifted: Boolean(toValue(options.liftOnScroll) && (facts?.top ?? 0) > 0),
+                phase: hidden ? "hidden" : "expanded",
+            }
             return
         }
 
@@ -119,6 +137,7 @@ export function useAppBarScroll(options: AppBarScrollOptions) {
             () => toValue(options.scrollBehavior),
             () => toValue(options.hideOnScroll),
             () => toValue(options.liftOnScroll),
+            () => toValue(options.collapsing),
             options.root,
         ],
         schedule,
