@@ -1,6 +1,6 @@
 import { onBeforeUnmount, type Ref } from "vue"
 
-import { useReturnFocus } from "@/components/modal/useReturnFocus"
+import { useReturnFocus } from "@/primitives/modal/useReturnFocus"
 
 import type { RFloatingInitialFocus } from "./types"
 

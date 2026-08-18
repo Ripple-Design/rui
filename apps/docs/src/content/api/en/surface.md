@@ -36,6 +36,6 @@ import { RSurface } from "@ripple-design/rui"
 | `--rui-comp-surface-content-color-low` | `var(--rui-sys-color-on-surface-low)` | Low-emphasis content color. |
 | `--rui-comp-surface-outline-color` | `var(--rui-sys-color-on-surface-outline)` | Outline color used by the outlined variant. |
 
-Generated from `packages/rui/src/components/surface/types.ts` and `packages/rui/src/components/surface/RSurface.vue`.
+Generated from `../../../../../../packages/rui/src/components/base/surface/types.ts` and `../../../../../../packages/rui/src/components/base/surface/RSurface.vue`.
 
 <!-- AUTO-GENERATED:END -->

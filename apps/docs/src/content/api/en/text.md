@@ -26,6 +26,6 @@ import { RText } from "@ripple-design/rui"
 | `disabled` | `boolean` | `false` | no | Forces low emphasis and applies the disabled ARIA state. |
 | `ellipsize` | `"end"` | — | no | Truncates overflowing single-line text at the end with an ellipsis. |
 
-Generated from `packages/rui/src/components/text/types.ts`.
+Generated from `../../../../../../packages/rui/src/components/base/text/types.ts`.
 
 <!-- AUTO-GENERATED:END -->

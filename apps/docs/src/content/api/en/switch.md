@@ -17,17 +17,17 @@ import { RSwitch } from "@ripple-design/rui"
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-| --- | --- | --- | --- | --- |
-| `disabled` | `boolean` | `false` | no | Disables the switch and all interactive feedback. |
-| `ripple` | `boolean \| RippleOptions` | `true` | no | Controls ripple behavior or disables it entirely. |
+| Name       | Type                       | Default | Required | Description                                       |
+| ---------- | -------------------------- | ------- | -------- | ------------------------------------------------- |
+| `disabled` | `boolean`                  | `false` | no       | Disables the switch and all interactive feedback. |
+| `ripple`   | `boolean \| RippleOptions` | `true`  | no       | Controls ripple behavior or disables it entirely. |
 
 ## Events
 
-| Name | Parameters | Description |
-| --- | --- | --- |
+| Name                | Parameters       | Description                           |
+| ------------------- | ---------------- | ------------------------------------- |
 | `update:modelValue` | `value: boolean` | Emitted when the model value changes. |
 
-Generated from `packages/rui/src/components/switch/types.ts` and `packages/rui/src/components/switch/RSwitch.vue`.
+Generated from `../../../../../../packages/rui/src/components/input/switch/types.ts` and `../../../../../../packages/rui/src/components/input/switch/RSwitch.vue`.
 
 <!-- AUTO-GENERATED:END -->

@@ -1,6 +1,0 @@
-export { default as RNavigationDrawer } from "./RNavigationDrawer.vue"
-export { default as RModalNavigationDrawer } from "./RModalNavigationDrawer.vue"
-export { default as RNavigationDrawerItem } from "./RNavigationDrawerItem.vue"
-export { default as RNavigationDrawerGroup } from "./RNavigationDrawerGroup.vue"
-export { default as RNavigationDrawerDivider } from "./RNavigationDrawerDivider.vue"
-export type * from "./types"

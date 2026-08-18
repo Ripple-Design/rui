@@ -39,6 +39,6 @@ import { RModal } from "@ripple-design/rui"
 | `before-close` | `detail: RModalCloseDetail` | — |
 | `close` | `detail: RModalCloseDetail` | — |
 
-Generated from `packages/rui/src/components/modal/types.ts` and `packages/rui/src/components/modal/RModal.vue`.
+Generated from `../../../../../../packages/rui/src/primitives/modal/types.ts` and `../../../../../../packages/rui/src/primitives/modal/RModal.vue`.
 
 <!-- AUTO-GENERATED:END -->

@@ -30,6 +30,6 @@ import { RGrid } from "@ripple-design/rui"
 | `autoFlow` | `CSSProperties["gridAutoFlow"]` | — | no | Controls the automatic placement algorithm for grid items. |
 | `dense` | `boolean` | `false` | no | Appends `dense` to the automatic placement mode so the browser can backfill gaps. |
 
-Generated from `packages/rui/src/components/grid/types.ts`.
+Generated from `../../../../../../packages/rui/src/components/layout/grid/types.ts`.
 
 <!-- AUTO-GENERATED:END -->

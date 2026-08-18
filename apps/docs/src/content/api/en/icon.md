@@ -26,6 +26,6 @@ import { RIcon } from "@ripple-design/rui"
 | `decorative` | `boolean` | — | no | Forces the icon to be decorative and hidden from assistive technology. |
 | `label` | `string` | — | no | Sets the accessible name announced for a non-decorative icon. |
 
-Generated from `packages/rui/src/components/icon/types.ts`.
+Generated from `../../../../../../packages/rui/src/components/base/icon/types.ts`.
 
 <!-- AUTO-GENERATED:END -->

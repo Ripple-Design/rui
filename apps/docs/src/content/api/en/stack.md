@@ -26,6 +26,6 @@ import { RStack } from "@ripple-design/rui"
 | `inline` | `boolean` | — | no | Switches the container display from `flex` to `inline-flex`. |
 | `direction` | `CSSProperties["flexDirection"]` | — | no | Controls the main axis direction for direct children. |
 
-Generated from `packages/rui/src/components/stack/types.ts`.
+Generated from `../../../../../../packages/rui/src/components/layout/stack/types.ts`.
 
 <!-- AUTO-GENERATED:END -->

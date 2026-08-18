@@ -2,7 +2,7 @@
 import { offset, flip, shift, size, type Placement } from "@floating-ui/dom"
 import { computed, nextTick, onBeforeUnmount, provide, ref, useId, watch } from "vue"
 
-import RSurface from "@/components/surface/RSurface.vue"
+import RSurface from "@/components/base/surface/RSurface.vue"
 import {
     RFloatingLayer,
     useDismissableLayer,

@@ -29,6 +29,6 @@ import { RForm } from "@ripple-design/rui"
 | `invalidSubmit` | `event: RFormInvalidSubmitEvent<TValues>` | — |
 | `submit` | `event: RFormSubmitEvent<TValues>` | — |
 
-Generated from `packages/rui/src/components/form/types.ts` and `packages/rui/src/components/form/RForm.vue`.
+Generated from `../../../../../../packages/rui/src/components/layout/form/types.ts` and `../../../../../../packages/rui/src/components/layout/form/RForm.vue`.
 
 <!-- AUTO-GENERATED:END -->
