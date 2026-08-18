@@ -1,0 +1,17 @@
+---
+title: Image
+docSlug: components/image
+tab: implementation
+locale: en
+designOrder: 80
+developOrder: 80
+api: /en/api/image
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import ImageBasicDemo from "@docs/components/demos/image/ImageBasicDemo.vue"
+import imageBasicDemoSource from "@docs/components/demos/image/ImageBasicDemo.vue?raw"
+
+<DemoBlock title="Basic image" code={imageBasicDemoSource} language="vue">
+    <ImageBasicDemo client:load />
+</DemoBlock>

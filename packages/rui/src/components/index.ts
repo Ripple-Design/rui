@@ -36,6 +36,9 @@ export type * from "@/components/base/surface/types"
 export { default as RDivider } from "@/components/base/divider/RDivider.vue"
 export type * from "@/components/base/divider/types"
 
+export { default as RImage } from "@/components/base/image/RImage.vue"
+export type * from "@/components/base/image/types"
+
 export * from "./layout/list"
 export * from "./layout/tile"
 
