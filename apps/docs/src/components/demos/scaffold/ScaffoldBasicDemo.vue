@@ -6,8 +6,6 @@ import {
     RIPlayCircleOutlined,
     RISettingsOutlined,
 } from "@ripple-design/icons"
-import { computed, ref } from "vue"
-
 import {
     RAppBarCollapseItem,
     RButton,
@@ -25,6 +23,7 @@ import {
     RSlider,
     RSwitch,
 } from "@ripple-design/rui"
+import { computed, ref } from "vue"
 
 const cards = Array.from({ length: 24 }, (_, index) => index + 1)
 const scrollDirection = ref<"vertical" | "none">("vertical")
@@ -52,7 +51,6 @@ const previewWidth = ref(100)
 const previewStyle = computed(() => ({
     inlineSize: `${previewWidth.value}%`,
 }))
-
 </script>
 
 <template>
@@ -182,7 +180,11 @@ const previewStyle = computed(() => ({
         >
             <template v-if="navigationDrawer || (navigationRail && !clippedNavigation)" #navigation>
                 <div class="scaffold-demo__navigation">
-                    <RNavigationRail v-if="navigationRail && !clippedNavigation" v-model="railActive" aria-label="Primary navigation rail">
+                    <RNavigationRail
+                        v-if="navigationRail && !clippedNavigation"
+                        v-model="railActive"
+                        aria-label="Primary navigation rail"
+                    >
                         <template #top>App</template>
                         <RNavigationRailItem value="home" :icon="RIHomeOutlined">Home</RNavigationRailItem>
                         <RNavigationRailItem value="listen" :icon="RIPlayCircleOutlined">Listen</RNavigationRailItem>
@@ -229,7 +231,11 @@ const previewStyle = computed(() => ({
                     <template #top>App</template>
                     <RNavigationRailItem value="home" :icon="RIHomeOutlined">Home</RNavigationRailItem>
                     <RNavigationRailItem value="listen" :icon="RIPlayCircleOutlined">Listen</RNavigationRailItem>
-                    <RNavigationRailItem value="favorites" :icon="RIFavoriteBorderFilled" :selected-icon="RIFavoriteFilled">
+                    <RNavigationRailItem
+                        value="favorites"
+                        :icon="RIFavoriteBorderFilled"
+                        :selected-icon="RIFavoriteFilled"
+                    >
                         Favorites
                     </RNavigationRailItem>
                     <RNavigationRailItem value="settings" :icon="RISettingsOutlined">Settings</RNavigationRailItem>
@@ -237,14 +243,14 @@ const previewStyle = computed(() => ({
             </template>
 
             <template #app-bar>
-                    <RCollapsingAppBar title="Scaffold preview">
-                        <template v-if="showAppBarBackground" #background>
-                            <RAppBarCollapseItem mode="off" class="scaffold-demo__app-bar-background" />
-                        </template>
-                        <template #actions>
-                            <RButton variant="text">Action</RButton>
-                        </template>
-                    </RCollapsingAppBar>
+                <RCollapsingAppBar title="Scaffold preview">
+                    <template v-if="showAppBarBackground" #background>
+                        <RAppBarCollapseItem mode="off" class="scaffold-demo__app-bar-background" />
+                    </template>
+                    <template #actions>
+                        <RButton variant="text">Action</RButton>
+                    </template>
+                </RCollapsingAppBar>
             </template>
 
             <RResponsiveGrid :mode="gridMode" gap="16px">
@@ -272,7 +278,11 @@ const previewStyle = computed(() => ({
                 <RBottomNavigation v-model="bottomNavigationActive" aria-label="Bottom navigation preview">
                     <RBottomNavigationItem value="home" :icon="RIHomeOutlined">Home</RBottomNavigationItem>
                     <RBottomNavigationItem value="listen" :icon="RIPlayCircleOutlined">Listen</RBottomNavigationItem>
-                    <RBottomNavigationItem value="favorites" :icon="RIFavoriteBorderFilled" :selected-icon="RIFavoriteFilled">
+                    <RBottomNavigationItem
+                        value="favorites"
+                        :icon="RIFavoriteBorderFilled"
+                        :selected-icon="RIFavoriteFilled"
+                    >
                         Favorites
                     </RBottomNavigationItem>
                 </RBottomNavigation>
