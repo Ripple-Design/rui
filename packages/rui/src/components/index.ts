@@ -63,7 +63,7 @@ export { default as RSwitch } from "@/components/input/switch/RSwitch.vue"
 export type * from "@/components/input/switch/types"
 
 export * from "./input/radioButton"
-export * from "./checkbox"
+export * from "./input/checkbox"
 
 export { default as RChip } from "@/components/actions/chip/RChip.vue"
 export { default as RChipGroup } from "@/components/actions/chip/RChipGroup.vue"
@@ -73,7 +73,6 @@ export { default as RNavigationDrawer } from "@/components/navigation/navigation
 export { default as RModalNavigationDrawer } from "@/components/navigation/navigationDrawer/RModalNavigationDrawer.vue"
 export { default as RNavigationDrawerItem } from "@/components/navigation/navigationDrawer/RNavigationDrawerItem.vue"
 export { default as RNavigationDrawerGroup } from "@/components/navigation/navigationDrawer/RNavigationDrawerGroup.vue"
-export { default as RNavigationDrawerDivider } from "@/components/navigation/navigationDrawer/RNavigationDrawerDivider.vue"
 export type * from "@/components/navigation/navigationDrawer/types"
 
 export { default as RNavigationRail } from "@/components/navigation/navigationRail/RNavigationRail.vue"

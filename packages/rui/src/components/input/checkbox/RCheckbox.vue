@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, useAttrs, watch } from "vue"
 
-import { useFormField } from "@/components/layout/form/useFormField"
-
+import { useFormField } from "@/components/layout/form/useFormField.ts"
 import { vRipple, type RippleOptions } from "@/foundations/ripple"
 import { RTouchTargetWrapper } from "@/foundations/touchTarget"
 
-import type { RCheckboxProps } from "./types"
+import type { RCheckboxProps } from "./types.ts"
 
 const props = withDefaults(defineProps<RCheckboxProps>(), {
     disabled: false,
