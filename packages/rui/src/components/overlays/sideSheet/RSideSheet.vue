@@ -63,7 +63,7 @@ const style = computed(() => ({
 }
 
 .rui-side-sheet__header {
-    padding-inline: 24px;
+    padding-inline: var(--rui-comp-side-sheet-padding-inline, 16px);
 }
 
 .rui-side-sheet__content {
@@ -74,7 +74,7 @@ const style = computed(() => ({
 .rui-side-sheet__content-body {
     @include typography.body1("--rui-comp-side-sheet-content");
     margin: 0;
-    padding-inline: 24px;
+    padding-inline: var(--rui-comp-side-sheet-padding-inline, 16px);
     padding-block-start: calc(36px - 1cap);
     padding-block-end: 28px;
     color: color.$on-surface-medium;
@@ -83,7 +83,8 @@ const style = computed(() => ({
 }
 
 .rui-side-sheet__footer {
-    padding: 0 24px 24px;
+    padding: 0 var(--rui-comp-side-sheet-padding-inline, 16px)
+        var(--rui-comp-side-sheet-footer-padding-block-end, 16px);
 }
 
 .rui-side-sheet__title {
