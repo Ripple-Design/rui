@@ -16,6 +16,7 @@ const open = ref(false)
 const hasHover = ref(false)
 const hasFocus = ref(false)
 const suppressFocus = ref(false)
+let autoDismissTimer: ReturnType<typeof setTimeout> | null = null
 
 const overlayStack = useOverlayStack()
 const layer = overlayStack.register()
@@ -43,6 +44,22 @@ watch(
     },
     { immediate: true },
 )
+
+watch(open, (isOpen) => {
+    if (autoDismissTimer != null) {
+        clearTimeout(autoDismissTimer)
+        autoDismissTimer = null
+    }
+
+    if (!isOpen) return
+
+    autoDismissTimer = setTimeout(() => {
+        hasHover.value = false
+        hasFocus.value = false
+        open.value = false
+        autoDismissTimer = null
+    }, 1500)
+})
 
 useDismissableLayer(
     computed(() => props.target ?? null),
@@ -148,6 +165,7 @@ onBeforeUnmount(() => {
     if (props.target?.getAttribute("aria-describedby") === tooltipId) {
         props.target.removeAttribute("aria-describedby")
     }
+    if (autoDismissTimer != null) clearTimeout(autoDismissTimer)
     document.removeEventListener("keydown", handleDocumentKeyDown, true)
     overlayStack.unregister(layer.id)
 })
