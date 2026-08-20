@@ -24,6 +24,7 @@ const style = computed(() => ({
 
 <template>
     <RSurface :class="classes" :style="style" :aria-labelledby="labelledby" variant="elevated" :elevation="elevation">
+        <div class="rui-side-sheet__divider" aria-hidden="true" />
         <header v-if="hasHeader" class="rui-side-sheet__header">
             <slot name="header">
                 <h2 :id="titleId" class="rui-side-sheet__title">
@@ -49,6 +50,8 @@ const style = computed(() => ({
 @use "@/styles/typography";
 
 .rui-side-sheet {
+    --rui-comp-side-sheet-divider-color: #{color.$on-surface-outline};
+    position: relative;
     inline-size: min(var(--rui-side-sheet-width), 100vw);
     max-inline-size: 100vw;
     block-size: 100%;
@@ -60,6 +63,20 @@ const style = computed(() => ({
     --rui-surface-shape-start-end: 0px;
     --rui-surface-shape-end-end: 0px;
     --rui-surface-shape-end-start: 0px;
+}
+
+.rui-side-sheet__divider {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 1px;
+    background-color: var(--rui-comp-side-sheet-divider-color);
+    pointer-events: none;
+}
+
+.rui-side-sheet--start .rui-side-sheet__divider {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
 }
 
 .rui-side-sheet__header {
