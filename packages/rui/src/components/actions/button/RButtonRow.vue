@@ -36,6 +36,11 @@ provide(
     row-gap: calc(12px - (12px * var(--rui-comp-button-row-touch-target-enabled)));
 }
 
+.rui-button-row:has(> .rui-icon-button__touch-target-wrapper):not(:has(> :not(.rui-icon-button__touch-target-wrapper))) {
+    column-gap: 0;
+    margin-inline-end: 4px;
+}
+
 .rui-button-row:has(> .rui-button-row__end) {
     margin-inline-end: 0;
 }

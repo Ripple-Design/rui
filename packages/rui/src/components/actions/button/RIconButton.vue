@@ -3,6 +3,7 @@ import { computed, useAttrs, watchEffect } from "vue"
 
 import { RIcon } from "@/components"
 import { vRipple } from "@/foundations/ripple"
+import { vTooltip } from "@/components/overlays/tooltip"
 import { RTouchTargetWrapper } from "@/foundations/touchTarget"
 
 import type { RIconButtonProps } from "./types.ts"
@@ -67,7 +68,7 @@ function handleClick(event: MouseEvent) {
 </script>
 
 <template>
-    <RTouchTargetWrapper class="rui-icon-button__touch-target-wrapper">
+    <RTouchTargetWrapper v-tooltip="resolvedLabel" class="rui-icon-button__touch-target-wrapper">
         <a
             v-if="isLink"
             v-bind="attrs"
