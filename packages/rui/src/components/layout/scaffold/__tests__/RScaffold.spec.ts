@@ -24,6 +24,38 @@ describe("RScaffold", () => {
         expect(wrapper.get("[data-test=app-bar-content]").text()).toBe("Header")
     })
 
+    it("uses grid mode for body-aligned app bars", () => {
+        const wrapper = mount(RScaffold, {
+            props: {
+                gridMode: "full-width",
+                appBar: {},
+            },
+            slots: {
+                "app-bar": () => h("div", "Header"),
+            },
+        })
+
+        expect(wrapper.find(".rui-responsive-container").exists()).toBe(false)
+    })
+
+    it("updates body-aligned app bars when grid mode changes", async () => {
+        const wrapper = mount(RScaffold, {
+            props: {
+                gridMode: "centered",
+                appBar: { contentAlign: "body" },
+            },
+            slots: {
+                "app-bar": () => h("div", "Header"),
+            },
+        })
+
+        expect(wrapper.find(".rui-responsive-container").classes()).toContain("rui-responsive-container--centered")
+
+        await wrapper.setProps({ gridMode: "full-width" })
+
+        expect(wrapper.find(".rui-responsive-container").exists()).toBe(false)
+    })
+
     it("selects collapsing layout for a collapsing app-bar slot", async () => {
         const wrapper = mount(RScaffold, {
             props: {
@@ -38,14 +70,15 @@ describe("RScaffold", () => {
         expect(wrapper.find(".rui-app-bar-container").classes()).toContain("rui-app-bar-container--layout-collapsing")
     })
 
-    it("forwards raw app-bar slot content when no app bar configuration is supplied", () => {
+    it("uses body alignment for app-bar slot content when no configuration is supplied", () => {
         const wrapper = mount(RScaffold, {
             slots: {
                 "app-bar": () => h("div", { "data-test": "custom-header" }, "Custom header"),
             },
         })
 
-        expect(wrapper.find(".rui-app-bar-container").exists()).toBe(false)
+        expect(wrapper.find(".rui-app-bar-container").exists()).toBe(true)
+        expect(wrapper.find(".rui-responsive-container").classes()).toContain("rui-responsive-container--centered")
         expect(wrapper.get("[data-test=custom-header]").text()).toBe("Custom header")
     })
 

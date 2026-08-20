@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAttrs } from "vue"
+import { computed, useAttrs } from "vue"
 
 import RAppBarContainer from "@/components/navigation/appBar/RAppBarContainer.vue"
 
@@ -9,14 +9,22 @@ import RScaffoldLayout from "./RScaffoldLayout.vue"
 
 defineOptions({ inheritAttrs: false })
 
-defineProps<RScaffoldProps>()
+const props = defineProps<RScaffoldProps>()
 const attrs = useAttrs()
+const resolvedAppBar = computed(() => ({
+    ...props.appBar,
+    contentAlign:
+        props.appBar?.contentAlign === undefined || props.appBar.contentAlign === "body"
+            ? (props.gridMode ?? "centered")
+            : props.appBar.contentAlign,
+}))
 </script>
 
 <template>
     <RScaffoldLayout
         v-bind="attrs"
         :scroll-direction="scrollDirection"
+        :grid-mode="gridMode"
         :fab-placement="fabPlacement"
         :initial-top-inset="initialTopInset"
         :bottom-bar-hide-on-scroll="bottomBarHideOnScroll"
@@ -30,7 +38,7 @@ const attrs = useAttrs()
         </template>
 
         <template v-if="$slots['app-bar']" #app-bar>
-            <RAppBarContainer v-bind="appBar">
+            <RAppBarContainer v-bind="resolvedAppBar">
                 <slot name="app-bar" />
             </RAppBarContainer>
         </template>

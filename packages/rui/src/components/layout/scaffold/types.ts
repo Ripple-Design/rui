@@ -1,8 +1,11 @@
+import type { RResponsiveContainerMode } from "@/components/layout/responsive/types.ts"
 import type { RAppBarContainerProps } from "@/components/navigation/appBar/types.ts"
 
 import type { RScaffoldFabPlacement, RScaffoldScrollDirection } from "./context.ts"
 
 export type RScaffoldLayoutProps = {
+    /** Sets the responsive body and body-aligned app-bar layout mode. */
+    gridMode?: RResponsiveContainerMode
     /** Sets the scroll axis used by scaffold scroll behavior. */
     scrollDirection?: RScaffoldScrollDirection
     /** Sets where the floating action button is placed within the scaffold. */

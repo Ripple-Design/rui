@@ -43,13 +43,12 @@ export type RScaffoldTopInsetHandle = {
 export type RScaffoldContext = {
     scrollDirection: Readonly<Ref<RScaffoldScrollDirection>>
     scrollFacts: Readonly<Ref<RScaffoldScrollFacts>>
-    bodyGridMode: Readonly<Ref<RResponsiveContainerMode | null>>
+    bodyGridMode: Readonly<Ref<RResponsiveContainerMode>>
     fabPlacement: Readonly<Ref<RScaffoldFabPlacement>>
     topInset: Readonly<Ref<number>>
     bottomBarState: Readonly<Ref<RScaffoldBottomBarState>>
     bottomBarHeight: Readonly<Ref<number>>
     registerTopInset: () => RScaffoldTopInsetHandle
-    setBodyGridMode: (mode: RResponsiveContainerMode) => void
     setBottomBarHideOnScroll: (enabled: boolean) => void
     setBottomBarHeight: (height: number) => void
     registerBottomAppBar: (registration: RScaffoldBottomAppBarRegistration) => () => void

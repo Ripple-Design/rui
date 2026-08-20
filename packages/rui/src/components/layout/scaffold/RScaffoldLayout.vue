@@ -16,6 +16,7 @@ import {
 
 const props = withDefaults(defineProps<RScaffoldLayoutProps>(), {
     scrollDirection: "vertical",
+    gridMode: "centered",
     fabPlacement: "viewport",
     bottomBarHideOnScroll: false,
 })
@@ -29,7 +30,7 @@ const scrollFacts = ref<RScaffoldScrollFacts>({
     atEnd: true,
     timestamp: 0,
 })
-const bodyGridMode = ref<RResponsiveContainerMode | null>(null)
+const bodyGridMode = ref<RResponsiveContainerMode>(props.gridMode)
 const bottomBarHideOnScroll = ref(false)
 const bottomBarState = ref<RScaffoldBottomBarState>("shown")
 const bottomBarHeight = ref(0)
@@ -105,6 +106,13 @@ function registerTopInset() {
         },
     }
 }
+
+watch(
+    () => props.gridMode,
+    (mode) => {
+        bodyGridMode.value = mode
+    },
+)
 
 watch(bodyElement, (element) => {
     bodyResizeObserver?.disconnect()
@@ -275,9 +283,6 @@ provide(scaffoldContextKey, {
     bottomBarState: computed(() => bottomBarState.value),
     bottomBarHeight: computed(() => bottomBarHeight.value),
     registerTopInset,
-    setBodyGridMode(mode) {
-        bodyGridMode.value = mode
-    },
     setBottomBarHideOnScroll(enabled) {
         bottomBarHideOnScroll.value = enabled
         if (!enabled) bottomBarState.value = "shown"

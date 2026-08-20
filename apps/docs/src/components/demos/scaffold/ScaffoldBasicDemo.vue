@@ -29,7 +29,6 @@ const cards = Array.from({ length: 24 }, (_, index) => index + 1)
 const scrollDirection = ref<"vertical" | "none">("vertical")
 const gridMode = ref<"centered" | "full-width">("centered")
 const fabPlacement = ref<"viewport" | "body" | "app-bar-seam">("app-bar-seam")
-const appBarAlign = ref<"full-width" | "centered" | "body">("body")
 const collapsing = ref(false)
 const snap = ref(false)
 const showAppBarBackground = ref(true)
@@ -82,15 +81,6 @@ const previewStyle = computed(() => ({
                 <RButtonGroup v-model="scrollDirection" selection="single">
                     <RButton value="vertical">Vertical</RButton>
                     <RButton value="none">None</RButton>
-                </RButtonGroup>
-            </div>
-
-            <div class="scaffold-demo-controls__group">
-                <span>App bar</span>
-                <RButtonGroup v-model="appBarAlign" selection="single">
-                    <RButton value="full-width">Full width</RButton>
-                    <RButton value="centered">Centered</RButton>
-                    <RButton value="body">Body</RButton>
                 </RButtonGroup>
             </div>
 
@@ -165,10 +155,11 @@ const previewStyle = computed(() => ({
             class="scaffold-demo"
             :style="previewStyle"
             :scroll-direction="scrollDirection"
+            :grid-mode="gridMode"
             :fab-placement="fabPlacement"
             :bottom-bar-hide-on-scroll="bottomBarHideOnScroll"
             :app-bar="{
-                contentAlign: appBarAlign,
+                contentAlign: gridMode,
                 scrollBehavior: collapsing ? 'exit-until-collapsed' : scrollBehavior,
                 hideOnScroll,
                 underlap,

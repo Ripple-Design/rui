@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, watchEffect } from "vue"
-
-import { scaffoldContextKey } from "@/components/layout/scaffold/context.ts"
+import { computed } from "vue"
 
 import type { RResponsiveGridProps } from "./types.ts"
 
@@ -11,18 +9,12 @@ import RResponsiveContainer from "./RResponsiveContainer.vue"
 const props = withDefaults(defineProps<RResponsiveGridProps>(), {
     mode: "centered",
 })
-
-const scaffold = inject(scaffoldContextKey, null)
 const gridProps = computed(() => ({
     columns: { csm: 4, cmd: 8, clg: 12 },
     gap: props.gap,
     columnGap: props.columnGap,
     rowGap: props.rowGap,
 }))
-
-watchEffect(() => {
-    scaffold?.setBodyGridMode(props.mode)
-})
 </script>
 
 <template>
