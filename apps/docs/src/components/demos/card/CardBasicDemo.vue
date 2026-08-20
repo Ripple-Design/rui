@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { RButton, RCard, RColumn } from "@ripple-design/rui"
+import { RIEditFilled, RIMoreVertFilled } from "@ripple-design/icons"
+import { RButton, RCard, RCardHeader, RColumn, RIconButton } from "@ripple-design/rui"
 import { ref } from "vue"
 
 const dragged = ref(false)
@@ -10,10 +11,12 @@ const activated = ref(false)
 <template>
     <RColumn gap="16px" class="card-demo">
         <RCard>
-            <div class="card-demo__content">
-                <strong>Elevated card</strong>
-                <p>Hover to raise its elevation from level 2 to level 8.</p>
-            </div>
+            <RCardHeader title="Elevated card" text="Hover to raise its elevation from level 2 to level 8.">
+                <template #actions>
+                    <RIconButton :icon="RIEditFilled" label="Edit" />
+                    <RIconButton :icon="RIMoreVertFilled" label="More actions" />
+                </template>
+            </RCardHeader>
         </RCard>
 
         <RCard variant="outlined">

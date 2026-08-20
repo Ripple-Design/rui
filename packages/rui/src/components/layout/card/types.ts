@@ -2,6 +2,11 @@ import type { RSurfaceColor } from "@/components"
 
 export type RCardVariant = "elevated" | "outlined"
 
+export type RCardHeaderProps = {
+    title?: string
+    text?: string
+}
+
 /** Props for the {@link RCard} component. */
 export type RCardProps = {
     /** Controls the card surface treatment. */

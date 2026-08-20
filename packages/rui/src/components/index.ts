@@ -43,6 +43,7 @@ export * from "./layout/list"
 export * from "./layout/tile"
 
 export { default as RCard } from "@/components/layout/card/RCard.vue"
+export { default as RCardHeader } from "@/components/layout/card/RCardHeader.vue"
 export type * from "@/components/layout/card/types"
 
 export { default as RBanner } from "@/components/feedback/banner/RBanner.vue"
