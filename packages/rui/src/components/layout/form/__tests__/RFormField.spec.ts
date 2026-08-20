@@ -13,7 +13,8 @@ import RRadioButton from "@/components/radioButton/RRadioButton.vue"
 import RRadioButtonGroup from "@/components/radioButton/RRadioButtonGroup.vue"
 import { RSelectOption } from "@/components"
 import RSelectField from "@/components/selectField/RSelectField.vue"
-import RSlider from "@/components/slider/RSlider.vue"
+import RRangeSlider from "@/components/input/slider/RRangeSlider.vue"
+import RSlider from "@/components/input/slider/RSlider.vue"
 import RTextField from "@/components/textField/RTextField.vue"
 
 function dispatchFocusout(root: Element, relatedTarget: EventTarget | null) {
@@ -384,7 +385,7 @@ describe("RForm field bindings", () => {
         const wrapper = mount(RForm, {
             props: { form },
             slots: {
-                default: () => h(RSlider, { ariaLabel: "Price range", name: "settings.price", step: 10 }),
+                default: () => h(RRangeSlider, { ariaLabel: "Price range", name: "settings.price", step: 10 }),
             },
         })
 

@@ -115,6 +115,7 @@ export { default as RNumberPicker } from "@/components/input/numberPicker/RNumbe
 export type * from "@/components/input/numberPicker/types"
 
 export { default as RSlider } from "@/components/input/slider/RSlider.vue"
+export { default as RRangeSlider } from "@/components/input/slider/RRangeSlider.vue"
 export type * from "@/components/input/slider/types"
 
 export * from "./feedback/snackbar"
