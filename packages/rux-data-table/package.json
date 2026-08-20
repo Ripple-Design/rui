@@ -16,13 +16,13 @@
     ],
     "main": "dist/es/index.js",
     "module": "dist/es/index.js",
-    "types": "dist/types/src/index.d.ts",
+    "types": "dist/types/index.d.ts",
     "exports": {
         ".": {
-            "types": "./dist/types/src/index.d.ts",
+            "types": "./dist/types/index.d.ts",
             "import": "./dist/es/index.js"
         },
-        "./styles.css": "./dist/rux-data-table.css"
+        "./styles.css": "./dist/assets/styles.css"
     },
     "publishConfig": {
         "access": "public"

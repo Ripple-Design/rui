@@ -9,26 +9,33 @@ export default defineConfig({
         dts({
             copyDtsFiles: true,
             outDir: "dist/types",
-            tsconfigPath: "./tsconfig.json",
-            entryRoot: "src",
+            compilerOptions: {
+                removeComments: false,
+            },
         }),
     ],
     build: {
-        cssCodeSplit: true,
         lib: {
-            name: "RuxDataTable",
-            entry: {
-                index: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
-                styles: fileURLToPath(new URL("./src/styles.ts", import.meta.url)),
-            },
-            formats: ["es"],
-            fileName: (_format, entryName) => `es/${entryName}.js`,
+            name: "ruxDataTable",
+            entry: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
         },
         rolldownOptions: {
             external: ["vue", "@ripple-design/rui"],
-            output: {
-                assetFileNames: (info) => (info.name === "styles.css" ? "rux-data-table.css" : "[name][extname]"),
-            },
+            output: [
+                {
+                    format: "es",
+                    entryFileNames: "es/[name].js",
+                    chunkFileNames: "es/_chunks/[name]-[hash].js",
+                    assetFileNames: "assets/styles.css",
+                },
+                {
+                    format: "cjs",
+                    entryFileNames: "cjs/[name].cjs",
+                    chunkFileNames: "cjs/_chunks/[name]-[hash].cjs",
+                    assetFileNames: "assets/styles.css",
+                    exports: "named",
+                },
+            ],
         },
     },
 })
