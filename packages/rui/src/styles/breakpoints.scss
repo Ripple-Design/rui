@@ -5,7 +5,7 @@ $viewport-breakpoints: (
     md: 600px,
     lg: 840px,
     xl: 1200px,
-    xxl: 1920px,
+    xxl: 1536px,
 ) !default;
 
 $container-breakpoints: (
@@ -13,7 +13,7 @@ $container-breakpoints: (
     cmd: 480px,
     clg: 720px,
     cxl: 960px,
-    cxxl: 1920px,
+    cxxl: 1536px,
 ) !default;
 
 @function bp($name) {

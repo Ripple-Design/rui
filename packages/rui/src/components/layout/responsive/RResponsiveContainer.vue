@@ -74,13 +74,14 @@ const style = computed(() => ({
         inline-size: min(calc(100% - 64px), var(--rui-comp-responsive-container-max-width, 1040px));
     }
 }
+
 @include breakpoint.c-up(cxl) {
     .rui-responsive-container[data-rui-responsive-container-block-padding] {
         padding-block: 24px;
     }
 }
 
-@container (min-width: 1920px) {
+@container (min-width: 1536px) {
     .rui-responsive-container--centered {
         inline-size: min(calc(100% - 64px), var(--rui-comp-responsive-container-max-width, 1440px));
     }
