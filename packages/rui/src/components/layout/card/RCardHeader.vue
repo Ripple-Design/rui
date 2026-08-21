@@ -32,6 +32,10 @@ defineProps<RCardHeaderProps>()
     margin-block-end: 16px;
 }
 
+.rui-card-header__copy:has(+ .rui-card-header__actions) {
+    margin-inline-end: 0;
+}
+
 .rui-card-header__title,
 .rui-card-header__text {
     margin: 0;
