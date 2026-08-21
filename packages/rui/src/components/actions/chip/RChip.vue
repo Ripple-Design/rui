@@ -286,6 +286,7 @@ function handleRemove(event: MouseEvent) {
     --rui-comp-chip-state-layer-color: #{color.$on-surface};
     --rui-comp-chip-height: #{density.withDecrement(32px, --rui-comp-chip-density)};
     --rui-comp-chip-density: #{density.$scale};
+    --rui-touch-target-size: 40px;
     --rui-comp-chip-shape-family: var(--rui-sys-shape-full-family);
     --rui-comp-chip-shape-start-start: var(--rui-sys-shape-full-start-start);
     --rui-comp-chip-shape-start-end: var(--rui-sys-shape-full-start-end);
