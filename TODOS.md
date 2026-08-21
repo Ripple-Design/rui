@@ -13,3 +13,4 @@
 - [ ] Research and improve the infinite scroll API
 - [ ] Check whether the Data table implementation is correct
 - [ ] Refine time picker appearance
+- [ ] Fix inconsistency between filter-shadow and regular elevation rendering.
