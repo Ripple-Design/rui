@@ -64,7 +64,8 @@ const style = computed(() => ({
 
 @container (min-width: 1240px) {
     .rui-responsive-container--centered {
-        inline-size: calc(100% - 400px);
+        // This is temporary
+        inline-size: calc(100% - 144px);
         max-inline-size: var(--rui-comp-responsive-container-max-width, none);
     }
 }
