@@ -4,7 +4,6 @@ import {
     RCard,
     RChip,
     RIconButton,
-    RResponsiveGrid,
     RScaffold,
     RSideSheet,
     RTopAppBar,
@@ -56,7 +55,7 @@ const selectedProject = computed(() => projects.find((project) => project.id ===
 </script>
 
 <template>
-    <RScaffold class="scaffold-project-context-demo" :app-bar="{ contentAlign: 'body' }">
+    <RScaffold class="scaffold-project-context-demo" grid-mode="full-width" :app-bar="{ contentAlign: 'body' }">
         <template #app-bar>
                 <RTopAppBar>
                     <template #navigation>
@@ -70,25 +69,21 @@ const selectedProject = computed(() => projects.find((project) => project.id ===
                 </RTopAppBar>
         </template>
 
-        <div class="scaffold-project-context-demo__content">
-            <RResponsiveGrid mode="full-width" gap="12px">
-                <RCard
-                    v-for="project in projects"
-                    :key="project.id"
-                    clickable
-                    selectable
-                    :selected="selectedId === project.id"
-                    class="scaffold-project-context-demo__card"
-                    v-column-span="{ csm: 4, cmd: 4, clg: 6 }"
-                    @click="selectedId = project.id"
-                >
-                    <RChip variant="outlined">{{ project.status }}</RChip>
-                    <h3>{{ project.name }}</h3>
-                    <p>{{ project.summary }}</p>
-                    <span>Owner · {{ project.owner }}</span>
-                </RCard>
-            </RResponsiveGrid>
-        </div>
+        <RCard
+            v-for="project in projects"
+            :key="project.id"
+            clickable
+            selectable
+            :selected="selectedId === project.id"
+            class="scaffold-project-context-demo__card"
+            v-column-span="{ csm: 4, cmd: 4, clg: 6 }"
+            @click="selectedId = project.id"
+        >
+            <RChip variant="outlined">{{ project.status }}</RChip>
+            <h3>{{ project.name }}</h3>
+            <p>{{ project.summary }}</p>
+            <span>Owner · {{ project.owner }}</span>
+        </RCard>
 
         <template #side-sheet>
             <RSideSheet :title="selectedProject.name" width="272px">
@@ -116,10 +111,6 @@ const selectedProject = computed(() => projects.find((project) => project.id ===
     block-size: min(62vh, 500px);
     min-block-size: 380px;
     overflow: hidden;
-}
-
-.scaffold-project-context-demo__content {
-    padding: 16px;
 }
 
 .scaffold-project-context-demo__card {

@@ -17,7 +17,6 @@ import {
     RBottomNavigationItem,
     RNavigationRail,
     RNavigationRailItem,
-    RResponsiveGrid,
     RScaffold,
     RSideSheet,
     RSlider,
@@ -244,14 +243,12 @@ const previewStyle = computed(() => ({
                 </RCollapsingAppBar>
             </template>
 
-            <RResponsiveGrid :mode="gridMode" gap="16px">
-                <RCard v-for="card in cards" :key="card" class="scaffold-demo__card">
-                    <h2>Section {{ card }}</h2>
-                    <p>
-                        Scroll, resize the preview, and change the controls to inspect the current Scaffold behaviors.
-                    </p>
-                </RCard>
-            </RResponsiveGrid>
+            <RCard v-for="card in cards" :key="card" class="scaffold-demo__card">
+                <h2>Section {{ card }}</h2>
+                <p>
+                    Scroll, resize the preview, and change the controls to inspect the current Scaffold behaviors.
+                </p>
+            </RCard>
 
             <template v-if="sideSheet && !clippedSideSheet" #side-sheet>
                 <RSideSheet title="Context panel" width="280px">

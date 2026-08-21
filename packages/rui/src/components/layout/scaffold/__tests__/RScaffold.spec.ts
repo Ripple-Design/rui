@@ -24,6 +24,48 @@ describe("RScaffold", () => {
         expect(wrapper.get("[data-test=app-bar-content]").text()).toBe("Header")
     })
 
+    it("renders default-slot content in the responsive body grid", () => {
+        const wrapper = mount(RScaffold, {
+            slots: {
+                default: () => h("div", { "data-test": "body-content" }, "Body"),
+            },
+        })
+
+        expect(
+            wrapper.get(".rui-scaffold__body .rui-responsive-container").attributes(
+                "data-rui-responsive-container-block-padding",
+            ),
+        ).toBe("true")
+        expect(wrapper.get(".rui-scaffold__body .rui-responsive-container").classes()).toContain(
+            "rui-responsive-container--centered",
+        )
+        expect(wrapper.get(".rui-scaffold__body .rui-grid > [data-test=body-content]").text()).toBe("Body")
+    })
+
+    it("does not pad the body grid outside vertical scrolling", () => {
+        const wrapper = mount(RScaffold, {
+            props: { scrollDirection: "none" },
+        })
+
+        expect(
+            wrapper.get(".rui-scaffold__body .rui-responsive-container").attributes(
+                "data-rui-responsive-container-block-padding",
+            ),
+        ).toBeUndefined()
+    })
+
+    it("does not wrap default-slot content when responsive grid is disabled", () => {
+        const wrapper = mount(RScaffold, {
+            props: { responsiveGrid: false },
+            slots: {
+                default: () => h("div", { "data-test": "unwrapped-body" }, "Body"),
+            },
+        })
+
+        expect(wrapper.find(".rui-scaffold__body .rui-responsive-container").exists()).toBe(false)
+        expect(wrapper.get(".rui-scaffold__body-content > [data-test=unwrapped-body]").text()).toBe("Body")
+    })
+
     it("uses grid mode for body-aligned app bars", () => {
         const wrapper = mount(RScaffold, {
             props: {
@@ -35,7 +77,10 @@ describe("RScaffold", () => {
             },
         })
 
-        expect(wrapper.find(".rui-responsive-container").exists()).toBe(false)
+        expect(wrapper.get(".rui-scaffold__body .rui-responsive-container").classes()).toContain(
+            "rui-responsive-container--full-width",
+        )
+        expect(wrapper.find(".rui-scaffold__app-bar .rui-responsive-container").exists()).toBe(false)
     })
 
     it("updates body-aligned app bars when grid mode changes", async () => {
@@ -49,11 +94,19 @@ describe("RScaffold", () => {
             },
         })
 
-        expect(wrapper.find(".rui-responsive-container").classes()).toContain("rui-responsive-container--centered")
+        expect(wrapper.get(".rui-scaffold__body .rui-responsive-container").classes()).toContain(
+            "rui-responsive-container--centered",
+        )
+        expect(wrapper.get(".rui-scaffold__app-bar .rui-responsive-container").classes()).toContain(
+            "rui-responsive-container--centered",
+        )
 
         await wrapper.setProps({ gridMode: "full-width" })
 
-        expect(wrapper.find(".rui-responsive-container").exists()).toBe(false)
+        expect(wrapper.get(".rui-scaffold__body .rui-responsive-container").classes()).toContain(
+            "rui-responsive-container--full-width",
+        )
+        expect(wrapper.find(".rui-scaffold__app-bar .rui-responsive-container").exists()).toBe(false)
     })
 
     it("selects collapsing layout for a collapsing app-bar slot", async () => {
@@ -78,7 +131,9 @@ describe("RScaffold", () => {
         })
 
         expect(wrapper.find(".rui-app-bar-container").exists()).toBe(true)
-        expect(wrapper.find(".rui-responsive-container").classes()).toContain("rui-responsive-container--centered")
+        expect(wrapper.get(".rui-scaffold__app-bar .rui-responsive-container").classes()).toContain(
+            "rui-responsive-container--centered",
+        )
         expect(wrapper.get("[data-test=custom-header]").text()).toBe("Custom header")
     })
 
@@ -114,6 +169,7 @@ describe("RScaffold", () => {
     it("keeps manual app bar composition available through RScaffoldLayout", () => {
         const wrapper = mount(RScaffoldLayout, {
             slots: {
+                default: () => h("div", { "data-test": "layout-body" }, "Body"),
                 "app-bar": () =>
                     h(RAppBarContainer, null, () => h("div", { "data-test": "manual-header" }, "Manual header")),
             },
@@ -121,5 +177,7 @@ describe("RScaffold", () => {
 
         expect(wrapper.findAll(".rui-app-bar-container")).toHaveLength(1)
         expect(wrapper.get("[data-test=manual-header]").text()).toBe("Manual header")
+        expect(wrapper.get("[data-test=layout-body]").text()).toBe("Body")
+        expect(wrapper.find(".rui-scaffold__body .rui-responsive-container").exists()).toBe(false)
     })
 })

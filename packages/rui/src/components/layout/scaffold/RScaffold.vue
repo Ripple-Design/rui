@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, useAttrs } from "vue"
 
+import RResponsiveGrid from "@/components/layout/responsive/RResponsiveGrid.vue"
 import RAppBarContainer from "@/components/navigation/appBar/RAppBarContainer.vue"
 
 import type { RScaffoldProps } from "./types.ts"
@@ -9,7 +10,9 @@ import RScaffoldLayout from "./RScaffoldLayout.vue"
 
 defineOptions({ inheritAttrs: false })
 
-const props = defineProps<RScaffoldProps>()
+const props = withDefaults(defineProps<RScaffoldProps>(), {
+    responsiveGrid: true,
+})
 const attrs = useAttrs()
 const resolvedAppBar = computed(() => ({
     ...props.appBar,
@@ -47,7 +50,14 @@ const resolvedAppBar = computed(() => ({
             <slot name="app-bar" />
         </template>
 
-        <slot />
+        <RResponsiveGrid
+            v-if="props.responsiveGrid"
+            :mode="gridMode"
+            :block-padding="scrollDirection === undefined || scrollDirection === 'vertical'"
+        >
+            <slot />
+        </RResponsiveGrid>
+        <slot v-else />
 
         <template v-if="$slots['bottom-bar']" #bottom-bar>
             <slot name="bottom-bar" />

@@ -15,6 +15,7 @@ import {
     RNavigationRailItem,
     RScaffold,
     RTopAppBar,
+    vColumnSpan,
 } from "@ripple-design/rui"
 import { ref } from "vue"
 
@@ -50,7 +51,9 @@ const messages = [
                 </RTopAppBar>
         </template>
 
-        <RScaffold class="scaffold-nested-demo__inner" scroll-direction="vertical" bottom-bar-hide-on-scroll :app-bar="{ color: 'primary' }">
+        <RScaffold
+            v-column-span="{ csm: 4, cmd: 8, clg: 12 }"
+            class="scaffold-nested-demo__inner" scroll-direction="vertical" bottom-bar-hide-on-scroll :app-bar="{ color: 'primary' }">
             <template #app-bar>
                     <RTopAppBar>
                         <template #title>Inbox triage</template>
@@ -61,7 +64,7 @@ const messages = [
                     </RTopAppBar>
                 </template>
 
-            <div class="scaffold-nested-demo__inner-content">
+            <div v-column-span="{ csm: 4, cmd: 8, clg: 12 }" class="scaffold-nested-demo__inner-content">
                 <section class="scaffold-nested-demo__summary">
                     <strong>Today’s queue</strong>
                     <span>2 items need a reply before 3:00 PM</span>

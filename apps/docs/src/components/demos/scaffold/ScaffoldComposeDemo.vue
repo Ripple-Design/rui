@@ -9,6 +9,7 @@ import {
     RListItem,
     RScaffold,
     RTopAppBar,
+    vColumnSpan,
 } from "@ripple-design/rui"
 import { ref } from "vue"
 
@@ -37,7 +38,7 @@ const messages = [
                 </RTopAppBar>
         </template>
 
-        <div class="scaffold-compose-demo__content">
+        <div v-column-span="{ csm: 4, cmd: 8, clg: 12 }" class="scaffold-compose-demo__content">
             <RList divider="inset">
                 <RListItem v-for="message in messages" :key="message.subject" :icon="RIEmailOutlined" action :lines="2" @click="undefined">
                     {{ message.sender }} · {{ message.subject }}

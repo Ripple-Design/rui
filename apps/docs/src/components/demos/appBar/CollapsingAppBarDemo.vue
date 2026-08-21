@@ -9,6 +9,7 @@ import {
     RIconButton,
     RScaffold,
     RSwitch,
+    vColumnSpan,
 } from "@ripple-design/rui"
 import { ref } from "vue"
 
@@ -55,7 +56,7 @@ const cards = Array.from({ length: 16 }, (_, index) => index + 1)
                     </RCollapsingAppBar>
             </template>
 
-            <div class="collapsing-app-bar-demo__content">
+            <div v-column-span="{ csm: 4, cmd: 8, clg: 12 }" class="collapsing-app-bar-demo__content">
                 <RCard v-for="card in cards" :key="card" class="collapsing-app-bar-demo__card">
                     <h3>Collection {{ card }}</h3>
                     <p>Scroll this focused preview to inspect the collapsing toolbar title, pinned actions, and optional snap.</p>

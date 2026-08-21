@@ -18,9 +18,27 @@ const gridProps = computed(() => ({
 </script>
 
 <template>
-    <RResponsiveContainer :mode="mode" :max-width="maxWidth">
-        <RGrid v-bind="gridProps">
+    <RResponsiveContainer
+        :mode="props.mode"
+        :max-width="props.maxWidth"
+        :block-padding="props.blockPadding"
+    >
+        <RGrid class="rui-responsive-grid" v-bind="gridProps">
             <slot />
         </RGrid>
     </RResponsiveContainer>
 </template>
+
+<style scoped lang="scss">
+@use "@/styles/breakpoints" as breakpoint;
+
+:deep(.rui-responsive-grid) {
+    --rui-comp-grid-gap: 16px;
+}
+
+@include breakpoint.c-up(cxl) {
+    :deep(.rui-responsive-grid) {
+        --rui-comp-grid-gap: 24px;
+    }
+}
+</style>

@@ -14,13 +14,20 @@ const style = computed(() => ({
 
 <template>
     <div class="rui-responsive-container-frame">
-        <div class="rui-responsive-container" :class="`rui-responsive-container--${mode}`" :style="style">
+        <div
+            class="rui-responsive-container"
+            :class="`rui-responsive-container--${mode}`"
+            :style="style"
+            :data-rui-responsive-container-block-padding="props.blockPadding || undefined"
+        >
             <slot />
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
+@use "@/styles/breakpoints" as breakpoint;
+
 .rui-responsive-container-frame {
     inline-size: 100%;
     min-inline-size: 0;
@@ -36,6 +43,10 @@ const style = computed(() => ({
 
 .rui-responsive-container--centered {
     margin-inline: auto;
+}
+
+.rui-responsive-container[data-rui-responsive-container-block-padding] {
+    padding-block: 16px;
 }
 
 @container (min-width: 600px) {
@@ -63,6 +74,12 @@ const style = computed(() => ({
         inline-size: min(calc(100% - 64px), var(--rui-comp-responsive-container-max-width, 1040px));
     }
 }
+@include breakpoint.c-up(cxl) {
+    .rui-responsive-container[data-rui-responsive-container-block-padding] {
+        padding-block: 24px;
+    }
+}
+
 @container (min-width: 1920px) {
     .rui-responsive-container--centered {
         inline-size: min(calc(100% - 64px), var(--rui-comp-responsive-container-max-width, 1440px));

@@ -12,6 +12,7 @@ import {
     RTab,
     RTabBar,
     RTopAppBar,
+    vColumnSpan,
 } from "@ripple-design/rui"
 import {
     createInternationalizationController,
@@ -204,7 +205,7 @@ onMounted(() => {
             </RTopAppBar>
         </template>
 
-        <div class="docs-page-shell">
+        <div v-column-span="{ csm: 4, cmd: 8, clg: 12 }" class="docs-page-shell">
             <slot />
         </div>
     </RScaffold>
