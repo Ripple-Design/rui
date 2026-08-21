@@ -62,6 +62,7 @@ const classes = computed(() => [
 @use "@/styles/motion";
 
 .rui-card {
+    overflow: hidden;
     outline: 2px solid transparent;
     outline-offset: -2px;
     transition:
