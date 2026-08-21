@@ -76,7 +76,7 @@ const selectedProject = computed(() => projects.find((project) => project.id ===
             selectable
             :selected="selectedId === project.id"
             class="scaffold-project-context-demo__card"
-            v-column-span="{ csm: 4, cmd: 4, clg: 6 }"
+            v-column-span="{ cxs: 4, csm: 4, cmd: 6 }"
             @click="selectedId = project.id"
         >
             <RChip variant="outlined">{{ project.status }}</RChip>

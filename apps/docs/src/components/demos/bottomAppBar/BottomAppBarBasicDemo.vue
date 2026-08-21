@@ -37,7 +37,7 @@ const cards = Array.from({ length: 12 }, (_, index) => index + 1)
         </div>
 
         <RScaffold class="bottom-app-bar-demo__scaffold" :bottom-bar-hide-on-scroll="false">
-            <div v-column-span="{ csm: 4, cmd: 8, clg: 12 }" class="bottom-app-bar-demo__content">
+            <div v-column-span="{ cxs: 4, csm: 8, cmd: 12 }" class="bottom-app-bar-demo__content">
                 <article v-for="card in cards" :key="card">
                     <h2>Section {{ card }}</h2>
                     <p>Scroll this preview to compare the M2 bottom app bar placement and motion.</p>

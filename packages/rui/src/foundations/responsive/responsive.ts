@@ -1,8 +1,9 @@
-export type RViewportBreakpoint = "sm" | "md" | "lg" | "xl" | "xxl"
+export type RViewportBreakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "xxl"
 
-export type RContainerBreakpoint = "csm" | "cmd" | "clg" | "cxl" | "cxxl"
+export type RContainerBreakpoint = "cxs" | "csm" | "cmd" | "clg" | "cxl" | "cxxl"
 
 type RViewportExclusiveKeys = {
+    cxs?: never
     csm?: never
     cmd?: never
     clg?: never
@@ -11,6 +12,7 @@ type RViewportExclusiveKeys = {
 }
 
 type RContainerExclusiveKeys = {
+    xs?: never
     sm?: never
     md?: never
     lg?: never
@@ -19,7 +21,8 @@ type RContainerExclusiveKeys = {
 }
 
 export type RViewportResponsiveValue<T> = {
-    sm: T
+    xs: T
+    sm?: T
     md?: T
     lg?: T
     xl?: T
@@ -27,7 +30,8 @@ export type RViewportResponsiveValue<T> = {
 } & RViewportExclusiveKeys
 
 export type RContainerResponsiveValue<T> = {
-    csm: T
+    cxs: T
+    csm?: T
     cmd?: T
     clg?: T
     cxl?: T

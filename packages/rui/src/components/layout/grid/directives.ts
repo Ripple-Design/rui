@@ -11,9 +11,10 @@ export type GridSpanValue = GridSpanScalar | GridResponsiveSpanValue
 type SpanProperty = "column" | "row"
 type ResponsiveMode = "viewport" | "container" | null
 
-const VIEWPORT_SUFFIXES = ["sm", "md", "lg", "xl", "xxl"] as const
-const CONTAINER_SUFFIXES = ["csm", "cmd", "clg", "cxl", "cxxl"] as const
+const VIEWPORT_SUFFIXES = ["xs", "sm", "md", "lg", "xl", "xxl"] as const
+const CONTAINER_SUFFIXES = ["cxs", "csm", "cmd", "clg", "cxl", "cxxl"] as const
 const SPAN_SUFFIXES = [...VIEWPORT_SUFFIXES, ...CONTAINER_SUFFIXES] as const
+const GRID_ITEM_CLASS = "rui-grid__item"
 
 function isResponsiveSpanValue(value: GridSpanValue): value is GridResponsiveSpanValue {
     return typeof value === "object" && value != null
@@ -22,7 +23,7 @@ function isResponsiveSpanValue(value: GridSpanValue): value is GridResponsiveSpa
 function isContainerResponsiveSpanValue(
     value: GridResponsiveSpanValue,
 ): value is RContainerResponsiveValue<GridSpanScalar> {
-    return "csm" in value
+    return "cxs" in value
 }
 
 function normalizeSpan(value: GridSpanScalar) {
@@ -41,19 +42,21 @@ function resolveSpanState(value: GridSpanValue, property: SpanProperty) {
 
     if (!isResponsiveSpanValue(value)) {
         const normalized = normalizeSpan(value)
-        styles[`${prefix}-sm`] = normalized
-        styles[`${prefix}-csm`] = normalized
+        styles[`${prefix}-xs`] = normalized
+        styles[`${prefix}-cxs`] = normalized
         return { mode, styles }
     }
 
     if (isContainerResponsiveSpanValue(value)) {
         mode = "container"
-        const csm = normalizeSpan(value.csm)
-        const cmd = normalizeSpan(value.cmd ?? value.csm)
-        const clg = normalizeSpan(value.clg ?? value.cmd ?? value.csm)
-        const cxl = normalizeSpan(value.cxl ?? value.clg ?? value.cmd ?? value.csm)
-        const cxxl = normalizeSpan(value.cxxl ?? value.cxl ?? value.clg ?? value.cmd ?? value.csm)
+        const cxs = normalizeSpan(value.cxs)
+        const csm = normalizeSpan(value.csm ?? value.cxs)
+        const cmd = normalizeSpan(value.cmd ?? value.csm ?? value.cxs)
+        const clg = normalizeSpan(value.clg ?? value.cmd ?? value.csm ?? value.cxs)
+        const cxl = normalizeSpan(value.cxl ?? value.clg ?? value.cmd ?? value.csm ?? value.cxs)
+        const cxxl = normalizeSpan(value.cxxl ?? value.cxl ?? value.clg ?? value.cmd ?? value.csm ?? value.cxs)
 
+        styles[`${prefix}-cxs`] = cxs
         styles[`${prefix}-csm`] = csm
         styles[`${prefix}-cmd`] = cmd
         styles[`${prefix}-clg`] = clg
@@ -63,12 +66,14 @@ function resolveSpanState(value: GridSpanValue, property: SpanProperty) {
     }
 
     mode = "viewport"
-    const sm = normalizeSpan(value.sm)
-    const md = normalizeSpan(value.md ?? value.sm)
-    const lg = normalizeSpan(value.lg ?? value.md ?? value.sm)
-    const xl = normalizeSpan(value.xl ?? value.lg ?? value.md ?? value.sm)
-    const xxl = normalizeSpan(value.xxl ?? value.xl ?? value.lg ?? value.md ?? value.sm)
+    const xs = normalizeSpan(value.xs)
+    const sm = normalizeSpan(value.sm ?? value.xs)
+    const md = normalizeSpan(value.md ?? value.sm ?? value.xs)
+    const lg = normalizeSpan(value.lg ?? value.md ?? value.sm ?? value.xs)
+    const xl = normalizeSpan(value.xl ?? value.lg ?? value.md ?? value.sm ?? value.xs)
+    const xxl = normalizeSpan(value.xxl ?? value.xl ?? value.lg ?? value.md ?? value.sm ?? value.xs)
 
+    styles[`${prefix}-xs`] = xs
     styles[`${prefix}-sm`] = sm
     styles[`${prefix}-md`] = md
     styles[`${prefix}-lg`] = lg
@@ -78,6 +83,8 @@ function resolveSpanState(value: GridSpanValue, property: SpanProperty) {
 }
 
 function applySpan(el: HTMLElement, binding: DirectiveBinding<GridSpanValue>, property: SpanProperty) {
+    el.classList.add(GRID_ITEM_CLASS)
+
     const { mode, styles } = resolveSpanState(binding.value, property)
     const prefix = `--rui-comp-grid-${property}-span`
     const modeAttribute = `data-rui-grid-${property}-span-mode`
@@ -111,9 +118,13 @@ function createSpanDirective(property: SpanProperty): Directive<HTMLElement, Gri
         updated(el, binding) {
             applySpan(el, binding, property)
         },
-        getSSRProps(binding) {
+        getSSRProps(binding, vnode) {
             const { mode, styles } = resolveSpanState(binding.value, property)
             const props: Record<string, string | Record<string, string>> = { style: styles }
+
+            if (property === "column" || !vnode?.dirs?.some((entry) => entry.dir === vColumnSpan)) {
+                props.class = GRID_ITEM_CLASS
+            }
 
             if (mode) {
                 props[`data-rui-grid-${property}-span-mode`] = mode

@@ -1,18 +1,20 @@
 @use "sass:map";
 
 $viewport-breakpoints: (
-    sm: 0,
-    md: 600px,
-    lg: 840px,
-    xl: 1200px,
+    xs: 0,
+    sm: 600px,
+    md: 905px,
+    lg: 1240px,
+    xl: 1440px,
     xxl: 1536px,
 ) !default;
 
 $container-breakpoints: (
-    csm: 0,
-    cmd: 480px,
-    clg: 720px,
-    cxl: 960px,
+    cxs: 0,
+    csm: 600px,
+    cmd: 905px,
+    clg: 1240px,
+    cxl: 1440px,
     cxxl: 1536px,
 ) !default;
 

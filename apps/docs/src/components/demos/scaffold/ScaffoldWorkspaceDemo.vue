@@ -68,7 +68,7 @@ const workspace = computed(() => {
                 </RTopAppBar>
         </template>
 
-        <div v-column-span="{ csm: 4, cmd: 8, clg: 12 }" class="scaffold-workspace-demo__content">
+        <div v-column-span="{ cxs: 4, csm: 8, cmd: 12 }" class="scaffold-workspace-demo__content">
             <section class="scaffold-workspace-demo__summary" aria-label="Workspace summary">
                 <span>24</span>
                 <p>Open items assigned to the team</p>

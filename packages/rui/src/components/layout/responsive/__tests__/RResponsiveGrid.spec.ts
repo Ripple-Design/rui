@@ -7,9 +7,9 @@ describe("RResponsiveGrid", () => {
     it("uses default container columns", () => {
         const wrapper = mount(RResponsiveGrid)
         const grid = wrapper.get(".rui-grid")
-        expect(grid.element.style.getPropertyValue("--rui-comp-grid-cols-csm")).toBe("repeat(4, minmax(0, 1fr))")
-        expect(grid.element.style.getPropertyValue("--rui-comp-grid-cols-cmd")).toBe("repeat(8, minmax(0, 1fr))")
-        expect(grid.element.style.getPropertyValue("--rui-comp-grid-cols-clg")).toBe("repeat(12, minmax(0, 1fr))")
+        expect(grid.element.style.getPropertyValue("--rui-comp-grid-cols-cxs")).toBe("repeat(4, minmax(0, 1fr))")
+        expect(grid.element.style.getPropertyValue("--rui-comp-grid-cols-csm")).toBe("repeat(8, minmax(0, 1fr))")
+        expect(grid.element.style.getPropertyValue("--rui-comp-grid-cols-cmd")).toBe("repeat(12, minmax(0, 1fr))")
     })
 
     it("adds responsive block padding only when requested", () => {

@@ -10,7 +10,7 @@ const props = withDefaults(defineProps<RResponsiveGridProps>(), {
     mode: "centered",
 })
 const gridProps = computed(() => ({
-    columns: { csm: 4, cmd: 8, clg: 12 },
+    columns: { cxs: 4, csm: 8, cmd: 12 },
     gap: props.gap,
     columnGap: props.columnGap,
     rowGap: props.rowGap,

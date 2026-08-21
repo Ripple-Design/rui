@@ -62,7 +62,7 @@ const heading = computed(() => ({ updates: "Latest updates", tasks: "Assigned ta
                 </RTopAppBar>
         </template>
 
-        <div v-column-span="{ csm: 4, cmd: 8, clg: 12 }" class="scaffold-activity-demo__content">
+        <div v-column-span="{ cxs: 4, csm: 8, cmd: 12 }" class="scaffold-activity-demo__content">
             <h3>{{ heading }}</h3>
             <RList divider="inset">
                 <RListItem
