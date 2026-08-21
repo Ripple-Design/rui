@@ -10,8 +10,8 @@ defineProps<RCardHeaderProps>()
 <template>
     <header class="rui-card-header">
         <span v-if="title || text" class="rui-card-header__copy">
-            <RText v-if="title" as="h6" class="rui-card-header__title" variant="headline6">{{ title }}</RText>
-            <RText v-if="text" as="p" class="rui-card-header__text" variant="body2" emphasis="medium">{{ text }}</RText>
+            <RText v-if="title" as="h6" class="rui-card-header__title" variant="headline6" ellipsize="end">{{ title }}</RText>
+            <RText v-if="text" as="p" class="rui-card-header__text" variant="body2" emphasis="medium" ellipsize="end">{{ text }}</RText>
         </span>
         <RButtonRow v-if="$slots.actions" class="rui-card-header__actions"><slot name="actions" /></RButtonRow>
     </header>
