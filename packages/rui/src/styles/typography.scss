@@ -112,7 +112,8 @@
 }
 
 @mixin overflowEllipsis {
-    overflow: hidden;
+    overflow-inline: clip;
+    overflow-block: visible;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
