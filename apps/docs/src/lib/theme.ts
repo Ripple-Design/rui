@@ -13,6 +13,7 @@ export function createShapeTheme(family: RShapeFamily): NonNullable<RTheme["shap
         medium: { family },
         large: { family },
         full: { family },
+        icon: { family },
     }
 }
 
@@ -111,6 +112,7 @@ export function createDocsThemeBootstrapScript() {
                     medium: { family: shapeFamily },
                     large: { family: shapeFamily },
                     full: { family: shapeFamily },
+                    icon: { family: shapeFamily },
                 },
                 day: dayPrimary ? { color: { primary: dayPrimary } } : {},
                 night: nightPrimary ? { color: { primary: nightPrimary } } : {},

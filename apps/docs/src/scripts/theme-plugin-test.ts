@@ -21,6 +21,7 @@ if (element) {
                 medium: { family: "rounded" },
                 large: { family: "rounded" },
                 full: { family: "rounded" },
+                icon: { family: "rounded" },
             },
         },
     })

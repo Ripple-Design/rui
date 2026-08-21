@@ -56,6 +56,7 @@ export type RThemeShapes = {
     medium?: RThemeShapeCategory
     large?: RThemeShapeCategory
     full?: RThemeShapeCategory
+    icon?: RThemeShapeCategory
 }
 
 export type RTheme = {

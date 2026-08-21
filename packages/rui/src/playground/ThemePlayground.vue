@@ -58,6 +58,7 @@ function createShapeTheme(family: RShapeFamily): NonNullable<RTheme["shape"]> {
         medium: { family },
         large: { family },
         full: { family },
+        icon: { family },
     }
 }
 

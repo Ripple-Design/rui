@@ -34,6 +34,7 @@ export const defaultLightTheme: RTheme = {
         medium: { family: "rounded" },
         large: { family: "rounded" },
         full: { family: "rounded" },
+        icon: { family: "rounded", corners: "9999px" },
     },
 }
 
@@ -69,6 +70,7 @@ export const defaultDarkTheme: RTheme = {
         medium: { family: "rounded" },
         large: { family: "rounded" },
         full: { family: "rounded" },
+        icon: { family: "rounded", corners: "9999px" },
     },
 }
 

@@ -1,0 +1,17 @@
+---
+title: Avatar
+docSlug: components/avatar
+tab: implementation
+locale: en
+designOrder: 80
+developOrder: 80
+api: /en/api/avatar
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import AvatarBasicDemo from "@docs/components/demos/avatar/AvatarBasicDemo.vue"
+import avatarBasicDemoSource from "@docs/components/demos/avatar/AvatarBasicDemo.vue?raw"
+
+<DemoBlock title="Basic avatar" code={avatarBasicDemoSource} language="vue">
+    <AvatarBasicDemo client:load />
+</DemoBlock>

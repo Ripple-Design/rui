@@ -39,6 +39,9 @@ export type * from "@/components/base/divider/types"
 export { default as RImage } from "@/components/base/image/RImage.vue"
 export type * from "@/components/base/image/types"
 
+export { default as RAvatar } from "@/components/base/avatar/RAvatar.vue"
+export type * from "@/components/base/avatar/types"
+
 export * from "./layout/list"
 export * from "./layout/tile"
 

@@ -216,7 +216,7 @@ export function themeToCSSVars(theme: RTheme) {
         vars["--rui-sys-icon-style"] = theme.iconStyle
     }
 
-    const categories = ["small", "medium", "large", "full"] as const
+    const categories = ["small", "medium", "large", "full", "icon"] as const
 
     for (const category of categories) {
         const shape = theme.shape?.[category]
@@ -271,6 +271,7 @@ export function mergeTheme(base: RTheme, nextTheme: Partial<RTheme>): RTheme {
             medium: mergeShapeCategory(base.shape?.medium, nextTheme.shape?.medium),
             large: mergeShapeCategory(base.shape?.large, nextTheme.shape?.large),
             full: mergeShapeCategory(base.shape?.full, nextTheme.shape?.full),
+            icon: mergeShapeCategory(base.shape?.icon, nextTheme.shape?.icon),
         },
     }
 }

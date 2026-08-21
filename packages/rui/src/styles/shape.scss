@@ -82,4 +82,5 @@
     @include define-category(medium, rounded, 4px);
     @include define-category(large, rounded, 0px);
     @include define-category(full, rounded, 9999px);
+    @include define-category(icon, rounded, 9999px);
 }

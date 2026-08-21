@@ -73,6 +73,7 @@ export function createThemeBootstrapScript(options: {
       medium: { ...base.shape?.medium, ...next.shape?.medium },
       large: { ...base.shape?.large, ...next.shape?.large },
       full: { ...base.shape?.full, ...next.shape?.full },
+      icon: { ...base.shape?.icon, ...next.shape?.icon },
     },
   });
   const resolveMode = (mode) => {
@@ -178,9 +179,10 @@ export function createThemeBootstrapScript(options: {
   if (theme.iconStyle) {
     root.style.setProperty('--rui-sys-icon-style', theme.iconStyle);
   }
-  if (theme.shape?.small?.family) {
-    const cssFamily = theme.shape.small.family === 'cut' ? 'bevel' : 'round';
-    for (const category of ['small', 'medium', 'large', 'full']) {
+  for (const category of ['small', 'medium', 'large', 'full', 'icon']) {
+    const family = theme.shape?.[category]?.family;
+    if (family) {
+      const cssFamily = family === 'cut' ? 'bevel' : 'round';
       root.style.setProperty('--rui-sys-shape-' + category + '-family', cssFamily);
     }
   }
