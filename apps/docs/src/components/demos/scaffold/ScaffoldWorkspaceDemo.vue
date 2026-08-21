@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-    RIFavoriteBorderFilled,
-    RIHomeOutlined,
-    RIPlayCircleOutlined,
-    RISettingsOutlined,
-} from "@ripple-design/icons"
+import { RIFavoriteBorderFilled, RIHomeOutlined, RIPlayCircleOutlined, RISettingsOutlined } from "@ripple-design/icons"
 import {
     RCard,
     RIconButton,
@@ -59,13 +54,13 @@ const workspace = computed(() => {
         </template>
 
         <template #app-bar>
-                <RTopAppBar>
-                    <template #title>{{ workspace.title }}</template>
-                    <template #subtitle>{{ workspace.subtitle }}</template>
-                    <template #actions>
-                        <RIconButton :icon="RISettingsOutlined" label="Workspace settings" />
-                    </template>
-                </RTopAppBar>
+            <RTopAppBar>
+                <template #title>{{ workspace.title }}</template>
+                <template #subtitle>{{ workspace.subtitle }}</template>
+                <template #actions>
+                    <RIconButton :icon="RISettingsOutlined" label="Workspace settings" />
+                </template>
+            </RTopAppBar>
         </template>
 
         <div v-column-span="{ cxs: 4, csm: 8, cmd: 12 }" class="scaffold-workspace-demo__content">
@@ -75,7 +70,7 @@ const workspace = computed(() => {
             </section>
 
             <div class="scaffold-workspace-demo__cards">
-                <RCard v-for="card in workspace.cards" :key="card" class="scaffold-workspace-demo__card">
+                <RCard v-for="card in workspace.cards" :key="card" class="scaffold-workspace-demo__card" clickable>
                     <h3>{{ card }}</h3>
                     <p>Updated today · Shared with the product team</p>
                 </RCard>

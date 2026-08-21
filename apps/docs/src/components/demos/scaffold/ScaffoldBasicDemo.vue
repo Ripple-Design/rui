@@ -243,11 +243,9 @@ const previewStyle = computed(() => ({
                 </RCollapsingAppBar>
             </template>
 
-            <RCard v-for="card in cards" :key="card" class="scaffold-demo__card">
+            <RCard v-for="card in cards" :key="card" class="scaffold-demo__card" clickable>
                 <h2>Section {{ card }}</h2>
-                <p>
-                    Scroll, resize the preview, and change the controls to inspect the current Scaffold behaviors.
-                </p>
+                <p>Scroll, resize the preview, and change the controls to inspect the current Scaffold behaviors.</p>
             </RCard>
 
             <template v-if="sideSheet && !clippedSideSheet" #side-sheet>
