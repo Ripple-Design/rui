@@ -12,6 +12,7 @@ on:
                     - rui
                     - rux-video-player
                     - rux-data-table
+                    - rux-chat
                     - rux-date-time-picker
                     - rux-font-picker
     push:
@@ -19,6 +20,7 @@ on:
             - "v*"
             - "rux-video-player-v*"
             - "rux-data-table-v*"
+            - "rux-chat-v*"
             - "rux-date-time-picker-v*"
             - "rux-font-picker-v*"
 
@@ -65,6 +67,8 @@ jobs:
                       package="rux-video-player"
                   elif [[ "$REF_NAME" == rux-data-table-v* ]]; then
                       package="rux-data-table"
+                  elif [[ "$REF_NAME" == rux-chat-v* ]]; then
+                      package="rux-chat"
                   elif [[ "$REF_NAME" == rux-date-time-picker-v* ]]; then
                       package="rux-date-time-picker"
                   elif [[ "$REF_NAME" == rux-font-picker-v* ]]; then

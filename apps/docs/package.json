@@ -14,6 +14,7 @@
         "@astrojs/vue": "^7.0.1",
         "@ripple-design/icons": "^1.0.7",
         "@ripple-design/rui": "workspace:*",
+        "@ripple-design/rux-chat": "workspace:*",
         "@ripple-design/rux-data-table": "workspace:*",
         "@ripple-design/rux-date-time-picker": "workspace:*",
         "@ripple-design/rux-font-picker": "workspace:*",

@@ -13,11 +13,13 @@
         "generate:api-docs": "node scripts/generate-api-docs.mjs",
         "build:video-player": "pnpm --filter rux-video-player build",
         "build:data-table": "pnpm --filter rux-data-table build",
+        "build:chat": "pnpm --filter rux-chat build",
         "build:date-time-picker": "pnpm --filter rux-date-time-picker build",
         "build:font-picker": "pnpm --filter rux-font-picker build",
         "lint:rui": "pnpm --filter rui lint",
         "lint:video-player": "pnpm --filter rux-video-player lint",
         "lint:data-table": "pnpm --filter rux-data-table lint",
+        "lint:chat": "pnpm --filter rux-chat lint",
         "lint:date-time-picker": "pnpm --filter rux-date-time-picker lint",
         "lint:font-picker": "pnpm --filter rux-font-picker lint",
         "lint:rui:fix": "pnpm --filter rui lint:fix"

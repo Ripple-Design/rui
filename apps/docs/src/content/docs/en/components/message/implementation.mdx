@@ -1,0 +1,23 @@
+---
+title: Message
+docSlug: components/message
+tab: implementation
+locale: en
+designOrder: 152
+developOrder: 152
+api: /en/api/message
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import MessageBasicDemo from "@docs/components/demos/message/MessageBasicDemo.vue"
+import messageBasicDemoSource from "@docs/components/demos/message/MessageBasicDemo.vue?raw"
+import MessageGroupDemo from "@docs/components/demos/message/MessageGroupDemo.vue"
+import messageGroupDemoSource from "@docs/components/demos/message/MessageGroupDemo.vue?raw"
+
+<DemoBlock title="Message" code={messageBasicDemoSource} language="vue">
+    <MessageBasicDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="Message group" code={messageGroupDemoSource} language="vue">
+    <MessageGroupDemo client:load />
+</DemoBlock>

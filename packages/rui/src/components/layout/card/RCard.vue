@@ -10,6 +10,8 @@ import RSurface from "../../base/surface/RSurface.vue"
 const props = withDefaults(defineProps<RCardProps>(), {
     variant: "elevated",
     color: "surface",
+    elevation: 2,
+    hoverElevation: 8,
     clickable: false,
     selectable: false,
     selected: false,
@@ -18,7 +20,8 @@ const props = withDefaults(defineProps<RCardProps>(), {
 })
 
 const hovered = ref(false)
-const elevation = computed(() => (props.dragged || hovered.value ? 8 : 2))
+const elevation = computed(() => (props.dragged || hovered.value ? props.hoverElevation : props.elevation))
+const hoverShadow = computed(() => `var(--rui-sys-elevation-shadow-${props.hoverElevation})`)
 const selected = computed(() => props.selectable && props.selected)
 const rippleOptions = computed<RippleOptions>(() => ({
     disabled: !props.clickable,
@@ -59,9 +62,6 @@ const classes = computed(() => [
 @use "@/styles/motion";
 
 .rui-card {
-    /* @cssvar Shadow used while the card is hovered or dragged. */
-    --rui-comp-card-hover-shadow: #{elevations.shadow(8)};
-
     outline: 2px solid transparent;
     outline-offset: -2px;
     transition:
@@ -70,7 +70,7 @@ const classes = computed(() => [
 
     &--hovered,
     &--dragged {
-        box-shadow: var(--rui-comp-card-hover-shadow);
+        box-shadow: v-bind(hoverShadow);
     }
 
     &--activated {

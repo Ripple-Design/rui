@@ -12,6 +12,7 @@
             "@ripple-design/rui/playground": ["../../packages/rui/src/playground/index.ts"],
 
             "@ripple-design/rux-video-player": ["../../packages/rux-video-player/src/index.ts"],
+            "@ripple-design/rux-chat": ["../../packages/rux-chat/src/index.ts"],
             "@ripple-design/rux-data-table": ["../../packages/rux-data-table/src/index.ts"],
             "@ripple-design/rux-date-time-picker": [
                 "../../packages/rux-date-time-picker/src/index.ts"

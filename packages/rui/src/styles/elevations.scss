@@ -1,16 +1,10 @@
 @use "sass:map";
 @use "sass:meta";
 @use "sass:math";
+@use "sass:list";
 
 @use "./motion";
 
-:root {
-    --rui-sys-elevation-color: 0 0 0;
-    --rui-sys-elevation-opacity-umbra: 0.1;
-    --rui-sys-elevation-opacity-penumbra: 0.14;
-    --rui-sys-elevation-opacity-ambient: 0.06;
-    --rui-sys-elevation-duration: 280ms;
-}
 // rgba(0, 0, 0, 0.1) 0px 0.5px 2px 0px, rgba(0, 0, 0, 0.14) 0px 3px 3px -1px, rgba(0, 0, 0, 0.06) 0px 1px 6px 0px
 
 $umbra-map: (
@@ -167,7 +161,15 @@ $surface-overlay-anchor-map: (
     @return #{$geometry} rgb(#{$color-rgb} / #{$opacity});
 }
 
-@function shadow($level, $color-rgb: var(--rui-sys-elevation-color)) {
+@function _filter-shadow-layer($geometry, $color-rgb, $opacity) {
+    $x: list.nth($geometry, 1);
+    $y: list.nth($geometry, 2);
+    $blur: list.nth($geometry, 3);
+
+    @return drop-shadow(#{$x} #{$y} #{$blur} rgb(#{$color-rgb} / #{$opacity}));
+}
+
+@function _validate-level($level) {
     @if meta.type-of($level) != number or not math.is-unitless($level) {
         @error "$level must be a unitless number, but received '#{$level}'";
     }
@@ -176,6 +178,11 @@ $surface-overlay-anchor-map: (
         @error "$level must be between 0 and 24, but received '#{$level}'";
     }
 
+    @return $level;
+}
+
+@function _shadow-value($level, $color-rgb: var(--rui-sys-elevation-color)) {
+    $level: _validate-level($level);
     $umbra: map.get($umbra-map, $level);
     $penumbra: map.get($penumbra-map, $level);
     $ambient: map.get($ambient-map, $level);
@@ -185,6 +192,52 @@ $surface-overlay-anchor-map: (
         _shadow-layer($penumbra, $color-rgb, var(--rui-sys-elevation-opacity-penumbra)),
         _shadow-layer($ambient, $color-rgb, var(--rui-sys-elevation-opacity-ambient))
     );
+}
+
+@function shadow($level) {
+    $level: _validate-level($level);
+
+    @return var(--rui-sys-elevation-shadow-#{$level});
+}
+
+@function _filter-shadow-value($level, $color-rgb: var(--rui-sys-elevation-color)) {
+    $level: _validate-level($level);
+    $umbra: _filter-shadow-layer(
+        map.get($umbra-map, $level),
+        $color-rgb,
+        var(--rui-sys-elevation-opacity-umbra)
+    );
+    $penumbra: _filter-shadow-layer(
+        map.get($penumbra-map, $level),
+        $color-rgb,
+        var(--rui-sys-elevation-opacity-penumbra)
+    );
+    $ambient: _filter-shadow-layer(
+        map.get($ambient-map, $level),
+        $color-rgb,
+        var(--rui-sys-elevation-opacity-ambient)
+    );
+
+    @return #{$umbra} #{$penumbra} #{$ambient};
+}
+
+@function filter-shadow($level) {
+    $level: _validate-level($level);
+
+    @return var(--rui-sys-elevation-filter-shadow-#{$level});
+}
+
+:root {
+    --rui-sys-elevation-color: 0 0 0;
+    --rui-sys-elevation-opacity-umbra: 0.1;
+    --rui-sys-elevation-opacity-penumbra: 0.14;
+    --rui-sys-elevation-opacity-ambient: 0.06;
+    --rui-sys-elevation-duration: 280ms;
+
+    @each $level, $geometry in $umbra-map {
+        --rui-sys-elevation-shadow-#{$level}: #{_shadow-value($level)};
+        --rui-sys-elevation-filter-shadow-#{$level}: #{_filter-shadow-value($level)};
+    }
 }
 
 @function z-index($level) {
@@ -203,8 +256,8 @@ $surface-overlay-anchor-map: (
     @return box-shadow #{$duration} #{$easing};
 }
 
-@mixin level($level, $color-rgb: var(--rui-sys-elevation-color)) {
-    box-shadow: #{shadow($level, $color-rgb)};
+@mixin level($level) {
+    box-shadow: #{shadow($level)};
     z-index: z-index($level);
 }
 

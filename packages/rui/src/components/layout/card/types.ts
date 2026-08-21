@@ -15,6 +15,10 @@ export type RCardProps = {
     color?: RSurfaceColor
     /** Overrides the semantic foreground color inherited by card content. */
     contentColor?: string
+    /** Controls the card elevation while idle. */
+    elevation?: number
+    /** Controls the card elevation while hovered or dragged. */
+    hoverElevation?: number
     /** Enables ripple feedback for pointer and keyboard interaction. */
     clickable?: boolean
     /** Enables the controlled selected treatment. */
