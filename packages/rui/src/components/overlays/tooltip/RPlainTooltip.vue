@@ -2,7 +2,7 @@
 import { offset, flip, shift } from "@floating-ui/dom"
 import { computed, onBeforeUnmount, onMounted, ref, useId, watch } from "vue"
 
-import { RTeleport, useDismissableLayer, useFloatingPosition, useOverlayStack } from "@/foundations/floating"
+import { RTeleport, useDismissableLayer, useFloatingPosition } from "@/foundations/floating"
 
 import type { RPlainTooltipProps } from "./types.ts"
 
@@ -17,9 +17,6 @@ const hasHover = ref(false)
 const hasFocus = ref(false)
 const suppressFocus = ref(false)
 let autoDismissTimer: ReturnType<typeof setTimeout> | null = null
-
-const overlayStack = useOverlayStack()
-const layer = overlayStack.register()
 
 const position = useFloatingPosition(
     computed(() => props.target ?? null),
@@ -40,7 +37,6 @@ watch(
     () => {
         const allowFocusOpen = hasFocus.value && !suppressFocus.value
         open.value = !props.disabled && !!props.text.trim() && (hasHover.value || allowFocusOpen)
-        overlayStack.setActive(layer.id, open.value)
     },
     { immediate: true },
 )
@@ -66,7 +62,6 @@ useDismissableLayer(
     floatingRef,
     {
         enabled: computed(() => shouldMount.value && open.value),
-        isTopLayer: computed(() => overlayStack.isTopLayer(layer.id)),
         onDismiss() {
             hasHover.value = false
             hasFocus.value = false
@@ -167,7 +162,6 @@ onBeforeUnmount(() => {
     }
     if (autoDismissTimer != null) clearTimeout(autoDismissTimer)
     document.removeEventListener("keydown", handleDocumentKeyDown, true)
-    overlayStack.unregister(layer.id)
 })
 </script>
 
@@ -223,7 +217,6 @@ onBeforeUnmount(() => {
     &.is-open {
         opacity: 1;
         transform: scale(1);
-        pointer-events: auto;
     }
 }
 
