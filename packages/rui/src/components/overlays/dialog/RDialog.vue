@@ -60,6 +60,7 @@ const classes = computed(() => [
         "rui-dialog--with-header": hasHeader.value,
         "rui-dialog--with-footer": hasFooter.value,
         "rui-dialog--measuring-auto-width": props.width === "auto" && autoWidth.value === null,
+        "rui-dialog--has-content-overflow": hasOverflow.value,
         "rui-dialog--show-header-divider": showHeaderDivider.value,
         "rui-dialog--show-footer-divider": showFooterDivider.value,
     },
@@ -309,9 +310,13 @@ defineExpose({
 .rui-dialog__content {
     flex: 0 1 auto;
     min-height: 0;
+    overflow: visible;
+    padding-inline: var(--rui-comp-dialog-content-padding-inline, 24px);
+}
+
+.rui-dialog--has-content-overflow .rui-dialog__content {
     overflow: auto;
     overscroll-behavior: contain;
-    padding-inline: var(--rui-comp-dialog-content-padding-inline, 24px);
 }
 
 .rui-dialog__message {
@@ -321,7 +326,7 @@ defineExpose({
     padding-block-end: 28px;
     color: color.$on-surface-medium;
     text-box-trim: trim-both;
-    text-box-edge: cap alphabetic;
+    text-box-edge: text alphabetic;
 }
 
 .rui-dialog__footer {
