@@ -307,7 +307,7 @@ defineExpose({
 }
 
 .rui-dialog__content {
-    flex: 1;
+    flex: 0 1 auto;
     min-height: 0;
     overflow: auto;
     overscroll-behavior: contain;
