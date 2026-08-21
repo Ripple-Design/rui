@@ -64,9 +64,17 @@ const style = computed(() => ({
 
 @container (min-width: 1240px) {
     .rui-responsive-container--centered {
-        // This is temporary
-        inline-size: calc(100% - 144px);
+        inline-size: calc(100% - 400px);
         max-inline-size: var(--rui-comp-responsive-container-max-width, none);
+    }
+
+    :global(
+        .rui-scaffold:has(> .rui-scaffold__navigation, > .rui-scaffold__clipped-navigation)
+            .rui-responsive-container--centered
+    ) {
+        inline-size: calc(100% - 224px);
+        margin-inline-start: 24px;
+        margin-inline-end: 200px;
     }
 }
 

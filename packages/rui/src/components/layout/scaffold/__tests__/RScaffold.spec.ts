@@ -156,6 +156,7 @@ describe("RScaffold", () => {
             },
             slots: {
                 navigation: () => h("div", { "data-test": "navigation" }, "Navigation"),
+                "clipped-navigation": () => h("div", { "data-test": "clipped-navigation" }, "Clipped navigation"),
                 "bottom-bar": () => h("div", { "data-test": "bottom-bar" }, "Bottom bar"),
             },
         })
@@ -163,6 +164,9 @@ describe("RScaffold", () => {
         expect(wrapper.get(".rui-scaffold").attributes("id")).toBe("workspace")
         expect(wrapper.get(".rui-scaffold").attributes("data-test")).toBe("scaffold")
         expect(wrapper.get(".rui-scaffold__navigation [data-test=navigation]").text()).toBe("Navigation")
+        expect(wrapper.get(".rui-scaffold__clipped-navigation [data-test=clipped-navigation]").text()).toBe(
+            "Clipped navigation",
+        )
         expect(wrapper.get(".rui-scaffold__bottom-bar [data-test=bottom-bar]").text()).toBe("Bottom bar")
     })
 
