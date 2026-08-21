@@ -10,7 +10,8 @@ const props = withDefaults(defineProps<RResponsiveGridProps>(), {
     mode: "centered",
 })
 const gridProps = computed(() => ({
-    columns: { cxs: 4, csm: 8, cmd: 12 },
+    columns: { xs: 4, sm: 8, md: 12 },
+    responsive: "container" as const,
     gap: props.gap,
     columnGap: props.columnGap,
     rowGap: props.rowGap,
@@ -36,7 +37,7 @@ const gridProps = computed(() => ({
     --rui-comp-grid-gap: 16px;
 }
 
-@include breakpoint.c-up(cxl) {
+@include breakpoint.c-up(xl) {
     :deep(.rui-responsive-grid) {
         --rui-comp-grid-gap: 24px;
     }

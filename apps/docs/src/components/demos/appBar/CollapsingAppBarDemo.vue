@@ -56,7 +56,7 @@ const cards = Array.from({ length: 16 }, (_, index) => index + 1)
                     </RCollapsingAppBar>
             </template>
 
-            <div v-column-span="{ cxs: 4, csm: 8, cmd: 12 }" class="collapsing-app-bar-demo__content">
+            <div v-column-span="{ xs: 4, sm: 8, md: 12 }" class="collapsing-app-bar-demo__content">
                 <RCard v-for="card in cards" :key="card" class="collapsing-app-bar-demo__card">
                     <h3>Collection {{ card }}</h3>
                     <p>Scroll this focused preview to inspect the collapsing toolbar title, pinned actions, and optional snap.</p>

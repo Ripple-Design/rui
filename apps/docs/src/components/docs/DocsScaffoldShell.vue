@@ -205,7 +205,7 @@ onMounted(() => {
             </RTopAppBar>
         </template>
 
-        <div v-column-span="{ cxs: 4, csm: 8, cmd: 12 }" class="docs-page-shell">
+        <div v-column-span="{ xs: 4, sm: 8, md: 12 }" class="docs-page-shell">
             <slot />
         </div>
     </RScaffold>

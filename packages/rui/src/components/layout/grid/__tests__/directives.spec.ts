@@ -43,19 +43,20 @@ describe("grid span directives", () => {
         expect(scalar.attributes("data-rui-grid-column-span-mode")).toBeUndefined()
         expect(scalar.attributes("data-rui-grid-row-span-mode")).toBeUndefined()
         expect(scalar.element.style.getPropertyValue("--rui-comp-grid-column-span-xs")).toBe("span 2")
-        expect(scalar.element.style.getPropertyValue("--rui-comp-grid-row-span-cxs")).toBe("1 / -1")
+        expect(scalar.element.style.getPropertyValue("--rui-comp-grid-column-span-sm")).toBe("")
+        expect(scalar.element.style.getPropertyValue("--rui-comp-grid-row-span-xs")).toBe("1 / -1")
         expect(alias.classes()).toEqual(expect.arrayContaining(["author-item", "rui-grid__item"]))
         expect(alias.element.style.getPropertyValue("--rui-comp-grid-column-span-xs")).toBe("span 3")
     })
 
-    it("resolves viewport spans from xs through xxl", () => {
+    it("resolves canonical spans from xs through xxl", () => {
         const target = mount(SpanHost, {
             props: { columnSpan: { xs: 1, md: "full", xxl: 3 } },
         }).get(".target")
         const style = target.element.style
 
         expect(target.classes()).toContain("rui-grid__item")
-        expect(target.attributes("data-rui-grid-column-span-mode")).toBe("viewport")
+        expect(target.attributes("data-rui-grid-column-span-mode")).toBeUndefined()
         expect(style.getPropertyValue("--rui-comp-grid-column-span-xs")).toBe("span 1")
         expect(style.getPropertyValue("--rui-comp-grid-column-span-sm")).toBe("span 1")
         expect(style.getPropertyValue("--rui-comp-grid-column-span-md")).toBe("1 / -1")
@@ -63,19 +64,19 @@ describe("grid span directives", () => {
         expect(style.getPropertyValue("--rui-comp-grid-column-span-xxl")).toBe("span 3")
     })
 
-    it("resolves container spans from cxs through cxxl", () => {
+    it("keeps column and row spans in the parent grid response context", () => {
         const target = mount(SpanHost, {
-            props: { rowSpan: { cxs: 1, clg: "full", cxxl: 2 } },
+            props: {
+                columnSpan: { xs: 2, lg: 4 },
+                rowSpan: { xs: 1, lg: 3 },
+            },
         }).get(".target")
-        const style = target.element.style
 
-        expect(target.classes()).toContain("rui-grid__item")
-        expect(target.attributes("data-rui-grid-row-span-mode")).toBe("container")
-        expect(style.getPropertyValue("--rui-comp-grid-row-span-cxs")).toBe("span 1")
-        expect(style.getPropertyValue("--rui-comp-grid-row-span-cmd")).toBe("span 1")
-        expect(style.getPropertyValue("--rui-comp-grid-row-span-clg")).toBe("1 / -1")
-        expect(style.getPropertyValue("--rui-comp-grid-row-span-cxl")).toBe("1 / -1")
-        expect(style.getPropertyValue("--rui-comp-grid-row-span-cxxl")).toBe("span 2")
+        expect(target.classes().filter((className) => className === "rui-grid__item")).toHaveLength(1)
+        expect(target.attributes("data-rui-grid-column-span-mode")).toBeUndefined()
+        expect(target.attributes("data-rui-grid-row-span-mode")).toBeUndefined()
+        expect(target.element.style.getPropertyValue("--rui-comp-grid-column-span-lg")).toBe("span 4")
+        expect(target.element.style.getPropertyValue("--rui-comp-grid-row-span-lg")).toBe("span 3")
     })
 
     it("keeps the marker while clearing responsive state after updates", async () => {
@@ -90,18 +91,5 @@ describe("grid span directives", () => {
         expect(target.attributes("data-rui-grid-column-span-mode")).toBeUndefined()
         expect(target.element.style.getPropertyValue("--rui-comp-grid-column-span-lg")).toBe("")
         expect(target.element.style.getPropertyValue("--rui-comp-grid-column-span-xs")).toBe("1 / -1")
-    })
-
-    it("keeps column and row responsive modes independent", () => {
-        const target = mount(SpanHost, {
-            props: {
-                columnSpan: { xs: 2, lg: 4 },
-                rowSpan: { cxs: 1, clg: 3 },
-            },
-        }).get(".target")
-
-        expect(target.classes().filter((className) => className === "rui-grid__item")).toHaveLength(1)
-        expect(target.attributes("data-rui-grid-column-span-mode")).toBe("viewport")
-        expect(target.attributes("data-rui-grid-row-span-mode")).toBe("container")
     })
 })

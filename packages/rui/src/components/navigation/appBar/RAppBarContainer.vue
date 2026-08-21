@@ -165,7 +165,7 @@ onUnmounted(() => {
     box-shadow: none !important;
 }
 
-@include breakpoint.c-up(clg) {
+@include breakpoint.c-up(lg) {
     .rui-app-bar-container {
         --rui-comp-app-bar-expanded-height: 64px;
         --rui-comp-app-bar-collapsed-height: 64px;

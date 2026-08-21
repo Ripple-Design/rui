@@ -8,8 +8,8 @@ import { RGrid, vColumnSpan } from "@ripple-design/rui"
             Resize the container for csm / cmd / clg / cxl spans. Viewport breakpoints change as the page width grows.
         </p>
         <div class="grid-responsive-span-demo__shell">
-            <RGrid :columns="{ cxs: 1, csm: 2, cmd: 4 }" gap="12px">
-                <div v-column-span="{ cxs: 'full', cmd: 2 }" class="grid-card grid-card--featured">
+            <RGrid responsive="container" :columns="{ xs: 1, sm: 2, md: 4 }" gap="12px">
+                <div v-column-span="{ xs: 'full', md: 2 }" class="grid-card grid-card--featured">
                     Full width on csm, span 2 from clg
                 </div>
                 <div v-column-span="{ xs: 1, md: 2 }" class="grid-card grid-card--viewport">Span 1 → 2 by viewport</div>

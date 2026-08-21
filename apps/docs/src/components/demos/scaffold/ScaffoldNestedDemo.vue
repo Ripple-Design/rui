@@ -52,7 +52,7 @@ const messages = [
         </template>
 
         <RScaffold
-            v-column-span="{ cxs: 4, csm: 8, cmd: 12 }"
+            v-column-span="{ xs: 4, sm: 8, md: 12 }"
             class="scaffold-nested-demo__inner" scroll-direction="vertical" bottom-bar-hide-on-scroll :app-bar="{ color: 'primary' }">
             <template #app-bar>
                     <RTopAppBar>
@@ -64,7 +64,7 @@ const messages = [
                     </RTopAppBar>
                 </template>
 
-            <div v-column-span="{ cxs: 4, csm: 8, cmd: 12 }" class="scaffold-nested-demo__inner-content">
+            <div v-column-span="{ xs: 4, sm: 8, md: 12 }" class="scaffold-nested-demo__inner-content">
                 <section class="scaffold-nested-demo__summary">
                     <strong>Today’s queue</strong>
                     <span>2 items need a reply before 3:00 PM</span>

@@ -9,29 +9,12 @@ $viewport-breakpoints: (
     xxl: 1536px,
 ) !default;
 
-$container-breakpoints: (
-    cxs: 0,
-    csm: 600px,
-    cmd: 905px,
-    clg: 1240px,
-    cxl: 1440px,
-    cxxl: 1536px,
-) !default;
-
 @function bp($name) {
     @if not map.has-key($viewport-breakpoints, $name) {
-        @error "Unknown viewport breakpoint `#{$name}`.";
+        @error "Unknown breakpoint `#{$name}`.";
     }
 
     @return map.get($viewport-breakpoints, $name);
-}
-
-@function cbp($name) {
-    @if not map.has-key($container-breakpoints, $name) {
-        @error "Unknown container breakpoint `#{$name}`.";
-    }
-
-    @return map.get($container-breakpoints, $name);
 }
 
 @mixin up($name) {
@@ -53,19 +36,19 @@ $container-breakpoints: (
 }
 
 @mixin c-up($name) {
-    @container (min-width: #{cbp($name)}) {
+    @container (min-width: #{bp($name)}) {
         @content;
     }
 }
 
 @mixin c-down($name) {
-    @container (max-width: calc(#{cbp($name)} - 0.02px)) {
+    @container (max-width: calc(#{bp($name)} - 0.02px)) {
         @content;
     }
 }
 
 @mixin c-between($from, $to) {
-    @container (min-width: #{cbp($from)}) and (max-width: calc(#{cbp($to)} - 0.02px)) {
+    @container (min-width: #{bp($from)}) and (max-width: calc(#{bp($to)} - 0.02px)) {
         @content;
     }
 }

@@ -9,7 +9,7 @@ import { RGrid } from "@ripple-design/rui"
             lg / xl.
         </p>
         <div class="grid-responsive-demo__shell">
-            <RGrid :columns="{ cxs: 1, csm: 2, cmd: 3, clg: 4 }" gap="12px">
+            <RGrid responsive="container" :columns="{ xs: 1, sm: 2, md: 3, lg: 4 }" gap="12px">
                 <div class="grid-card">csm: 1 col</div>
                 <div class="grid-card">cmd: 2 cols</div>
                 <div class="grid-card">clg: 3 cols</div>

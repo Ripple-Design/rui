@@ -4,12 +4,14 @@ import { describe, expect, it } from "vitest"
 import RResponsiveGrid from "../RResponsiveGrid.vue"
 
 describe("RResponsiveGrid", () => {
-    it("uses default container columns", () => {
+    it("uses canonical container-responsive columns", () => {
         const wrapper = mount(RResponsiveGrid)
         const grid = wrapper.get(".rui-grid")
-        expect(grid.element.style.getPropertyValue("--rui-comp-grid-cols-cxs")).toBe("repeat(4, minmax(0, 1fr))")
-        expect(grid.element.style.getPropertyValue("--rui-comp-grid-cols-csm")).toBe("repeat(8, minmax(0, 1fr))")
-        expect(grid.element.style.getPropertyValue("--rui-comp-grid-cols-cmd")).toBe("repeat(12, minmax(0, 1fr))")
+
+        expect(grid.classes()).toContain("rui-grid--responsive-container")
+        expect(grid.element.style.getPropertyValue("--rui-comp-grid-cols-xs")).toBe("repeat(4, minmax(0, 1fr))")
+        expect(grid.element.style.getPropertyValue("--rui-comp-grid-cols-sm")).toBe("repeat(8, minmax(0, 1fr))")
+        expect(grid.element.style.getPropertyValue("--rui-comp-grid-cols-md")).toBe("repeat(12, minmax(0, 1fr))")
     })
 
     it("adds responsive block padding only when requested", () => {

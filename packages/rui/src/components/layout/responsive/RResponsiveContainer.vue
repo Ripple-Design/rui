@@ -75,7 +75,7 @@ const style = computed(() => ({
     }
 }
 
-@include breakpoint.c-up(cxl) {
+@include breakpoint.c-up(xl) {
     .rui-responsive-container[data-rui-responsive-container-block-padding] {
         padding-block: 24px;
     }
