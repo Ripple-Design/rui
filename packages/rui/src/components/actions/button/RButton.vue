@@ -417,14 +417,6 @@ function handleClick(event: MouseEvent) {
         --rui-button-padding-inline-end: 8px;
     }
 
-    &--text#{&}--with-leading {
-        --rui-button-padding-inline-start: 4px;
-    }
-
-    &--text#{&}--with-trailing {
-        --rui-button-padding-inline-end: 4px;
-    }
-
     &--text#{&}--with-top {
         --rui-button-padding-inline-start: 8px;
         --rui-button-padding-inline-end: 8px;
