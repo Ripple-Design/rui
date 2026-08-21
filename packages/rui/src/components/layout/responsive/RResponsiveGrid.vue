@@ -19,11 +19,7 @@ const gridProps = computed(() => ({
 </script>
 
 <template>
-    <RResponsiveContainer
-        :mode="props.mode"
-        :max-width="props.maxWidth"
-        :block-padding="props.blockPadding"
-    >
+    <RResponsiveContainer :mode="props.mode" :max-width="props.maxWidth" :block-padding="props.blockPadding">
         <RGrid class="rui-responsive-grid" v-bind="gridProps">
             <slot />
         </RGrid>
