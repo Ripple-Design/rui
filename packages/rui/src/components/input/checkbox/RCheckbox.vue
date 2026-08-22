@@ -305,19 +305,20 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <RTouchTargetWrapper class="rui-checkbox__touch-target-wrapper">
-        <label
-            ref="root"
-            class="rui-checkbox"
-            :class="{
-                'rui-checkbox--checked': model,
-                'rui-checkbox--indeterminate': indeterminate,
-                'rui-checkbox--disabled': disabled,
-                'rui-checkbox--player-ready': playerReady,
-            }"
-            :style="{ '--rui-comp-checkbox-indicator-color': indicatorColor }"
-        >
-            <span v-ripple="rippleOptions" class="rui-checkbox__control">
+    <label
+        ref="root"
+        class="rui-checkbox"
+        :class="{
+            'rui-checkbox--checked': model,
+            'rui-checkbox--indeterminate': indeterminate,
+            'rui-checkbox--disabled': disabled,
+            'rui-checkbox--player-ready': playerReady,
+        }"
+        :style="{ '--rui-comp-checkbox-indicator-color': indicatorColor }"
+    >
+        <RTouchTargetWrapper class="rui-checkbox__touch-target-wrapper">
+            <span v-ripple="rippleOptions" class="rui-checkbox__control" data-rui-touch-target-anchor>
+                <span class="rui-touch-target rui-touch-target--interactive" aria-hidden="true" />
                 <input
                     ref="input"
                     v-bind="attrs"
@@ -348,27 +349,30 @@ onBeforeUnmount(() => {
                     />
                 </span>
             </span>
-            <span v-if="$slots.default" class="rui-checkbox__label"><slot /></span>
-        </label>
-    </RTouchTargetWrapper>
+        </RTouchTargetWrapper>
+        <span v-if="$slots.default" class="rui-checkbox__label"><slot /></span>
+    </label>
 </template>
 
 <style scoped lang="scss">
+@use "@/styles/density";
 @use "@/styles/typography";
 
 .rui-checkbox__touch-target-wrapper {
-    display: inline-flex;
+    @include density.touchTargetEnabled();
+    @include density.touchTargetPaddingXY(40px, 40px);
+
+    align-items: center;
+    justify-content: center;
     vertical-align: middle;
 }
 .rui-checkbox {
-    --rui-comp-checkbox-target-size: 48px;
     --rui-comp-checkbox-visual-size: 18px;
     --rui-comp-checkbox-indicator-color: var(--rui-sys-color-on-surface-medium);
     --rui-comp-checkbox-state-layer-color: var(--rui-sys-color-on-surface);
     position: relative;
     display: inline-flex;
     align-items: center;
-    min-block-size: var(--rui-comp-checkbox-target-size);
     cursor: pointer;
     color: var(--rui-comp-checkbox-indicator-color);
 }
@@ -404,9 +408,9 @@ onBeforeUnmount(() => {
 .rui-checkbox__content {
     position: relative;
     z-index: 1;
-    display: inline-flex;
+    display: inline-grid;
     align-items: center;
-    justify-content: center;
+    justify-items: center;
     pointer-events: none;
 }
 .rui-checkbox__control:has(.rui-checkbox__native-control:focus-visible) {
@@ -416,13 +420,11 @@ onBeforeUnmount(() => {
 .rui-checkbox__fallback,
 .rui-checkbox__lottie {
     display: block;
+    grid-area: 1 / 1;
     inline-size: var(--rui-comp-checkbox-visual-size);
     block-size: var(--rui-comp-checkbox-visual-size);
 }
 .rui-checkbox__lottie {
-    position: absolute;
-    inset: 50% auto auto 50%;
-    transform: translate(-50%, -50%);
     opacity: 0;
 }
 .rui-checkbox--player-ready .rui-checkbox__lottie {
