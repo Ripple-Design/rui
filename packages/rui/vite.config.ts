@@ -8,6 +8,7 @@ export default defineConfig({
         vue(),
         dts({
             copyDtsFiles: true,
+            exclude: ["src/**/__tests__/*", "dist", "src/components/layout/form/RForm.vue"],
             outDir: "dist/types",
             compilerOptions: {
                 removeComments: false,
