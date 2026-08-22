@@ -16,12 +16,9 @@ const open = ref(false)
             message="Your unsaved changes will be lost."
             :close-on-escape="false"
             :close-on-backdrop="false"
-        >
-            <template #actions="{ close }">
-                <RButton variant="text" @click="close('keep')">Keep editing</RButton>
-                <RButton variant="text" @click="close('discard')">Discard</RButton>
-            </template>
-        </RDialog>
+            negative="Keep editing"
+            positive="Discard"
+        />
     </div>
 </template>
 

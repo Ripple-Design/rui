@@ -102,7 +102,10 @@ function handleWheel(event: WheelEvent) {
 }
 
 function handleClick(event: MouseEvent) {
+    const dialog = dialogRef.value
     const actionTarget = getActionTarget(event.target)
+    const backdropClick = dialog ? isBackdropClick(event, dialog) : false
+
     if (actionTarget) {
         requestClose({
             reason: "action",
@@ -111,10 +114,9 @@ function handleClick(event: MouseEvent) {
         return
     }
 
-    const dialog = dialogRef.value
     if (!dialog || !props.closeOnBackdrop) return
 
-    if (isBackdropClick(event, dialog)) {
+    if (backdropClick) {
         requestClose({ reason: "backdrop" })
     }
 }

@@ -1,3 +1,5 @@
 export { default } from "./RDialog.vue"
 export { default as RFullscreenDialog } from "./RFullscreenDialog.vue"
+export { default as RTextFieldDialog } from "./RTextFieldDialog.vue"
+export { RDialogs } from "./RDialogs.ts"
 export type * from "./types.ts"

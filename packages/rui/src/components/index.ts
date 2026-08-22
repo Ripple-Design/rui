@@ -28,6 +28,8 @@ export type * from "@/components/overlays/bottomSheet/types"
 
 export { default as RDialog } from "@/components/overlays/dialog/RDialog.vue"
 export { default as RFullscreenDialog } from "@/components/overlays/dialog/RFullscreenDialog.vue"
+export { default as RTextFieldDialog } from "@/components/overlays/dialog/RTextFieldDialog.vue"
+export { RDialogs } from "@/components/overlays/dialog/RDialogs.ts"
 export type * from "@/components/overlays/dialog/types"
 
 export { default as RSurface } from "@/components/base/surface/RSurface.vue"

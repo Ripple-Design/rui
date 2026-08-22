@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed, onMounted, onUpdated, ref, useId, useSlots, watch } from "vue"
+import { computed, onBeforeUnmount, onMounted, onUpdated, ref, useId, useSlots, watch } from "vue"
 
+import RButton from "@/components/actions/button/RButton.vue"
 import RButtonRow from "@/components/actions/button/RButtonRow.vue"
+import { RUI_MODAL_ACTION_ATTRIBUTE } from "@/primitives/modal/constants.ts"
 import RModal from "@/primitives/modal/RModal.vue"
 import { useResizeObserver } from "@/utils/useResizeObserver.ts"
 
-import type { RDialogProps } from "./types.ts"
+import type { RDialogAction, RDialogActionConfig, RDialogProps } from "./types.ts"
 
 import RSurface from "../../base/surface/RSurface.vue"
 
@@ -25,6 +27,7 @@ const emit = defineEmits<{
     (e: "open"): void
     (e: "before-close", detail: { reason: "cancel" | "backdrop" | "action" | "programmatic"; action?: string }): void
     (e: "close", detail: { reason: "cancel" | "backdrop" | "action" | "programmatic"; action?: string }): void
+    (e: "after-close"): void
 }>()
 
 const slots = useSlots()
@@ -34,14 +37,48 @@ const contentRef = ref<HTMLElement | null>(null)
 const autoWidth = ref<number | null>(null)
 const titleId = useId()
 const descriptionId = useId()
+
+type ResolvedDialogAction = Required<Pick<RDialogActionConfig, "label" | "disabled">> &
+    Pick<RDialogActionConfig, "variant">
+
+function resolveAction(action: RDialogAction | undefined, defaultLabel: string): ResolvedDialogAction | null {
+    if (!action) {
+        return null
+    }
+
+    if (typeof action === "string") {
+        return { label: action, disabled: false }
+    }
+
+    if (action === true) {
+        return { label: defaultLabel, disabled: false }
+    }
+
+    return {
+        label: action.label ?? defaultLabel,
+        disabled: action.disabled ?? false,
+        variant: action.variant,
+    }
+}
+
+const negativeAction = computed(() => resolveAction(props.negative, "Cancel"))
+const positiveAction = computed(() => resolveAction(props.positive, "OK"))
 const hasOverflow = ref(false)
 const atTop = ref(true)
 const atBottom = ref(true)
 const hasHeader = computed(() => !!slots.header || !!slots.title || !!props.title)
-const hasFooter = computed(() => !!slots.footer || !!slots.actions)
+const hasFooter = computed(() =>
+    !!slots.footer || !!slots.actions || negativeAction.value !== null || positiveAction.value !== null,
+)
 const hasMessage = computed(() => !!slots.message || props.message !== undefined)
 const hasContent = computed(() => !hasMessage.value && !!slots.default)
 const hasDescription = computed(() => hasContent.value || hasMessage.value)
+const prefersReducedMotion = computed(
+    () => typeof window !== "undefined" && (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false),
+)
+let afterCloseTimer: ReturnType<typeof setTimeout> | undefined
+let closeGeneration = 0
+let pendingCloseGeneration: number | null = null
 const labelledby = computed(() => (hasHeader.value ? titleId : props.ariaLabelledBy))
 const describedby = computed(() => (hasDescription.value ? descriptionId : props.ariaDescribedBy))
 const showHeaderDivider = computed(() => hasHeader.value && hasOverflow.value && !atTop.value)
@@ -113,6 +150,60 @@ function scheduleAutoWidthUpdate() {
     requestAnimationFrame(updateAutoWidth)
 }
 
+function cancelAfterClose() {
+    closeGeneration += 1
+    pendingCloseGeneration = null
+    if (afterCloseTimer !== undefined) {
+        clearTimeout(afterCloseTimer)
+        afterCloseTimer = undefined
+    }
+}
+
+function finishAfterClose(generation: number) {
+    if (generation !== closeGeneration || pendingCloseGeneration !== generation) {
+        return
+    }
+
+    pendingCloseGeneration = null
+    if (afterCloseTimer !== undefined) {
+        clearTimeout(afterCloseTimer)
+        afterCloseTimer = undefined
+    }
+    emit("after-close")
+}
+
+function scheduleAfterClose() {
+    cancelAfterClose()
+    const generation = closeGeneration
+    pendingCloseGeneration = generation
+
+    if (prefersReducedMotion.value) {
+        queueMicrotask(() => finishAfterClose(generation))
+        return
+    }
+
+    afterCloseTimer = setTimeout(() => finishAfterClose(generation), 160)
+}
+
+function handleBeforeOpen() {
+    cancelAfterClose()
+    emit("before-open")
+}
+
+function handleClose(detail: { reason: "cancel" | "backdrop" | "action" | "programmatic"; action?: string }) {
+    emit("close", detail)
+    scheduleAfterClose()
+}
+
+function handleSurfaceTransitionEnd(event: TransitionEvent) {
+    const surface = surfaceRef.value?.$el
+    if (pendingCloseGeneration === null || event.target !== surface || event.propertyName !== "transform") {
+        return
+    }
+
+    finishAfterClose(pendingCloseGeneration)
+}
+
 function handleOpen() {
     scheduleAutoWidthUpdate()
     scheduleScrollStateUpdate()
@@ -145,6 +236,10 @@ onUpdated(() => {
     scheduleScrollStateUpdate()
 })
 
+onBeforeUnmount(() => {
+    cancelAfterClose()
+})
+
 onMounted(() => {
     scheduleAutoWidthUpdate()
     scheduleScrollStateUpdate()
@@ -174,12 +269,18 @@ defineExpose({
         :aria-describedby="describedby"
         class="rui-dialog-modal"
         @update:model-value="emit('update:modelValue', $event)"
-        @before-open="emit('before-open')"
+        @before-open="handleBeforeOpen"
         @open="handleOpen"
         @before-close="emit('before-close', $event)"
-        @close="emit('close', $event)"
+        @close="handleClose"
     >
-        <RSurface ref="surfaceRef" :class="classes" :style="style" :elevation="24">
+        <RSurface
+            ref="surfaceRef"
+            :class="classes"
+            :style="style"
+            :elevation="24"
+            @transitionend="handleSurfaceTransitionEnd"
+        >
             <header v-if="hasHeader" class="rui-dialog__header">
                 <slot name="header">
                     <h2 :id="titleId" class="rui-dialog__title">
@@ -205,6 +306,24 @@ defineExpose({
                 <slot name="footer">
                     <RButtonRow v-if="$slots.actions" class="rui-dialog__actions" justify="flex-end">
                         <slot name="actions" :close="closeWithAction" />
+                    </RButtonRow>
+                    <RButtonRow v-else class="rui-dialog__actions" justify="flex-end">
+                        <RButton
+                            v-if="negativeAction"
+                            :disabled="negativeAction.disabled"
+                            :variant="negativeAction.variant"
+                            v-bind="{ [RUI_MODAL_ACTION_ATTRIBUTE]: 'negative' }"
+                        >
+                            {{ negativeAction.label }}
+                        </RButton>
+                        <RButton
+                            v-if="positiveAction"
+                            :disabled="positiveAction.disabled"
+                            :variant="positiveAction.variant"
+                            v-bind="{ [RUI_MODAL_ACTION_ATTRIBUTE]: 'positive' }"
+                        >
+                            {{ positiveAction.label }}
+                        </RButton>
                     </RButtonRow>
                 </slot>
             </footer>
@@ -350,5 +469,13 @@ defineExpose({
 
 .rui-dialog--show-footer-divider .rui-dialog__footer {
     border-top: 1px solid color.$on-surface-outline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :global(.rui-dialog-modal),
+    :global(.rui-dialog-modal::backdrop),
+    :global(.rui-dialog.rui-surface) {
+        transition-duration: 0ms;
+    }
 }
 </style>
