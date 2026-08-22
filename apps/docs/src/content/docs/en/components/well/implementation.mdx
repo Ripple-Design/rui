@@ -1,0 +1,17 @@
+---
+title: Well
+docSlug: components/well
+tab: implementation
+locale: en
+designOrder: 47
+developOrder: 47
+api: /en/api/well
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import WellBasicDemo from "@docs/components/demos/well/WellBasicDemo.vue"
+import wellBasicDemoSource from "@docs/components/demos/well/WellBasicDemo.vue?raw"
+
+<DemoBlock title="Well" code={wellBasicDemoSource} language="vue">
+    <WellBasicDemo client:load />
+</DemoBlock>

@@ -101,6 +101,11 @@ export function createThemeBootstrapScript(options: {
       nextColors.onSurfaceLow = colors.onSurfaceLow ?? ('rgb(from ' + colors.onSurface + ' r g b / 0.38)');
       nextColors.onSurfaceOutline = colors.onSurfaceOutline ?? ('rgb(from ' + colors.onSurface + ' r g b / 0.12)');
     }
+    if (colors.onBackground) {
+      nextColors.onBackgroundHigh = colors.onBackgroundHigh ?? ('rgb(from ' + colors.onBackground + ' r g b / 0.87)');
+      nextColors.onBackgroundMedium = colors.onBackgroundMedium ?? ('rgb(from ' + colors.onBackground + ' r g b / 0.6)');
+      nextColors.onBackgroundLow = colors.onBackgroundLow ?? ('rgb(from ' + colors.onBackground + ' r g b / 0.38)');
+    }
     if (colors.onPrimary) {
       nextColors.onPrimaryMedium = colors.onPrimaryMedium ?? ('rgb(from ' + colors.onPrimary + ' r g b / 0.7)');
       nextColors.onPrimaryOutline = colors.onPrimaryOutline ?? ('rgb(from ' + colors.onPrimary + ' r g b / 0.24)');
@@ -153,6 +158,9 @@ export function createThemeBootstrapScript(options: {
       onSecondaryOutline: '--rui-sys-color-on-secondary-outline',
       background: '--rui-sys-color-background',
       onBackground: '--rui-sys-color-on-background',
+      onBackgroundHigh: '--rui-sys-color-on-background-high',
+      onBackgroundMedium: '--rui-sys-color-on-background-medium',
+      onBackgroundLow: '--rui-sys-color-on-background-low',
       surface: '--rui-sys-color-surface',
       surfaceDark: '--rui-sys-color-surface-dark',
       surfaceInverse: '--rui-sys-color-surface-inverse',

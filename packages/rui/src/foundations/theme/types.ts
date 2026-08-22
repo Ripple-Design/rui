@@ -19,6 +19,9 @@ export type RThemeColors = {
     onSecondaryOutline?: string
     background?: string
     onBackground?: string
+    onBackgroundHigh?: string
+    onBackgroundMedium?: string
+    onBackgroundLow?: string
     surface?: string
     surfaceDark?: string
     surfaceInverse?: string

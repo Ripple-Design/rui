@@ -20,6 +20,7 @@ Modular and customizable Ripple Design UI components for Vue 3.
 - [x] Font pickers
 - [x] Forms
 - [x] Tiles
+- [x] Wells
 - [x] Lists
 - [x] Menus
 - [x] Messages

@@ -82,6 +82,12 @@ function deriveContrastColors(colors?: RThemeColors): RThemeColors | undefined {
         nextColors.onSurfaceOutline = colors.onSurfaceOutline ?? `rgb(from ${colors.onSurface} r g b / 0.12)`
     }
 
+    if (colors.onBackground) {
+        nextColors.onBackgroundHigh = colors.onBackgroundHigh ?? `rgb(from ${colors.onBackground} r g b / 0.87)`
+        nextColors.onBackgroundMedium = colors.onBackgroundMedium ?? `rgb(from ${colors.onBackground} r g b / 0.6)`
+        nextColors.onBackgroundLow = colors.onBackgroundLow ?? `rgb(from ${colors.onBackground} r g b / 0.38)`
+    }
+
     if (colors.onPrimary) {
         nextColors.onPrimaryMedium = colors.onPrimaryMedium ?? `rgb(from ${colors.onPrimary} r g b / 0.7)`
         nextColors.onPrimaryOutline = colors.onPrimaryOutline ?? `rgb(from ${colors.onPrimary} r g b / 0.24)`
@@ -158,6 +164,18 @@ export function themeToCSSVars(theme: RTheme) {
 
     if (colors?.onBackground) {
         vars["--rui-sys-color-on-background"] = colors.onBackground
+    }
+
+    if (colors?.onBackgroundHigh) {
+        vars["--rui-sys-color-on-background-high"] = colors.onBackgroundHigh
+    }
+
+    if (colors?.onBackgroundMedium) {
+        vars["--rui-sys-color-on-background-medium"] = colors.onBackgroundMedium
+    }
+
+    if (colors?.onBackgroundLow) {
+        vars["--rui-sys-color-on-background-low"] = colors.onBackgroundLow
     }
 
     if (colors?.surface) {

@@ -33,6 +33,9 @@ export type * from "@/components/overlays/dialog/types"
 export { default as RSurface } from "@/components/base/surface/RSurface.vue"
 export type * from "@/components/base/surface/types"
 
+export { default as RWell } from "@/components/base/well/RWell.vue"
+export type * from "@/components/base/well/types"
+
 export { default as RDivider } from "@/components/base/divider/RDivider.vue"
 export type * from "@/components/base/divider/types"
 

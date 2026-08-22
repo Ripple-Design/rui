@@ -161,6 +161,10 @@ $surface-overlay-anchor-map: (
     @return #{$geometry} rgb(#{$color-rgb} / #{$opacity});
 }
 
+@function _inset-shadow-layer($geometry, $color-rgb, $opacity) {
+    @return inset #{$geometry} rgb(#{$color-rgb} / #{$opacity});
+}
+
 @function _filter-shadow-layer($geometry, $color-rgb, $opacity) {
     $x: list.nth($geometry, 1);
     $y: list.nth($geometry, 2);
@@ -191,6 +195,19 @@ $surface-overlay-anchor-map: (
         _shadow-layer($umbra, $color-rgb, var(--rui-sys-elevation-opacity-umbra)),
         _shadow-layer($penumbra, $color-rgb, var(--rui-sys-elevation-opacity-penumbra)),
         _shadow-layer($ambient, $color-rgb, var(--rui-sys-elevation-opacity-ambient))
+    );
+}
+
+@function _inset-shadow-value($level, $color-rgb: var(--rui-sys-elevation-color)) {
+    $level: _validate-level($level);
+    $umbra: map.get($umbra-map, $level);
+    $penumbra: map.get($penumbra-map, $level);
+    $ambient: map.get($ambient-map, $level);
+
+    @return (
+        _inset-shadow-layer($umbra, $color-rgb, var(--rui-sys-elevation-opacity-umbra)),
+        _inset-shadow-layer($penumbra, $color-rgb, var(--rui-sys-elevation-opacity-penumbra)),
+        _inset-shadow-layer($ambient, $color-rgb, var(--rui-sys-elevation-opacity-ambient))
     );
 }
 
@@ -227,6 +244,12 @@ $surface-overlay-anchor-map: (
     @return var(--rui-sys-elevation-filter-shadow-#{$level});
 }
 
+@function inset-shadow($level) {
+    $level: _validate-level($level);
+
+    @return var(--rui-sys-elevation-inset-shadow-#{$level});
+}
+
 :root {
     --rui-sys-elevation-color: 0 0 0;
     --rui-sys-elevation-opacity-umbra: 0.1;
@@ -236,6 +259,7 @@ $surface-overlay-anchor-map: (
 
     @each $level, $geometry in $umbra-map {
         --rui-sys-elevation-shadow-#{$level}: #{_shadow-value($level)};
+        --rui-sys-elevation-inset-shadow-#{$level}: #{_inset-shadow-value($level)};
         --rui-sys-elevation-filter-shadow-#{$level}: #{_filter-shadow-value($level)};
     }
 }
