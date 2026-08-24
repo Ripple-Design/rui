@@ -15,7 +15,7 @@ describe("internationalization resolution", () => {
 
     it("resolves locale candidates from most to least specific", () => {
         expect(resolveInternationalizationLocaleCandidates("zh-Hant-TW")).toEqual(["zh-Hant-TW", "zh-Hant", "zh"])
-        expect(resolveInternationalizationLocaleCandidates("sl-rozaj-biske")).toEqual(["sl-rozaj-biske", "sl-rozaj", "sl"])
+        expect(resolveInternationalizationLocaleCandidates("sl-rozaj-biske")).toEqual(["sl-biske-rozaj", "sl-biske", "sl"])
         expect(resolveInternationalizationLocaleCandidates("en-US-u-nu-latn")).toEqual(["en-US", "en"])
     })
 

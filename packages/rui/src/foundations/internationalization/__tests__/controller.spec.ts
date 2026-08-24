@@ -42,7 +42,7 @@ describe("internationalization controller", () => {
         )
 
         expect(controller.resolveMessage("form.required")).toBe("必填")
-        expect(controller.resolveMessage("form.optional")).toBe("选填")
+        expect(controller.resolveMessage("form.optional")).toBe("（选填）")
     })
 
     it("provides the controller to nested component setup", () => {
