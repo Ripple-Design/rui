@@ -30,8 +30,12 @@
     background: var(--rui-comp-date-picker-surface-color);
 }
 
-.rui-date-picker-dialog .rui-dialog__content { overflow: hidden; }
-.rui-date-picker-dialog .rui-dialog__content-body { padding: 0; }
+.rui-date-picker-dialog .rui-dialog__content {
+    overflow: hidden;
+}
+.rui-date-picker-dialog .rui-dialog__content-body {
+    padding: 0;
+}
 
 .rui-date-picker__header {
     position: relative;
@@ -92,10 +96,15 @@
 }
 
 .rui-date-picker__fullscreen-cancel,
-.rui-date-picker__fullscreen-actions { display: none; }
+.rui-date-picker__fullscreen-actions {
+    display: none;
+}
 
 .rui-date-picker__content {
-    min-width: calc((var(--rui-comp-date-picker-day-size) * 7) + (var(--rui-comp-date-picker-month-gap) * 6) + (var(--rui-comp-date-picker-content-padding) * 2));
+    min-width: calc(
+        (var(--rui-comp-date-picker-day-size) * 7) + (var(--rui-comp-date-picker-month-gap) * 6) +
+            (var(--rui-comp-date-picker-content-padding) * 2)
+    );
 }
 
 .rui-date-picker__live-message {
@@ -119,7 +128,10 @@
     padding-block: 4px;
 }
 
-.rui-date-picker__month-actions { display: flex; align-items: center; }
+.rui-date-picker__month-actions {
+    display: flex;
+    align-items: center;
+}
 
 .rui-date-picker__year {
     border: 0;
@@ -230,15 +242,21 @@
     content: "";
 }
 
-.rui-date-picker__day:hover:not(:disabled) .rui-date-picker__day-marker::after { background: rgb(from var(--rui-comp-date-picker-on-surface-color) r g b / 0.08); }
-.rui-date-picker__day:focus-visible { outline: none; }
+.rui-date-picker__day:hover:not(:disabled) .rui-date-picker__day-marker::after {
+    background: rgb(from var(--rui-comp-date-picker-on-surface-color) r g b / 0.08);
+}
+.rui-date-picker__day:focus-visible {
+    outline: none;
+}
 
 .rui-date-picker__day:focus-visible .rui-date-picker__day-marker,
 .rui-date-picker__year:focus-visible .rui-date-picker__year-marker {
     border-color: rgb(from var(--rui-comp-date-picker-on-surface-color) r g b / 0.38);
 }
 
-.rui-date-picker__year:focus-visible { outline: none; }
+.rui-date-picker__year:focus-visible {
+    outline: none;
+}
 
 .rui-date-picker__day--selected .rui-date-picker__day-marker,
 .rui-date-picker__year-marker--selected {
@@ -247,8 +265,13 @@
 }
 
 .rui-date-picker__day--today:not(.rui-date-picker__day--selected) .rui-date-picker__day-marker,
-.rui-date-picker__year-marker--today:not(.rui-date-picker__year-marker--selected) { border: 1px solid var(--rui-comp-date-picker-on-surface-color); }
-.rui-date-picker__day--disabled { color: var(--rui-comp-date-picker-disabled-color); cursor: default; }
+.rui-date-picker__year-marker--today:not(.rui-date-picker__year-marker--selected) {
+    border: 1px solid var(--rui-comp-date-picker-on-surface-color);
+}
+.rui-date-picker__day--disabled {
+    color: var(--rui-comp-date-picker-disabled-color);
+    cursor: default;
+}
 
 .rui-date-picker__range-fill {
     position: absolute;
@@ -257,12 +280,22 @@
     background: var(--rui-comp-date-picker-range-color);
 }
 
-.rui-date-picker__range-fill--middle { inset-inline: 0; }
-.rui-date-picker__range-fill--start { inset-inline: 50% 0; }
-.rui-date-picker__range-fill--end { inset-inline: 0 50%; }
+.rui-date-picker__range-fill--middle {
+    inset-inline: 0;
+}
+.rui-date-picker__range-fill--start {
+    inset-inline: 50% 0;
+}
+.rui-date-picker__range-fill--end {
+    inset-inline: 0 50%;
+}
 
-[dir="rtl"] .rui-date-picker__range-fill--start { inset-inline: 0 50%; }
-[dir="rtl"] .rui-date-picker__range-fill--end { inset-inline: 50% 0; }
+[dir="rtl"] .rui-date-picker__range-fill--start {
+    inset-inline: 0 50%;
+}
+[dir="rtl"] .rui-date-picker__range-fill--end {
+    inset-inline: 50% 0;
+}
 
 .rui-date-picker__year-selector {
     display: grid;
@@ -298,10 +331,19 @@
     min-block-size: 0;
 }
 
-.rui-date-picker__weekdays--fullscreen { padding-inline: var(--rui-comp-date-picker-content-padding); }
-.rui-date-picker__fullscreen-divider { background: rgb(from var(--rui-comp-date-picker-on-surface-color) r g b / 0.12); }
-.rui-date-picker__fullscreen-month-list { overflow: auto; overscroll-behavior: contain; }
-.rui-date-picker__fullscreen-month-list .rui-date-picker__calendar { padding-block-end: var(--rui-comp-date-picker-calendar-bottom-padding); }
+.rui-date-picker__weekdays--fullscreen {
+    padding-inline: var(--rui-comp-date-picker-content-padding);
+}
+.rui-date-picker__fullscreen-divider {
+    background: rgb(from var(--rui-comp-date-picker-on-surface-color) r g b / 0.12);
+}
+.rui-date-picker__fullscreen-month-list {
+    overflow: auto;
+    overscroll-behavior: contain;
+}
+.rui-date-picker__fullscreen-month-list .rui-date-picker__calendar {
+    padding-block-end: var(--rui-comp-date-picker-calendar-bottom-padding);
+}
 .rui-date-picker__fullscreen-month {
     @include typography.subtitle2("--rui-comp-date-picker-fullscreen-month-label");
 
@@ -312,7 +354,9 @@
     color: rgb(from var(--rui-comp-date-picker-on-surface-color) r g b / 0.6);
 }
 
-.rui-date-picker__fullscreen-month-list .rui-date-picker__weekdays { display: none; }
+.rui-date-picker__fullscreen-month-list .rui-date-picker__weekdays {
+    display: none;
+}
 
 .rui-date-picker__text-inputs {
     display: grid;
@@ -320,8 +364,13 @@
     padding: 16px 24px;
 }
 
-.rui-date-picker__text-inputs > * { min-inline-size: 0; }
-.rui-date-picker__text-inputs--range { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 8px; }
+.rui-date-picker__text-inputs > * {
+    min-inline-size: 0;
+}
+.rui-date-picker__text-inputs--range {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 8px;
+}
 
 /* Material M2 values-w360dp-port. */
 @media (min-width: 360px) and (orientation: portrait) {
@@ -373,8 +422,14 @@
         min-block-size: 0;
     }
 
-    .rui-date-picker-dialog--landscape .rui-dialog__content { grid-column: 2; grid-row: 1; }
-    .rui-date-picker-dialog--landscape .rui-dialog__footer { grid-column: 2; grid-row: 2; }
+    .rui-date-picker-dialog--landscape .rui-dialog__content {
+        grid-column: 2;
+        grid-row: 1;
+    }
+    .rui-date-picker-dialog--landscape .rui-dialog__footer {
+        grid-column: 2;
+        grid-row: 2;
+    }
 
     .rui-date-picker-dialog--landscape .rui-date-picker__header {
         grid-template-columns: minmax(0, 1fr);
@@ -406,7 +461,9 @@
         grid-row: 2;
         inset-block-end: 0;
     }
-    .rui-date-picker-dialog--landscape .rui-date-picker__text-inputs { padding: 24px; }
+    .rui-date-picker-dialog--landscape .rui-date-picker__text-inputs {
+        padding: 24px;
+    }
 }
 
 /* Material M2 values-h480dp-land. */
@@ -418,11 +475,21 @@
         --rui-comp-date-picker-calendar-bottom-padding: 0px;
         --rui-comp-date-picker-landscape-header-width: 168px;
     }
-    .rui-date-picker-dialog--fullscreen .rui-date-picker__header { height: 96px; }
-    .rui-date-picker-dialog--fullscreen .rui-date-picker__header-text { inset-inline: auto; }
-    .rui-date-picker-dialog--fullscreen .rui-date-picker__selection { white-space: normal; }
-    .rui-date-picker-dialog--landscape .rui-date-picker__header { height: 100%; }
-    .rui-date-picker-dialog--landscape .rui-date-picker__title { inset-block-start: 8px; }
+    .rui-date-picker-dialog--fullscreen .rui-date-picker__header {
+        height: 96px;
+    }
+    .rui-date-picker-dialog--fullscreen .rui-date-picker__header-text {
+        inset-inline: auto;
+    }
+    .rui-date-picker-dialog--fullscreen .rui-date-picker__selection {
+        white-space: normal;
+    }
+    .rui-date-picker-dialog--landscape .rui-date-picker__header {
+        height: 100%;
+    }
+    .rui-date-picker-dialog--landscape .rui-date-picker__title {
+        inset-block-start: 8px;
+    }
     .rui-date-picker-dialog--landscape .rui-date-picker__selection {
         inset-block-start: auto;
         inset-block-end: auto;
@@ -433,7 +500,9 @@
 }
 
 @media (max-width: 480px), (max-height: 480px) {
-    .rui-date-picker-dialog .rui-dialog__footer { display: none; }
+    .rui-date-picker-dialog .rui-dialog__footer {
+        display: none;
+    }
 
     .rui-date-picker__header--fullscreen {
         display: grid;
@@ -447,15 +516,20 @@
         margin-inline-start: 12px;
     }
 
-    .rui-date-picker__header--fullscreen .rui-date-picker__title { inset-block-start: 52px; }
+    .rui-date-picker__header--fullscreen .rui-date-picker__title {
+        inset-block-start: 52px;
+    }
 
     .rui-date-picker__header--fullscreen .rui-date-picker__selection {
         @include typography.headline6("--rui-comp-date-picker-selection-fullscreen");
 
         inset-block-start: 84px;
-        }
+    }
 
-    .rui-date-picker__fullscreen-cancel { display: block; --rui-icon-button-color: var(--rui-comp-date-picker-on-header-color); }
+    .rui-date-picker__fullscreen-cancel {
+        display: block;
+        --rui-icon-button-color: var(--rui-comp-date-picker-on-header-color);
+    }
 
     .rui-date-picker__fullscreen-actions {
         display: flex;
@@ -464,19 +538,32 @@
         --rui-icon-button-color: var(--rui-comp-date-picker-on-header-color);
     }
 
-    .rui-date-picker__header--fullscreen .rui-date-picker__mode-toggle { position: static; }
+    .rui-date-picker__header--fullscreen .rui-date-picker__mode-toggle {
+        position: static;
+    }
 
-    .rui-date-picker__content { min-width: 0; }
+    .rui-date-picker__content {
+        min-width: 0;
+    }
 }
 
 @media (max-height: 480px) and (orientation: landscape) {
-    .rui-date-picker__header--fullscreen { height: 96px; }
-    .rui-date-picker__header--fullscreen .rui-date-picker__title { inset-block-start: 20px; }
-    .rui-date-picker__header--fullscreen .rui-date-picker__selection { inset-block-start: 52px; white-space: normal; }
+    .rui-date-picker__header--fullscreen {
+        height: 96px;
+    }
+    .rui-date-picker__header--fullscreen .rui-date-picker__title {
+        inset-block-start: 20px;
+    }
+    .rui-date-picker__header--fullscreen .rui-date-picker__selection {
+        inset-block-start: 52px;
+        white-space: normal;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .rui-time-picker__clock-hand { transition-duration: 0ms; }
+    .rui-time-picker__clock-hand {
+        transition-duration: 0ms;
+    }
 }
 
 .rui-time-picker-dialog .rui-dialog {
@@ -485,19 +572,25 @@
     --rui-comp-time-picker-clock-face-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0.08);
     --rui-comp-time-picker-hand-color: var(--rui-sys-color-primary);
     --rui-comp-time-picker-on-hand-color: var(--rui-sys-color-on-primary);
-    --rui-comp-time-picker-display-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0.10);
+    --rui-comp-time-picker-display-color: rgb(from var(--rui-sys-color-on-surface) r g b / 0.1);
     --rui-comp-time-picker-display-active-color: rgb(from var(--rui-sys-color-primary) r g b / 0.24);
     --rui-comp-time-picker-display-active-text-color: var(--rui-sys-color-primary);
     --rui-comp-time-picker-chip-width: 96px;
     --rui-comp-time-picker-chip-height: 80px;
     --rui-comp-time-picker-divider-width: 24px;
-    --rui-comp-time-picker-display-width: calc((var(--rui-comp-time-picker-chip-width) * 2) + var(--rui-comp-time-picker-divider-width));
+    --rui-comp-time-picker-display-width: calc(
+        (var(--rui-comp-time-picker-chip-width) * 2) + var(--rui-comp-time-picker-divider-width)
+    );
     --rui-comp-time-picker-period-width: 52px;
     --rui-comp-time-picker-period-height: 96px;
     --rui-comp-time-picker-selector-size: 48px;
     --rui-comp-time-picker-selector-radius: 24px;
     --rui-comp-time-picker-clock-padding: 4px;
-    --rui-comp-time-picker-clock-radius: calc((var(--rui-comp-time-picker-clock-size) / 2) - var(--rui-comp-time-picker-selector-radius) - var(--rui-comp-time-picker-clock-padding));
+    --rui-comp-time-picker-clock-radius: calc(
+        (var(--rui-comp-time-picker-clock-size) / 2) - var(--rui-comp-time-picker-selector-radius) - var(
+                --rui-comp-time-picker-clock-padding
+            )
+    );
     --rui-comp-time-picker-clock-size: min(256px, calc(100dvh * 256 / 560), calc(100dvw * 256 / 340));
     --rui-comp-time-picker-clock-body-margin-top: 44px;
     --rui-comp-time-picker-clock-display-margin-top: 8px;
@@ -513,9 +606,15 @@
     background: var(--rui-comp-time-picker-surface-color);
 }
 
-.rui-time-picker-dialog .rui-dialog { display: block; }
-.rui-time-picker-dialog .rui-dialog__content { overflow: visible; }
-.rui-time-picker-dialog .rui-dialog__content-body { padding: 0; }
+.rui-time-picker-dialog .rui-dialog {
+    display: block;
+}
+.rui-time-picker-dialog .rui-dialog__content {
+    overflow: visible;
+}
+.rui-time-picker-dialog .rui-dialog__content-body {
+    padding: 0;
+}
 
 .rui-time-picker__dialog-content {
     display: grid;
@@ -547,12 +646,17 @@
     padding-block-start: var(--rui-comp-time-picker-clock-body-margin-top);
 }
 
-.rui-time-picker__body--12h { grid-template-columns: var(--rui-comp-time-picker-display-width) var(--rui-comp-time-picker-period-width); column-gap: 12px; }
+.rui-time-picker__body--12h {
+    grid-template-columns: var(--rui-comp-time-picker-display-width) var(--rui-comp-time-picker-period-width);
+    column-gap: 12px;
+}
 
 .rui-time-picker__field {
     justify-self: center;
     display: grid;
-    grid-template-columns: var(--rui-comp-time-picker-chip-width) var(--rui-comp-time-picker-divider-width) var(--rui-comp-time-picker-chip-width);
+    grid-template-columns: var(--rui-comp-time-picker-chip-width) var(--rui-comp-time-picker-divider-width) var(
+            --rui-comp-time-picker-chip-width
+        );
     grid-template-rows: var(--rui-comp-time-picker-chip-height) auto;
     column-gap: 0;
     row-gap: 4px;
@@ -561,8 +665,12 @@
     padding-block-start: var(--rui-comp-time-picker-clock-display-margin-top);
 }
 
-.rui-time-picker__field--clock { block-size: calc(var(--rui-comp-time-picker-chip-height) + var(--rui-comp-time-picker-clock-display-margin-top)); }
-.rui-time-picker__body--12h .rui-time-picker__field--clock { block-size: var(--rui-comp-time-picker-period-height); }
+.rui-time-picker__field--clock {
+    block-size: calc(var(--rui-comp-time-picker-chip-height) + var(--rui-comp-time-picker-clock-display-margin-top));
+}
+.rui-time-picker__body--12h .rui-time-picker__field--clock {
+    block-size: var(--rui-comp-time-picker-period-height);
+}
 
 .rui-time-picker__field-segment {
     display: grid;
@@ -593,9 +701,18 @@
     background: transparent;
 }
 
-.rui-time-picker__field-segment--input:focus-within { border-color: var(--rui-sys-color-primary); border-width: 2px; }
-.rui-time-picker__field-segment--button.rui-time-picker__field-segment--active { color: var(--rui-comp-time-picker-display-active-text-color); background: var(--rui-comp-time-picker-display-active-color); }
-.rui-time-picker__field-segment--input.rui-time-picker__field-segment--active { color: var(--rui-comp-time-picker-on-surface-color); background: transparent; }
+.rui-time-picker__field-segment--input:focus-within {
+    border-color: var(--rui-sys-color-primary);
+    border-width: 2px;
+}
+.rui-time-picker__field-segment--button.rui-time-picker__field-segment--active {
+    color: var(--rui-comp-time-picker-display-active-text-color);
+    background: var(--rui-comp-time-picker-display-active-color);
+}
+.rui-time-picker__field-segment--input.rui-time-picker__field-segment--active {
+    color: var(--rui-comp-time-picker-on-surface-color);
+    background: transparent;
+}
 
 .rui-time-picker__field-segment input {
     @include normalize.input;
@@ -624,8 +741,14 @@
     color: rgb(from var(--rui-comp-time-picker-on-surface-color) r g b / 0.6);
 }
 
-.rui-time-picker__field-label:nth-of-type(1) { grid-column: 1; grid-row: 2; }
-.rui-time-picker__field-label:nth-of-type(2) { grid-column: 3; grid-row: 2; }
+.rui-time-picker__field-label:nth-of-type(1) {
+    grid-column: 1;
+    grid-row: 2;
+}
+.rui-time-picker__field-label:nth-of-type(2) {
+    grid-column: 3;
+    grid-row: 2;
+}
 
 .rui-time-picker__period {
     display: grid;
@@ -647,7 +770,10 @@
     font-size: 16px;
 }
 
-.rui-time-picker__period button.rui-time-picker__period-value--selected { color: var(--rui-comp-time-picker-on-hand-color); background: rgb(from var(--rui-comp-time-picker-hand-color) r g b / 0.24); }
+.rui-time-picker__period button.rui-time-picker__period-value--selected {
+    color: var(--rui-comp-time-picker-on-hand-color);
+    background: rgb(from var(--rui-comp-time-picker-hand-color) r g b / 0.24);
+}
 
 .rui-time-picker__body > .rui-time-picker__clock {
     grid-column: 1;
@@ -656,7 +782,10 @@
     margin-inline: 12px;
 }
 
-.rui-time-picker__body > .rui-time-picker__field { grid-column: 1; justify-self: center; }
+.rui-time-picker__body > .rui-time-picker__field {
+    grid-column: 1;
+    justify-self: center;
+}
 
 .rui-time-picker__clock {
     position: relative;
@@ -673,7 +802,10 @@
     position: absolute;
     inset: 50% auto auto 50%;
     z-index: 0;
-    inline-size: calc(var(--rui-comp-time-picker-clock-size) / 2 - var(--rui-comp-time-picker-selector-radius) - var(--rui-comp-time-picker-clock-padding));
+    inline-size: calc(
+        var(--rui-comp-time-picker-clock-size) /
+            2 - var(--rui-comp-time-picker-selector-radius) - var(--rui-comp-time-picker-clock-padding)
+    );
     block-size: 2px;
     transform: rotate(calc(var(--rui-comp-time-picker-hand-angle) - 90deg));
     transform-origin: left center;
@@ -681,7 +813,9 @@
     transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.rui-time-picker__clock--dragging .rui-time-picker__clock-hand { transition: none; }
+.rui-time-picker__clock--dragging .rui-time-picker__clock-hand {
+    transition: none;
+}
 
 .rui-time-picker__clock-hand::before {
     position: absolute;
@@ -721,11 +855,19 @@
     cursor: pointer;
     font-size: 15px;
     line-height: 16px;
-    transform: translate(calc(-50% + var(--rui-comp-time-picker-clock-value-x)), calc(-50% + var(--rui-comp-time-picker-clock-value-y)));
+    transform: translate(
+        calc(-50% + var(--rui-comp-time-picker-clock-value-x)),
+        calc(-50% + var(--rui-comp-time-picker-clock-value-y))
+    );
 }
 
-.rui-time-picker__clock-value--selected { color: var(--rui-comp-time-picker-on-hand-color); }
-.rui-time-picker__clock-value:focus-visible { outline: 2px solid var(--rui-sys-color-primary); outline-offset: 2px; }
+.rui-time-picker__clock-value--selected {
+    color: var(--rui-comp-time-picker-on-hand-color);
+}
+.rui-time-picker__clock-value:focus-visible {
+    outline: 2px solid var(--rui-sys-color-primary);
+    outline-offset: 2px;
+}
 
 .rui-time-picker__actions {
     display: flex;
@@ -735,9 +877,19 @@
     padding-block-end: 0;
 }
 
-.rui-time-picker__mode-button { margin-inline-end: auto; }
-.rui-time-picker__cancel-button { min-inline-size: 72px; margin-block-start: 2px; margin-inline-end: 8px; }
-.rui-time-picker__confirm-button { min-inline-size: 64px; margin-block-start: 2px; margin-inline-end: 8px; }
+.rui-time-picker__mode-button {
+    margin-inline-end: auto;
+}
+.rui-time-picker__cancel-button {
+    min-inline-size: 72px;
+    margin-block-start: 2px;
+    margin-inline-end: 8px;
+}
+.rui-time-picker__confirm-button {
+    min-inline-size: 64px;
+    margin-block-start: 2px;
+    margin-inline-end: 8px;
+}
 
 @media (orientation: landscape) {
     .rui-time-picker-dialog .rui-dialog {
@@ -749,7 +901,9 @@
         min-width: 0;
     }
 
-    .rui-time-picker__title { padding-block-start: calc(28px - 1cap); }
+    .rui-time-picker__title {
+        padding-block-start: calc(28px - 1cap);
+    }
 
     .rui-time-picker__body {
         grid-template-columns: var(--rui-comp-time-picker-display-width) var(--rui-comp-time-picker-clock-size);
@@ -761,9 +915,25 @@
         padding-block-start: 16px;
     }
 
-    .rui-time-picker__body--12h { grid-template-columns: var(--rui-comp-time-picker-display-width) var(--rui-comp-time-picker-clock-size); }
-    .rui-time-picker__field { grid-column: 1; grid-row: 1; padding-block-start: 4px; }
-    .rui-time-picker__period { grid-column: 1; grid-row: 1; align-self: end; justify-self: stretch; inline-size: var(--rui-comp-time-picker-display-width); block-size: 48px; grid-template-columns: repeat(2, 1fr); grid-template-rows: 48px; margin-block-start: 12px; }
+    .rui-time-picker__body--12h {
+        grid-template-columns: var(--rui-comp-time-picker-display-width) var(--rui-comp-time-picker-clock-size);
+    }
+    .rui-time-picker__field {
+        grid-column: 1;
+        grid-row: 1;
+        padding-block-start: 4px;
+    }
+    .rui-time-picker__period {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: end;
+        justify-self: stretch;
+        inline-size: var(--rui-comp-time-picker-display-width);
+        block-size: 48px;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: 48px;
+        margin-block-start: 12px;
+    }
     .rui-time-picker__body > .rui-time-picker__clock {
         margin-inline: 0;
         grid-column: 2;
@@ -779,13 +949,19 @@
 }
 
 @media (min-width: 600px) and (orientation: landscape) {
-    .rui-time-picker-dialog .rui-dialog { --rui-comp-time-picker-clock-face-margin-start: 24px; }
+    .rui-time-picker-dialog .rui-dialog {
+        --rui-comp-time-picker-clock-face-margin-start: 24px;
+    }
 }
 
 @media (min-width: 320px) and (orientation: landscape) and (max-width: 599px) {
-    .rui-time-picker-dialog .rui-dialog { --rui-comp-time-picker-clock-face-margin-start: 64px; }
+    .rui-time-picker-dialog .rui-dialog {
+        --rui-comp-time-picker-clock-face-margin-start: 64px;
+    }
 }
 
 @media (min-height: 320px) and (max-height: 549px) and (orientation: portrait) {
-    .rui-time-picker-dialog .rui-dialog { --rui-comp-time-picker-action-margin-top: 8px; }
+    .rui-time-picker-dialog .rui-dialog {
+        --rui-comp-time-picker-action-margin-top: 8px;
+    }
 }
