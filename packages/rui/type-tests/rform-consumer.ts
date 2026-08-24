@@ -1,6 +1,5 @@
-import { h } from "vue"
-
 import { RForm, useForm, type RFormController } from "@ripple-design/rui"
+import { h } from "vue"
 
 type Values = {
     account: {
@@ -23,7 +22,7 @@ h(RForm<Values>, {
         controller.setValue("remember", true)
 
         // @ts-expect-error The form value does not contain this property.
-        event.form.value.missing
+        void event.form.value.missing
     },
     onSubmit(event) {
         const value: Values = event.value
@@ -31,7 +30,7 @@ h(RForm<Values>, {
         event.form.setValue("account.email", "name@example.com")
 
         // @ts-expect-error The form value does not contain this property.
-        event.value.account.missing
+        void event.value.account.missing
     },
 })
 
@@ -41,4 +40,4 @@ declare const instance: RFormInstance
 
 const result: Promise<boolean> = instance.submit()
 void result
-instance.submit(new SubmitEvent("submit"))
+void instance.submit(new SubmitEvent("submit"))
