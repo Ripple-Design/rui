@@ -276,7 +276,7 @@ const virtualRowStyle = computed(() =>
     props.virtualTable ? { minBlockSize: `${virtualState.itemHeight.value}px` } : undefined,
 )
 const stripedMode = computed<"odd" | "even" | null>(() =>
-    props.striped === true ? "even" : props.striped === false ? null : (props.striped ?? null),
+    props.striped ? "even" : !props.striped ? null : (props.striped ?? null),
 )
 const footerOptions = computed(() =>
     props.itemsPerPageOptions.map((option) =>
@@ -417,7 +417,7 @@ function sortIcon(column: (typeof headerState.columns.value)[number]) {
 }
 
 function isMultiSortEnabled() {
-    return props.multiSort === true || typeof props.multiSort === "object"
+    return props.multiSort || typeof props.multiSort === "object"
 }
 
 function groupItemCount(group: import("./types").RDataTableGroup<RDataTableItem<T>>) {
@@ -1072,57 +1072,67 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
 </template>
 
 <style scoped lang="scss">
+@use "@ripple-design/rui/rui";
+
 .rux-data-table {
     --rui-comp-data-table-border-color: var(--rui-sys-color-on-surface-outline);
     --rui-comp-data-table-header-background: var(--rui-sys-color-surface);
-    --rui-comp-data-table-row-hover-background: color-mix(in srgb, var(--rui-sys-color-primary) 8%, transparent);
+    --rui-comp-data-table-row-hover-background: color-mix(in srgb, var(--rui-sys-color-on-surface) 8%, transparent);
     --rui-comp-data-table-row-selected-background: color-mix(in srgb, var(--rui-sys-color-primary) 14%, transparent);
     --rui-comp-data-table-header-height: 56px;
     --rui-comp-data-table-cell-padding-inline: 16px;
     overflow: hidden;
 }
+
 .rux-data-table--compact {
     --rui-comp-data-table-header-height: 40px;
     --rui-comp-data-table-cell-padding-inline: 12px;
 }
+
 .rux-data-table--comfortable {
     --rui-comp-data-table-header-height: 48px;
 }
+
 .rux-data-table__scroll {
     overflow: auto;
     max-inline-size: 100%;
 }
+
 .rux-data-table__table {
+    @include rui.typo-body1;
     inline-size: 100%;
     border-collapse: collapse;
-    color: var(--rui-sys-color-on-surface);
+    color: rui.$color-on-surface-high;
 }
+
 .rux-data-table__header-cell,
 .rux-data-table__cell {
     box-sizing: border-box;
     min-block-size: var(--rui-comp-data-table-header-height);
-    padding: 8px var(--rui-comp-data-table-cell-padding-inline);
+    padding: 0 var(--rui-comp-data-table-cell-padding-inline);
     border-block-end: 1px solid var(--rui-comp-data-table-border-color);
     background: var(--rui-comp-data-table-header-background);
     text-align: start;
     vertical-align: middle;
 }
+
 .rux-data-table--gridlines-vertical .rux-data-table__header-cell,
 .rux-data-table--gridlines-vertical .rux-data-table__cell {
     border-inline-end: 1px solid var(--rui-comp-data-table-border-color);
 }
+
 .rux-data-table__header-cell {
-    font: var(--rui-sys-typescale-title-small-font, inherit);
-    z-index: 2;
-    color: var(--rui-sys-color-on-surface-high);
 }
+
 .rux-data-table__cell {
     font: var(--rui-sys-typescale-body-medium-font, inherit);
     background: var(--rui-sys-color-surface);
 }
+
 .rux-data-table__cell--align-center {
     text-align: center;
 }
+
 .rux-data-table__cell--align-end {
     text-align: end;
 }
@@ -1163,12 +1173,17 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
     align-items: center;
     gap: 8px;
 }
+
 .rux-data-table__header-content {
+    @include rui.typo-subtitle2;
+    color: rui.$color-on-surface-medium;
     justify-content: flex-start;
 }
+
 .rux-data-table__header-cell--sortable {
     cursor: pointer;
 }
+
 .rux-data-table__sort-rank {
     display: grid;
     place-items: center;
