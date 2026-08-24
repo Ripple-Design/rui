@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RIArrowDropDownFilled, RIArrowDropUpFilled } from "@ripple-design/icons"
-import { computed, nextTick, onBeforeUnmount, provide, ref, toRef, toRaw, unref, useAttrs, useId, watch } from "vue"
+import { computed, nextTick, onBeforeUnmount, provide, ref, toRef, unref, useAttrs, useId, watch } from "vue"
 
 import type { RippleOptions } from "@/foundations/ripple"
 
@@ -10,10 +10,11 @@ import { useFormField } from "@/components/layout/form/useFormField.ts"
 import RMenu from "@/components/overlays/menu/RMenu.vue"
 import RMenuGroup from "@/components/overlays/menu/RMenuGroup.vue"
 
-import type { RSelectOptionRecord } from "./context.ts"
+import type { RListBoxOptionRecord } from "@/components/internal/listBox/types.ts"
 import type { RSelectFieldProps } from "./types.ts"
 
-import { selectContextKey } from "./context.ts"
+import { useListBoxSelection } from "@/components/internal/listBox/useListBoxSelection.ts"
+import { listBoxContextKey } from "@/components/internal/listBox/types.ts"
 
 defineOptions({ inheritAttrs: false })
 
@@ -56,8 +57,6 @@ const labelId = `${controlId.value}-label`
 const shellRef = ref<InstanceType<typeof RFieldShell> | null>(null)
 const menuRef = ref<InstanceType<typeof RMenu> | null>(null)
 const triggerRef = ref<HTMLElement | null>(null)
-const options = ref<RSelectOptionRecord[]>([])
-const activeOptionId = ref<string | null>(null)
 const open = ref(false)
 const restoreMenuFocus = ref(true)
 const isFocused = ref(false)
@@ -68,16 +67,16 @@ const menuWidth = ref<number | null>(null)
 let measureFrame = 0
 let measurementGeneration = 0
 
-const optionMatchesModel = (option: RSelectOptionRecord) => Object.is(toRaw(option.value), toRaw(model.value))
-const selectedOption = computed(() => options.value.find(optionMatchesModel))
 const normalizedFilterText = computed(() => filterText.value.trim().toLocaleLowerCase())
-const filteredOptions = computed(() => {
-    if (!props.filterable || !normalizedFilterText.value) {
-        return options.value
-    }
-
-    return options.value.filter((option) => option.label.toLocaleLowerCase().includes(normalizedFilterText.value))
+const listBox = useListBoxSelection({
+    isOptionVisible(label) {
+        return !props.filterable || !normalizedFilterText.value || label.toLocaleLowerCase().includes(normalizedFilterText.value)
+    },
+    model,
+    onCommit: commit,
+    onOptionsChange: scheduleMenuWidthMeasurement,
 })
+const { activeOptionId, selectedOption, visibleOptions: filteredOptions } = listBox
 const hasValue = computed(() => selectedOption.value !== undefined || (props.filterable && !!filterText.value))
 const isFloating = computed(() => isFocused.value || open.value || hasValue.value)
 const displayText = computed(() =>
@@ -89,45 +88,7 @@ const rippleOptions = computed<RippleOptions>(() => ({
     contrast: "low",
 }))
 
-provide(selectContextKey, {
-    activeOptionId,
-    commit,
-    isOptionVisible(label) {
-        return (
-            !props.filterable ||
-            !normalizedFilterText.value ||
-            label.toLocaleLowerCase().includes(normalizedFilterText.value)
-        )
-    },
-    isSelected(value) {
-        return Object.is(toRaw(value), toRaw(model.value))
-    },
-    register(option) {
-        const index = options.value.findIndex((item) => item.id === option.id)
-        if (index === -1) {
-            options.value.push(option)
-        } else {
-            options.value[index] = option
-        }
-
-        if (open.value && activeOptionId.value == null) {
-            setInitialActiveOption()
-        }
-        scheduleMenuWidthMeasurement()
-    },
-    unregister(id) {
-        options.value = options.value.filter((option) => option.id !== id)
-        if (activeOptionId.value === id) {
-            activeOptionId.value = null
-        }
-        scheduleMenuWidthMeasurement()
-    },
-})
-
-function setInitialActiveOption() {
-    const selected = filteredOptions.value.find((option) => optionMatchesModel(option) && !option.disabled)
-    activeOptionId.value = selected?.id ?? filteredOptions.value.find((option) => !option.disabled)?.id ?? null
-}
+provide(listBoxContextKey, listBox.context)
 
 function openSelect() {
     console.log("[RSelectField] open", { disabled: props.disabled })
@@ -136,7 +97,7 @@ function openSelect() {
     }
 
     restoreMenuFocus.value = true
-    setInitialActiveOption()
+    listBox.setInitialActiveOption()
     ++measurementGeneration
     cancelAnimationFrame(measureFrame)
     measureFrame = 0
@@ -260,7 +221,7 @@ function handleMenuOpenUpdate(value: boolean) {
     }
 }
 
-function commit(option: RSelectOptionRecord) {
+function commit(option: RListBoxOptionRecord) {
     if (option.disabled) {
         return
     }
@@ -315,7 +276,7 @@ watch(
 
 watch(filteredOptions, () => {
     if (open.value) {
-        setInitialActiveOption()
+        listBox.setInitialActiveOption()
         scheduleMenuWidthMeasurement()
     }
 })

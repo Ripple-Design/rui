@@ -1,20 +1,5 @@
-import type { InjectionKey, Ref } from "vue"
-
-export type RSelectOptionRecord = {
-    disabled: boolean
-    element: HTMLElement | null
-    id: string
-    label: string
-    value: unknown
-}
-
-export type RSelectContext = {
-    activeOptionId: Ref<string | null>
-    commit: (option: RSelectOptionRecord) => void
-    isOptionVisible: (label: string) => boolean
-    isSelected: (value: unknown) => boolean
-    register: (option: RSelectOptionRecord) => void
-    unregister: (id: string) => void
-}
-
-export const selectContextKey: InjectionKey<RSelectContext> = Symbol("rSelectField")
+export { listBoxContextKey as selectContextKey } from "@/components/internal/listBox/types.ts"
+export type {
+    RListBoxContext as RSelectContext,
+    RListBoxOptionRecord as RSelectOptionRecord,
+} from "@/components/internal/listBox/types.ts"

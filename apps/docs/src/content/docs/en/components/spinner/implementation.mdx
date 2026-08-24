@@ -1,0 +1,17 @@
+---
+title: Spinner
+docSlug: components/spinner
+tab: implementation
+locale: en
+designOrder: 151
+developOrder: 151
+api: /en/api/spinner
+---
+
+import DemoBlock from "@docs/components/docs/DemoBlock.astro"
+import SpinnerBasicDemo from "@docs/components/demos/spinner/SpinnerBasicDemo.vue"
+import spinnerBasicDemoSource from "@docs/components/demos/spinner/SpinnerBasicDemo.vue?raw"
+
+<DemoBlock title="Basic usage" code={spinnerBasicDemoSource} language="vue">
+    <SpinnerBasicDemo client:load />
+</DemoBlock>

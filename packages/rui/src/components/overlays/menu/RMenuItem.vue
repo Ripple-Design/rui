@@ -4,7 +4,7 @@ import { computed, inject, onBeforeUnmount, ref, useAttrs, useId, watch } from "
 
 import { RIcon } from "@/components"
 import { createIconFamily } from "@/components/base/icon/family.ts"
-import { selectContextKey } from "@/components/input/selectField/context.ts"
+import { listBoxContextKey } from "@/components/internal/listBox/types.ts"
 import { vRipple, type RippleOptions } from "@/foundations/ripple"
 
 import type { RMenuItemProps } from "./types.ts"
@@ -22,7 +22,7 @@ const emit = defineEmits<{
 const attrs = useAttrs()
 const selectedCheckIcon = createIconFamily(RICheckFilled, RICheckOutlined, RICheckRounded, RICheckSharp, RICheckTwoTone)
 const menu = inject(menuKey, null)
-const selectContext = inject(selectContextKey, null)
+const selectContext = inject(listBoxContextKey, null)
 const group = inject(menuGroupKey, null)
 const itemRef = ref<HTMLElement | null>(null)
 const itemId = Symbol("menu-item")
