@@ -14,6 +14,7 @@ const props = withDefaults(defineProps<RMessageGroupProps>(), {
 provide(messageGroupKey, computed(() => props.sender))
 
 const showAvatar = computed(() => !!props.avatar)
+const avatar = computed<NonNullable<RMessageGroupProps["avatar"]>>(() => props.avatar!)
 </script>
 
 <template>
@@ -23,7 +24,7 @@ const showAvatar = computed(() => !!props.avatar)
         align="flex-end"
         gap="8px"
     >
-        <RAvatar v-bind="props.avatar" />
+        <RAvatar v-bind="avatar" />
         <RColumn class="rux-message-group__messages" gap="8px">
             <slot />
         </RColumn>

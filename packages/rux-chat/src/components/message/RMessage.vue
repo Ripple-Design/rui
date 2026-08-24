@@ -28,8 +28,8 @@ const cardProps = computed(() => {
     return {
         ...rest,
         ...restAttrs,
-        variant: "elevated",
-        color: color ?? attrs.color ?? (sender.value === "self" ? "primary" : "surface"),
+        variant: "elevated" as const,
+        color: color ?? (sender.value === "self" ? "primary" : "surface"),
         style: [style, cardStyle.value],
     }
 })
