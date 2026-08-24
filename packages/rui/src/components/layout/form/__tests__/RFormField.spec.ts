@@ -7,15 +7,15 @@ import { internationalizationKey } from "@/foundations/internationalization/cont
 
 import RForm from "../RForm.vue"
 import { useForm } from "../useForm"
-import RChip from "@/components/chip/RChip.vue"
-import RChipGroup from "@/components/chip/RChipGroup.vue"
-import RRadioButton from "@/components/radioButton/RRadioButton.vue"
-import RRadioButtonGroup from "@/components/radioButton/RRadioButtonGroup.vue"
+import RChip from "@/components/actions/chip/RChip.vue"
+import RChipGroup from "@/components/actions/chip/RChipGroup.vue"
+import RRadioButton from "@/components/input/radioButton/RRadioButton.vue"
+import RRadioButtonGroup from "@/components/input/radioButton/RRadioButtonGroup.vue"
 import { RSelectOption } from "@/components"
-import RSelectField from "@/components/selectField/RSelectField.vue"
+import RSelectField from "@/components/input/selectField/RSelectField.vue"
 import RRangeSlider from "@/components/input/slider/RRangeSlider.vue"
 import RSlider from "@/components/input/slider/RSlider.vue"
-import RTextField from "@/components/textField/RTextField.vue"
+import RTextField from "@/components/input/textField/RTextField.vue"
 
 function dispatchFocusout(root: Element, relatedTarget: EventTarget | null) {
     root.dispatchEvent(new FocusEvent("focusout", { bubbles: true, relatedTarget }))

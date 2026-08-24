@@ -2,7 +2,7 @@ import { nextTick } from "vue"
 import { mount } from "@vue/test-utils"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import RButton from "@/components/button/RButton.vue"
+import RButton from "@/components/actions/button/RButton.vue"
 import RModal from "@/primitives/modal/RModal.vue"
 
 import RDialog from "../RDialog.vue"
