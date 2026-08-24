@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url"
 const docsSrc = fileURLToPath(new URL("./src", import.meta.url))
 const ruiSrc = fileURLToPath(new URL("../../packages/rui/src", import.meta.url))
 const ruxChatSrc = fileURLToPath(new URL("../../packages/rux-chat/src", import.meta.url))
+const ruxDataTableSrc = fileURLToPath(new URL("../../packages/rux-data-table/src", import.meta.url))
 
 export default defineConfig({
     integrations: [vue(), mdx()],
@@ -36,10 +37,17 @@ export default defineConfig({
                     replacement: path.join(ruiSrc, "index.ts"),
                 },
                 {
+                    find: /^@ripple-design\/rui\/foundations\/(.*)$/,
+                    replacement: path.join(ruiSrc, "foundations/$1"),
+                },
+                {
                     find: /^@ripple-design\/rux-chat$/,
                     replacement: path.join(ruxChatSrc, "index.ts"),
                 },
-                { find: /^@ripple-design\/rui\/foundations\/(.*)$/, replacement: path.join(ruiSrc, "foundations/$1") },
+                {
+                    find: /^@ripple-design\/rux-data-table$/,
+                    replacement: path.join(ruxDataTableSrc, "index.ts"),
+                },
             ],
         },
     },
