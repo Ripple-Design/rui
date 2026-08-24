@@ -19,7 +19,8 @@ function parseSource(filePath) {
 }
 
 function getJsDocText(node) {
-    const docs = ts.getJSDocCommentsAndTags(node)
+    const docs = ts
+        .getJSDocCommentsAndTags(node)
         .filter((entry) => ts.isJSDoc(entry))
         .map((entry) => entry.comment)
         .filter(Boolean)
@@ -91,7 +92,7 @@ function collectPropsFromTypeNode(typeNode, sourceFile, aliases, seen = new Set(
 
 function collectComponentExports() {
     const source = readFile(componentsIndexPath)
-    const matches = [...source.matchAll(/export\s+\{\s+default\s+as\s+(R\w+)\s+\}\s+from\s+"(\.\/[^\"]+\.vue)"/g)]
+    const matches = [...source.matchAll(/export\s+\{\s+default\s+as\s+(R\w+)\s+}\s+from\s+"(\.\/[^"]+\.vue)"/g)]
 
     return new Map(
         matches.map((match) => {
@@ -181,7 +182,11 @@ function collectEvents(vuePath) {
         }
 
         function getCallSignatureEventName(parameter) {
-            if (!parameter?.type || !ts.isLiteralTypeNode(parameter.type) || !ts.isStringLiteral(parameter.type.literal)) {
+            if (
+                !parameter?.type ||
+                !ts.isLiteralTypeNode(parameter.type) ||
+                !ts.isStringLiteral(parameter.type.literal)
+            ) {
                 return undefined
             }
 
@@ -202,7 +207,11 @@ function collectEvents(vuePath) {
         }
 
         function visit(node) {
-            if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === "defineEmits") {
+            if (
+                ts.isCallExpression(node) &&
+                ts.isIdentifier(node.expression) &&
+                node.expression.text === "defineEmits"
+            ) {
                 const typeNode = node.typeArguments?.[0]
 
                 if (typeNode && ts.isTypeLiteralNode(typeNode)) {
@@ -214,7 +223,12 @@ function collectEvents(vuePath) {
                             }
                         }
 
-                        if (ts.isPropertySignature(member) && member.name && member.type && ts.isTupleTypeNode(member.type)) {
+                        if (
+                            ts.isPropertySignature(member) &&
+                            member.name &&
+                            member.type &&
+                            ts.isTupleTypeNode(member.type)
+                        ) {
                             addEvent(
                                 getPropertyName(member),
                                 member.type.elements.map(getTupleElementText),
@@ -232,7 +246,11 @@ function collectEvents(vuePath) {
                 }
             }
 
-            if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === "defineModel") {
+            if (
+                ts.isCallExpression(node) &&
+                ts.isIdentifier(node.expression) &&
+                node.expression.text === "defineModel"
+            ) {
                 const modelArgument = node.arguments[0]
                 const modelName = modelArgument && ts.isStringLiteral(modelArgument) ? modelArgument.text : "modelValue"
                 const modelType = node.typeArguments?.[0]?.getText(sourceFile) ?? "unknown"
@@ -329,9 +347,7 @@ function generateBody(componentName, props, propDefaults, typesPath, vuePath, ev
         "",
         generatePropsTable(props, propDefaults),
         ...(events.length ? ["", "## Events", "", generateEventsTable(events)] : []),
-        ...(cssVariables.length
-            ? ["", "## CSS Variables", "", generateCssVariablesTable(cssVariables)]
-            : []),
+        ...(cssVariables.length ? ["", "## CSS Variables", "", generateCssVariablesTable(cssVariables)] : []),
         "",
         `Generated from ${sources.join(" and ")}.`,
         "",
@@ -360,8 +376,10 @@ function writeApiDoc(filePath, body) {
         return true
     }
 
-    const hasExactlyOneStart = startIndex !== -1 && rest.indexOf(generatedStartMarker, startIndex + generatedStartMarker.length) === -1
-    const hasExactlyOneEnd = endIndex !== -1 && rest.indexOf(generatedEndMarker, endIndex + generatedEndMarker.length) === -1
+    const hasExactlyOneStart =
+        startIndex !== -1 && rest.indexOf(generatedStartMarker, startIndex + generatedStartMarker.length) === -1
+    const hasExactlyOneEnd =
+        endIndex !== -1 && rest.indexOf(generatedEndMarker, endIndex + generatedEndMarker.length) === -1
     if (!hasExactlyOneStart || !hasExactlyOneEnd || endIndex < startIndex) {
         console.error(`Skipping ${getRelativePath(filePath)}: malformed auto-generated markers`)
         return false
@@ -399,7 +417,15 @@ function main() {
         const propDefaults = collectPropDefaults(exportInfo.vuePath)
         const events = collectEvents(exportInfo.vuePath)
         const cssVariables = collectCssVariables(exportInfo.vuePath)
-        const body = generateBody(componentName, props, propDefaults, exportInfo.typesPath, exportInfo.vuePath, events, cssVariables)
+        const body = generateBody(
+            componentName,
+            props,
+            propDefaults,
+            exportInfo.typesPath,
+            exportInfo.vuePath,
+            events,
+            cssVariables,
+        )
         if (writeApiDoc(apiFile, body)) {
             console.log(`Generated ${getRelativePath(apiFile)}`)
         }

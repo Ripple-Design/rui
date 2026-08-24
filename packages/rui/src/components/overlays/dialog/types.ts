@@ -31,7 +31,6 @@ export type RDialogProps = RModalProps & {
 
 /** Props for the {@link RFullscreenDialog} component. */
 export type RFullscreenDialogProps = Omit<RDialogProps, "title" | "message">
-
 export type RTextFieldDialogProps = Omit<RDialogProps, "message"> &
     RTextFieldProps & {
         value?: string
