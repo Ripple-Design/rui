@@ -102,8 +102,8 @@ function mountTextField(options: RDialogTextFieldOptions): Promise<RDialogTextFi
                         "onUpdate:modelValue": (nextOpen: boolean) => {
                             open.value = nextOpen
                         },
-                        "onUpdate:value": (nextValue: string) => {
-                            value.value = nextValue
+                        "onUpdate:value": (nextValue: string | undefined) => {
+                            value.value = nextValue ?? ""
                         },
                         onClose: (nextDetail: RModalCloseDetail) => {
                             if (detail) return
