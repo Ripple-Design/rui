@@ -47,7 +47,7 @@
         "lint": "oxlint .",
         "lint:fix": "oxlint . --fix",
         "test": "vitest run",
-        "test:types": "vue-tsc --noEmit -p type-tests/tsconfig.json"
+        "test:types": "pnpm run build && vue-tsc --noEmit -p type-tests/tsconfig.json"
     },
     "dependencies": {
         "@floating-ui/dom": "^1.8.0",
