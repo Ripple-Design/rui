@@ -1,10 +1,5 @@
 <script setup lang="ts">
 import {
-    RIArrowDropDownFilled,
-    RIArrowDropDownOutlined,
-    RIArrowDropDownRounded,
-    RIArrowDropDownSharp,
-    RIArrowDropDownTwoTone,
     RIChevronLeftFilled,
     RIChevronLeftOutlined,
     RIChevronLeftRounded,
@@ -16,7 +11,7 @@ import {
     RIChevronRightSharp,
     RIChevronRightTwoTone,
 } from "@ripple-design/icons"
-import { createIconFamily, RIcon, RIconButton } from "@ripple-design/rui"
+import { createIconFamily, RIconButton, RSpinnerTrigger } from "@ripple-design/rui"
 import { vRipple } from "@ripple-design/rui/foundations/ripple"
 import { RTouchTargetWrapper } from "@ripple-design/rui/foundations/touchTarget"
 import { computed } from "vue"
@@ -51,7 +46,6 @@ const weekStart = computed(() => getWeekStart(props.locale))
 const weekdays = computed(() => formatWeekdayLabels(props.locale, weekStart.value))
 const days = computed(() => getCalendarDays(props.month, weekStart.value))
 const today = computed(() => getToday())
-const arrowDropDownIcon = createIconFamily(RIArrowDropDownFilled, RIArrowDropDownOutlined, RIArrowDropDownRounded, RIArrowDropDownSharp, RIArrowDropDownTwoTone)
 const previousMonthIcon = createIconFamily(RIChevronLeftFilled, RIChevronLeftOutlined, RIChevronLeftRounded, RIChevronLeftSharp, RIChevronLeftTwoTone)
 const nextMonthIcon = createIconFamily(RIChevronRightFilled, RIChevronRightOutlined, RIChevronRightRounded, RIChevronRightSharp, RIChevronRightTwoTone)
 
@@ -87,10 +81,13 @@ function getRangeFillClass(date: DateIsoString): string | null {
 <template>
     <section class="rui-date-picker__calendar" :class="{ 'rui-date-picker__calendar--fullscreen': !showNavigation }">
         <div v-if="showNavigation" class="rui-date-picker__navigation">
-            <button class="rui-date-picker__month-toggle" type="button" :aria-expanded="showYearSelector" @click="emit('toggle-year-selector')">
-                {{ formatMonthLabel(month.year, month.month, locale) }}
-                <RIcon :icon="arrowDropDownIcon" :size="18" decorative />
-            </button>
+            <RSpinnerTrigger
+                class="rui-date-picker__month-toggle"
+                :label="formatMonthLabel(month.year, month.month, locale)"
+                :menu="false"
+                :aria-expanded="showYearSelector"
+                @click="emit('toggle-year-selector')"
+            />
             <div class="rui-date-picker__month-actions">
                 <RIconButton :icon="previousMonthIcon" label="Change to previous month" @click="emit('previous-month')" />
                 <RIconButton :icon="nextMonthIcon" label="Change to next month" @click="emit('next-month')" />

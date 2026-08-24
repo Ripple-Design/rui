@@ -121,22 +121,11 @@
 
 .rui-date-picker__month-actions { display: flex; align-items: center; }
 
-.rui-date-picker__month-toggle,
 .rui-date-picker__year {
     border: 0;
     color: var(--rui-comp-date-picker-on-surface-color);
     background: transparent;
     cursor: pointer;
-}
-
-.rui-date-picker__month-toggle {
-    @include typography.subtitle2("--rui-comp-date-picker-month-label");
-
-    display: inline-flex;
-    gap: 4px;
-    align-items: center;
-    min-height: var(--rui-comp-date-picker-navigation-control-height);
-    padding-inline: 8px;
 }
 
 .rui-date-picker__weekdays,

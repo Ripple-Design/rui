@@ -8,6 +8,7 @@ const docsSrc = fileURLToPath(new URL("./src", import.meta.url))
 const ruiSrc = fileURLToPath(new URL("../../packages/rui/src", import.meta.url))
 const ruxChatSrc = fileURLToPath(new URL("../../packages/rux-chat/src", import.meta.url))
 const ruxDataTableSrc = fileURLToPath(new URL("../../packages/rux-data-table/src", import.meta.url))
+const ruxDateTimePickerSrc = fileURLToPath(new URL("../../packages/rux-date-time-picker/src", import.meta.url))
 
 export default defineConfig({
     integrations: [vue(), mdx()],
@@ -47,6 +48,10 @@ export default defineConfig({
                 {
                     find: /^@ripple-design\/rux-data-table$/,
                     replacement: path.join(ruxDataTableSrc, "index.ts"),
+                },
+                {
+                    find: /^@ripple-design\/rux-date-time-picker$/,
+                    replacement: path.join(ruxDateTimePickerSrc, "index.ts"),
                 },
             ],
         },

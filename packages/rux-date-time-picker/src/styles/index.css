@@ -105,7 +105,6 @@
     min-height: var(--rui-comp-date-picker-navigation-height);
 }
 
-.rui-date-picker__month-toggle,
 .rui-date-picker__year {
     border: 0;
     color: var(--rui-comp-date-picker-on-surface-color);
@@ -116,11 +115,6 @@
 
 .rui-date-picker__month-toggle {
     justify-self: center;
-    font-family: var(--rui-sys-typo-font-family);
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 22px;
-    letter-spacing: 0.1px;
 }
 
 .rui-date-picker__weekdays,
