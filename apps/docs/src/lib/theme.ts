@@ -1,6 +1,6 @@
 import type { RIconStyle, RShapeFamily, RTheme, RThemePatch } from "@ripple-design/rui"
 
-import { R_ICON_STYLES, applyTheme, createThemeBootstrapScript, defaultDayNightTheme } from "@ripple-design/rui"
+import { R_ICON_STYLES, createThemeBootstrapScript, defaultDayNightTheme } from "@ripple-design/rui"
 
 export const DOCS_THEME_KEY = "rui-docs-theme"
 export const DOCS_THEME_MODE_KEY = "rui-docs-theme-mode"
