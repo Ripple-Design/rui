@@ -1,4 +1,6 @@
 export { default as RList } from "./RList.vue"
 export { default as RListGroup } from "./RListGroup.vue"
 export { default as RListItem } from "./RListItem.vue"
+export { default as RRadioButtonListGroup } from "./RRadioButtonListGroup.vue"
+export { default as RRadioButtonListItem } from "./RRadioButtonListItem.vue"
 export type * from "./types.ts"

@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { computed, provide } from "vue"
+import { computed, provide, useAttrs } from "vue"
 
 import type { RButtonRowProps } from "./types.ts"
 
 import RRow from "../../layout/stack/RRow.vue"
 import { buttonRowVariantKey } from "./groupContext.ts"
 
+defineOptions({ inheritAttrs: false })
+
 const props = withDefaults(defineProps<RButtonRowProps>(), {
     variant: "text",
 })
+const attrs = useAttrs()
 
 provide(
     buttonRowVariantKey,
@@ -17,7 +20,7 @@ provide(
 </script>
 
 <template>
-    <RRow class="rui-button-row" gap="8px" wrap align="center" justify="flex-start">
+    <RRow v-bind="attrs" class="rui-button-row" gap="8px" wrap align="center" justify="flex-start">
         <slot />
 
         <div v-if="$slots.end" class="rui-button-row__end">
@@ -30,19 +33,21 @@ provide(
 .rui-button-row {
     --rui-comp-button-row-touch-target-enabled: clamp(0, calc(var(--rui-sys-density-scale) + 1), 1);
 
-    margin-inline: 8px;
+    padding-inline: 8px;
     padding-block: calc(8px - (6px * var(--rui-comp-button-row-touch-target-enabled)));
     column-gap: 8px;
     row-gap: calc(12px - (12px * var(--rui-comp-button-row-touch-target-enabled)));
 }
 
-.rui-button-row:has(> .rui-icon-button__touch-target-wrapper):not(:has(> :not(.rui-icon-button__touch-target-wrapper))) {
+.rui-button-row:has(> .rui-icon-button__touch-target-wrapper):not(
+        :has(> :not(.rui-icon-button__touch-target-wrapper))
+    ) {
     column-gap: 0;
-    margin-inline: 4px;
+    padding-inline: 4px;
 }
 
 .rui-button-row:has(> .rui-button-row__end) {
-    margin-inline-end: 0;
+    padding-inline-end: 0;
 }
 
 .rui-button-row__end {

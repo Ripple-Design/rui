@@ -106,6 +106,11 @@ function syncInput() {
     }
 }
 
+function handleChange(event: Event) {
+    formField.setValue((event.currentTarget as HTMLInputElement).checked, "change")
+    void nextTick(syncInput)
+}
+
 function getPlayer() {
     return dotLottie.value?.getDotLottieInstance?.() ?? null
 }
@@ -328,7 +333,7 @@ onBeforeUnmount(() => {
                     :disabled="disabled"
                     :aria-checked="indeterminate ? 'mixed' : undefined"
                     @blur="formField.onBlur"
-                    @change="formField.setValue(($event.currentTarget as HTMLInputElement).checked, 'change')"
+                    @change="handleChange"
                 />
                 <span class="rui-checkbox__content" aria-hidden="true">
                     <svg class="rui-checkbox__fallback" viewBox="-9 -9 18 18">

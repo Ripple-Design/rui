@@ -61,7 +61,8 @@ export function useDataTableSelection<T>(props: { selectStrategy?: "single" | "p
     }
     function selectAll(value: boolean) { update(strategy.value.selectAll({ ...context.value, value, selected: toComparableSet() })) }
     const selectableScope = computed(() => strategy.value.allSelected(context.value as RDataTableSelectionContext<T>).filter(item => item.selectable))
-    const someSelected = computed(() => selected.value.length > 0)
+    const someSelected = computed(() => selectableScope.value.some(item => isSelected(item)))
     const allSelected = computed(() => !!selectableScope.value.length && isSelected(selectableScope.value as RDataTableItem<T>[]))
-    return { isSelected, select, toggleSelect, selectAll, someSelected, allSelected, showSelectAll: computed(() => strategy.value.showSelectAll) }
+    const hasSelectableItems = computed(() => selectableScope.value.length > 0)
+    return { isSelected, select, toggleSelect, selectAll, someSelected, allSelected, hasSelectableItems, showSelectAll: computed(() => strategy.value.showSelectAll) }
 }

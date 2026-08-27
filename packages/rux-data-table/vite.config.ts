@@ -8,6 +8,7 @@ export default defineConfig({
         vue(),
         dts({
             copyDtsFiles: true,
+            exclude: ["src/**/__tests__/*"],
             outDir: "dist/types",
             compilerOptions: {
                 removeComments: false,

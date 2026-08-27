@@ -1,5 +1,7 @@
 import type { Slot } from "vue"
 
+import type { RRadioButtonGroupProps, RRadioButtonProps } from "../../input/radioButton/types.ts"
+
 import type { RIconResolvableSource } from "@/components/base/icon/types.ts"
 import type { RippleOptions } from "@/foundations/ripple"
 
@@ -52,3 +54,12 @@ export type RListItemSlots = {
     /** Trailing presentational metadata or icon. */
     trailing?: Slot
 }
+
+export type RRadioButtonListItemProps = RRadioButtonProps & {
+    /** Sets the standard Material one-, two-, or three-line row height. */
+    lines?: RListItemLines
+}
+
+export type RRadioButtonListItemSlots = RListItemSlots
+
+export type RRadioButtonListGroupProps = RRadioButtonGroupProps

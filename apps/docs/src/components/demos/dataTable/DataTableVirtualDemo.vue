@@ -3,7 +3,7 @@ import { RButton } from "@ripple-design/rui"
 import { RDataTableVirtual } from "@ripple-design/rux-data-table"
 import { ref } from "vue"
 
-import { dataTableDemoItems, standardHeaders } from "./data"
+import { dataTableDemoItems, standardColumns } from "./data"
 
 const table = ref<InstanceType<typeof RDataTableVirtual> | null>(null)
 const target = ref(80)
@@ -15,7 +15,7 @@ const target = ref(80)
             <label>Index <input v-model.number="target" type="number" min="0" :max="dataTableDemoItems.length - 1"></label>
             <RButton @click="table?.scrollToIndex(target)">Scroll to row</RButton>
         </div>
-        <RDataTableVirtual ref="table" :items="dataTableDemoItems" :headers="standardHeaders" item-value="id" item-key="id" height="320px" :item-height="56" hover />
+        <RDataTableVirtual ref="table" :items="dataTableDemoItems" :columns="standardColumns" item-value="id" item-key="id" height="320px" :item-height="56" hover />
     </div>
 </template>
 

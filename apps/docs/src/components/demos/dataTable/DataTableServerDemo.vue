@@ -2,7 +2,7 @@
 import { RDataTableServer } from "@ripple-design/rux-data-table"
 import { computed, ref } from "vue"
 
-import { dataTableDemoItems, standardHeaders } from "./data"
+import { dataTableDemoItems, standardColumns } from "./data"
 
 const page = ref(1)
 const itemsPerPage = ref(10)
@@ -24,7 +24,7 @@ function handleOptions(value: unknown) {
 <template>
     <div class="data-table-server-demo">
         <p>Last emitted query: <code>{{ options }}</code></p>
-        <RDataTableServer v-model:page="page" v-model:items-per-page="itemsPerPage" v-model:sort-by="sortBy" :items="pageItems" :items-length="dataTableDemoItems.length" :headers="standardHeaders" item-value="id" :loading="loading" @update:options="handleOptions" />
+        <RDataTableServer v-model:page="page" v-model:items-per-page="itemsPerPage" v-model:sort-by="sortBy" :items="pageItems" :items-length="dataTableDemoItems.length" :columns="standardColumns" item-value="id" :loading="loading" @update:options="handleOptions" />
     </div>
 </template>
 

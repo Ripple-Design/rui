@@ -30,7 +30,7 @@ export const dataTableDemoItems: DataTableDemoItem[] = Array.from({ length: 120 
     metrics: { revenue: 1500 + index * 235, orders: 10 + index * 3 },
 }))
 
-export const standardHeaders = [
+export const standardColumns = [
     { key: "name", title: "Dessert", sortable: true, minWidth: 180 },
     { key: "category", title: "Category", sortable: true },
     { key: "status", title: "Status", sortable: true },

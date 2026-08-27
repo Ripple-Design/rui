@@ -1,24 +1,15 @@
 <script setup lang="ts" generic="T">
 import {
-    RIArrowDropDownFilled,
-    RIArrowDropUpFilled,
-    RIChevronLeftFilled,
-    RIChevronRightFilled,
+    RIArrowDownwardOutlined,
+    RIArrowUpwardOutlined,
     RIExpandLessFilled,
     RIExpandMoreFilled,
-    RIFirstPageFilled,
-    RILastPageFilled,
 } from "@ripple-design/icons"
-import {
-    RCheckbox,
-    RIconButton,
-    RLinearProgressIndicator,
-    RSelectField,
-    RSelectOption,
-    RSurface,
-} from "@ripple-design/rui"
+import { RButtonRow, RCheckbox, RIconButton, RLinearProgressIndicator, RSurface, RText } from "@ripple-design/rui"
+import { internationalizationKey } from "@ripple-design/rui/foundations/internationalization/controller"
 import {
     computed,
+    inject,
     onBeforeUnmount,
     onMounted,
     ref,
@@ -36,12 +27,13 @@ import type {
     RDataTableItem,
     RDataTableModelState,
     RDataTablePaginationOption,
+    RDataTableSortItem,
 } from "./types"
 
+import { useDataTableColumns } from "../../composables/useDataTableColumns"
 import { useDataTableExpand } from "../../composables/useDataTableExpand"
 import { useDataTableFilter } from "../../composables/useDataTableFilter"
 import { useDataTableGroup } from "../../composables/useDataTableGroup"
-import { useDataTableHeaders } from "../../composables/useDataTableHeaders"
 import { useDataTableItems } from "../../composables/useDataTableItems"
 import { useDataTableLoading, useDataTableOptions } from "../../composables/useDataTableOptions"
 import { useDataTablePagination } from "../../composables/useDataTablePagination"
@@ -50,6 +42,7 @@ import { useDataTableSort } from "../../composables/useDataTableSort"
 import { useDataTableVirtual } from "../../composables/useDataTableVirtual"
 import { useDataTableRowMeasurement } from "../../foundations/useDataTableRowMeasurement"
 import { toUnit } from "../../utils/value"
+import RDataTableFooter from "./RDataTableFooter.vue"
 
 defineOptions({ inheritAttrs: false })
 
@@ -78,7 +71,7 @@ const props = withDefaults(
     >(),
     {
         items: () => [],
-        headers: undefined,
+        columns: undefined,
         itemValue: "id",
         itemSelectable: null,
         returnObject: false,
@@ -110,6 +103,7 @@ const props = withDefaults(
         striped: null,
         gridlines: "horizontal",
         tag: "div",
+        variant: "elevated",
         selectAllLabel: "Select all rows",
         selectRowLabel: "Select row",
         selectGroupLabel: "Select group",
@@ -118,12 +112,6 @@ const props = withDefaults(
         itemsPerPage: 10,
         pageBy: "any",
         itemsPerPageOptions: () => [10, 25, 50, 100, -1],
-        itemsPerPageText: "Rows per page",
-        pageText: "{0}-{1} of {2}",
-        firstPageLabel: "First page",
-        prevPageLabel: "Previous page",
-        nextPageLabel: "Next page",
-        lastPageLabel: "Last page",
         showFirstLastPage: true,
         showCurrentPage: false,
         itemHeight: null,
@@ -132,12 +120,14 @@ const props = withDefaults(
         virtualTable: false,
     },
 )
+
 const emit = defineEmits<RDataTableEmits>()
 const attrs = useAttrs()
 const rootAttrs = computed(() =>
     Object.fromEntries(Object.entries(attrs).filter(([key]) => !key.endsWith(":row") && !key.endsWith(":groupHeader"))),
 )
 const slots: Slots = useSlots()
+const internationalization = inject(internationalizationKey, null)
 
 const page = ref(Number(props.page))
 const itemsPerPage = ref(props.virtualTable ? -1 : Number(props.itemsPerPage))
@@ -146,7 +136,6 @@ const groupBy = ref([...props.groupBy])
 const search = ref(props.search)
 const mobile = ref(Boolean(props.mobile))
 const hasGroupSummary = computed(() => !!slots["group-summary"])
-const tableElement = ref<HTMLTableElement | null>(null)
 
 watch(
     () => props.page,
@@ -178,24 +167,43 @@ watch(
         search.value = value
     },
 )
+
 watch(page, (value) => {
     if (!props.virtualTable) emit("update:page", value)
 })
 watch(itemsPerPage, (value) => {
     if (!props.virtualTable) emit("update:itemsPerPage", value)
 })
-watch(sortBy, (value) => emit("update:sortBy", [...value]), { deep: true })
-watch(groupBy, (value) => emit("update:groupBy", [...value]), { deep: true })
 
-const headerState = useDataTableHeaders(props)
-const itemState = useDataTableItems(props, headerState.columns)
+watch(
+    sortBy,
+    (value) => {
+        if (!sameSortItems(value, props.sortBy)) emit("update:sortBy", [...value])
+    },
+    { deep: true },
+)
+watch(
+    groupBy,
+    (value) => {
+        if (!sameSortItems(value, props.groupBy)) emit("update:groupBy", [...value])
+    },
+    { deep: true },
+)
+
+function sameSortItems(left: readonly RDataTableSortItem[], right: readonly RDataTableSortItem[]) {
+    return left.length === right.length && left.every((item, index) => item.key === right[index]?.key && item.order === right[index]?.order)
+}
+
+const columnState = useDataTableColumns(props)
+const itemState = useDataTableItems(props, columnState.columns)
 const filterState = useDataTableFilter(
     props,
     itemState.items,
     search,
-    headerState.filterFunctions,
-    headerState.filterKeys,
+    columnState.filterFunctions,
+    columnState.filterKeys,
 )
+
 const filteredItems = computed(() => (props.server ? itemState.items.value : filterState.filteredItems.value))
 const sortState = useDataTableSort(
     filteredItems,
@@ -203,14 +211,16 @@ const sortState = useDataTableSort(
     props,
     emit,
     props.virtualTable ? undefined : page,
-    headerState.sortFunctions,
-    headerState.sortRawFunctions,
+    columnState.sortFunctions,
+    columnState.sortRawFunctions,
     groupBy,
 )
+
 const sourceItems = computed(() => (props.server ? itemState.items.value : sortState.sortedItems.value))
 const pageBy = computed<"item" | "any" | "group">(() =>
     props.pageBy === "auto" ? (groupBy.value.length ? "group" : "item") : props.pageBy === "any" ? "any" : "item",
 )
+
 const provisionalItemCount = computed(() => (props.server ? Number(props.itemsLength ?? 0) : sourceItems.value.length))
 const provisionalPagination = useDataTablePagination(page, itemsPerPage, provisionalItemCount)
 const groupInput = computed(() =>
@@ -218,6 +228,7 @@ const groupInput = computed(() =>
         ? sourceItems.value.slice(provisionalPagination.startIndex.value, provisionalPagination.stopIndex.value)
         : sourceItems.value,
 )
+
 const groupState = useDataTableGroup(props, groupBy, props.modelState.opened, groupInput, hasGroupSummary)
 const paginationItemsLength = computed(() => {
     if (props.server) return Number(props.itemsLength ?? 0)
@@ -226,7 +237,40 @@ const paginationItemsLength = computed(() => {
     if (pageBy.value === "group") return groupState.groups.value.length
     return groupState.flatItems.value.length
 })
+
 const paginationState = useDataTablePagination(page, itemsPerPage, paginationItemsLength)
+const outerStartColumnKey = computed(() => {
+    const columns = columnState.columns.value
+    const firstDataColumnIndex = columns.findIndex(
+        (column) =>
+            column.publicKey !== "data-table-select" &&
+            column.publicKey !== "data-table-group" &&
+            column.publicKey !== "data-table-expand",
+    )
+    if (firstDataColumnIndex < 0) return null
+
+    const hasLeadingControl = columns
+        .slice(0, firstDataColumnIndex)
+        .some((column) => column.publicKey === "data-table-select" || column.publicKey === "data-table-expand")
+    return hasLeadingControl ? null : columns[firstDataColumnIndex]!.key
+})
+
+const outerEndColumnKey = computed(() => {
+    const columns = columnState.columns.value
+    const lastDataColumnIndex = columns.findLastIndex(
+        (column) =>
+            column.publicKey !== "data-table-select" &&
+            column.publicKey !== "data-table-group" &&
+            column.publicKey !== "data-table-expand",
+    )
+    if (lastDataColumnIndex < 0) return null
+
+    const hasTrailingControl = columns
+        .slice(lastDataColumnIndex + 1)
+        .some((column) => column.publicKey === "data-table-select" || column.publicKey === "data-table-expand")
+    return hasTrailingControl ? null : columns[lastDataColumnIndex]!.key
+})
+
 const displayedItems = computed<RDataTableFlatItem<T>[]>(() => {
     if (props.server || props.virtualTable || pageBy.value === "item") return groupState.flatItems.value
     if (pageBy.value === "any")
@@ -244,6 +288,7 @@ const displayedItems = computed<RDataTableFlatItem<T>[]>(() => {
         : groupState.flatItems.value.length
     return groupState.flatItems.value.slice(Math.max(0, first), last < 0 ? groupState.flatItems.value.length : last)
 })
+
 const renderedItems = displayedItems
 const currentPageItems = computed(() => groupState.extractRows(renderedItems.value))
 const itemCount = computed(() => (props.server ? Number(props.itemsLength ?? 0) : sourceItems.value.length))
@@ -257,6 +302,7 @@ const virtualState = useDataTableVirtual(
     { itemHeight: props.itemHeight, itemKey: props.itemKey, height: props.height },
     renderedItems,
 )
+
 const rowMeasurement = useDataTableRowMeasurement(virtualState.handleItemResize)
 const visibleItems = computed(() =>
     props.virtualTable
@@ -268,6 +314,7 @@ const visibleItems = computed(() =>
           })
         : renderedItems.value,
 )
+
 const scrollStyle = computed(() => ({
     maxBlockSize: toUnit(props.height),
     blockSize: props.virtualTable ? toUnit(props.height) : undefined,
@@ -278,11 +325,49 @@ const virtualRowStyle = computed(() =>
 const stripedMode = computed<"odd" | "even" | null>(() =>
     props.striped ? "even" : !props.striped ? null : (props.striped ?? null),
 )
-const footerOptions = computed(() =>
-    props.itemsPerPageOptions.map((option) =>
-        typeof option === "number" ? { title: option === -1 ? "All" : String(option), value: option } : option,
-    ),
-)
+
+function resolveDataTableMessage(value: string | undefined, key: string, fallback: string) {
+    return value ?? internationalization?.resolveMessage(key) ?? fallback
+}
+
+const allItemsText = computed(() => resolveDataTableMessage(undefined, "data-table.all", "All"))
+const footerOptions = computed(() => {
+    const options = props.itemsPerPageOptions.map((option) =>
+        typeof option === "number"
+            ? { label: option === -1 ? allItemsText.value : String(option), value: option }
+            : { label: option.title, value: option.value },
+    )
+    if (!options.some((option) => Object.is(option.value, itemsPerPage.value))) {
+        options.push({
+            label: itemsPerPage.value === -1 ? allItemsText.value : String(itemsPerPage.value),
+            value: itemsPerPage.value,
+        })
+    }
+    return options
+})
+
+const footerProps = computed(() => ({
+    firstIcon: props.firstIcon,
+    firstPageLabel: resolveDataTableMessage(props.firstPageLabel, "data-table.first-page", "First page"),
+    footerOptions: footerOptions.value,
+    itemsLength: itemCount.value,
+    itemsPerPage: itemsPerPage.value,
+    itemsPerPageText: resolveDataTableMessage(props.itemsPerPageText, "data-table.items-per-page", "Rows per page:"),
+    lastIcon: props.lastIcon,
+    lastPageLabel: resolveDataTableMessage(props.lastPageLabel, "data-table.last-page", "Last page"),
+    mobile: mobile.value,
+    nextIcon: props.nextIcon,
+    nextPageLabel: resolveDataTableMessage(props.nextPageLabel, "data-table.next-page", "Next page"),
+    page: page.value,
+    pageCount: paginationState.pageCount.value,
+    pageText: resolveDataTableMessage(props.pageText, "data-table.page-text", "{0}-{1} of {2}"),
+    prevIcon: props.prevIcon,
+    prevPageLabel: resolveDataTableMessage(props.prevPageLabel, "data-table.prev-page", "Previous page"),
+    showCurrentPage: props.showCurrentPage,
+    showFirstLastPage: props.showFirstLastPage,
+    startIndex: paginationState.startIndex.value,
+    stopIndex: paginationState.stopIndex.value,
+}))
 const slotProps = computed(() => ({
     page: page.value,
     itemsPerPage: itemsPerPage.value,
@@ -307,8 +392,8 @@ const slotProps = computed(() => ({
     items: currentPageItems.value.map((item) => item.raw),
     internalItems: currentPageItems.value,
     groupedItems: renderedItems.value,
-    columns: headerState.columns.value,
-    headers: headerState.headers.value,
+    columns: columnState.columns.value,
+    headers: columnState.headers.value,
 }))
 
 useDataTableOptions({ page, itemsPerPage, sortBy, groupBy, search }, emit)
@@ -324,7 +409,7 @@ function renderCellValue(item: RDataTableItem<T>, key: string) {
     return item.columns[key]
 }
 
-function headerCellSlot(column: (typeof headerState.columns.value)[number]) {
+function headerCellSlot(column: (typeof columnState.columns.value)[number]) {
     return {
         column,
         sortBy: sortBy.value,
@@ -337,7 +422,7 @@ function headerCellSlot(column: (typeof headerState.columns.value)[number]) {
     }
 }
 
-function resolveHeaderProps(column: (typeof headerState.columns.value)[number]) {
+function resolveHeaderProps(column: (typeof columnState.columns.value)[number]) {
     const data = headerCellSlot(column)
     const globalProps = typeof props.headerProps === "function" ? props.headerProps(data) : props.headerProps
     const columnProps = typeof column.headerProps === "function" ? column.headerProps(data) : column.headerProps
@@ -353,7 +438,7 @@ function resolveRowProps(item: RDataTableItem<T>, index: number) {
         index,
         item: item.raw,
         internalItem: item,
-        columns: headerState.columns.value,
+        columns: columnState.columns.value,
         props: rowProps ?? {},
     }
     const rowListeners = Object.fromEntries(
@@ -379,13 +464,13 @@ function groupHeaderClick(event: Event, item: import("./types").RDataTableGroup<
     invokeListener(attrs["onClick:groupHeader"], event, {
         index,
         item,
-        columns: headerState.columns.value,
+        columns: columnState.columns.value,
         isGroupOpen: groupState.isGroupOpen,
         toggleGroup: groupState.toggleGroup,
     })
 }
 
-function resolveCellProps(item: RDataTableItem<T>, column: (typeof headerState.columns.value)[number], index: number) {
+function resolveCellProps(item: RDataTableItem<T>, column: (typeof columnState.columns.value)[number], index: number) {
     const value = renderCellValue(item, column.key)
     const data = { item: item.raw, internalItem: item, index, value, column }
     const globalProps = typeof props.cellProps === "function" ? props.cellProps(data) : props.cellProps
@@ -393,7 +478,7 @@ function resolveCellProps(item: RDataTableItem<T>, column: (typeof headerState.c
     return { ...globalProps, ...columnProps }
 }
 
-function fixedStyle(column: (typeof headerState.columns.value)[number]) {
+function fixedStyle(column: (typeof columnState.columns.value)[number]) {
     if (!column.fixed) return undefined
     const styles: CSSProperties = {
         position: "sticky",
@@ -403,17 +488,17 @@ function fixedStyle(column: (typeof headerState.columns.value)[number]) {
     return styles
 }
 
-function headerAriaSort(column: (typeof headerState.columns.value)[number]) {
+function headerAriaSort(column: (typeof columnState.columns.value)[number]) {
     const descriptor = column.publicKey ? sortBy.value.find((item) => item.key === column.publicKey) : undefined
     return descriptor?.order === "asc" ? "ascending" : descriptor?.order === "desc" ? "descending" : undefined
 }
 
-function sortIcon(column: (typeof headerState.columns.value)[number]) {
+function sortIcon(column: (typeof columnState.columns.value)[number]) {
     const descriptor = column.publicKey ? sortBy.value.find((item) => item.key === column.publicKey) : undefined
-    if (!descriptor) return props.sortIcon ?? props.sortAscIcon ?? RIArrowDropUpFilled
+    if (!descriptor) return props.sortIcon ?? props.sortAscIcon ?? RIArrowUpwardOutlined
     return descriptor.order === "desc"
-        ? (props.sortDescIcon ?? RIArrowDropDownFilled)
-        : (props.sortAscIcon ?? RIArrowDropUpFilled)
+        ? (props.sortDescIcon ?? RIArrowDownwardOutlined)
+        : (props.sortAscIcon ?? RIArrowUpwardOutlined)
 }
 
 function isMultiSortEnabled() {
@@ -436,6 +521,7 @@ function headerSelectProps() {
     return {
         modelValue: selectionState.allSelected.value,
         indeterminate: selectionState.someSelected.value && !selectionState.allSelected.value,
+        disabled: !selectionState.hasSelectableItems.value,
         "aria-label": props.selectAllLabel,
         onClick: (event: MouseEvent) => event.stopPropagation(),
         "onUpdate:modelValue": selectionState.selectAll,
@@ -496,7 +582,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
         v-bind="rootAttrs"
         :as="tag"
         class="rux-data-table"
-        variant="outlined"
+        :variant="variant"
         :class="{
             'rux-data-table--hover': hover,
             'rux-data-table--striped-odd': stripedMode === 'odd',
@@ -513,7 +599,19 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
     >
         <slot v-if="$slots.default" v-bind="slotProps" />
         <template v-else>
-            <slot name="top" v-bind="slotProps" />
+            <div
+                v-if="$slots.top || title || $slots.actions"
+                class="rux-data-table__top"
+                :class="{ 'rux-data-table__top--selected': selectionState.someSelected.value }"
+            >
+                <RText v-if="title" variant="headline6" class="rux-data-table__title">{{ title }}</RText>
+                <div v-if="$slots.top" class="rux-data-table__top-content">
+                    <slot name="top" v-bind="slotProps" />
+                </div>
+                <RButtonRow v-if="$slots.actions" class="rux-data-table__actions">
+                    <slot name="actions" />
+                </RButtonRow>
+            </div>
             <div
                 :ref="virtualState.containerRef"
                 class="rux-data-table__scroll"
@@ -533,8 +631,8 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                         <slot
                             v-if="mobile && $slots['mobile.header']"
                             name="mobile.header"
-                            :headers="headerState.headers.value"
-                            :columns="headerState.columns.value"
+                            :headers="columnState.headers.value"
+                            :columns="columnState.columns.value"
                             :sort-by="sortBy"
                             :some-selected="selectionState.someSelected.value"
                             :all-selected="selectionState.allSelected.value"
@@ -546,8 +644,8 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                         <template v-else-if="$slots.headers">
                             <slot
                                 name="headers"
-                                :headers="headerState.headers.value"
-                                :columns="headerState.columns.value"
+                                :headers="columnState.headers.value"
+                                :columns="columnState.columns.value"
                                 :sort-by="sortBy"
                                 :some-selected="selectionState.someSelected.value"
                                 :all-selected="selectionState.allSelected.value"
@@ -558,7 +656,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                             />
                         </template>
                         <template v-else>
-                            <template v-for="(headerRow, rowIndex) in headerState.headers.value" :key="rowIndex">
+                            <template v-for="(headerRow, rowIndex) in columnState.headers.value" :key="rowIndex">
                                 <tr>
                                     <th
                                         v-for="column in headerRow"
@@ -572,10 +670,19 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                                             `rux-data-table__cell--align-${column.align ?? 'start'}`,
                                             {
                                                 'rux-data-table__cell--fixed': column.fixed,
+                                                'rux-data-table__cell--outer-start': column.key === outerStartColumnKey,
+                                                'rux-data-table__cell--outer-end': column.key === outerEndColumnKey,
+                                                'rux-data-table__cell--select':
+                                                    column.publicKey === 'data-table-select',
+                                                'rux-data-table__cell--expand':
+                                                    column.publicKey === 'data-table-expand',
                                                 'rux-data-table__cell--last-fixed': column.lastFixed,
                                                 'rux-data-table__cell--first-fixed-end': column.firstFixedEnd,
+                                                'rux-data-table__header-cell--selected':
+                                                    selectionState.someSelected.value,
                                                 'rux-data-table__header-cell--sortable':
                                                     column.sortable && !disableSort,
+                                                'rux-data-table__header-cell--sorted': sortState.isSorted(column),
                                             },
                                         ]"
                                         :style="[
@@ -612,9 +719,13 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                                                     {{ column.title }}
                                                     <RIconButton
                                                         v-if="column.sortable && !disableSort"
+                                                        class="rux-data-table__sort-button"
                                                         :icon="sortIcon(column)"
+                                                        :emphasis="sortState.isSorted(column) ? 'high' : 'medium'"
                                                         :label="`Sort ${column.title ?? column.publicKey ?? ''}`"
-                                                        :style="{ '--rui-icon-button-size': '32px' }"
+                                                        :style="{
+                                                            '--rui-icon-button-size': '32px',
+                                                        }"
                                                         @click.stop="sortState.toggleSort(column, $event)"
                                                     />
                                                     <span
@@ -636,7 +747,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                             v-if="loadingState.active.value && ['start', 'both'].includes(loadingState.side.value)"
                             class="rux-data-table__progress-row"
                         >
-                            <th :colspan="headerState.columns.value.length">
+                            <th :colspan="columnState.columns.value.length">
                                 <slot
                                     name="loader"
                                     :color="loadingState.color.value"
@@ -662,7 +773,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                             class="rux-data-table__spacer"
                         >
                             <td
-                                :colspan="headerState.columns.value.length"
+                                :colspan="columnState.columns.value.length"
                                 :style="{ blockSize: `${virtualState.paddingTop.value}px` }"
                             />
                         </tr>
@@ -673,7 +784,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                                 v-if="loadingState.active.value && (!visibleItems.length || $slots.loading)"
                                 class="rux-data-table__state-row"
                             >
-                                <td :colspan="headerState.columns.value.length">
+                                <td :colspan="columnState.columns.value.length">
                                     <slot name="loading">{{ loadingText }}</slot>
                                 </td>
                             </tr>
@@ -681,7 +792,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                                 v-else-if="!loadingState.active.value && !visibleItems.length && !hideNoData"
                                 class="rux-data-table__state-row"
                             >
-                                <td :colspan="headerState.columns.value.length">
+                                <td :colspan="columnState.columns.value.length">
                                     <slot name="no-data">{{ noDataText }}</slot>
                                 </td>
                             </tr>
@@ -700,14 +811,14 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                                     @click="groupHeaderClick($event, entry, entryIndex)"
                                 >
                                     <th
-                                        :colspan="headerState.columns.value.length"
+                                        :colspan="columnState.columns.value.length"
                                         :style="{ paddingInlineStart: `${entry.depth * 24 + 16}px` }"
                                     >
                                         <slot
                                             name="group-header"
                                             :index="entryIndex"
                                             :item="entry"
-                                            :columns="headerState.columns.value"
+                                            :columns="columnState.columns.value"
                                             :is-expanded="expandState.isExpanded"
                                             :toggle-expand="expandState.toggleExpand"
                                             :is-selected="selectionState.isSelected"
@@ -755,7 +866,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                                         name="group-summary"
                                         :index="entryIndex"
                                         :item="entry"
-                                        :columns="headerState.columns.value"
+                                        :columns="columnState.columns.value"
                                         :toggle-group="groupState.toggleGroup"
                                     />
                                 </tr>
@@ -765,7 +876,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                                         :index="entry.virtualIndex ?? entryIndex"
                                         :item="entry.raw"
                                         :internal-item="entry"
-                                        :columns="headerState.columns.value"
+                                        :columns="columnState.columns.value"
                                         :props="resolveRowProps(entry, entry.virtualIndex ?? entryIndex)"
                                         :item-ref="
                                             virtualTable
@@ -793,7 +904,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                                             @click="expandOnClick && expandState.toggleExpand(entry)"
                                         >
                                             <td
-                                                v-for="column in headerState.columns.value"
+                                                v-for="column in columnState.columns.value"
                                                 :key="column.key ?? `${entry.index}-${column.title ?? 'cell'}`"
                                                 :style="[
                                                     fixedStyle(column),
@@ -810,6 +921,14 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                                                     `rux-data-table__cell--align-${column.align ?? 'start'}`,
                                                     {
                                                         'rux-data-table__cell--fixed': column.fixed,
+                                                        'rux-data-table__cell--outer-start':
+                                                            column.key === outerStartColumnKey,
+                                                        'rux-data-table__cell--outer-end':
+                                                            column.key === outerEndColumnKey,
+                                                        'rux-data-table__cell--select':
+                                                            column.publicKey === 'data-table-select',
+                                                        'rux-data-table__cell--expand':
+                                                            column.publicKey === 'data-table-expand',
                                                         'rux-data-table__cell--last-fixed': column.lastFixed,
                                                         'rux-data-table__cell--first-fixed-end': column.firstFixedEnd,
                                                         'rux-data-table__cell--nowrap': column.nowrap,
@@ -892,13 +1011,13 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                                         v-if="expandState.isExpanded(entry) && $slots.expanded"
                                         class="rux-data-table__expanded-row"
                                     >
-                                        <td :colspan="headerState.columns.value.length">
+                                        <td :colspan="columnState.columns.value.length">
                                             <slot
                                                 name="expanded"
                                                 :index="entry.virtualIndex ?? entryIndex"
                                                 :item="entry.raw"
                                                 :internal-item="entry"
-                                                :columns="headerState.columns.value"
+                                                :columns="columnState.columns.value"
                                                 :is-expanded="expandState.isExpanded"
                                                 :toggle-expand="expandState.toggleExpand"
                                             />
@@ -910,7 +1029,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                                         :index="entry.virtualIndex ?? entryIndex"
                                         :item="entry.raw"
                                         :internal-item="entry"
-                                        :columns="headerState.columns.value"
+                                        :columns="columnState.columns.value"
                                         :is-expanded="expandState.isExpanded"
                                         :toggle-expand="expandState.toggleExpand"
                                     />
@@ -920,7 +1039,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                         <slot name="body.append" v-bind="slotProps" />
                         <tr v-if="virtualTable" aria-hidden="true" class="rux-data-table__spacer">
                             <td
-                                :colspan="headerState.columns.value.length"
+                                :colspan="columnState.columns.value.length"
                                 :style="{ blockSize: `${virtualState.paddingBottom.value}px` }"
                             />
                         </tr>
@@ -932,7 +1051,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                             "
                             class="rux-data-table__progress-row"
                         >
-                            <td :colspan="headerState.columns.value.length">
+                            <td :colspan="columnState.columns.value.length">
                                 <slot
                                     name="loader"
                                     :color="loadingState.color.value"
@@ -956,116 +1075,28 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                         class="rux-data-table__tfoot"
                     >
                         <tr>
-                            <td :colspan="headerState.columns.value.length">
-                                <footer class="rux-data-table__footer">
-                                    <slot name="footer.prepend" />
-                                    <RSelectField
-                                        :model-value="itemsPerPage"
-                                        :label="itemsPerPageText"
-                                        @update:model-value="paginationState.setItemsPerPage(Number($event))"
-                                    >
-                                        <RSelectOption
-                                            v-for="option in footerOptions"
-                                            :key="option.value"
-                                            :value="option.value"
-                                            :label="option.title"
-                                        />
-                                    </RSelectField>
-                                    <span class="rux-data-table__page-text">{{
-                                        pageText
-                                            .replace(
-                                                "{0}",
-                                                String(itemCount ? paginationState.startIndex.value + 1 : 0),
-                                            )
-                                            .replace("{1}", String(paginationState.stopIndex.value))
-                                            .replace("{2}", String(itemCount))
-                                    }}</span>
-                                    <div class="rux-data-table__pagination">
-                                        <RIconButton
-                                            v-if="showFirstLastPage"
-                                            :icon="firstIcon ?? RIFirstPageFilled"
-                                            :label="firstPageLabel"
-                                            :disabled="page <= 1"
-                                            @click="paginationState.setPage(1)"
-                                        />
-                                        <RIconButton
-                                            :icon="prevIcon ?? RIChevronLeftFilled"
-                                            :label="prevPageLabel"
-                                            :disabled="page <= 1"
-                                            @click="paginationState.prevPage"
-                                        />
-                                        <span v-if="showCurrentPage">{{ page }}</span>
-                                        <RIconButton
-                                            :icon="nextIcon ?? RIChevronRightFilled"
-                                            :label="nextPageLabel"
-                                            :disabled="page >= paginationState.pageCount.value"
-                                            @click="paginationState.nextPage"
-                                        />
-                                        <RIconButton
-                                            v-if="showFirstLastPage"
-                                            :icon="lastIcon ?? RILastPageFilled"
-                                            :label="lastPageLabel"
-                                            :disabled="page >= paginationState.pageCount.value"
-                                            @click="paginationState.setPage(paginationState.pageCount.value)"
-                                        />
-                                    </div>
-                                </footer>
+                            <td :colspan="columnState.columns.value.length">
+                                <RDataTableFooter
+                                    v-bind="footerProps"
+                                    @update:items-per-page="paginationState.setItemsPerPage"
+                                    @update:page="paginationState.setPage"
+                                >
+                                    <template #prepend><slot name="footer.prepend" /></template>
+                                </RDataTableFooter>
                             </td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
             <slot name="bottom" v-bind="slotProps">
-                <footer v-if="!fixedFooter && !hideDefaultFooter && !virtualTable" class="rux-data-table__footer">
-                    <slot name="footer.prepend" />
-                    <RSelectField
-                        :model-value="itemsPerPage"
-                        :label="itemsPerPageText"
-                        @update:model-value="paginationState.setItemsPerPage(Number($event))"
-                    >
-                        <RSelectOption
-                            v-for="option in footerOptions"
-                            :key="option.value"
-                            :value="option.value"
-                            :label="option.title"
-                        />
-                    </RSelectField>
-                    <span class="rux-data-table__page-text">{{
-                        pageText
-                            .replace("{0}", String(itemCount ? paginationState.startIndex.value + 1 : 0))
-                            .replace("{1}", String(paginationState.stopIndex.value))
-                            .replace("{2}", String(itemCount))
-                    }}</span>
-                    <div class="rux-data-table__pagination">
-                        <RIconButton
-                            v-if="showFirstLastPage"
-                            :icon="firstIcon ?? RIFirstPageFilled"
-                            :label="firstPageLabel"
-                            :disabled="page <= 1"
-                            @click="paginationState.setPage(1)"
-                        />
-                        <RIconButton
-                            :icon="prevIcon ?? RIChevronLeftFilled"
-                            :label="prevPageLabel"
-                            :disabled="page <= 1"
-                            @click="paginationState.prevPage"
-                        />
-                        <span v-if="showCurrentPage">{{ page }}</span>
-                        <RIconButton
-                            :icon="nextIcon ?? RIChevronRightFilled"
-                            :label="nextPageLabel"
-                            :disabled="page >= paginationState.pageCount.value"
-                            @click="paginationState.nextPage"
-                        />
-                        <RIconButton
-                            v-if="showFirstLastPage"
-                            :icon="lastIcon ?? RILastPageFilled"
-                            :label="lastPageLabel"
-                            :disabled="page >= paginationState.pageCount.value"
-                            @click="paginationState.setPage(paginationState.pageCount.value)"
-                        />
-                    </div>
-                </footer>
+                <RDataTableFooter
+                    v-if="!fixedFooter && !hideDefaultFooter && !virtualTable"
+                    v-bind="footerProps"
+                    @update:items-per-page="paginationState.setItemsPerPage"
+                    @update:page="paginationState.setPage"
+                >
+                    <template #prepend><slot name="footer.prepend" /></template>
+                </RDataTableFooter>
             </slot>
         </template>
     </RSurface>
@@ -1080,7 +1111,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
     --rui-comp-data-table-row-hover-background: color-mix(in srgb, var(--rui-sys-color-on-surface) 8%, transparent);
     --rui-comp-data-table-row-selected-background: color-mix(in srgb, var(--rui-sys-color-primary) 14%, transparent);
     --rui-comp-data-table-header-height: 56px;
-    --rui-comp-data-table-cell-padding-inline: 16px;
+    --rui-comp-data-table-cell-padding-inline: 12px;
     overflow: hidden;
 }
 
@@ -1091,6 +1122,29 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
 
 .rux-data-table--comfortable {
     --rui-comp-data-table-header-height: 48px;
+}
+
+.rux-data-table__top {
+    display: flex;
+    align-items: center;
+    min-block-size: 64px;
+    padding-inline-start: 24px;
+}
+
+.rux-data-table__title {
+    margin: 0;
+}
+
+.rux-data-table__top-content {
+    flex: 1;
+}
+
+.rux-data-table__actions {
+    margin-inline-start: auto;
+}
+
+.rux-data-table__top--selected {
+    background: var(--rui-comp-data-table-row-selected-background);
 }
 
 .rux-data-table__scroll {
@@ -1122,11 +1176,32 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
 }
 
 .rux-data-table__header-cell {
+    block-size: 56px;
+}
+
+.rux-data-table__header-cell--selected {
+    background: var(--rui-comp-data-table-row-selected-background);
 }
 
 .rux-data-table__cell {
     font: var(--rui-sys-typescale-body-medium-font, inherit);
     background: var(--rui-sys-color-surface);
+}
+
+.rux-data-table__cell--outer-start {
+    padding-inline-start: 24px;
+}
+
+.rux-data-table__cell--outer-end {
+    padding-inline-end: 24px;
+}
+
+.rux-data-table__cell--select {
+    padding-inline-end: 0;
+}
+
+.rux-data-table__cell--expand {
+    padding-inline-start: 0;
 }
 
 .rux-data-table__cell--align-center {
@@ -1166,18 +1241,37 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
 .rux-data-table__cell--first-fixed-end {
     border-inline-start: 1px solid var(--rui-comp-data-table-border-color);
 }
-.rux-data-table__header-content,
-.rux-data-table__footer,
-.rux-data-table__pagination {
+.rux-data-table__header-content {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0;
 }
 
 .rux-data-table__header-content {
     @include rui.typo-subtitle2;
     color: rui.$color-on-surface-medium;
     justify-content: flex-start;
+}
+
+.rux-data-table__header-cell--sorted .rux-data-table__header-content {
+    color: rui.$color-on-surface-high;
+}
+
+.rux-data-table__header-cell.rux-data-table__cell--align-end .rux-data-table__header-content {
+    justify-content: flex-end;
+}
+
+.rux-data-table__sort-button {
+    visibility: hidden;
+}
+
+.rux-data-table__header-cell--sortable:hover .rux-data-table__sort-button,
+.rux-data-table__header-cell--sorted .rux-data-table__sort-button {
+    visibility: visible;
+}
+
+.rux-data-table__header-cell.rux-data-table__cell--align-end .rux-data-table__sort-button {
+    order: -1;
 }
 
 .rux-data-table__header-cell--sortable {
@@ -1194,18 +1288,23 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
     color: var(--rui-sys-color-on-primary);
     font-size: 12px;
 }
-.rux-data-table--hover .rux-data-table__row:hover .rux-data-table__cell {
+
+.rux-data-table--hover .rux-data-table__row:not(.rux-data-table__row--selected):hover .rux-data-table__cell {
     background: var(--rui-comp-data-table-row-hover-background);
 }
+
 .rux-data-table--striped-odd .rux-data-table__row:nth-child(odd) .rux-data-table__cell {
     background: color-mix(in srgb, var(--rui-sys-color-on-surface) 3%, var(--rui-sys-color-surface));
 }
+
 .rux-data-table--striped-even .rux-data-table__row:nth-child(even) .rux-data-table__cell {
     background: color-mix(in srgb, var(--rui-sys-color-on-surface) 3%, var(--rui-sys-color-surface));
 }
+
 .rux-data-table__row--selected .rux-data-table__cell {
     background: var(--rui-comp-data-table-row-selected-background);
 }
+
 .rux-data-table__state-row td,
 .rux-data-table__group-row th,
 .rux-data-table__group-summary-row {
@@ -1224,12 +1323,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
     padding: 0;
     border: 0;
 }
-.rux-data-table__footer {
-    flex-wrap: wrap;
-    justify-content: end;
-    padding: 8px 16px;
-    border-block-start: 1px solid var(--rui-comp-data-table-border-color);
-}
+
 .rux-data-table__mobile-label {
     display: none;
 }
@@ -1255,11 +1349,5 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
 }
 .rux-data-table--mobile .rux-data-table__row {
     border-block-end: 1px solid var(--rui-comp-data-table-border-color);
-}
-.rux-data-table--mobile .rux-data-table__footer {
-    justify-content: stretch;
-}
-.rux-data-table--mobile .rux-data-table__page-text {
-    margin-inline-end: 0;
 }
 </style>

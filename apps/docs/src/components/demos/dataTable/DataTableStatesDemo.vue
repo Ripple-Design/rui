@@ -2,7 +2,7 @@
 import { RDataTable } from "@ripple-design/rux-data-table"
 import { computed, ref } from "vue"
 
-import { dataTableDemoItems, standardHeaders } from "./data"
+import { dataTableDemoItems, standardColumns } from "./data"
 
 const loading = ref<false | "primary" | { side: "both" }>(false)
 const hasData = ref(true)
@@ -15,11 +15,11 @@ const activeItems = computed(() => hasData.value ? dataTableDemoItems.slice(0, 6
             <button type="button" @click="loading = loading ? false : { side: 'both' }">Toggle loading</button>
             <button type="button" @click="hasData = !hasData">Toggle empty data</button>
         </div>
-        <RDataTable :items="activeItems" :headers="standardHeaders" item-value="id" :loading="loading" no-data-text="No desserts match the current dataset">
+        <RDataTable :items="activeItems" :columns="standardColumns" item-value="id" :loading="loading" no-data-text="No desserts match the current dataset">
             <template #loader><span class="data-table-states-demo__loader">Loading remote data…</span></template>
             <template #no-data><strong>The table is empty.</strong></template>
-            <template #body.prepend><tr><td :colspan="standardHeaders.length">Body prepend slot</td></tr></template>
-            <template #body.append><tr><td :colspan="standardHeaders.length">Body append slot</td></tr></template>
+            <template #body.prepend><tr><td :colspan="standardColumns.length">Body prepend slot</td></tr></template>
+            <template #body.append><tr><td :colspan="standardColumns.length">Body append slot</td></tr></template>
             <template #footer.prepend><span>Footer prepend slot</span></template>
         </RDataTable>
     </div>

@@ -43,6 +43,9 @@ describe("internationalization controller", () => {
 
         expect(controller.resolveMessage("form.required")).toBe("必填")
         expect(controller.resolveMessage("form.optional")).toBe("（选填）")
+        expect(controller.resolveMessage("data-table.all")).toBe("全部")
+        expect(controller.resolveMessage("data-table.prev-page")).toBe("上一页")
+        expect(controller.resolveMessage("data-table.next-page")).toBe("下一页")
     })
 
     it("provides the controller to nested component setup", () => {

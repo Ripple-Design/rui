@@ -10,8 +10,6 @@ import type { RSpinnerProps } from "./types.ts"
 
 import RSpinnerTrigger from "./RSpinnerTrigger.vue"
 
-defineOptions({ inheritAttrs: false })
-
 const props = withDefaults(defineProps<RSpinnerProps>(), {
     align: "start",
     disabled: false,

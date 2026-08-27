@@ -30,7 +30,8 @@
     "scripts": {
         "build": "vue-tsc -b --noEmit tsconfig.json && vite build",
         "lint": "oxlint .",
-        "lint:fix": "oxlint . --fix"
+        "lint:fix": "oxlint . --fix",
+        "test": "vitest run"
     },
     "dependencies": {
         "@ripple-design/icons": "^1.0.7",
@@ -38,8 +39,11 @@
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "catalog:",
+        "@vue/test-utils": "catalog:",
+        "jsdom": "catalog:",
         "vite": "catalog:",
-        "vite-plugin-dts": "catalog:"
+        "vite-plugin-dts": "catalog:",
+        "vitest": "catalog:"
     },
     "peerDependencies": {
         "vue": "^3.5.0"

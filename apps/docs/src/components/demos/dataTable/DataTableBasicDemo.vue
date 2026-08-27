@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { RIFilterListOutlined, RISearchOutlined } from "@ripple-design/icons"
+import { RIconButton } from "@ripple-design/rui"
 import { RDataTable } from "@ripple-design/rux-data-table"
 import { ref } from "vue"
 
@@ -17,9 +19,9 @@ const itemsPerPage = ref(10)
 const selected = ref<unknown[]>([])
 const search = ref("")
 
-const headers = [
+const columns = [
     { key: "name", title: "Dessert", sortable: true },
-    { key: "category", title: "Category", sortable: true },
+    { key: "category", title: "Category" },
     { key: "calories", title: "Calories", align: "end" as const, sortable: true },
     { key: "fat", title: "Fat (g)", align: "end" as const, sortable: true },
 ]
@@ -33,24 +35,15 @@ const headers = [
         v-model:sort-by="sortBy"
         :search="search"
         :items="items"
-        :headers="headers"
+        :columns="columns"
         item-value="id"
         show-select
-        label="Desserts"
+        title="Desserts"
     >
-        <template #top>
-            <div class="data-table-demo__toolbar">
-                <label>Search <input v-model="search" type="search" /></label>
-            </div>
+        <template #actions>
+            <RIconButton :icon="RIFilterListOutlined" label="Filter" />
+            <RIconButton :icon="RISearchOutlined" label="Search" />
         </template>
         <template #item.calories="{ value }">{{ value }} kcal</template>
     </RDataTable>
 </template>
-
-<style scoped>
-.data-table-demo__toolbar {
-    display: flex;
-    justify-content: flex-end;
-    padding: 16px;
-}
-</style>

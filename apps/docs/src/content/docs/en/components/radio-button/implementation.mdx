@@ -11,7 +11,13 @@ api: /en/api/radio-button
 import DemoBlock from "@docs/components/docs/DemoBlock.astro"
 import RadioButtonBasicDemo from "@docs/components/demos/radioButton/RadioButtonBasicDemo.vue"
 import radioButtonBasicDemoSource from "@docs/components/demos/radioButton/RadioButtonBasicDemo.vue?raw"
+import RadioButtonListGroupDemo from "@docs/components/demos/radioButton/RadioButtonListGroupDemo.vue"
+import radioButtonListGroupDemoSource from "@docs/components/demos/radioButton/RadioButtonListGroupDemo.vue?raw"
 
 <DemoBlock title="Basic usage" code={radioButtonBasicDemoSource} language="vue">
     <RadioButtonBasicDemo client:load />
+</DemoBlock>
+
+<DemoBlock title="List group" code={radioButtonListGroupDemoSource} language="vue">
+    <RadioButtonListGroupDemo client:load />
 </DemoBlock>

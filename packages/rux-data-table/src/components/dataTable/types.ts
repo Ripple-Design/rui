@@ -1,4 +1,4 @@
-import type { RIconResolvableSource } from "@ripple-design/rui"
+import type { RIconResolvableSource, RSurfaceProps } from "@ripple-design/rui"
 import type { Ref } from "vue"
 
 export type RDataTableCompareFunction<T = any> = (a: T, b: T) => number | null
@@ -8,21 +8,30 @@ export type RDataTableLoading = boolean | string | { side?: RDataTableLoadingSid
 export type RDataTableSortItem = { key: string; order?: false | "asc" | "desc" }
 export type RDataTableFilterMode = "some" | "every" | "union" | "intersection"
 export type RDataTableMultiSort = boolean | { key?: "ctrl"; mode?: "append" | "prepend"; modifier?: "alt" | "shift" }
-export type RDataTableSelectItemKey<T = Record<string, any>> = string | readonly string[] | ((item: T, fallback?: unknown) => unknown)
-export type RDataTableFilterFunction<T = RDataTableItem> = (value: string, query: string, item?: T) => boolean | number | readonly [number, number] | readonly (readonly [number, number])[]
+export type RDataTableSelectItemKey<T = Record<string, any>> =
+    | string
+    | readonly string[]
+    | ((item: T, fallback?: unknown) => unknown)
+export type RDataTableFilterFunction<T = RDataTableItem> = (
+    value: string,
+    query: string,
+    item?: T,
+) => boolean | number | readonly [number, number] | readonly (readonly [number, number])[]
 
 export type RDataTableHeaderCellSlot<T = any> = {
-    column: RInternalDataTableHeader<T>
+    column: RInternalDataTableColumn<T>
     sortBy: readonly RDataTableSortItem[]
-    toggleSort: (column: RInternalDataTableHeader<T>, event?: MouseEvent | KeyboardEvent) => void
-    isSorted: (column: RInternalDataTableHeader<T>) => boolean
-    getSortIcon: (column: RInternalDataTableHeader<T>) => RIconResolvableSource
+    toggleSort: (column: RInternalDataTableColumn<T>, event?: MouseEvent | KeyboardEvent) => void
+    isSorted: (column: RInternalDataTableColumn<T>) => boolean
+    getSortIcon: (column: RInternalDataTableColumn<T>) => RIconResolvableSource
     selectAll: (value: boolean) => void
     someSelected: boolean
     allSelected: boolean
 }
 
-export type RDataTableHeaderProps<T = any> = Record<string, unknown> | ((data: RDataTableHeaderCellSlot<T>) => Record<string, unknown>)
+export type RDataTableHeaderProps<T = any> =
+    | Record<string, unknown>
+    | ((data: RDataTableHeaderCellSlot<T>) => Record<string, unknown>)
 
 export type RDataTableSelectionControlProps = {
     modelValue: boolean
@@ -40,11 +49,13 @@ export type RDataTableItemCellSlot<T = any> = RDataTableCellSlot<T> & {
     toggleExpand: (item: RDataTableItem<T>) => void
 }
 
-export type RDataTableHeaderSelectSlot<T = any> = RDataTableHeaderCellSlot<T> & { props: RDataTableSelectionControlProps }
+export type RDataTableHeaderSelectSlot<T = any> = RDataTableHeaderCellSlot<T> & {
+    props: RDataTableSelectionControlProps
+}
 export type RDataTableItemSelectSlot<T = any> = RDataTableItemCellSlot<T> & { props: RDataTableSelectionControlProps }
 export type RDataTableGroupSelectSlot = { props: RDataTableSelectionControlProps }
 
-export type RDataTableHeader<T = Record<string, any>> = {
+export type RDataTableColumn<T = Record<string, any>> = {
     key?: "data-table-group" | "data-table-select" | "data-table-expand" | (string & {})
     value?: RDataTableSelectItemKey<T>
     title?: string
@@ -63,10 +74,13 @@ export type RDataTableHeader<T = Record<string, any>> = {
     sort?: RDataTableCompareFunction
     sortRaw?: RDataTableCompareFunction
     filter?: RDataTableFilterFunction
-    children?: RDataTableHeader<T>[]
+    children?: RDataTableColumn<T>[]
 }
 
-export type RInternalDataTableHeader<T = Record<string, any>> = Omit<RDataTableHeader<T>, "key" | "value" | "children"> & {
+export type RInternalDataTableColumn<T = Record<string, any>> = Omit<
+    RDataTableColumn<T>,
+    "key" | "value" | "children"
+> & {
     key: string
     publicKey?: string
     value: RDataTableSelectItemKey<T> | null
@@ -78,7 +92,7 @@ export type RInternalDataTableHeader<T = Record<string, any>> = Omit<RDataTableH
     headerRow?: number
     colspan?: number
     rowspan?: number
-    children?: RInternalDataTableHeader<T>[]
+    children?: RInternalDataTableColumn<T>[]
 }
 
 export type RDataTableItem<T = any> = {
@@ -105,19 +119,22 @@ export type RDataTableGroup<T = any> = {
 }
 
 export type RDataTableGroupSummary<T = any> = Omit<RDataTableGroup<T>, "type"> & { type: "group-summary" }
-export type RDataTableFlatItem<T = any> = RDataTableItem<T> | RDataTableGroup<RDataTableItem<T>> | RDataTableGroupSummary<RDataTableItem<T>>
+export type RDataTableFlatItem<T = any> =
+    | RDataTableItem<T>
+    | RDataTableGroup<RDataTableItem<T>>
+    | RDataTableGroupSummary<RDataTableItem<T>>
 
 export type RDataTableCellSlot<T = any> = {
     index: number
     item: T
     internalItem: RDataTableItem<T>
     value: unknown
-    column: RInternalDataTableHeader<T>
+    column: RInternalDataTableColumn<T>
 }
 
 export type RDataTableRowProps = Record<string, unknown>
 export type RDataTableItemSlot<T = any> = Omit<RDataTableCellSlot<T>, "value" | "column"> & {
-    columns: RInternalDataTableHeader<T>[]
+    columns: RInternalDataTableColumn<T>[]
     props: RDataTableRowProps
     isSelected: (item: RDataTableItem<T> | RDataTableItem<T>[]) => boolean
     select: (items: RDataTableItem<T>[], value: boolean) => void
@@ -144,12 +161,14 @@ export type RDataTableStriped = boolean | "odd" | "even" | null
 
 export type RDataTableCommonProps<T = any> = {
     items?: readonly T[]
-    headers?: readonly RDataTableHeader<T>[]
+    columns?: readonly RDataTableColumn<T>[]
     itemValue?: RDataTableSelectItemKey<T>
     itemSelectable?: RDataTableSelectItemKey<T> | null
     returnObject?: boolean
-    rowProps?: RDataTableRowProps | ((data: Pick<RDataTableItemSlot<T>, "index" | "item" | "internalItem">) => RDataTableRowProps)
-    cellProps?: RDataTableHeader<T>["cellProps"]
+    rowProps?:
+        | RDataTableRowProps
+        | ((data: Pick<RDataTableItemSlot<T>, "index" | "item" | "internalItem">) => RDataTableRowProps)
+    cellProps?: RDataTableColumn<T>["cellProps"]
     headerProps?: RDataTableHeaderProps<T>
     modelValue?: readonly unknown[]
     valueComparator?: (a: unknown, b: unknown) => boolean
@@ -195,6 +214,8 @@ export type RDataTableCommonProps<T = any> = {
     mobileBreakpoint?: string | number
     color?: string
     tag?: string
+    title?: string
+    variant?: RSurfaceProps["variant"]
     sortIcon?: RIconResolvableSource
     sortAscIcon?: RIconResolvableSource
     sortDescIcon?: RIconResolvableSource
@@ -227,7 +248,10 @@ export type RDataTableProps<T = any> = RDataTableCommonProps<T> & {
 }
 
 export type RDataTableServerProps<T = any> = RDataTableProps<T> & { itemsLength: number | string }
-export type RDataTableVirtualProps<T = any> = Omit<RDataTableCommonProps<T>, "hideDefaultFooter"> & { itemHeight?: number | string | null; itemKey?: RDataTableSelectItemKey<T> | null }
+export type RDataTableVirtualProps<T = any> = Omit<RDataTableCommonProps<T>, "hideDefaultFooter"> & {
+    itemHeight?: number | string | null
+    itemKey?: RDataTableSelectItemKey<T> | null
+}
 
 export type RDataTableModelState = {
     modelValue: Ref<unknown[]>
@@ -235,7 +259,13 @@ export type RDataTableModelState = {
     opened: Ref<string[]>
 }
 
-export type RDataTableOptions = { page: number; itemsPerPage: number; sortBy: readonly RDataTableSortItem[]; groupBy: readonly RDataTableSortItem[]; search?: string }
+export type RDataTableOptions = {
+    page: number
+    itemsPerPage: number
+    sortBy: readonly RDataTableSortItem[]
+    groupBy: readonly RDataTableSortItem[]
+    search?: string
+}
 
 export type RDataTableEmits<T = any> = {
     (e: "update:modelValue", value: unknown[]): void
@@ -275,6 +305,7 @@ export type RDataTableSlots<T = any> = {
     caption?: () => any
     colgroup?: (props: RDataTableTableSlot<T>) => any
     top?: (props: RDataTableTableSlot<T>) => any
+    actions?: () => any
     bottom?: (props: RDataTableTableSlot<T>) => any
     thead?: (props: RDataTableTableSlot<T>) => any
     tbody?: (props: RDataTableTableSlot<T>) => any
@@ -293,7 +324,11 @@ export type RDataTableSlots<T = any> = {
     "group-summary"?: (props: RDataTableGroupSummarySlot<T>) => any
     expanded?: (props: RDataTableItemSlot<T>) => any
     "expanded-row"?: (props: RDataTableItemSlot<T>) => any
-    "data-table-group"?: (props: { item: RDataTableGroup<RDataTableItem<T>>; count: number; props: { icon: RIconResolvableSource; onClick: () => void } }) => any
+    "data-table-group"?: (props: {
+        item: RDataTableGroup<RDataTableItem<T>>
+        count: number
+        props: { icon: RIconResolvableSource; onClick: () => void }
+    }) => any
     "data-table-select"?: (props: RDataTableGroupSelectSlot) => any
     "header.data-table-select"?: (props: RDataTableHeaderSelectSlot<T>) => any
     "item.data-table-select"?: (props: RDataTableItemSelectSlot<T>) => any
@@ -301,10 +336,64 @@ export type RDataTableSlots<T = any> = {
     [name: `header.${string}`]: ((props: RDataTableHeaderCellSlot<T>) => any) | undefined
     [name: `item.${string}`]: ((props: RDataTableItemCellSlot<T>) => any) | undefined
 }
-export type RDataTableVirtualSlots<T = any> = Omit<RDataTableSlots<T>, "default" | "body" | "footer.prepend" | "expanded" | "expanded-row" | "item"> & {
+export type RDataTableVirtualSlots<T = any> = Omit<
+    RDataTableSlots<T>,
+    "default" | "body" | "footer.prepend" | "expanded" | "expanded-row" | "item"
+> & {
     item?: (props: RDataTableItemSlot<T> & { itemRef: (element: Element | null) => void }) => any
 }
-export type RDataTableHeaderSlot<T> = { headers: RInternalDataTableHeader<T>[][]; columns: RInternalDataTableHeader<T>[]; sortBy: readonly RDataTableSortItem[]; someSelected: boolean; allSelected: boolean; toggleSort: (column: RInternalDataTableHeader<T>, event?: MouseEvent | KeyboardEvent) => void; selectAll: (value: boolean) => void; getSortIcon: (column: RInternalDataTableHeader<T>) => RIconResolvableSource; isSorted: (column: RInternalDataTableHeader<T>) => boolean }
-export type RDataTableGroupSlot<T> = { index: number; item: RDataTableGroup<RDataTableItem<T>>; columns: RInternalDataTableHeader<T>[]; isGroupOpen: (item: RDataTableGroup<RDataTableItem<T>>) => boolean; toggleGroup: (item: RDataTableGroup<RDataTableItem<T>>) => void; isExpanded: (item: RDataTableItem<T>) => boolean; toggleExpand: (item: RDataTableItem<T>) => void; isSelected: (item: RDataTableItem<T> | RDataTableItem<T>[]) => boolean; toggleSelect: (item: RDataTableItem<T>, index?: number, event?: MouseEvent) => void }
-export type RDataTableGroupSummarySlot<T> = { index: number; item: RDataTableGroupSummary<RDataTableItem<T>>; columns: RInternalDataTableHeader<T>[]; toggleGroup: (item: RDataTableGroup<RDataTableItem<T>>) => void }
-export type RDataTableTableSlot<T> = { page: number; itemsPerPage: number; itemsLength: number; sortBy: readonly RDataTableSortItem[]; pageCount: number; toggleSort: (column: RInternalDataTableHeader<T>, event?: MouseEvent | KeyboardEvent) => void; setItemsPerPage: (value: number) => void; prevPage: () => void; nextPage: () => void; setPage: (value: number) => void; someSelected: boolean; allSelected: boolean; isSelected: (item: RDataTableItem<T> | RDataTableItem<T>[]) => boolean; select: (items: RDataTableItem<T>[], value: boolean) => void; selectAll: (value: boolean) => void; toggleSelect: (item: RDataTableItem<T>, index?: number, event?: MouseEvent) => void; isExpanded: (item: RDataTableItem<T>) => boolean; toggleExpand: (item: RDataTableItem<T>) => void; isGroupOpen: (item: RDataTableGroup<RDataTableItem<T>>) => boolean; toggleGroup: (item: RDataTableGroup<RDataTableItem<T>>) => void; items: T[]; internalItems: RDataTableItem<T>[]; groupedItems: RDataTableFlatItem<T>[]; columns: RInternalDataTableHeader<T>[]; headers: RInternalDataTableHeader<T>[][] }
+export type RDataTableHeaderSlot<T> = {
+    headers: RInternalDataTableColumn<T>[][]
+    columns: RInternalDataTableColumn<T>[]
+    sortBy: readonly RDataTableSortItem[]
+    someSelected: boolean
+    allSelected: boolean
+    toggleSort: (column: RInternalDataTableColumn<T>, event?: MouseEvent | KeyboardEvent) => void
+    selectAll: (value: boolean) => void
+    getSortIcon: (column: RInternalDataTableColumn<T>) => RIconResolvableSource
+    isSorted: (column: RInternalDataTableColumn<T>) => boolean
+}
+export type RDataTableGroupSlot<T> = {
+    index: number
+    item: RDataTableGroup<RDataTableItem<T>>
+    columns: RInternalDataTableColumn<T>[]
+    isGroupOpen: (item: RDataTableGroup<RDataTableItem<T>>) => boolean
+    toggleGroup: (item: RDataTableGroup<RDataTableItem<T>>) => void
+    isExpanded: (item: RDataTableItem<T>) => boolean
+    toggleExpand: (item: RDataTableItem<T>) => void
+    isSelected: (item: RDataTableItem<T> | RDataTableItem<T>[]) => boolean
+    toggleSelect: (item: RDataTableItem<T>, index?: number, event?: MouseEvent) => void
+}
+export type RDataTableGroupSummarySlot<T> = {
+    index: number
+    item: RDataTableGroupSummary<RDataTableItem<T>>
+    columns: RInternalDataTableColumn<T>[]
+    toggleGroup: (item: RDataTableGroup<RDataTableItem<T>>) => void
+}
+export type RDataTableTableSlot<T> = {
+    page: number
+    itemsPerPage: number
+    itemsLength: number
+    sortBy: readonly RDataTableSortItem[]
+    pageCount: number
+    toggleSort: (column: RInternalDataTableColumn<T>, event?: MouseEvent | KeyboardEvent) => void
+    setItemsPerPage: (value: number) => void
+    prevPage: () => void
+    nextPage: () => void
+    setPage: (value: number) => void
+    someSelected: boolean
+    allSelected: boolean
+    isSelected: (item: RDataTableItem<T> | RDataTableItem<T>[]) => boolean
+    select: (items: RDataTableItem<T>[], value: boolean) => void
+    selectAll: (value: boolean) => void
+    toggleSelect: (item: RDataTableItem<T>, index?: number, event?: MouseEvent) => void
+    isExpanded: (item: RDataTableItem<T>) => boolean
+    toggleExpand: (item: RDataTableItem<T>) => void
+    isGroupOpen: (item: RDataTableGroup<RDataTableItem<T>>) => boolean
+    toggleGroup: (item: RDataTableGroup<RDataTableItem<T>>) => void
+    items: T[]
+    internalItems: RDataTableItem<T>[]
+    groupedItems: RDataTableFlatItem<T>[]
+    columns: RInternalDataTableColumn<T>[]
+    headers: RInternalDataTableColumn<T>[][]
+}
