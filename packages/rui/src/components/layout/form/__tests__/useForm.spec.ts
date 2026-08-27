@@ -156,6 +156,44 @@ describe("useForm", () => {
         expect(form.fields.username!.errors).toHaveLength(0)
     })
 
+    it("cancels asynchronous conditional rules when a dependency disables them", async () => {
+        let resolveValidation!: (valid: boolean) => void
+        const { form, value } = useForm(
+            {
+                enabled: true,
+                value: "invalid",
+            },
+            {
+                value: [
+                    {
+                        dependsOn: ["enabled"],
+                        validateWhen(_, values) {
+                            return values.enabled
+                        },
+                        validator() {
+                            return new Promise<boolean>((resolve) => {
+                                resolveValidation = resolve
+                            })
+                        },
+                        message: "Invalid value",
+                    },
+                ],
+            },
+        )
+
+        const validation = form.validateField("value")
+        value.enabled = false
+        await nextTick()
+        await Promise.resolve()
+        resolveValidation(false)
+        await validation
+
+        expect(form.fields.value!.errors).toHaveLength(0)
+        expect(form.fields.value!.pending).toBe(false)
+        expect(form.fields.value!.valid).toBe(true)
+        expect(form.fields.value!.invalid).toBe(false)
+    })
+
     it("cancels pending validation when field state is cleared", async () => {
         let resolveValidation!: (valid: boolean) => void
         const { form, value } = useForm<{ username: string }>({
@@ -244,5 +282,71 @@ describe("useForm", () => {
         expect(warn).toHaveBeenCalledWith('RForm ignores required rules for field "plan".')
 
         warn.mockRestore()
+    })
+
+    it("revalidates conditional required rules when dependencies change", async () => {
+        const { form, value } = useForm(
+            {
+                requiresDetails: false,
+                details: "",
+            },
+            {
+                details: [
+                    {
+                        required: true,
+                        dependsOn: ["requiresDetails"],
+                        validateWhen(_, values) {
+                            return values.requiresDetails
+                        },
+                        message: "Details are required",
+                    },
+                ],
+            },
+        )
+
+        await expect(form.validateField("details")).resolves.toBe(true)
+        expect(form.isFieldRequired("details")).toBe(false)
+
+        value.requiresDetails = true
+        await nextTick()
+        await Promise.resolve()
+
+        expect(form.fields.details!.errors[0]?.message).toBe("Details are required")
+        expect(form.fields.details!.invalid).toBe(true)
+        expect(form.isFieldRequired("details")).toBe(true)
+
+        value.requiresDetails = false
+        await nextTick()
+        await Promise.resolve()
+
+        expect(form.fields.details!.errors).toHaveLength(0)
+        expect(form.fields.details!.valid).toBe(true)
+        expect(form.fields.details!.invalid).toBe(false)
+        expect(form.isFieldRequired("details")).toBe(false)
+    })
+
+    it("skips validators when conditional rules are inactive", async () => {
+        const validator = vi.fn(() => false)
+        const { form } = useForm(
+            {
+                enabled: false,
+                value: "invalid",
+            },
+            {
+                value: [
+                    {
+                        dependsOn: ["enabled"],
+                        validateWhen(_, values) {
+                            return values.enabled
+                        },
+                        validator,
+                        message: "Invalid value",
+                    },
+                ],
+            },
+        )
+
+        await expect(form.validate()).resolves.toBe(true)
+        expect(validator).not.toHaveBeenCalled()
     })
 })

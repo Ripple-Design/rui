@@ -1,19 +1,19 @@
 import { computed, type ComputedRef } from "vue"
 
-import type { RDataTableCompareFunction, RDataTableHeader, RDataTableFilterFunction, RInternalDataTableHeader } from "../components/dataTable/types"
+import type { RDataTableCompareFunction, RDataTableColumn, RDataTableFilterFunction, RInternalDataTableColumn } from "../components/dataTable/types"
 
 const defaultHeader = { title: "", sortable: false }
 const defaultActionHeader = { ...defaultHeader, width: 48 }
 
-function leaves<T>(header: RInternalDataTableHeader<T>): RInternalDataTableHeader<T>[] {
+function leaves<T>(header: RInternalDataTableColumn<T>): RInternalDataTableColumn<T>[] {
     return header.children ? header.children.flatMap(leaves) : [header]
 }
 
-function depth<T>(header: RInternalDataTableHeader<T>, level = 0): number {
+function depth<T>(header: RInternalDataTableColumn<T>, level = 0): number {
     return header.children ? Math.max(level, ...header.children.map(child => depth(child, level + 1))) : level
 }
 
-function collectKeys<T>(headers: readonly RDataTableHeader<T>[], keys = new Set<string>()): Set<string> {
+function collectKeys<T>(headers: readonly RDataTableColumn<T>[], keys = new Set<string>()): Set<string> {
     for (const header of headers) {
         if (header.key) keys.add(header.key)
         if (header.children) collectKeys(header.children, keys)
@@ -21,7 +21,7 @@ function collectKeys<T>(headers: readonly RDataTableHeader<T>[], keys = new Set<
     return keys
 }
 
-function toInternal<T>(headers: readonly RDataTableHeader<T>[], parentPath = "header"): RInternalDataTableHeader<T>[] {
+function toInternal<T>(headers: readonly RDataTableColumn<T>[], parentPath = "header"): RInternalDataTableColumn<T>[] {
     return headers.map((header, index) => {
         const defaults = header.key === "data-table-group" ? defaultHeader : ["data-table-select", "data-table-expand"].includes(header.key ?? "") ? defaultActionHeader : {}
         const source = { ...defaults, ...header }
@@ -34,13 +34,13 @@ function toInternal<T>(headers: readonly RDataTableHeader<T>[], parentPath = "he
             value: source.value ?? publicKey ?? null,
             filterable: source.filterable ?? !["data-table-group", "data-table-select", "data-table-expand"].includes(publicKey ?? ""),
             filterKey: source.filterKey ?? publicKey,
-            sortable: source.sortable ?? (publicKey != null || !!source.sort),
+            sortable: source.sortable ?? false,
             children: source.children ? toInternal(source.children, key) : undefined,
         }
     })
 }
 
-function parseFixed<T>(items: RInternalDataTableHeader<T>[], inherited?: "start" | "end") {
+function parseFixed<T>(items: RInternalDataTableColumn<T>[], inherited?: "start" | "end") {
     for (const header of items) {
         if (header.fixed === true) header.fixed = "start"
         if (inherited && !header.fixed) header.fixed = inherited
@@ -67,7 +67,7 @@ function parseFixed<T>(items: RInternalDataTableHeader<T>[], inherited?: "start"
     if (starts.length) starts.at(-1)!.lastFixed = true
     if (ends.length) ends.at(0)!.firstFixedEnd = true
 
-    function decorate(headers: RInternalDataTableHeader<T>[]) {
+    function decorate(headers: RInternalDataTableColumn<T>[]) {
         for (const header of headers) {
             if (!header.children) continue
             decorate(header.children)
@@ -88,10 +88,10 @@ function parseFixed<T>(items: RInternalDataTableHeader<T>[], inherited?: "start"
     decorate(items)
 }
 
-function parseMatrix<T>(items: RInternalDataTableHeader<T>[]) {
+function parseMatrix<T>(items: RInternalDataTableColumn<T>[]) {
     const maxDepth = Math.max(0, ...items.map(item => depth(item))) + 1
-    const rows: RInternalDataTableHeader<T>[][] = Array.from({ length: maxDepth }, () => [])
-    function walk(headers: RInternalDataTableHeader<T>[], level: number) {
+    const rows: RInternalDataTableColumn<T>[][] = Array.from({ length: maxDepth }, () => [])
+    function walk(headers: RInternalDataTableColumn<T>[], level: number) {
         for (const header of headers) {
             rows[level]!.push({ ...header, headerRow: level, colspan: header.children ? header.children.flatMap(leaves).length : 1, rowspan: header.children ? 1 : maxDepth - level })
             if (header.children) walk(header.children, level + 1)
@@ -101,9 +101,9 @@ function parseMatrix<T>(items: RInternalDataTableHeader<T>[]) {
     return { headers: rows, columns: items.flatMap(leaves) }
 }
 
-export function useDataTableHeaders<T>(props: { headers?: readonly RDataTableHeader<T>[]; items?: readonly T[]; groupBy?: readonly unknown[]; showSelect?: boolean; showExpand?: boolean }): { headers: ComputedRef<RInternalDataTableHeader<T>[][]>; columns: ComputedRef<RInternalDataTableHeader<T>[]>; sortFunctions: ComputedRef<Record<string, RDataTableCompareFunction>>; sortRawFunctions: ComputedRef<Record<string, RDataTableCompareFunction>>; filterFunctions: ComputedRef<Record<string, RDataTableFilterFunction>>; filterKeys: ComputedRef<string[]> } {
+export function useDataTableColumns<T>(props: { columns?: readonly RDataTableColumn<T>[]; items?: readonly T[]; groupBy?: readonly unknown[]; showSelect?: boolean; showExpand?: boolean }): { headers: ComputedRef<RInternalDataTableColumn<T>[][]>; columns: ComputedRef<RInternalDataTableColumn<T>[]>; sortFunctions: ComputedRef<Record<string, RDataTableCompareFunction>>; sortRawFunctions: ComputedRef<Record<string, RDataTableCompareFunction>>; filterFunctions: ComputedRef<Record<string, RDataTableFilterFunction>>; filterKeys: ComputedRef<string[]> } {
     const source = computed(() => {
-        const supplied = props.headers ?? Object.keys((props.items?.[0] ?? {}) as object).map(key => ({ key, title: key.charAt(0).toUpperCase() + key.slice(1) } as RDataTableHeader<T>))
+        const supplied = props.columns ?? Object.keys((props.items?.[0] ?? {}) as object).map(key => ({ key, title: key.charAt(0).toUpperCase() + key.slice(1) } as RDataTableColumn<T>))
         const result = supplied.slice()
         const keys = collectKeys(result)
         if (props.groupBy?.length && !keys.has("data-table-group")) result.unshift({ key: "data-table-group", title: "Group" })

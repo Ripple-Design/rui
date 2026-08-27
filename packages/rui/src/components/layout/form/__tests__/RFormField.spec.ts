@@ -232,6 +232,59 @@ describe("RForm field bindings", () => {
         expect(form.fields["account.interests"]!.valid).toBe(true)
     })
 
+    it("updates form-bound chip group accessibility for conditional required rules", async () => {
+        const { form, value } = useForm(
+            {
+                requiresPlan: false,
+                plan: null as string | null,
+            },
+            {
+                plan: [
+                    {
+                        required: true,
+                        dependsOn: ["requiresPlan"],
+                        validateWhen(_, values) {
+                            return values.requiresPlan
+                        },
+                        message: "Choose a plan",
+                    },
+                ],
+            },
+        )
+        const wrapper = mount(RForm, {
+            props: { form },
+            slots: {
+                default: () =>
+                    h(RChipGroup, { name: "plan", selection: "multiple", type: "filter" }, {
+                        default: () => [
+                            h(RChip, { value: "starter" }, () => "Starter"),
+                            h(RChip, { value: "pro" }, () => "Pro"),
+                        ],
+                    }),
+            },
+        })
+
+        const root = wrapper.get(".rui-chip-group")
+        await nextTick()
+        await form.validateField("plan")
+        form.setTouched("plan")
+        expect(root.attributes("aria-required")).toBeUndefined()
+
+        value.requiresPlan = true
+        await nextTick()
+        await Promise.resolve()
+
+        expect(root.attributes("aria-required")).toBe("true")
+        expect(root.attributes("aria-invalid")).toBe("true")
+
+        value.requiresPlan = false
+        await nextTick()
+        await Promise.resolve()
+
+        expect(root.attributes("aria-required")).toBeUndefined()
+        expect(root.attributes("aria-invalid")).toBeUndefined()
+    })
+
     it("binds a named select option value and validates it as a change", async () => {
         const { form, value } = useForm<{
             account: {

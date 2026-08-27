@@ -60,6 +60,12 @@ export type RFormValidator<TFieldValue, TValues> = (
     values: Readonly<TValues>,
 ) => boolean | Promise<boolean>
 
+/** Decides whether a rule is active for the current form values. */
+export type RFormValidateWhen<TFieldValue, TValues> = (
+    fieldValue: TFieldValue,
+    values: Readonly<TValues>,
+) => boolean
+
 /** Declarative validation rule for a form field. */
 export type RFormRule<TFieldValue = unknown, TValues = unknown> = {
     /** Requires a non-empty value. */
@@ -78,6 +84,8 @@ export type RFormRule<TFieldValue = unknown, TValues = unknown> = {
     sameAs?: RFormPath<TValues>
     /** Revalidates this field after one of these paths changes. */
     dependsOn?: readonly RFormPath<TValues>[]
+    /** Decides whether this rule participates in validation. Dependencies read here must be declared in dependsOn. */
+    validateWhen?: RFormValidateWhen<TFieldValue, TValues>
     /** Supplies custom synchronous or asynchronous validation. */
     validator?: RFormValidator<TFieldValue, TValues>
     /** Message shown when this rule is the first failed rule. */

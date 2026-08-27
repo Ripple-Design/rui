@@ -41,3 +41,36 @@ declare const instance: RFormInstance
 const result: Promise<boolean> = instance.submit()
 void result
 void instance.submit(new SubmitEvent("submit"))
+
+type ConditionalValues = {
+    enabled: boolean
+    name: string
+}
+
+useForm<ConditionalValues>({
+    enabled: false,
+    name: "",
+}, {
+    name: [
+        {
+            required: true,
+            dependsOn: ["enabled"],
+            validateWhen(name, values) {
+                name.trim()
+                return values.enabled
+            },
+        },
+    ],
+})
+
+useForm<ConditionalValues>({
+    enabled: false,
+    name: "",
+}, {
+    name: [
+        {
+            // @ts-expect-error validateWhen must be synchronous.
+            validateWhen: async () => true,
+        },
+    ],
+})

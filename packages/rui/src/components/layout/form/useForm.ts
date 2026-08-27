@@ -69,6 +69,14 @@ function hasTrigger<TValues extends RFormValues>(rule: RuntimeRule<TValues>, tri
     return triggers.includes(trigger)
 }
 
+function isRuleActive<TValues extends RFormValues>(
+    rule: RuntimeRule<TValues>,
+    fieldValue: unknown,
+    values: TValues,
+) {
+    return rule.validateWhen === undefined || rule.validateWhen(fieldValue, values)
+}
+
 function getLengthOrNumber(value: unknown) {
     if (typeof value === "number") {
         return value
@@ -200,7 +208,7 @@ export function useForm<TValues extends RFormValues>(
         ruleResults.delete(normalizePath(path))
     }
 
-    function getFirstRuleError(path: string) {
+    function getFirstRuleError(path: string, fieldValue: unknown) {
         const normalizedPath = normalizePath(path)
         const results = ruleResults.get(normalizedPath)
         if (!results) {
@@ -208,7 +216,10 @@ export function useForm<TValues extends RFormValues>(
         }
 
         for (const rule of flatRules[normalizedPath] ?? []) {
-            if (ignoredRequiredPaths.has(normalizedPath) && rule.required) {
+            if (
+                (ignoredRequiredPaths.has(normalizedPath) && rule.required)
+                || !isRuleActive(rule, fieldValue, value)
+            ) {
                 continue
             }
 
@@ -225,6 +236,10 @@ export function useForm<TValues extends RFormValues>(
         rule: RuntimeRule<TValues>,
         fieldValue: unknown,
     ): Promise<RFormValidationError | null> {
+        if (!isRuleActive(rule, fieldValue, value)) {
+            return null
+        }
+
         if (rule.required && (fieldValue === false || isEmptyValue(fieldValue))) {
             return {
                 message: getRuleMessage(rule),
@@ -306,19 +321,35 @@ export function useForm<TValues extends RFormValues>(
         const normalizedPath = normalizePath(path)
         const state = getField(normalizedPath)
         const rulesForPath = flatRules[normalizedPath] ?? []
+        const fieldValue = getAtPath(value, normalizedPath)
+        const generation = (validationGenerations.get(normalizedPath) ?? 0) + 1
+        validationGenerations.set(normalizedPath, generation)
+        const cachedResults = ruleResults.get(normalizedPath)
+        for (const rule of rulesForPath) {
+            if (!isRuleActive(rule, fieldValue, value)) {
+                cachedResults?.delete(rule)
+            }
+        }
+
         const applicableRules = rulesForPath.filter(
-            (rule) => hasTrigger(rule, trigger) && !(ignoredRequiredPaths.has(normalizedPath) && rule.required),
+            (rule) =>
+                hasTrigger(rule, trigger)
+                && !(ignoredRequiredPaths.has(normalizedPath) && rule.required)
+                && isRuleActive(rule, fieldValue, value),
         )
 
         if (applicableRules.length === 0) {
+            const firstError = getFirstRuleError(normalizedPath, fieldValue)
+            state.pending = false
+            state.validated = true
+            state.valid = firstError == null
+            state.invalid = firstError != null
+            state.errors.splice(0, state.errors.length, ...(firstError ? [firstError] : []))
             return state.valid
         }
 
-        const generation = (validationGenerations.get(normalizedPath) ?? 0) + 1
-        validationGenerations.set(normalizedPath, generation)
         state.pending = true
 
-        const fieldValue = getAtPath(value, normalizedPath)
         const results = ruleResults.get(normalizedPath) ?? new Map<RuntimeRule<TValues>, RFormValidationError | null>()
         ruleResults.set(normalizedPath, results)
 
@@ -334,7 +365,7 @@ export function useForm<TValues extends RFormValues>(
             }
         }
 
-        const firstError = getFirstRuleError(normalizedPath)
+        const firstError = getFirstRuleError(normalizedPath, fieldValue)
         state.pending = false
         state.validated = true
         state.valid = firstError == null
@@ -414,7 +445,13 @@ export function useForm<TValues extends RFormValues>(
 
     function isFieldRequired<TPath extends RFormPath<TValues>>(path: TPath) {
         const normalizedPath = normalizePath(path)
-        return !ignoredRequiredPaths.has(normalizedPath) && (flatRules[normalizedPath] ?? []).some((rule) => rule.required === true)
+        const fieldValue = getAtPath(value, normalizedPath)
+        return (
+            !ignoredRequiredPaths.has(normalizedPath)
+            && (flatRules[normalizedPath] ?? []).some(
+                (rule) => rule.required === true && isRuleActive(rule, fieldValue, value),
+            )
+        )
     }
 
     function registerField<TPath extends RFormPath<TValues>>(

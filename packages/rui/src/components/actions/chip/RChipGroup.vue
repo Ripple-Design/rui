@@ -39,12 +39,18 @@ const formField = useFormField<RChipGroupModelValue>({
 
         return null
     },
-    ignoreRequired: true,
     model: localModel,
     name: computed(() => props.name),
     replaceNullish: props.selection === "single" && requiredSelection.value,
 })
 const model = formField.model
+const resolvedRequired = computed(() => {
+    if (formField.bound.value) {
+        return formField.required.value
+    }
+
+    return requiredSelection.value
+})
 
 const role = computed(() => {
     if (typeof attrs.role === "string") {
@@ -191,7 +197,7 @@ provide(chipGroupKey, {
 <template>
     <div
         v-bind="attrs"
-        :aria-required="selection === 'single' && requiredSelection ? 'true' : undefined"
+        :aria-required="resolvedRequired ? 'true' : undefined"
         :class="['rui-chip-group', { 'rui-chip-group--nowrap': !wrap }]"
         :role="role"
         :aria-invalid="formField.errorText.value ? 'true' : undefined"
