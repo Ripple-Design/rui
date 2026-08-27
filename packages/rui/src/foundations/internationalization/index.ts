@@ -7,4 +7,5 @@ export type {
     RInternationalizationController,
     RInternationalizationMessageCatalog,
     RInternationalizationMessages,
+    RInternationalizationPluginOptions,
 } from "./types"

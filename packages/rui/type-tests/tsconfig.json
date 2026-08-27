@@ -1,6 +1,6 @@
 {
     "extends": "@vue/tsconfig/tsconfig.dom.json",
-    "include": ["./rform-consumer.ts", "./rdialogs-consumer.ts"],
+    "include": ["./rform-consumer.ts", "./rdialogs-consumer.ts", "./rui-plugin-consumer.ts"],
     "compilerOptions": {
         "noEmit": true,
         "strict": true

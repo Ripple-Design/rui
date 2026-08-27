@@ -1,7 +1,5 @@
 import type {
-    App,
     InjectionKey,
-    Plugin,
 } from "vue"
 
 import { computed, inject, provide, ref } from "vue"
@@ -17,7 +15,6 @@ import type {
     RThemeModePreference,
     RThemeModeSetOptions,
     RThemePatch,
-    RThemePluginOptions,
     RThemeSetOptions,
 } from "./types"
 
@@ -113,17 +110,9 @@ export function createThemeController(
     }
 }
 
-export const themePlugin: Plugin = {
-    install(app: App, options: RThemePluginOptions = {}) {
-        const controller = createThemeController(options.theme ?? {}, options.target, options.mode ?? "system")
-        app.provide(themeKey, controller)
-        app.config.globalProperties.$ruiTheme = controller
-    },
-}
-
 export function useTheme() {
     const controller = inject(themeKey)
-    if (!controller) throw new Error("[RUI] useTheme must be used after installing themePlugin")
+    if (!controller) throw new Error("[RUI] useTheme must be used after installing ruiPlugin")
     return controller
 }
 
