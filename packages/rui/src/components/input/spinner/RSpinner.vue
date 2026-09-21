@@ -30,7 +30,7 @@ const listBox = useListBoxSelection({
     },
     onOptionsChange: validateSelection,
 })
-const { activeOptionId, selectedOption } = listBox
+const { activeOptionId, options, selectedOption } = listBox
 const displayLabel = computed(() => selectedOption.value?.label ?? "")
 
 provide(listBoxContextKey, listBox.context)
@@ -41,7 +41,12 @@ function validateSelection() {
     }
 
     if (model.value == null || selectedOption.value == null) {
-        throw new Error("RSpinner requires the model value to match a registered option.")
+        if (import.meta.env.DEV) {
+            console.warn("RSpinner requires the model value to match a registered option.", {
+                modelValue: model.value,
+                options: options.value,
+            })
+        }
     }
 }
 

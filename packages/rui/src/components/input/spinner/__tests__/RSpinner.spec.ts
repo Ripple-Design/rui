@@ -1,12 +1,13 @@
 import { defineComponent, h, nextTick, ref } from "vue"
 import { mount } from "@vue/test-utils"
-import { afterEach, describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
 import RSpinner from "../RSpinner.vue"
 import RSpinnerOption from "../RSpinnerOption.vue"
 
 afterEach(() => {
     document.body.innerHTML = ""
+    vi.restoreAllMocks()
 })
 
 describe("RSpinner", () => {
@@ -48,6 +49,29 @@ describe("RSpinner", () => {
 
         expect(value.value).toBe("paused")
         expect(trigger.text()).toContain("Paused")
+    })
+
+    it("warns when the model value does not match a registered option", async () => {
+        const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined)
+
+        const wrapper = mount(RSpinner, {
+            attachTo: document.body,
+            props: { modelValue: "missing" },
+            slots: {
+                default: () => [h(RSpinnerOption, { label: "Active", value: "active" })],
+            },
+        })
+
+        await nextTick()
+
+        expect(warn).toHaveBeenCalledWith(
+            "RSpinner requires the model value to match a registered option.",
+            expect.objectContaining({
+                modelValue: "missing",
+                options: expect.arrayContaining([expect.objectContaining({ label: "Active", value: "active" })]),
+            }),
+        )
+        expect(wrapper.exists()).toBe(true)
     })
 
     it("renders disabled options as unavailable", async () => {
