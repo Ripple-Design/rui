@@ -1,5 +1,6 @@
 export {
     createInternationalizationController,
+    internationalizationKey,
     provideInternationalization,
     useInternationalization,
 } from "./controller"

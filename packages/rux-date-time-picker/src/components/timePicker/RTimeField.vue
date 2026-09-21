@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { vRipple } from "@ripple-design/rui/foundations/ripple"
+import { vRipple } from "@ripple-design/rui"
 import { computed, nextTick, ref } from "vue"
 
 import { formatClockValue, getDisplayHour, withDisplayHour } from "../../time/formatting"

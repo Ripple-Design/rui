@@ -3,7 +3,7 @@ import { mount } from "@vue/test-utils"
 import {
     createInternationalizationController,
     internationalizationKey,
-} from "@ripple-design/rui/foundations/internationalization/controller"
+} from "@ripple-design/rui"
 import { nextTick } from "vue"
 
 import RDataTable from "../RDataTable.vue"

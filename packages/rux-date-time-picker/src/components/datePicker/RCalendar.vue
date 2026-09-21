@@ -11,9 +11,7 @@ import {
     RIChevronRightSharp,
     RIChevronRightTwoTone,
 } from "@ripple-design/icons"
-import { createIconFamily, RIconButton, RSpinnerTrigger } from "@ripple-design/rui"
-import { vRipple } from "@ripple-design/rui/foundations/ripple"
-import { RTouchTargetWrapper } from "@ripple-design/rui/foundations/touchTarget"
+import { RTouchTargetWrapper, createIconFamily, RIconButton, RSpinnerTrigger, vRipple } from "@ripple-design/rui"
 import { computed } from "vue"
 
 import { getCalendarDays, getToday, getWeekStart } from "../../date/dateMath"

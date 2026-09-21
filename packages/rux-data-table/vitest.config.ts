@@ -8,12 +8,6 @@ export default defineConfig({
     resolve: {
         alias: [
             {
-                find: "@ripple-design/rui/foundations/internationalization/controller",
-                replacement: fileURLToPath(
-                    new URL("../rui/src/foundations/internationalization/controller.ts", import.meta.url),
-                ),
-            },
-            {
                 find: /^@ripple-design\/rui$/,
                 replacement: fileURLToPath(new URL("../rui/src/index.ts", import.meta.url)),
             },

@@ -5,8 +5,7 @@ import {
     RIExpandLessFilled,
     RIExpandMoreFilled,
 } from "@ripple-design/icons"
-import { RButtonRow, RCheckbox, RIconButton, RLinearProgressIndicator, RSurface, RText } from "@ripple-design/rui"
-import { internationalizationKey } from "@ripple-design/rui/foundations/internationalization/controller"
+import { RButtonRow, RCheckbox, RIconButton, RLinearProgressIndicator, RSurface, RText, internationalizationKey } from "@ripple-design/rui"
 import {
     computed,
     inject,
