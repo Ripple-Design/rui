@@ -7,6 +7,8 @@ export const labels: Record<Locale, Record<string, string>> = {
         implementation: "Implementation",
         components: "Components",
         icons: "Icons",
+        "on-this-page": "On this page",
+        "no-subsection-headings": "No subsection headings yet.",
     },
     "zh-cn": {
         spec: "规范",
@@ -14,6 +16,8 @@ export const labels: Record<Locale, Record<string, string>> = {
         implementation: "实现",
         components: "组件",
         icons: "图标",
+        "on-this-page": "本页内容",
+        "no-subsection-headings": "暂无小节标题。",
     },
 }
 

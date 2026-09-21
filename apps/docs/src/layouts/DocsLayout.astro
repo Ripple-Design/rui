@@ -170,7 +170,7 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug).map((tabEntry) =
 
         <RSurface as="aside" variant="outlined" class="docs-outline">
             <nav aria-label="Current section outline">
-                <h2>On this page</h2>
+                <h2>{getLabel("on-this-page", locale as any)}</h2>
                 <h3>{getLabel(entry.data.tab, locale as any)}</h3>
                 <ul>
                     {outline.length > 0 ? (
@@ -180,7 +180,7 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug).map((tabEntry) =
                             </li>
                         ))
                     ) : (
-                        <li>No subsection headings yet.</li>
+                        <li>{getLabel("no-subsection-headings", locale as any)}</li>
                     )}
                 </ul>
             </nav>
