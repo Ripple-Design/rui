@@ -48,7 +48,7 @@ const columns = [
         :cell-props="({ column }) => (column.key === 'status' ? { class: 'layout-demo__status' } : undefined)"
     >
         <template #caption>Wide nutrition and business data</template>
-        <template #item.metrics.revenue="{ value }">${{ Number(value).toLocaleString() }}</template>
+        <template #cell.metrics.revenue="{ value }">${{ Number(value).toLocaleString() }}</template>
     </RDataTable>
 </template>
 

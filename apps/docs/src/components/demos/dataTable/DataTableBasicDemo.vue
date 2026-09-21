@@ -13,7 +13,7 @@ const items = ref<Dessert[]>([
     { id: 4, name: "Cupcake", calories: 305, fat: 3, category: "Pastry" },
     { id: 5, name: "Gingerbread", calories: 356, fat: 16, category: "Cookie" },
 ])
-const sortBy = ref([{ key: "name", order: "asc" as const }])
+const sortBy = ref([{ key: "name", order: "ascending" as const }])
 const page = ref(1)
 const itemsPerPage = ref(10)
 const selected = ref<unknown[]>([])
@@ -29,7 +29,7 @@ const columns = [
 
 <template>
     <RDataTable
-        v-model="selected"
+        v-model:selected-rows="selected"
         v-model:page="page"
         v-model:items-per-page="itemsPerPage"
         v-model:sort-by="sortBy"
@@ -44,6 +44,6 @@ const columns = [
             <RIconButton :icon="RIFilterListOutlined" label="Filter" />
             <RIconButton :icon="RISearchOutlined" label="Search" />
         </template>
-        <template #item.calories="{ value }">{{ value }} kcal</template>
+        <template #cell.calories="{ value }">{{ value }} kcal</template>
     </RDataTable>
 </template>

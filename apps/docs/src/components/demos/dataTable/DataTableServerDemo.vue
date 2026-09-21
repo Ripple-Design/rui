@@ -6,7 +6,7 @@ import { dataTableDemoItems, standardColumns } from "./data"
 
 const page = ref(1)
 const itemsPerPage = ref(10)
-const sortBy = ref([{ key: "name", order: "asc" as const }])
+const sortBy = ref([{ key: "name", order: "ascending" as const }])
 const loading = ref(false)
 const options = ref("Waiting for a query")
 const pageItems = computed(() => {
