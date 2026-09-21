@@ -82,4 +82,4 @@ jobs:
 
             - name: Publish to npm
               working-directory: ${{ steps.package.outputs.directory }}
-              run: pnpm publish --provenance --no-git-checks
+              run: pnpm config set git-checks false && pnpm publish --provenance
