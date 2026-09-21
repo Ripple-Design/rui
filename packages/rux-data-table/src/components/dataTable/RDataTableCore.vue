@@ -1239,7 +1239,17 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
     border-inline-end: 1px solid var(--rui-comp-data-table-border-color);
 }
 .rux-data-table__cell--first-fixed-end {
-    border-inline-start: 1px solid var(--rui-comp-data-table-border-color);
+    position: relative;
+}
+
+.rux-data-table__cell--first-fixed-end::before {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 1px;
+    background: var(--rui-comp-data-table-border-color);
+    content: "";
+    pointer-events: none;
 }
 .rux-data-table__header-content {
     display: flex;
