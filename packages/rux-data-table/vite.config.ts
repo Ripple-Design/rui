@@ -21,7 +21,7 @@ export default defineConfig({
             entry: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
         },
         rolldownOptions: {
-            external: ["vue", "@ripple-design/rui"],
+            external: ["vue", /^@ripple-design\/rui(?:\/|$)/],
             output: [
                 {
                     format: "es",

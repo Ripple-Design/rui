@@ -28,6 +28,7 @@ import type {
     RDataTableModelState,
     RDataTablePaginationOption,
     RDataTableSortItem,
+    RInternalDataTableColumn,
 } from "./types"
 
 import { useDataTableColumns } from "../../composables/useDataTableColumns"
@@ -258,7 +259,7 @@ const outerStartColumnKey = computed(() => {
 const outerEndColumnKey = computed(() => {
     const columns = columnState.columns.value
     const lastDataColumnIndex = columns.findLastIndex(
-        (column) =>
+        (column: RInternalDataTableColumn<T>) =>
             column.publicKey !== "data-table-select" &&
             column.publicKey !== "data-table-group" &&
             column.publicKey !== "data-table-expand",
