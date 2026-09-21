@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue"
-
 import { RDateRangePicker } from "@ripple-design/rux-date-time-picker"
-import "@ripple-design/rux-date-time-picker/styles.css"
+import { ref } from "vue"
 
 const open = ref(false)
 const value = ref({ start: null, end: null })

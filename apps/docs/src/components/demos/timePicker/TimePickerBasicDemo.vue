@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { RTimePicker } from "@ripple-design/rux-date-time-picker"
-import "@ripple-design/rux-date-time-picker/styles.css"
 import { ref } from "vue"
 
 const value = ref<`${number}${number}:${number}${number}` | null>("09:30")
