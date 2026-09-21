@@ -5,14 +5,14 @@ import { RGrid, vColumnSpan } from "@ripple-design/rui"
 <template>
     <div class="grid-responsive-span-demo">
         <p class="grid-responsive-span-demo__hint">
-            Resize the container for csm / cmd / clg / cxl spans. Viewport breakpoints change as the page width grows.
+            Resize the container to trigger breakpoint-based spans. Both container and viewport breakpoints use xs / sm / md / lg naming.
         </p>
         <div class="grid-responsive-span-demo__shell">
             <RGrid responsive="container" :columns="{ xs: 1, sm: 2, md: 4 }" gap="12px">
                 <div v-column-span="{ xs: 'full', md: 2 }" class="grid-card grid-card--featured">
-                    Full width on csm, span 2 from clg
+                    Full width on xs/sm, span 2 from md
                 </div>
-                <div v-column-span="{ xs: 1, md: 2 }" class="grid-card grid-card--viewport">Span 1 → 2 by viewport</div>
+                <div v-column-span="{ xs: 1, md: 2 }" class="grid-card grid-card--viewport">Span 1 → 2 at md</div>
                 <div class="grid-card">Auto placement</div>
                 <div class="grid-card">Auto placement</div>
                 <div class="grid-card">Auto placement</div>

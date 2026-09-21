@@ -45,9 +45,15 @@ const style = computed(() => {
     }
 
     if (!isResponsiveCols(props.columns)) {
+        const cols = normalizeTemplateColumns(props.columns)
         return {
             ...baseStyle,
-            "--rui-comp-grid-cols-xs": normalizeTemplateColumns(props.columns),
+            "--rui-comp-grid-cols-xs": cols,
+            "--rui-comp-grid-cols-sm": cols,
+            "--rui-comp-grid-cols-md": cols,
+            "--rui-comp-grid-cols-lg": cols,
+            "--rui-comp-grid-cols-xl": cols,
+            "--rui-comp-grid-cols-xxl": cols,
         }
     }
 

@@ -5,15 +5,14 @@ import { RGrid } from "@ripple-design/rui"
 <template>
     <div class="grid-responsive-demo">
         <p class="grid-responsive-demo__hint">
-            Resize the container to trigger csm / cmd / clg / cxl breakpoints. Widen the viewport to trigger sm / md /
-            lg / xl.
+            Resize the container to trigger sm / md / lg / xl breakpoints based on container width. Widen the viewport to trigger viewport-based breakpoints.
         </p>
         <div class="grid-responsive-demo__shell">
             <RGrid responsive="container" :columns="{ xs: 1, sm: 2, md: 3, lg: 4 }" gap="12px">
-                <div class="grid-card">csm: 1 col</div>
-                <div class="grid-card">cmd: 2 cols</div>
-                <div class="grid-card">clg: 3 cols</div>
-                <div class="grid-card">cxl: 4 cols</div>
+                <div class="grid-card">xs: 1 col</div>
+                <div class="grid-card">sm: 2 cols</div>
+                <div class="grid-card">md: 3 cols</div>
+                <div class="grid-card">lg: 4 cols</div>
                 <div class="grid-card">Container width drives layout</div>
                 <div class="grid-card">No ResizeObserver required</div>
                 <div class="grid-card">Sparse maps inherit forward</div>
@@ -22,9 +21,9 @@ import { RGrid } from "@ripple-design/rui"
         </div>
 
         <RGrid :columns="{ xs: 1, sm: 2, md: 4 }" gap="12px">
-            <div class="grid-card grid-card--viewport">sm: 1 col</div>
-            <div class="grid-card grid-card--viewport">md: 2 cols</div>
-            <div class="grid-card grid-card--viewport">lg: 4 cols</div>
+            <div class="grid-card grid-card--viewport">xs: 1 col</div>
+            <div class="grid-card grid-card--viewport">sm: 2 cols</div>
+            <div class="grid-card grid-card--viewport">md: 4 cols</div>
             <div class="grid-card grid-card--viewport">Viewport width drives layout</div>
         </RGrid>
     </div>
