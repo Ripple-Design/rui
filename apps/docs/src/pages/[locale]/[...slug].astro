@@ -37,7 +37,19 @@ if (!isDocTab(tab)) {
 }
 
 const allDocs = await getCollection("docs")
-const rendered = await render(entry)
+
+// For Chinese Implementation tab, use English version instead
+let renderEntry = entry
+if (locale === "zh-cn" && tab === "implementation") {
+    const enEntry = allDocs.find(
+        (doc) => doc.data.locale === "en" && doc.data.docSlug === entry.data.docSlug && doc.data.tab === "implementation"
+    )
+    if (enEntry) {
+        renderEntry = enEntry
+    }
+}
+
+const rendered = await render(renderEntry)
 const outline = extractOutline(rendered)
 const { Content } = rendered
 ---
