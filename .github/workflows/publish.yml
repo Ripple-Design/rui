@@ -78,7 +78,7 @@ jobs:
                   echo "directory=packages/$package" >> "$GITHUB_OUTPUT"
 
             - name: Build Library
-              run: pnpm --filter "...${{ steps.package.outputs.name }}" build
+              run: pnpm --filter "${{ steps.package.outputs.name }}..." build
 
             - name: Publish to npm
               working-directory: ${{ steps.package.outputs.directory }}
