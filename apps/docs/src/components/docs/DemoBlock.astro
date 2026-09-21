@@ -51,7 +51,8 @@ const highlightedCode = codeToHtml(code.trimEnd(), {
     @use "@ripple-design/rui/styles/index" as rui;
 
     .demo-block {
-        display: grid;
+        display: flex;
+        flex-direction: column;
         gap: 1rem;
     }
 
