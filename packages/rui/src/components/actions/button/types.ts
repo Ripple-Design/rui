@@ -1,3 +1,5 @@
+import type { CSSProperties } from "vue"
+
 import type { RIconResolvableSource } from "@/components/base/icon/types.ts"
 import type { RTextEmphasis } from "@/components/base/text/types.ts"
 import type { RippleOptions } from "@/foundations/ripple"
@@ -46,6 +48,8 @@ export type RButtonProps = {
 export type RButtonRowProps = {
     /** Applies a default visual treatment to child `RButton` components that do not set their own variant. */
     variant?: RButtonVariant
+    /** Controls how buttons are distributed on the main axis. */
+    justify?: CSSProperties["justifyContent"]
 }
 
 /** Props for the {@link RIconButton} component. */

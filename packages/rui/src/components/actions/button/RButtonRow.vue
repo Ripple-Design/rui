@@ -10,6 +10,7 @@ defineOptions({ inheritAttrs: false })
 
 const props = withDefaults(defineProps<RButtonRowProps>(), {
     variant: "text",
+    justify: "flex-start",
 })
 const attrs = useAttrs()
 
@@ -20,7 +21,7 @@ provide(
 </script>
 
 <template>
-    <RRow v-bind="attrs" class="rui-button-row" gap="8px" wrap align="center" justify="flex-start">
+    <RRow v-bind="attrs" class="rui-button-row" gap="8px" wrap align="center" :justify="justify">
         <slot />
 
         <div v-if="$slots.end" class="rui-button-row__end">
