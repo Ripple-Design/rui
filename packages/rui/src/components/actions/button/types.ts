@@ -49,7 +49,7 @@ export type RButtonRowProps = {
     /** Applies a default visual treatment to child `RButton` components that do not set their own variant. */
     variant?: RButtonVariant
     /** Controls how buttons are distributed on the main axis. */
-    justify?: CSSProperties["justifyContent"]
+    justify?: "flex-start" | "flex-end" | "center" | "space-between" | "space-around" | "space-evenly"
 }
 
 /** Props for the {@link RIconButton} component. */
