@@ -5,6 +5,7 @@ import type { CollectionEntry } from "astro:content"
 import { RSurface } from "@ripple-design/rui"
 import type { ComponentsNavigation, OutlineItem } from "../lib/docs"
 import { getReadingMode, getTabsForDoc, groupDocs } from "../lib/docs"
+import { getLabel } from "../lib/i18n"
 import DocsTabBar from "../components/docs/DocsTabBar.vue"
 
 export interface Props {
@@ -37,7 +38,7 @@ const componentsNavigation: ComponentsNavigation = {
 }
 const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug).map((tabEntry) => ({
     value: tabEntry.data.tab,
-    label: tabEntry.data.tab,
+    label: getLabel(tabEntry.data.tab, locale as any),
     href: getDocsHref(tabEntry.data.docSlug, tabEntry.data.tab),
 }))
 ---
@@ -218,7 +219,7 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug).map((tabEntry) =
         <RSurface as="aside" variant="outlined" class="docs-outline">
             <nav aria-label="Current section outline">
                 <h2>On this page</h2>
-                <h3>{entry.data.tab}</h3>
+                <h3>{getLabel(entry.data.tab, locale as any)}</h3>
                 <ul>
                     {outline.length > 0 ? (
                         outline.map((item) => (

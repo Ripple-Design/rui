@@ -1,5 +1,5 @@
 ---
-title: Card
+title: Card 卡片
 docSlug: components/card
 tab: guidelines
 locale: zh-cn

@@ -1,5 +1,5 @@
 ---
-title: Stack
+title: Stack 堆叠布局
 docSlug: components/stack
 tab: spec
 locale: zh-cn

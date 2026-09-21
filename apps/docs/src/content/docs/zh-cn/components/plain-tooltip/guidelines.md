@@ -1,5 +1,5 @@
 ---
-title: Plain tooltip
+title: Tooltip 工具提示
 docSlug: components/plain-tooltip
 tab: guidelines
 locale: zh-cn

@@ -1,5 +1,5 @@
 ---
-title: 网格
+title: Grid 网格
 docSlug: components/grid
 tab: guidelines
 locale: zh-cn

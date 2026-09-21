@@ -1,5 +1,5 @@
 ---
-title: Modal
+title: Modal 模态
 docSlug: components/modal
 tab: spec
 locale: zh-cn

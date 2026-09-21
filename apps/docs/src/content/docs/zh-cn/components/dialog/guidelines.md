@@ -1,5 +1,5 @@
 ---
-title: Dialog
+title: Dialog 对话框
 docSlug: components/dialog
 tab: guidelines
 locale: zh-cn

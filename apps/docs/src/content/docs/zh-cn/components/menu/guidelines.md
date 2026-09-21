@@ -1,5 +1,5 @@
 ---
-title: Menu
+title: Menu 菜单
 docSlug: components/menu
 tab: guidelines
 locale: zh-cn

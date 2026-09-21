@@ -1,5 +1,5 @@
 ---
-title: Well
+title: Well 凹槽
 docSlug: components/well
 tab: spec
 locale: zh-cn

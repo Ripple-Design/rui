@@ -1,5 +1,5 @@
 ---
-title: Snackbar
+title: Snackbar 条形通知
 docSlug: components/snackbar
 tab: guidelines
 locale: zh-cn

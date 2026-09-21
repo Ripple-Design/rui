@@ -1,5 +1,5 @@
 ---
-title: Icon
+title: Icon 图标
 docSlug: components/icon
 tab: spec
 locale: zh-cn

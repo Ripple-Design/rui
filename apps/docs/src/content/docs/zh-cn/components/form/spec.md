@@ -1,5 +1,5 @@
 ---
-title: Form
+title: Form 表单
 docSlug: components/form
 tab: spec
 locale: zh-cn

@@ -1,5 +1,5 @@
 ---
-title: Divider
+title: Divider 分割线
 docSlug: components/divider
 tab: spec
 locale: zh-cn

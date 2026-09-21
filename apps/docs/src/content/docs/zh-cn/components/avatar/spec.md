@@ -1,5 +1,5 @@
 ---
-title: Avatar
+title: Avatar 头像
 docSlug: components/avatar
 tab: spec
 locale: zh-cn

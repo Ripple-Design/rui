@@ -1,5 +1,5 @@
 ---
-title: Shape
+title: Shape 形状
 docSlug: components/shape
 tab: guidelines
 locale: zh-cn

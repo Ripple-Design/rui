@@ -3,6 +3,7 @@ import "@ripple-design/rui/styles.css"
 import DocsScaffoldShell from "../components/docs/DocsScaffoldShell.vue"
 import { createDocsThemeBootstrapScript } from "@docs/lib/theme"
 import { getDirectionMode, getLocaleUrl, locales } from "../lib/docs"
+import { getLabel } from "../lib/i18n"
 import type { ComponentsNavigation } from "../lib/docs"
 
 export interface Props {
@@ -17,8 +18,8 @@ const { title, locale, currentUrl = Astro.url, sectionLabel = "Components", comp
 const direction = getDirectionMode(currentUrl)
 const docsThemeBootstrapScript = createDocsThemeBootstrapScript()
 const navigation = [
-    { label: sectionLabel, href: `/${locale}/getting-started/spec`, value: "components" },
-    { label: "Icons", href: `/${locale}/icons`, value: "icons" },
+    { label: getLabel("components", locale as any), href: `/${locale}/getting-started/spec`, value: "components" },
+    { label: getLabel("icons", locale as any), href: `/${locale}/icons`, value: "icons" },
     { label: "API", href: `/${locale}/api/text-field`, value: "api" },
 ]
 const activeNavigation = currentUrl.pathname.startsWith(`/${locale}/icons`)
