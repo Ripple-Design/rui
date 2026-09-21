@@ -92,31 +92,6 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug).map((tabEntry) =
             padding-inline-start: 1.25rem;
         }
 
-        .docs-mobile-navigation {
-            margin-block-end: 1.5rem;
-        }
-
-        .docs-mobile-navigation summary {
-            @include rui.typo-subtitle2;
-
-            cursor: pointer;
-        }
-
-        .docs-mobile-navigation h2 {
-            @include rui.typo-subtitle2;
-
-            margin: 1rem 0 0;
-        }
-
-        .docs-mobile-navigation ol {
-            margin: 1rem 0 0;
-            padding-inline-start: 1.25rem;
-        }
-
-        .docs-mobile-navigation section + section {
-            margin-block-start: 1rem;
-        }
-
         .docs-content header {
             margin-bottom: 1.5rem;
         }
@@ -163,10 +138,6 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug).map((tabEntry) =
                 align-items: start;
             }
 
-            .docs-mobile-navigation {
-                display: none;
-            }
-
             .docs-outline {
                 position: sticky;
                 top: 1rem;
@@ -175,26 +146,6 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug).map((tabEntry) =
     </style>
 
     <div class="docs-shell">
-        <aside class="docs-mobile-navigation">
-            <details>
-                <summary>Components</summary>
-                {componentsNavigation.groups.map((group) => (
-                    <section>
-                        <h2>{group.group}</h2>
-                        <ol>
-                            {group.items.map((item) => (
-                                <li>
-                                    <a href={item.href} aria-current={item.value === componentsNavigation.activeValue ? "page" : undefined}>
-                                        {item.label}
-                                    </a>
-                                </li>
-                            ))}
-                        </ol>
-                    </section>
-                ))}
-            </details>
-        </aside>
-
         <article class="docs-content">
             <header>
                 <h1>{entry.data.title}</h1>
@@ -206,9 +157,6 @@ const tabs = getTabsForDoc(allDocs, locale, entry.data.docSlug).map((tabEntry) =
                 <!--    </ul>-->
                 <!--</nav>-->
                 <DocsTabBar client:load activeTab={entry.data.tab} tabs={tabs} />
-                <p class="docs-links">
-                    <a href={entry.data.api}>View API</a>
-                </p>
             </header>
 
             <div class="docs-body">
