@@ -75,14 +75,14 @@ const props = withDefaults(
         itemValue: "id",
         itemSelectable: null,
         returnObject: false,
-        modelValue: () => [],
+        selectedRows: () => [],
         selectStrategy: "page",
         expanded: () => [],
         expandStrategy: "multiple",
         groupBy: () => [],
         opened: () => [],
         openAll: false,
-        initialSortOrder: "asc",
+        initialSortOrder: "ascending",
         sortBy: () => [],
         multiSort: false,
         mustSort: false,
@@ -292,7 +292,7 @@ const displayedItems = computed<RDataTableFlatItem<T>[]>(() => {
 const renderedItems = displayedItems
 const currentPageItems = computed(() => groupState.extractRows(renderedItems.value))
 const itemCount = computed(() => (props.server ? Number(props.itemsLength ?? 0) : sourceItems.value.length))
-const selectionState = useDataTableSelection(props, props.modelState.modelValue, itemState.items, currentPageItems)
+const selectionState = useDataTableSelection(props, props.modelState.selectedRows, itemState.items, currentPageItems)
 const expandState = useDataTableExpand(props, props.modelState.expanded)
 const loadingState = useDataTableLoading(
     () => props.loading,
@@ -490,13 +490,13 @@ function fixedStyle(column: (typeof columnState.columns.value)[number]) {
 
 function headerAriaSort(column: (typeof columnState.columns.value)[number]) {
     const descriptor = column.publicKey ? sortBy.value.find((item) => item.key === column.publicKey) : undefined
-    return descriptor?.order === "asc" ? "ascending" : descriptor?.order === "desc" ? "descending" : undefined
+    return descriptor?.order === "ascending" ? "ascending" : descriptor?.order === "descending" ? "descending" : undefined
 }
 
 function sortIcon(column: (typeof columnState.columns.value)[number]) {
     const descriptor = column.publicKey ? sortBy.value.find((item) => item.key === column.publicKey) : undefined
     if (!descriptor) return props.sortIcon ?? props.sortAscIcon ?? RIArrowUpwardOutlined
-    return descriptor.order === "desc"
+    return descriptor.order === "descending"
         ? (props.sortDescIcon ?? RIArrowDownwardOutlined)
         : (props.sortAscIcon ?? RIArrowUpwardOutlined)
 }
@@ -872,7 +872,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                                 </tr>
                                 <template v-else>
                                     <slot
-                                        name="item"
+                                        name="row"
                                         :index="entry.virtualIndex ?? entryIndex"
                                         :item="entry.raw"
                                         :internal-item="entry"
@@ -939,7 +939,7 @@ defineExpose({ calculateVisibleItems: virtualState.calculateVisibleItems, scroll
                                                 "
                                             >
                                                 <slot
-                                                    :name="`item.${column.publicKey ?? column.key}`"
+                                                    :name="`cell.${column.publicKey ?? column.key}`"
                                                     v-bind="
                                                         column.publicKey === 'data-table-select'
                                                             ? {

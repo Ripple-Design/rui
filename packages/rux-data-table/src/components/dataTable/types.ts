@@ -5,7 +5,7 @@ export type RDataTableCompareFunction<T = any> = (a: T, b: T) => number | null
 
 export type RDataTableLoadingSide = "start" | "end" | "both"
 export type RDataTableLoading = boolean | string | { side?: RDataTableLoadingSide; color?: string }
-export type RDataTableSortItem = { key: string; order?: false | "asc" | "desc" }
+export type RDataTableSortItem = { key: string; order?: "ascending" | "descending" }
 export type RDataTableFilterMode = "some" | "every" | "union" | "intersection"
 export type RDataTableMultiSort = boolean | { key?: "ctrl"; mode?: "append" | "prepend"; modifier?: "alt" | "shift" }
 export type RDataTableSelectItemKey<T = Record<string, any>> =
@@ -170,7 +170,7 @@ export type RDataTableCommonProps<T = any> = {
         | ((data: Pick<RDataTableItemSlot<T>, "index" | "item" | "internalItem">) => RDataTableRowProps)
     cellProps?: RDataTableColumn<T>["cellProps"]
     headerProps?: RDataTableHeaderProps<T>
-    modelValue?: readonly unknown[]
+    selectedRows?: readonly unknown[]
     valueComparator?: (a: unknown, b: unknown) => boolean
     showSelect?: boolean
     selectStrategy?: "single" | "page" | "all" | RDataTableSelectStrategy<T>
@@ -182,7 +182,7 @@ export type RDataTableCommonProps<T = any> = {
     opened?: readonly string[]
     openAll?: boolean
     groupKey?: (options: { key: string; value: unknown; parentKey: string | null }) => string
-    initialSortOrder?: "asc" | "desc"
+    initialSortOrder?: "ascending" | "descending"
     sortBy?: readonly RDataTableSortItem[]
     customKeySort?: Record<string, RDataTableCompareFunction>
     multiSort?: RDataTableMultiSort
@@ -254,7 +254,7 @@ export type RDataTableVirtualProps<T = any> = Omit<RDataTableCommonProps<T>, "hi
 }
 
 export type RDataTableModelState = {
-    modelValue: Ref<unknown[]>
+    selectedRows: Ref<unknown[]>
     expanded: Ref<unknown[]>
     opened: Ref<string[]>
 }
@@ -268,7 +268,7 @@ export type RDataTableOptions = {
 }
 
 export type RDataTableEmits<T = any> = {
-    (e: "update:modelValue", value: unknown[]): void
+    (e: "update:selectedRows", value: unknown[]): void
     (e: "update:page", value: number): void
     (e: "update:itemsPerPage", value: number): void
     (e: "update:sortBy", value: RDataTableSortItem[]): void
@@ -280,7 +280,7 @@ export type RDataTableEmits<T = any> = {
 }
 
 export type RDataTableServerEmits = {
-    (e: "update:modelValue", value: unknown[]): void
+    (e: "update:selectedRows", value: unknown[]): void
     (e: "update:page", value: number): void
     (e: "update:itemsPerPage", value: number): void
     (e: "update:sortBy", value: RDataTableSortItem[]): void
@@ -291,7 +291,7 @@ export type RDataTableServerEmits = {
 }
 
 export type RDataTableVirtualEmits = {
-    (e: "update:modelValue", value: unknown[]): void
+    (e: "update:selectedRows", value: unknown[]): void
     (e: "update:sortBy", value: RDataTableSortItem[]): void
     (e: "update:groupBy", value: RDataTableSortItem[]): void
     (e: "update:expanded", value: unknown[]): void
@@ -319,7 +319,7 @@ export type RDataTableSlots<T = any> = {
     "no-data"?: () => any
     headers?: (props: RDataTableHeaderSlot<T>) => any
     "mobile.header"?: (props: RDataTableHeaderSlot<T>) => any
-    item?: (props: RDataTableItemSlot<T>) => any
+    row?: (props: RDataTableItemSlot<T>) => any
     "group-header"?: (props: RDataTableGroupSlot<T>) => any
     "group-summary"?: (props: RDataTableGroupSummarySlot<T>) => any
     expanded?: (props: RDataTableItemSlot<T>) => any
@@ -331,16 +331,16 @@ export type RDataTableSlots<T = any> = {
     }) => any
     "data-table-select"?: (props: RDataTableGroupSelectSlot) => any
     "header.data-table-select"?: (props: RDataTableHeaderSelectSlot<T>) => any
-    "item.data-table-select"?: (props: RDataTableItemSelectSlot<T>) => any
+    "cell.data-table-select"?: (props: RDataTableItemSelectSlot<T>) => any
 } & {
     [name: `header.${string}`]: ((props: RDataTableHeaderCellSlot<T>) => any) | undefined
-    [name: `item.${string}`]: ((props: RDataTableItemCellSlot<T>) => any) | undefined
+    [name: `cell.${string}`]: ((props: RDataTableItemCellSlot<T>) => any) | undefined
 }
 export type RDataTableVirtualSlots<T = any> = Omit<
     RDataTableSlots<T>,
-    "default" | "body" | "footer.prepend" | "expanded" | "expanded-row" | "item"
+    "default" | "body" | "footer.prepend" | "expanded" | "expanded-row" | "row"
 > & {
-    item?: (props: RDataTableItemSlot<T> & { itemRef: (element: Element | null) => void }) => any
+    row?: (props: RDataTableItemSlot<T> & { itemRef: (element: Element | null) => void }) => any
 }
 export type RDataTableHeaderSlot<T> = {
     headers: RInternalDataTableColumn<T>[][]

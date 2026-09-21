@@ -13,10 +13,10 @@ type RDataTableVirtualCoreApi = {
 
 const props = defineProps<RDataTableVirtualProps<T>>()
 const emit = defineEmits<RDataTableVirtualEmits>()
-const modelValue = useDataTableProxiedModel(props, "modelValue", value => emit("update:modelValue", value), () => [])
+const selectedRows = useDataTableProxiedModel(props, "selectedRows", value => emit("update:selectedRows", value), () => [])
 const expanded = useDataTableProxiedModel(props, "expanded", value => emit("update:expanded", value), () => [])
 const opened = useDataTableProxiedModel(props, "opened", value => emit("update:opened", value), () => [])
-const modelState: RDataTableModelState = { modelValue, expanded, opened }
+const modelState: RDataTableModelState = { selectedRows, expanded, opened }
 defineSlots<RDataTableVirtualSlots<T>>()
 const slotNames: string[] = Object.keys(useSlots())
 const forwardSlotProps = (value: unknown) => value as Record<string, unknown>

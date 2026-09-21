@@ -7,12 +7,12 @@ export function sortItems<T extends RDataTableItem>(items: readonly T[], sortBy:
     const collator = new Intl.Collator(locale, { sensitivity: "accent", usage: "sort" })
     return items.map((item, index) => ({ item, index })).sort((a, b) => {
         for (const descriptor of sortBy) {
-            if (descriptor.order === false) continue
+            if (!descriptor.order) continue
             let left = getObjectValueByPath({ ...a.item.raw as object, ...a.item.columns }, descriptor.key)
             let right = getObjectValueByPath({ ...b.item.raw as object, ...b.item.columns }, descriptor.key)
             let rawLeft = a.item.raw
             let rawRight = b.item.raw
-            if (descriptor.order === "desc") [left, right, rawLeft, rawRight] = [right, left, rawRight, rawLeft]
+            if (descriptor.order === "descending") [left, right, rawLeft, rawRight] = [right, left, rawRight, rawLeft]
             const rawResult = options?.sortRawFunctions?.[descriptor.key]?.(rawLeft, rawRight)
             if (rawResult != null && rawResult !== 0) return rawResult
             const result = options?.sortFunctions?.[descriptor.key]?.(left, right)
@@ -38,9 +38,9 @@ function resolveMultiSort(value: RDataTableMultiSort | undefined, event?: MouseE
     return { active: keyPressed, mode: modifierPressed ? (value.mode === "prepend" ? "append" : "prepend") : (value.mode ?? "append") }
 }
 
-export function useDataTableSort<T extends RDataTableItem>(items: Ref<T[]>, sortBy: Ref<readonly RDataTableSortItem[]>, props: { customKeySort?: Record<string, RDataTableCompareFunction>; initialSortOrder?: "asc" | "desc"; multiSort?: RDataTableMultiSort; mustSort?: boolean; disableSort?: boolean }, emit: (event: "update:sortBy", value: RDataTableSortItem[]) => void, page?: Ref<number>, headerSortFunctions?: Ref<Record<string, RDataTableCompareFunction>>, headerSortRawFunctions?: Ref<Record<string, RDataTableCompareFunction>>, groupBy?: Ref<readonly RDataTableSortItem[]>) {
+export function useDataTableSort<T extends RDataTableItem>(items: Ref<T[]>, sortBy: Ref<readonly RDataTableSortItem[]>, props: { customKeySort?: Record<string, RDataTableCompareFunction>; initialSortOrder?: "ascending" | "descending"; multiSort?: RDataTableMultiSort; mustSort?: boolean; disableSort?: boolean }, emit: (event: "update:sortBy", value: RDataTableSortItem[]) => void, page?: Ref<number>, headerSortFunctions?: Ref<Record<string, RDataTableCompareFunction>>, headerSortRawFunctions?: Ref<Record<string, RDataTableCompareFunction>>, groupBy?: Ref<readonly RDataTableSortItem[]>) {
     const sortedItems = computed(() => {
-        const groupSort = (groupBy?.value ?? []).map(item => ({ ...item, order: item.order ?? false }))
+        const groupSort = (groupBy?.value ?? []).map(item => ({ ...item }))
         return sortItems(items.value, [...groupSort, ...(props.disableSort ? [] : sortBy.value)], "en", { sortFunctions: { ...props.customKeySort, ...headerSortFunctions?.value }, sortRawFunctions: headerSortRawFunctions?.value })
     })
     function toggleSort(column: { publicKey?: string; sortable: boolean }, event?: MouseEvent | KeyboardEvent) {
@@ -48,8 +48,8 @@ export function useDataTableSort<T extends RDataTableItem>(items: Ref<T[]>, sort
         const key = column.publicKey
         let next = sortBy.value.map(item => ({ ...item }))
         const current = next.find(item => item.key === key)
-        const initial = props.initialSortOrder ?? "asc"
-        const secondary = initial === "asc" ? "desc" : "asc"
+        const initial = props.initialSortOrder ?? "ascending"
+        const secondary = initial === "ascending" ? "descending" : "ascending"
         const multi = resolveMultiSort(props.multiSort, event)
         if (!current) {
             const value = { key, order: initial } as RDataTableSortItem
