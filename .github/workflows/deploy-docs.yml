@@ -42,8 +42,8 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
-            - name: Build docs
-              run: pnpm --filter docs build
+            - name: Build docs and workspace packages
+              run: pnpm --filter "docs..." build
               env:
                   NUXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL || 'http://64.90.0.19' }}
 
