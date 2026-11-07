@@ -1,0 +1,9 @@
+---
+title: Card 卡片
+docSlug: components/card
+tab: implementation
+locale: zh-cn
+designOrder: 46
+developOrder: 46
+api: /zh-cn/api/card
+---

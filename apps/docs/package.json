@@ -1,17 +1,17 @@
 {
     "name": "docs",
     "version": "1.0.0",
+    "private": true,
     "type": "module",
     "scripts": {
-        "dev": "astro dev",
-        "build": "astro build",
-        "preview": "astro preview",
-        "astro": "astro",
-        "stop": "astro dev stop"
+        "dev": "nuxt dev",
+        "build": "nuxt generate",
+        "build:ssr": "nuxt build",
+        "preview": "nuxt preview"
     },
     "dependencies": {
-        "@astrojs/mdx": "^7.0.2",
-        "@astrojs/vue": "^7.0.1",
+        "@nuxt/content": "^3.16.2",
+        "@nuxtjs/i18n": "^10.6.0",
         "@ripple-design/icons": "^1.1.0",
         "@ripple-design/rui": "workspace:*",
         "@ripple-design/rux-chat": "workspace:*",
@@ -19,8 +19,12 @@
         "@ripple-design/rux-date-time-picker": "workspace:*",
         "@ripple-design/rux-font-picker": "workspace:*",
         "@ripple-design/rux-video-player": "workspace:*",
-        "astro": "^7.0.6",
+        "better-sqlite3": "^13.0.3",
+        "nuxt": "^4.6.4",
         "shiki": "^4.3.1",
         "vue": "catalog:"
+    },
+    "devDependencies": {
+        "sass": "^1.93.2"
     }
 }

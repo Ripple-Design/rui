@@ -1,0 +1,28 @@
+@use "@ripple-design/rui/styles/index" as rui;
+
+:root {
+    color-scheme: light dark;
+    font-family: var(--rui-sys-typo-font-family);
+}
+
+html,
+body {
+    block-size: 100%;
+}
+
+body {
+    @include rui.typo-body1;
+
+    min-block-size: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--rui-sys-color-background);
+    color: rui.$color-on-surface;
+}
+
+a,
+button,
+input {
+    color: inherit;
+    font: inherit;
+}

@@ -5,8 +5,10 @@ node_modules/
 # Build output
 /dist/
 **/dist/
-/apps/docs/.astro/
-**/.astro/
+/apps/docs/.nuxt/
+/apps/docs/.output/
+/apps/docs/.data/
+/apps/docs/.content/
 
 # VCS and local tooling
 .git/

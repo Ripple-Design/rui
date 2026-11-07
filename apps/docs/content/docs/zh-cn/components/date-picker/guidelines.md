@@ -1,0 +1,9 @@
+---
+title: Date Picker 日期选择器
+docSlug: components/date-picker
+tab: guidelines
+locale: zh-cn
+designOrder: 150
+developOrder: 150
+api: /zh-cn/api/date-picker
+---

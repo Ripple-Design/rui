@@ -1,29 +1,9 @@
 {
-    "extends": "astro/tsconfigs/strict",
-    "include": [".astro/types.d.ts", "**/*"],
-    "exclude": ["dist"],
-    "compilerOptions": {
-        "baseUrl": ".",
-        "paths": {
-            "@docs/*": ["./src/*"],
-
-            "@ripple-design/rui": ["../../packages/rui/src/index.ts"],
-            "@ripple-design/rui/*": ["../../packages/rui/src/*"],
-            "@ripple-design/rui/playground": ["../../packages/rui/src/playground/index.ts"],
-
-            "@ripple-design/rux-video-player": ["../../packages/rux-video-player/src/index.ts"],
-            "@ripple-design/rux-chat": ["../../packages/rux-chat/src/index.ts"],
-            "@ripple-design/rux-data-table": ["../../packages/rux-data-table/src/index.ts"],
-            "@ripple-design/rux-date-time-picker": [
-                "../../packages/rux-date-time-picker/src/index.ts"
-            ]
-        },
-        "plugins": [
-            {
-                "name": "@vue/typescript-plugin",
-                "location": "node_modules/@vue/language-server",
-                "languages": ["vue"]
-            }
-        ]
-    }
+    "files": [],
+    "references": [
+        { "path": "./.nuxt/tsconfig.app.json" },
+        { "path": "./.nuxt/tsconfig.server.json" },
+        { "path": "./.nuxt/tsconfig.shared.json" },
+        { "path": "./.nuxt/tsconfig.node.json" }
+    ]
 }

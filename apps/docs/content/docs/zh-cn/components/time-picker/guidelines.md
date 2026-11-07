@@ -1,0 +1,9 @@
+---
+title: Time Picker 时间选择器
+docSlug: components/time-picker
+tab: guidelines
+locale: zh-cn
+designOrder: 160
+developOrder: 160
+api: /zh-cn/api/time-picker
+---

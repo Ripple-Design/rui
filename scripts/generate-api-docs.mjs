@@ -5,7 +5,7 @@ import ts from "typescript"
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, "..")
 const componentsIndexPath = path.join(repoRoot, "packages/rui/src/components/index.ts")
-const apiDir = path.join(repoRoot, "apps/docs/src/content/api/en")
+const apiDir = path.join(repoRoot, "apps/docs/content/api/en")
 const packageImportPath = "@ripple-design/rui"
 const generatedStartMarker = "<!-- AUTO-GENERATED:START -->"
 const generatedEndMarker = "<!-- AUTO-GENERATED:END -->"
