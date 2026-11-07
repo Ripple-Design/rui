@@ -12,7 +12,7 @@
     "dependencies": {
         "@astrojs/mdx": "^7.0.2",
         "@astrojs/vue": "^7.0.1",
-        "@ripple-design/icons": "^1.0.7",
+        "@ripple-design/icons": "^1.1.0",
         "@ripple-design/rui": "workspace:*",
         "@ripple-design/rux-chat": "workspace:*",
         "@ripple-design/rux-data-table": "workspace:*",

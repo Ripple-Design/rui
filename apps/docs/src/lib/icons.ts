@@ -1,4 +1,4 @@
-import * as iconPaths from "@ripple-design/icons"
+import * as iconPaths from "@ripple-design/icons/all"
 import iconsData from "@docs/data/icons-data.json"
 import { R_ICON_STYLES, type RIconStyle } from "@ripple-design/rui"
 
