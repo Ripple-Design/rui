@@ -13,6 +13,8 @@ const ruiSrc = path.join(repoRoot, "packages/rui/src")
 const ruxChatSrc = path.join(repoRoot, "packages/rux-chat/src")
 const ruxDataTableSrc = path.join(repoRoot, "packages/rux-data-table/src")
 const ruxDateTimePickerSrc = path.join(repoRoot, "packages/rux-date-time-picker/src")
+const ruxFontPickerSrc = path.join(repoRoot, "packages/rux-font-picker/src")
+const ruxVideoPlayerSrc = path.join(repoRoot, "packages/rux-video-player/src")
 
 function toPosix(value: string) {
     return value.replace(/\\/g, "/")
@@ -234,6 +236,10 @@ export default defineNuxtConfig({
                 { find: /^@\/utils\//, replacement: toPosix(path.join(ruiSrc, "utils/")) },
                 { find: /^@ripple-design\/rui$/, replacement: toPosix(path.join(ruiSrc, "index.ts")) },
                 {
+                    find: /^@ripple-design\/rui\/playground$/,
+                    replacement: toPosix(path.join(ruiSrc, "playground/index.ts")),
+                },
+                {
                     find: /^@ripple-design\/rui\/foundations\/(.*)$/,
                     replacement: toPosix(path.join(ruiSrc, "foundations/$1")),
                 },
@@ -245,6 +251,14 @@ export default defineNuxtConfig({
                 {
                     find: /^@ripple-design\/rux-date-time-picker$/,
                     replacement: toPosix(path.join(ruxDateTimePickerSrc, "index.ts")),
+                },
+                {
+                    find: /^@ripple-design\/rux-font-picker$/,
+                    replacement: toPosix(path.join(ruxFontPickerSrc, "index.ts")),
+                },
+                {
+                    find: /^@ripple-design\/rux-video-player$/,
+                    replacement: toPosix(path.join(ruxVideoPlayerSrc, "index.ts")),
                 },
             ],
         },
