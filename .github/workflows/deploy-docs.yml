@@ -1,0 +1,86 @@
+name: Deploy docs
+
+on:
+    push:
+        branches:
+            - master
+        paths:
+            - "apps/docs/**"
+            - "packages/**"
+            - "pnpm-lock.yaml"
+            - "pnpm-workspace.yaml"
+            - "package.json"
+            - ".github/workflows/deploy-docs.yml"
+    workflow_dispatch:
+
+concurrency:
+    group: deploy-docs
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 10.2.0
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: "pnpm"
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Build docs
+              run: pnpm --filter docs build
+              env:
+                  NUXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL || 'http://64.90.0.19' }}
+
+            - name: Package static output
+              run: tar -czf rui-docs.tar.gz -C apps/docs/.output/public .
+
+            - name: Upload build
+              uses: appleboy/scp-action@v0.1.7
+              with:
+                  host: ${{ secrets.DEPLOY_HOST }}
+                  username: ${{ secrets.DEPLOY_USER }}
+                  key: ${{ secrets.DEPLOY_SSH_KEY }}
+                  source: rui-docs.tar.gz
+                  target: /tmp
+                  overwrite: true
+
+            - name: Swap static files
+              uses: appleboy/ssh-action@v1.2.0
+              with:
+                  host: ${{ secrets.DEPLOY_HOST }}
+                  username: ${{ secrets.DEPLOY_USER }}
+                  key: ${{ secrets.DEPLOY_SSH_KEY }}
+                  script_stop: true
+                  script: |
+                      set -e
+                      deploy_path="${{ vars.DEPLOY_PATH || '/srv/rui-docs' }}"
+                      rm -rf "$deploy_path.new"
+                      mkdir -p "$deploy_path.new"
+                      tar -xzf /tmp/rui-docs.tar.gz -C "$deploy_path.new"
+                      rm -rf "$deploy_path.old"
+                      if [ -d "$deploy_path" ]; then mv "$deploy_path" "$deploy_path.old"; fi
+                      mv "$deploy_path.new" "$deploy_path"
+                      rm -f /tmp/rui-docs.tar.gz
+
+            - name: Health check
+              run: |
+                  set -e
+                  site_url="${{ vars.SITE_URL || 'http://64.90.0.19' }}"
+                  curl -fsSL --retry 10 --retry-connrefused --retry-delay 2 \
+                    "$site_url/en/components/button/implementation" -o /dev/null
