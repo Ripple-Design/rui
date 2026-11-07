@@ -6,9 +6,11 @@ const props = withDefaults(
         title: string
         demo: string
         language?: string
+        source?: string
     }>(),
     {
         language: "vue",
+        source: "",
     },
 )
 
@@ -58,9 +60,7 @@ onBeforeUnmount(() => {
         </div>
         <details class="demo-source">
             <summary>Show code</summary>
-            <div class="demo-source__content">
-                <DemoSource :demo="props.demo" :language="props.language" />
-            </div>
+            <div class="demo-source__content" v-html="props.source" />
         </details>
     </section>
 </template>

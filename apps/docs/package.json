@@ -21,10 +21,10 @@
         "@ripple-design/rux-video-player": "workspace:*",
         "better-sqlite3": "^13.0.3",
         "nuxt": "^4.6.4",
-        "shiki": "^4.3.1",
         "vue": "catalog:"
     },
     "devDependencies": {
-        "sass": "^1.93.2"
+        "sass": "^1.93.2",
+        "shiki": "^4.3.1"
     }
 }

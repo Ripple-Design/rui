@@ -1,11 +1,14 @@
-import { readFileSync, statSync } from "node:fs"
+import { readFileSync, readdirSync, statSync } from "node:fs"
 import path from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
+
+import { createHighlighter } from "shiki"
 
 import { R_ICON_STYLES } from "../../packages/rui/src/foundations/icon/style"
 import { locales } from "./app/lib/docs"
 
 const repoRoot = fileURLToPath(new URL("../..", import.meta.url))
+const demosRoot = fileURLToPath(new URL("./app/components/demos", import.meta.url))
 const ruiSrc = path.join(repoRoot, "packages/rui/src")
 const ruxChatSrc = path.join(repoRoot, "packages/rux-chat/src")
 const ruxDataTableSrc = path.join(repoRoot, "packages/rux-data-table/src")
@@ -13,6 +16,64 @@ const ruxDateTimePickerSrc = path.join(repoRoot, "packages/rux-date-time-picker/
 
 function toPosix(value: string) {
     return value.replace(/\\/g, "/")
+}
+
+const demoSources = new Map<string, string>()
+
+function collectDemoSources(directory: string) {
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+        const fullPath = path.join(directory, entry.name)
+
+        if (entry.isDirectory()) {
+            collectDemoSources(fullPath)
+        } else if (entry.name.endsWith(".vue")) {
+            demoSources.set(entry.name.slice(0, -".vue".length), readFileSync(fullPath, "utf8"))
+        }
+    }
+}
+
+collectDemoSources(demosRoot)
+
+let demoHighlighter: ReturnType<typeof createHighlighter> | null = null
+
+// Inject the highlighted demo source into the MDC AST so it travels with the page
+// payload and survives client-side navigation without shipping Shiki to the browser.
+async function injectDemoSources(content: { body?: { value?: unknown[] } }) {
+    const value = content.body?.value
+
+    if (!Array.isArray(value)) {
+        return
+    }
+
+    const highlighter = (demoHighlighter ??= createHighlighter({
+        themes: ["github-light"],
+        langs: ["vue"],
+    }))
+
+    async function visit(node: unknown) {
+        if (!Array.isArray(node) || typeof node[0] !== "string") {
+            return
+        }
+
+        const [tag, rawProps, ...children] = node as [string, Record<string, unknown>, ...unknown[]]
+        const props = rawProps ?? {}
+
+        if (tag === "demo-block") {
+            const demo = typeof props.demo === "string" ? props.demo : null
+            const source = demo ? demoSources.get(demo) : null
+
+            if (source && typeof props.source !== "string") {
+                props.source = (await highlighter).codeToHtml(source.trimEnd(), {
+                    lang: typeof props.language === "string" ? props.language : "vue",
+                    theme: "github-light",
+                })
+            }
+        }
+
+        await Promise.all(children.map(visit))
+    }
+
+    await Promise.all(value.map(visit))
 }
 
 function resolveSassFile(basePath: string) {
@@ -97,11 +158,14 @@ export default defineNuxtConfig({
     devtools: { enabled: false },
     ssr: true,
     modules: ["@nuxtjs/i18n", "@nuxt/content"],
-    css: [
-        "@ripple-design/rui/styles.css",
-        "~/assets/styles/base.scss",
-        "~/assets/styles/docs-prose.scss",
-    ],
+    content: {
+        build: {
+            markdown: {
+                toc: { depth: 3, searchDepth: 3 },
+            },
+        },
+    },
+    css: ["~/assets/styles/base.scss", "~/assets/styles/docs-prose.scss"],
     alias: {
         "@docs": fileURLToPath(new URL("./app", import.meta.url)),
     },
@@ -142,6 +206,11 @@ export default defineNuxtConfig({
         prerender: {
             crawlLinks: true,
             routes: collectPrerenderRoutes(),
+        },
+    },
+    hooks: {
+        "content:file:afterParse"(ctx) {
+            return injectDemoSources(ctx.content as { body?: { value?: unknown[] } })
         },
     },
     vite: {

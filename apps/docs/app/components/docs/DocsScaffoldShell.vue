@@ -73,7 +73,7 @@ const resolvedLocaleLinks = computed(() =>
 )
 
 function navigate(href: string) {
-    window.location.assign(href)
+    void navigateTo(href)
 }
 
 function setDirection(value: DocsDirection) {
