@@ -60,7 +60,7 @@ jobs:
                   target: /tmp
                   overwrite: true
 
-            - name: Swap static files
+            - name: Sync static files
               uses: appleboy/ssh-action@v1.2.0
               with:
                   host: ${{ secrets.DEPLOY_HOST }}
@@ -69,13 +69,11 @@ jobs:
                   script_stop: true
                   script: |
                       set -e
-                      deploy_path="${{ vars.DEPLOY_PATH || '/srv/rui-docs' }}"
-                      rm -rf "$deploy_path.new"
-                      mkdir -p "$deploy_path.new"
-                      tar -xzf /tmp/rui-docs.tar.gz -C "$deploy_path.new"
-                      rm -rf "$deploy_path.old"
-                      if [ -d "$deploy_path" ]; then mv "$deploy_path" "$deploy_path.old"; fi
-                      mv "$deploy_path.new" "$deploy_path"
+                      rm -rf ~/rui-docs-staging
+                      mkdir -p ~/rui-docs-staging
+                      tar -xzf /tmp/rui-docs.tar.gz -C ~/rui-docs-staging
+                      rsync -a --delete --delay-updates ~/rui-docs-staging/ /srv/rui-docs/
+                      rm -rf ~/rui-docs-staging
                       rm -f /tmp/rui-docs.tar.gz
 
             - name: Health check
