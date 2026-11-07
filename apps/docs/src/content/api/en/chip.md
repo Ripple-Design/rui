@@ -23,6 +23,9 @@ import { RChip } from "@ripple-design/rui"
 | `value`       | `unknown`                  | —          | no       | Identifies the chip inside a selectable `RChipGroup`.           |
 | `disabled`    | `boolean`                  | `false`    | no       | Disables the primary and remove actions.                        |
 | `type`        | `RChipType`                | —          | no       | Controls the Material chip family and its interaction behavior. |
+| `href`        | `string`                   | —          | no       | Renders the chip as a link when provided.                       |
+| `target`      | `string`                   | —          | no       | Sets the link target when rendering an anchor.                  |
+| `rel`         | `string`                   | —          | no       | Sets the link relationship when rendering an anchor.            |
 | `icon`        | `RIconResolvableSource`    | —          | no       | Renders a leading icon using the shared icon renderer.          |
 | `endIcon`     | `RIconResolvableSource`    | —          | no       | Renders a trailing icon using the shared icon renderer.         |
 | `removable`   | `boolean`                  | `false`    | no       | Shows a separate trailing remove button.                        |

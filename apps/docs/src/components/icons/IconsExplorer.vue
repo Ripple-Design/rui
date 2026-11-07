@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RIcon, RTextField, vRipple } from "@ripple-design/rui"
+import { RChip, RIcon, RTextField, vRipple } from "@ripple-design/rui"
 import { computed, onBeforeUnmount, ref } from "vue"
 
 import type { IconRecord } from "../../lib/icons"
@@ -95,13 +95,17 @@ onBeforeUnmount(() => {
                 <RTextField v-model="query" label="Search icons" placeholder="Search by name, category, or tag" />
                 <nav class="icons-toolbar" aria-label="Icon styles">
                     <span>Style:</span>
-                    <ul>
-                        <li v-for="style in ICON_STYLES" :key="style">
-                            <a :href="getStyleHref(style)" :aria-current="style === currentStyle ? 'page' : undefined">
-                                {{ style }}
-                            </a>
-                        </li>
-                    </ul>
+                    <div class="icons-styles">
+                        <RChip
+                            v-for="style in ICON_STYLES"
+                            :key="style"
+                            type="choice"
+                            :href="getStyleHref(style)"
+                            :model-value="style === currentStyle"
+                        >
+                            {{ style }}
+                        </RChip>
+                    </div>
                 </nav>
             </div>
         </header>
@@ -179,30 +183,10 @@ onBeforeUnmount(() => {
     align-items: center;
 }
 
-.icons-toolbar ul {
+.icons-styles {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.icons-toolbar a {
-    @include rui.typo-body2;
-
-    display: inline-flex;
-    padding: 0.35rem 0.75rem;
-    border: 1px solid rui.$color-on-surface-outline;
-    border-radius: 999px;
-    color: inherit;
-    text-decoration: none;
-}
-
-.icons-toolbar a[aria-current="page"] {
-    background: rui.$color-primary;
-    color: rui.$color-on-primary;
-    border-color: rui.$color-primary;
 }
 
 .icons-group {

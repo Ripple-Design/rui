@@ -16,6 +16,12 @@ export type RChipProps = {
     disabled?: boolean
     /** Controls the Material chip family and its interaction behavior. */
     type?: RChipType
+    /** Renders the chip as a link when provided. */
+    href?: string
+    /** Sets the link target when rendering an anchor. */
+    target?: string
+    /** Sets the link relationship when rendering an anchor. */
+    rel?: string
     /** Renders a leading icon using the shared icon renderer. */
     icon?: RIconResolvableSource
     /** Renders a trailing icon using the shared icon renderer. */

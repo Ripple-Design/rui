@@ -20,6 +20,7 @@ import { RTouchTargetWrapper } from "@/foundations/touchTarget"
 
 import type { RChipProps } from "./types.ts"
 
+import { consumeDisabledLinkClick, resolveButtonHref, resolveDisabledLinkTabIndex } from "../button/shared.ts"
 import { chipGroupKey } from "./groupContext.ts"
 
 const props = withDefaults(defineProps<RChipProps>(), {
@@ -41,14 +42,20 @@ const chipId = Symbol("rChip")
 const checkIcon = createIconFamily(RICheckFilled, RICheckOutlined, RICheckRounded, RICheckSharp, RICheckTwoTone)
 const cancelIcon = createIconFamily(RICancelFilled, RICancelOutlined, RICancelRounded, RICancelSharp, RICancelTwoTone)
 let warnedMissingValue = false
+let warnedHref = false
 
 const resolvedVariant = computed(() => props.variant ?? group?.variant.value ?? "plain")
 const resolvedType = computed(() => props.type ?? group?.type.value ?? "action")
 const isCheckable = computed(() => resolvedType.value !== "action")
 const hasSelectionValue = computed(() => props.value !== undefined)
+const isLink = computed(() => !!props.href)
+const resolvedHref = computed(() => resolveButtonHref(props.href, props.disabled))
+const resolvedTabIndex = computed(() => resolveDisabledLinkTabIndex(isLink.value, props.disabled))
 const selectionMode = computed(() => group?.selection.value)
 const isInSelectableGroup = computed(() => selectionMode.value != null && isCheckable.value)
-const isSelectableInGroup = computed(() => isInSelectableGroup.value && hasSelectionValue.value)
+const isSelectableInGroup = computed(
+    () => isInSelectableGroup.value && hasSelectionValue.value && !isLink.value,
+)
 const selected = computed(() => {
     if (isSelectableInGroup.value) {
         return group?.isSelected(props.value) ?? false
@@ -83,6 +90,10 @@ const resolvedAriaChecked = computed(() => {
     return undefined
 })
 const resolvedAriaPressed = computed(() => {
+    if (isLink.value) {
+        return undefined
+    }
+
     if (
         (selectionMode.value === "multiple" && isSelectableInGroup.value) ||
         (!isInSelectableGroup.value && isCheckable.value)
@@ -92,6 +103,7 @@ const resolvedAriaPressed = computed(() => {
 
     return undefined
 })
+const resolvedAriaCurrent = computed(() => (isLink.value && selected.value ? "page" : undefined))
 const rippleOptions = computed<RippleOptions>(() => {
     if (props.ripple === false) {
         return { disabled: true }
@@ -122,13 +134,13 @@ const classes = computed(() => [
 ])
 
 watch(
-    [() => props.disabled, () => props.value, hasSelectionValue, isCheckable, primaryRef],
-    ([disabled, value, hasValue, checkable, element]) => {
+    [() => props.disabled, () => props.value, hasSelectionValue, isCheckable, isLink, primaryRef],
+    ([disabled, value, hasValue, checkable, link, element]) => {
         if (!group) {
             return
         }
 
-        if (!checkable) {
+        if (!checkable || link) {
             group.unregisterItem(chipId)
             return
         }
@@ -144,8 +156,15 @@ watch(
 )
 
 watch(
-    [selectionMode, isCheckable, hasSelectionValue],
-    ([mode, checkable, hasValue]) => {
+    [selectionMode, isCheckable, hasSelectionValue, isLink],
+    ([mode, checkable, hasValue, link]) => {
+        if (mode != null && link && !warnedHref) {
+            warnedHref = true
+            if (import.meta.env.DEV) {
+                console.warn("[RChipGroup] Link chips are not supported in selectable groups.")
+            }
+        }
+
         if (mode == null || !checkable || hasValue || warnedMissingValue) {
             return
         }
@@ -164,7 +183,15 @@ onBeforeUnmount(() => {
     group?.unregisterItem(chipId)
 })
 
-function handlePrimaryClick() {
+function handlePrimaryClick(event: MouseEvent) {
+    if (consumeDisabledLinkClick(event, isLink.value, props.disabled)) {
+        return
+    }
+
+    if (isLink.value) {
+        return
+    }
+
     if (isInSelectableGroup.value) {
         if (isSelectableInGroup.value) {
             group?.activate(chipId)
@@ -187,12 +214,20 @@ function handleRemove(event: MouseEvent) {
 <template>
     <RTouchTargetWrapper class="rui-chip__touch-target-wrapper">
         <span :class="classes" v-ripple="rippleOptions">
-            <button
+            <component
+                :is="isLink ? 'a' : 'button'"
                 ref="primaryRef"
                 v-bind="attrs"
                 class="rui-chip__primary"
-                type="button"
-                :disabled="disabled"
+                :type="isLink ? undefined : 'button'"
+                :href="resolvedHref"
+                :target="target"
+                :rel="rel"
+                :disabled="isLink ? undefined : disabled"
+                :aria-disabled="isLink && disabled ? 'true' : undefined"
+                :aria-current="resolvedAriaCurrent"
+                :tabindex="resolvedTabIndex"
+                :data-rui-touch-target-anchor="isLink ? '' : undefined"
                 :role="resolvedRole"
                 :aria-checked="resolvedAriaChecked"
                 :aria-pressed="resolvedAriaPressed"
@@ -214,7 +249,7 @@ function handleRemove(event: MouseEvent) {
                 <span class="rui-chip__label">
                     <slot />
                 </span>
-            </button>
+            </component>
 
             <span v-if="showEndIcon" class="rui-chip__end-icon" aria-hidden="true">
                 <RIcon :icon="endIcon" :size="18" emphasis="inherit" decorative />
@@ -395,6 +430,7 @@ function handleRemove(event: MouseEvent) {
     padding-inline-start: 4px;
     padding-inline-end: 6px;
     text-align: start;
+    text-decoration: none;
 }
 
 .rui-chip__leading {
